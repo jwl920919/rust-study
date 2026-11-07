@@ -162,20 +162,17 @@
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
 <h2 id="advanced-types"><a class="header" href="#advanced-types">고급 형식</a></h2>
-<p>러스트 타입 시스템에는 지금까지 언급했지만 아직 논의하지 않은 몇 가지 기능이 있습니다. 우리는 왜 타입으로서 유용한지에 대해 일반적으로 논의하기 시작할 것입니다. 그런 다음, 우리는 타입 별칭으로 넘어갈 것입니다. 새로운 타입과 비슷하지만 약간 다른 의미론을 가진 기능입니다. 또한 <code>!</code> 타입과 동적 크기 타입을 논의할 것입니다.</p>
+<p>Rust 타입 시스템에는 지금까지 언급했지만 아직 자세히 다루지 않은 몇 가지 기능이 있습니다. 먼저, 왜 newtype이 타입으로서 유용한지 살펴보기 위해 newtype의 일반적인 개념을 논의하겠습니다. 그런 다음, newtype과 유사하지만 의미론(semantics)이 약간 다른 기능인 타입 별칭으로 넘어가겠습니다. 또한 <code>!</code> 타입과 동적 크기 타입에 대해서도 논의하겠습니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="using-the-newtype-pattern-for-type-safety-and-abstraction"></a></p>
-<h3 id="type-safety-and-abstraction-with-the-newtype-pattern"><a class="header" href="#type-safety-and-abstraction-with-the-newtype-pattern">유형 안전 및 Newtype 패턴으로 추상화</a></h3>
-<p>이 섹션은 이전 섹션을 읽었다고 가정합니다. <a href="ch20-02-advanced-traits.html#implementing-external-traits-with-the-newtype-pattern">“외부 특성 을 뉴타입 패턴 으로 구현 함”</a> 무시 . newtype 패턴은 우리가 지금까지 논의한 것 이상의 작업에도 유용합니다. statically enforcement를 포함하여 값은 결코 혼동되지 않으며 값의 단위를 나타냅니다. Listing 20-16에서 단위를 나타내기 위해 newtypes를 사용하는 예를 보았습니다. <code>Millimeters</code> 그리고 <code>Meters</code> 감싸이는 구조망 <code>u32</code> newtype의 값. 만약 우리가 타입의 파라미터를 가진 함수를 작성했다면 <code>Millimeters</code>, 우리는 실수로 타입 값을 가진 함수를 호출하려고 시도한 프로그램을 컴파일할 수 없을 것이다. <code>Meters</code> 또는 평야 <code>u32</code>.</p>
-<p>또한 newtype 패턴을 사용하여 유형의 일부 구현 세부 사항을 추상화 할 수 있습니다. newtype은 개인 내부 유형의 API와 다른 공개 API를 노출 할 수 있습니다.</p>
-<p>Newtype은 내부 구현을 숨길 수도 있습니다. 예를 들어,
-<code>People</code> a를 감싸는 유형 <code>HashMap&lt;i32, String&gt;</code> 이름에 연결된 사람의 ID를 저장합니다. 코드 사용 <code>People</code> 우리가 제공하는 공개 API와만 상호 작용할 것입니다. 예를 들어 다음과 같은 이름 문자열을 추가하는 방법 <code>People</code>
-컬렉션; 그 코드는 우리가 할당하는 것을 알 필요가 없습니다. <code>i32</code> 내부적으로 이름에 대한 ID. newtype 패턴은 구현 세부 사항을 숨기기 위해 캡슐화를 달성하는 가벼운 방법입니다. <a href="ch18-01-what-is-oo.html#encapsulation-that-hides-implementation-details">“구현 세부사항을 숨기는 캡슐화”</a> 무시 
-챕터 18.</p>
+<h3 id="type-safety-and-abstraction-with-the-newtype-pattern"><a class="header" href="#type-safety-and-abstraction-with-the-newtype-pattern">newtype 패턴을 통한 타입 안전성 및 추상화</a></h3>
+<p>이 섹션은 이전 섹션인 <a href="ch20-02-advanced-traits.html#implementing-external-traits-with-the-newtype-pattern">“외부 트레이트를 newtype 패턴으로 구현하기”</a>를 읽었다고 가정합니다. newtype 패턴은 지금까지 논의한 것 외에도 유용한 용도가 많습니다. 예를 들어, 값이 혼동되지 않도록 정적으로 강제하거나 값의 단위를 나타내는 데 사용할 수 있습니다. Listing 20-16에서 단위를 나타내기 위해 newtype을 사용하는 예를 보았습니다. <code>Millimeters</code>와 <code>Meters</code> 구조체는 <code>u32</code> 값을 newtype으로 감싸고 있었습니다. 만약 <code>Millimeters</code> 타입의 매개변수를 가진 함수를 작성했다면, 실수로 <code>Meters</code> 타입의 값이나 단순한 <code>u32</code> 값을 전달하여 그 함수를 호출하려는 프로그램은 컴파일되지 않을 것입니다.</p>
+<p>newtype 패턴을 사용하여 타입의 일부 구현 세부 사항을 추상화할 수도 있습니다. newtype은 내부의 비공개 타입과 다른 공개 API를 노출할 수 있습니다.</p>
+<p>Newtype은 내부 구현을 숨기는 데에도 사용할 수 있습니다. 예를 들어, <code>People</code>를 감싸는 <code>HashMap&lt;i32, String&gt;</code> 유형을 제공할 수 있습니다. 이 유형은 사람의 ID와 이름을 연결하여 저장합니다. <code>People</code>를 사용하는 코드는 우리가 제공하는 공개 API, 예를 들어 <code>People</code> 컬렉션에 이름 문자열을 추가하는 메서드와 같은 것만 상호 작용하게 됩니다. 따라서 해당 코드는 내부적으로 이름에 <code>i32</code> ID를 할당한다는 사실을 알 필요가 없습니다. Newtype 패턴은 구현 세부 사항을 숨기기 위해 캡슐화를 달성하는 가벼운 방법입니다. 이 내용은 18장의 “구현 세부 사항을 숨기는 캡슐화” 섹션에서 다루었습니다. <a href="ch18-01-what-is-oo.html#encapsulation-that-hides-implementation-details">구현 세부 사항을 숨기는 캡슐화</a></p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="creating-type-synonyms-with-type-aliases"></a></p>
-<h3 id="type-synonyms-and-type-aliases"><a class="header" href="#type-synonyms-and-type-aliases">유형 동의어 및 유형 별명</a></h3>
-<p>러스트는 기존 타입에 다른 이름을 부여하기 위해 타입 별칭을 선언하는 기능을 제공합니다. 이를 위해 <code>type</code> 키워드를 사용합니다. 예를 들어, <code>Kilometers</code>에서 <code>i32</code>로 별칭을 만들 수 있습니다.</p>
+<h3 id="type-synonyms-and-type-aliases"><a class="header" href="#type-synonyms-and-type-aliases">타입 동의어와 타입 별칭</a></h3>
+<p>Rust는 기존 타입에 다른 이름을 부여하기 위해 타입 별칭을 선언할 수 있는 기능을 제공합니다. 이를 위해 <code>type</code> 키워드를 사용합니다. 예를 들어, <code>Kilometers</code>에 대해 <code>i32</code>라는 별칭을 다음과 같이 만들 수 있습니다.</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    type Kilometers = i32;
 <span class="boring">
@@ -194,11 +191,10 @@
 
     println!("x + y = {}", x + y);
 <span class="boring">}</span></code></pre>
-<p>왜냐하면 <code>Kilometers</code> 그리고 <code>i32</code> 같은 타입이고, 우리는 두 타입의 값을 추가할 수 있고, 전달할 수 있습니다. <code>Kilometers</code> 함수를 실행하는 함수To functions that take <code>i32</code>
-매개 변수. 그러나이 방법을 사용하면 앞에서 설명한 newtype 패턴에서 얻을 수있는 유형 확인 이점을 얻지 못합니다. 즉, 혼합하면 <code>Kilometers</code> 그리고 <code>i32</code> 어딘가에 값, 컴파일러는 우리에게 오류를 제공하지 않습니다.</p>
-<p>유형 동의어의 주된 사용 사례는 반복을 줄이는 것입니다. 예를 들어 다음과 같이 긴 유형이 있을 수 있습니다.</p>
+<p><code>Kilometers</code>과 <code>i32</code>은 동일한 타입이므로, 두 타입의 값을 더할 수 있고 <code>Kilometers</code> 매개변수를 받는 함수에 <code>i32</code> 값을 전달할 수 있습니다. 그러나 이 방법을 사용하면 앞서 설명한 newtype 패턴에서 얻을 수 있는 타입 검사 이점을 얻지 못합니다. 즉, 어딘가에서 <code>Kilometers</code>과 <code>i32</code> 값을 혼동하더라도 컴파일러는 오류를 보고하지 않습니다.</p>
+<p>타입 별칭의 주요 사용 사례는 반복을 줄이는 것입니다. 예를 들어 다음과 같은 긴 타입이 있을 수 있습니다:</p>
 <pre><code class="language-rust ignore">Box&lt;dyn Fn() + Send + 'static&gt;</code></pre>
-<p>이 긴 타입의 함수 서명과 코드 전체에 타입 주석을 작성하는 것은 지겹고 오류가 발생하기 쉽습니다. Listing 20-25에서와 같이 코드가 가득한 프로젝트를 상상해보세요.</p>
+<p>이 긴 타입을 함수 서명이나 코드 전체의 타입 주석으로 작성하는 것은 지루하고 오류가 발생하기 쉽습니다. Listing 20-25와 같은 코드가 가득한 프로젝트를 상상해 보세요.</p>
 <figure class="listing" id="listing-20-25">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    let f: Box&lt;dyn Fn() + Send + 'static&gt; = Box::new(|| println!("hi"));
@@ -212,9 +208,9 @@
 <span class="boring">        Box::new(|| ())
 </span>    }
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-20-25">목록 20-25</a>: 여러 곳에서 긴 형식 사용</figcaption>
+<figcaption><a href="#listing-20-25">Listing 20-25</a>: 여러 곳에서 긴 타입 사용</figcaption>
 </figure>
-<p>타입 별칭은 반복을 줄임으로써 이 코드를 더 관리하기 쉽게 만듭니다. Listing 20-26에서, 우리는 verbose 타입에 대해 <code>Thunk</code>라는 별칭을 도입했고, 타입의 모든 용도를 더 짧은 별칭 <code>Thunk</code>로 대체할 수 있습니다.</p>
+<p>타입 별칭은 반복을 줄임으로써 이 코드를 더 관리하기 쉽게 만듭니다. Listing 20-26에서, 우리는 복잡한 타입에 대해 <code>Thunk</code>이라는 별칭을 도입했고, 타입의 모든 사용처를 더 짧은 별칭 <code>Thunk</code>로 대체할 수 있습니다.</p>
 <figure class="listing" id="listing-20-26">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    type Thunk = Box&lt;dyn Fn() + Send + 'static&gt;;
@@ -230,11 +226,10 @@
 <span class="boring">        Box::new(|| ())
 </span>    }
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-20-26">리스트 20-26</a> : 반복을 줄이기 위해 유형 별칭 <code>Thunk</code> 소개</figcaption>
+<figcaption><a href="#listing-20-26">Listing 20-26</a>: 반복을 줄이기 위해 타입 별칭 <code>Thunk</code> 도입</figcaption>
 </figure>
-<p>이 코드는 읽기와 쓰기가 훨씬 쉽습니다! 타입 별칭에 대한 의미 있는 이름을 선택하면 인텐트를 전달하는 데에도 도움이 될 수 있습니다(thunk는 나중에 코드를 평가하기 위한 단어이므로 저장되는 클로저에 대한 적절한 이름입니다).</p>
-<p>타입 별칭은 또한 다음과 같이 일반적으로 사용된다. <code>Result&lt;T, E&gt;</code> 반복을 줄이기위한 유형. 고려 <code>std::io</code> 표준 라이브러리에 있는 모듈. I/O 연산은 종종 <code>Result&lt;T, E&gt;</code> 작업이 작동하지 않을 때 상황을 처리하기 위해. 이 라이브러리에는 <code>std::io::Error</code> 가능한 모든 I/O 에러를 나타내는 구조체입니다. <code>std::io</code> 돌아올 것이다.
-<code>Result&lt;T, E&gt;</code> 상기 단계는 Wherein the <code>E</code> 있습니다. <code>std::io::Error</code>이러한 기능들은 다음과 같습니다. <code>Write</code> 특성:</p>
+<p>이 코드는 읽기와 쓰기가 훨씬 쉽습니다! 타입 별칭에 의미 있는 이름을 선택하면 의도를 전달하는 데에도 도움이 될 수 있습니다(thunk는 나중에 평가될 코드를 의미하는 단어로, 저장되는 클로저에 적절한 이름입니다).</p>
+<p>타입 별칭은 반복을 줄이기 위해 <code>Result&lt;T, E&gt;</code> 타입과 함께 자주 사용됩니다. 표준 라이브러리의 <code>std::io</code> 모듈을 생각해 보겠습니다. I/O 연산은 작업이 실패하는 상황을 처리하기 위해 종종 <code>Result&lt;T, E&gt;</code>을 반환합니다. 이 라이브러리에는 가능한 모든 I/O 에러를 나타내는 <code>std::io::Error</code> 구조체가 있습니다. <code>std::io</code>의 많은 함수는 <code>Result&lt;T, E&gt;</code>가 <code>E</code>인 <code>std::io::Error</code>을 반환합니다. 예를 들어, <code>Write</code> 트레이트의 이러한 함수들이 그렇습니다.</p>
 <pre><code class="language-rust noplayground">use std::fmt;
 use std::io::Error;
 
@@ -245,7 +240,7 @@ pub trait Write {
     fn write_all(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;(), Error&gt;;
     fn write_fmt(&amp;mut self, fmt: fmt::Arguments) -&gt; Result&lt;(), Error&gt;;
 }</code></pre>
-<p><code>Result&lt;..., Error&gt;</code>는 많이 반복됩니다. 따라서 <code>std::io</code>에는 다음과 같은 유형의 별칭 선언이 있습니다.</p>
+<p><code>Result&lt;..., Error&gt;</code>은 자주 반복됩니다. 이러한 이유로 <code>std::io</code>에는 다음과 같은 타입 별칭 선언이 있습니다.</p>
 <pre><code class="language-rust noplayground"><span class="boring">use std::fmt;
 </span><span class="boring">
 </span>type Result&lt;T&gt; = std::result::Result&lt;T, std::io::Error&gt;;
@@ -257,8 +252,7 @@ pub trait Write {
 </span><span class="boring">    fn write_all(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;()&gt;;
 </span><span class="boring">    fn write_fmt(&amp;mut self, fmt: fmt::Arguments) -&gt; Result&lt;()&gt;;
 </span><span class="boring">}</span></code></pre>
-<p>왜냐하면 이 선언은 <code>std::io</code> 단위, 우리는 자격이 된 별명을 사용해서 좋습니다 <code>std::io::Result&lt;T&gt;</code>즉, A <code>Result&lt;T, E&gt;</code> 와 함께 <code>E</code>
-충전 AS <code>std::io::Error</code>. 그 <code>Write</code> 트레잇 함수 서명은 다음과 같이 끝납니다:</p>
+<p>이 선언이 <code>std::io</code> 모듈에 있으므로, 완전한 경로로 된 별칭인 <code>std::io::Result&lt;T&gt;</code>을 사용할 수 있습니다. 이는 <code>Result&lt;T, E&gt;</code>에서 <code>E</code>가 <code>std::io::Error</code>로 채워진 형태입니다. <code>Write</code> 트레이트의 함수 서명은 다음과 같이 됩니다:</p>
 <pre><code class="language-rust noplayground"><span class="boring">use std::fmt;
 </span><span class="boring">
 </span><span class="boring">type Result&lt;T&gt; = std::result::Result&lt;T, std::io::Error&gt;;
@@ -270,15 +264,15 @@ pub trait Write {
     fn write_all(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;()&gt;;
     fn write_fmt(&amp;mut self, fmt: fmt::Arguments) -&gt; Result&lt;()&gt;;
 }</code></pre>
-<p>타입 별칭은 두 가지 방법으로 도움이됩니다. 코드를 쉽게 작성할 수 있으며 모든 <code>std::io</code>에 걸쳐 일관된 인터페이스를 제공합니다. 별칭이기 때문에 또 다른 <code>Result&lt;T, E&gt;</code>입니다. 즉, <code>Result&lt;T, E&gt;</code>에서 작동하는 모든 방법과 <code>?</code> 연산자와 같은 특수 구문을 사용할 수 있습니다.</p>
-<h3 id="the-never-type-that-never-returns"><a class="header" href="#the-never-type-that-never-returns">절대 돌아오지 않는 타입</a></h3>
-<p>러스트는 타입 이론에서 빈 타입으로 알려진 <code>!</code>라는 특별한 타입을 가지고 있습니다. 그 이유는 값이 없기 때문입니다. 우리는 함수가 반환되지 않을 때 반환 타입의 자리에 서 있기 때문에 그것을 절대 타입이라고 부르는 것을 선호합니다. 예는 다음과 같습니다:</p>
+<p>타입 별칭은 두 가지 측면에서 도움이 됩니다. 코드를 작성하기 쉽게 만들어 주며, <code>std::io</code> 전체에서 일관된 인터페이스를 제공합니다. 별칭이므로 결국 <code>Result&lt;T, E&gt;</code>의 또 다른 형태이며, 이는 <code>Result&lt;T, E&gt;</code>에서 동작하는 모든 메서드와 <code>?</code> 연산자와 같은 특수 구문을 사용할 수 있음을 의미합니다.</p>
+<h3 id="the-never-type-that-never-returns"><a class="header" href="#the-never-type-that-never-returns">절대 반환하지 않는 타입</a></h3>
+<p>Rust에는 타입 이론에서 빈 타입(empty type)으로 알려진 <code>!</code>이라는 특별한 타입이 있습니다. 이 타입은 어떤 값도 가지지 않기 때문에 빈 타입이라고 불리지만, Rust에서는 함수가 절대 반환되지 않을 때 반환 타입의 자리에 사용되므로 'never 타입'이라고 부르는 것을 선호합니다. 다음은 예시입니다:</p>
 <pre><code class="language-rust noplayground">fn bar() -&gt; ! {
     // --snip--
 <span class="boring">    panic!();
 </span>}</code></pre>
 <p>이 코드는 "<code>bar</code>가 결코 반환되지 않음"으로 읽혀집니다. 반환되는 함수는 결코 diverging 함수라고 불리지 않습니다. <code>!</code> 유형의 값을 만들 수 없으므로 <code>bar</code>는 결코 반환 할 수 없습니다.</p>
-<p>그러나 여러분이 결코 값을 만들 수 없는 타입은 어떤 용도입니까? Listing 2-5에서 나온 코드, number-guessing 게임의 일부를 상기하십시오; 우리는 여기 Listing 20-27에서 그것의 일부를 재생산했습니다.</p>
+<p>그런데 값을 절대 만들 수 없는 타입은 어떤 용도일까요? Listing 2-5의 숫자 추측 게임 코드 일부를 떠올려 보겠습니다. Listing 20-27에 그 일부를 다시 제시했습니다.</p>
 <figure class="listing" id="listing-20-27">
 <pre><code class="language-rust ignore"><span class="boring">use std::cmp::Ordering;
 </span><span class="boring">use std::io;
@@ -322,10 +316,9 @@ pub trait Write {
 </span><span class="boring">        }
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-20-27">리스트 20-27</a>: <code>match</code>에서 끝나는 팔을 가진 <code>continue</code></figcaption>
+<figcaption><a href="#listing-20-27">리스트 20-27</a>: <code>match</code>로 끝나는 매치 암을 가진 <code>continue</code></figcaption>
 </figure>
-<p>당시이 코드의 세부 사항을 건너 뛰었습니다. 6 장의 <a href="ch06-02-match.html#the-match-control-flow-construct">“그 <code>match</code>
-제어 흐름 구축”</a> 섹션에서는 <code>match</code> 암이 모두 동일한 유형을 반환해야한다고 논의했습니다. 예를 들어 다음 코드는 작동하지 않습니다.</p>
+<p>당시 이 코드에서 일부 세부 사항을 생략했습니다. 6장의 <a href="ch06-02-match.html#the-match-control-flow-construct">“<code>match</code> 제어 흐름 구조”</a> 섹션에서는 <code>match</code>의 각 암(arm)이 모두 동일한 타입을 반환해야 한다고 설명했습니다. 예를 들어, 다음 코드는 동작하지 않습니다.</p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
 </span><span class="boring">    let guess = "3";
 </span>    let guess = match guess.trim().parse() {
@@ -333,12 +326,10 @@ pub trait Write {
         Err(_) =&gt; "hello",
     };
 <span class="boring">}</span></code></pre>
-<p>이 코드의 <code>guess</code> 유형은 정수와 문자열이어야 하며, 러스트는 <code>guess</code>가 단 하나의 유형만 가질 것을 요구합니다. 그러면 <code>continue</code>는 무엇을 반환합니까? 어떻게 한 팔에서 <code>u32</code>를 반환하고 20-27 목록에서 <code>continue</code>로 끝나는 다른 팔을 가질 수 있었습니까?</p>
-<p>당신이 짐작할 수 있듯이, <code>continue</code> 있습니다 A <code>!</code> value. 즉, 러스트가 다음과 같은 타입을 계산할 때 <code>guess</code>, 그것은 두 일치하는 팔을 보면, 의 값을 가진 전자 <code>u32</code> 다음 다음 글: A <code>!</code> 가치. 왜냐하면 <code>!</code> 결코 값을 가질 수 없으며, 러스트는 타입이 <code>guess</code> 있습니다. <code>u32</code>.</p>
-<p>이 행동을 설명하는 공식적인 방법은 타입의 표현이다. <code>!</code> 다른 어떤 유형으로 강요될 수 있습니다. 우리는 이것을 끝내는 것이 허용됩니다 <code>match</code> 팔걸이 with
-<code>continue</code> 왜냐하면 <code>continue</code> 값을 반환하지 않습니다; 대신, 컨트롤을 루프의 맨 위로 다시 이동시킵니다. <code>Err</code> case, we never assign a value 값을 할당하지 않습니다.
-<code>guess</code>.</p>
-<p>절대 타입은 <code>panic!</code> 매크로에도 유용합니다. <code>unwrap</code> 값을 호출하여 이 정의로 값이나 패닉을 생성하는 <code>Option&lt;T&gt;</code> 함수를 호출합니다.</p>
+<p>이 코드에서 <code>guess</code>의 타입은 정수이면서 문자열이어야 하지만, Rust는 <code>guess</code>이 단 하나의 타입만 가질 것을 요구합니다. 그렇다면 <code>continue</code>는 무엇을 반환합니까? 어떻게 한 매치 암에서 <code>u32</code>를 반환하고, 리스트 20-27에서 다른 매치 암이 <code>continue</code>로 끝나는 것이 허용되었을까요?</p>
+<p>짐작하셨을 수도 있겠지만, <code>continue</code>은 <code>!</code> 타입을 가집니다. 즉, Rust가 <code>guess</code>의 타입을 계산할 때 두 개의 match arm을 모두 살펴봅니다. 앞쪽 arm은 <code>u32</code> 타입의 값을 가지며, 뒤쪽 arm은 <code>!</code> 타입을 가집니다. <code>!</code>는 결코 값을 가질 수 없으므로, Rust는 <code>guess</code>의 타입을 <code>u32</code>로 결정합니다.</p>
+<p>이 동작을 공식적으로 설명하면, <code>!</code> 타입의 식은 다른 어떤 타입으로도 강제 변환(coerce)될 수 있습니다. <code>match</code> 분기(arm)를 <code>continue</code>로 끝낼 수 있는 이유는, <code>continue</code>이 값을 반환하지 않기 때문입니다. 대신 제어 흐름을 루프의 맨 위로 되돌리기 때문에, <code>Err</code>인 경우 <code>guess</code>에 값을 할당하지 않습니다.</p>
+<p>절대 타입은 <code>panic!</code> 매크로와 함께 사용할 때도 유용합니다. <code>unwrap</code> 값에서 값을 생성하거나 패닉을 발생시키기 위해 호출하는 <code>Option&lt;T&gt;</code> 함수를 기억해 보세요. 이 함수의 정의는 다음과 같습니다:</p>
 <pre><code class="language-rust ignore"><span class="boring">enum Option&lt;T&gt; {
 </span><span class="boring">    Some(T),
 </span><span class="boring">    None,
@@ -354,9 +345,8 @@ pub trait Write {
         }
     }
 }</code></pre>
-<p>이 코드에서는 다음과 같은 일이 발생합니다. <code>match</code> Listing 20-27: 러스트는 <code>val</code> 타입은 The type <code>T</code> 그리고 <code>panic!</code> 타입은 The type <code>!</code>즉, 전체 결과의 <code>match</code> 표현식은 <code>T</code>. 이 코드는 다음과 같이 동작합니다. <code>panic!</code>
-값을 생성하지 않습니다. 프로그램을 종료합니다. <code>None</code> case, we're not returning a value from 우리는 값을 반환하지 않을 것입니다 <code>unwrap</code>따라서 이 코드는 유효하다.</p>
-<p><code>!</code> 타입을 가지는 마지막 표현식은 루프이다:</p>
+<p>이 코드에서는 <code>match</code> Listing 20-27의 match에서와 동일한 일이 발생합니다. Rust는 val의 타입이 T이고 panic!의 타입이 !임을 확인하므로, 전체 match 표현식의 결과는 T가 됩니다. 이 코드가 동작하는 이유는 panic!이 값을 생성하지 않고 프로그램을 종료하기 때문입니다. None인 경우 unwrap에서 값을 반환하지 않으므로, 이 코드는 유효합니다. <code>val</code><code>T</code><code>panic!</code><code>!</code><code>match</code><code>T</code><code>panic!</code><code>None</code><code>unwrap</code></p>
+<p><code>!</code> 타입을 가지는 마지막 표현식은 루프입니다:</p>
 <pre><code class="language-rust ignore"><span class="boring">fn main() {
 </span>    print!("forever ");
 
@@ -364,36 +354,34 @@ pub trait Write {
         print!("and ever ");
     }
 <span class="boring">}</span></code></pre>
-<p>여기서 루프는 결코 끝나지 않으므로 <code>!</code>는 표현식의 값입니다. 그러나 <code>break</code>를 포함하면 루프가 <code>break</code>에 도착했을 때 종료되기 때문에 이것은 사실이 아닙니다.</p>
-<h3 id="dynamically-sized-types-and-the-sized-trait"><a class="header" href="#dynamically-sized-types-and-the-sized-trait">동적으로 치수가 재진 유형 및 <code>Sized</code> 트레이트는</a></h3>
-<p>러스트는 특정 타입의 값에 대해 얼마나 많은 공간을 할당할 것인지와 같은 타입에 대한 특정 세부사항을 알아야 합니다. 이것은 처음에 타입 시스템의 한 코너를 약간 혼란스럽게 만듭니다: 동적 크기의 타입의 개념. 때때로 DSTs 또는 unsized 타입이라고도 불리는 이 타입들은 런타임에만 알 수 있는 값을 사용하여 코드를 작성하게 합니다.</p>
-<p>동적으로 크기가 큰 타입의 세부 사항을 파헤쳐 봅시다. <code>str</code>, 우리는 책을 통해 사용하고있는. 그건 맞아, 하지 <code>&amp;str</code>,하지만 <code>str</code> 그 자체로 DST입니다. 사용자가 입력 한 텍스트를 저장할 때와 같은 많은 경우 런타임까지 문자열의 길이를 알 수 없습니다. 즉, 변수 유형을 만들 수 없습니다. <code>str</code>또한, 우리는 형식에 대한 논쟁을 할 수 없습니다. <code>str</code>. 작동하지 않는 다음 코드를 고려하십시오.</p>
+<p>여기서 루프는 끝이 없으므로 <code>!</code>가 식의 값입니다. 하지만 <code>break</code>을 포함하면 루프가 <code>break</code>에 도달했을 때 종료되므로, 이 경우 위 설명은 성립하지 않습니다.</p>
+<h3 id="dynamically-sized-types-and-the-sized-trait"><a class="header" href="#dynamically-sized-types-and-the-sized-trait">동적 크기 타입과 <code>Sized</code> 트레이트</a></h3>
+<p>Rust는 특정 타입의 값에 대해 얼마나 많은 공간을 할당해야 하는지 등 타입에 관한 세부 정보를 알아야 합니다. 이로 인해 타입 시스템의 일부가 처음에는 다소 혼란스럽게 느껴질 수 있습니다. 바로 동적 크기 타입(Dynamically Sized Types)의 개념입니다. DST 또는 unsized 타입이라고도 불리는 이러한 타입은 런타임에서만 크기를 알 수 있는 값을 사용하여 코드를 작성할 수 있게 해줍니다.</p>
+<p>이 책 전체에서 사용해 온 동적 크기 타입인 <code>str</code>의 세부 사항을 살펴봅시다. 맞습니다. <code>&amp;str</code>이 아니라 <code>str</code> 자체는 DST입니다. 사용자가 입력한 텍스트를 저장하는 경우와 같이 많은 상황에서 런타임까지 문자열의 길이를 알 수 없습니다. 즉, <code>str</code> 타입의 변수를 만들 수도 있고, <code>str</code> 타입의 인수를 받을 수도 없습니다. 작동하지 않는 다음 코드를 고려해 보세요:</p>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
 </span>    let s1: str = "Hello there!";
     let s2: str = "How's it going?";
 <span class="boring">}</span></code></pre>
-<p>러스트는 특정 타입의 값에 대해 얼마나 많은 메모리를 할당해야 하는지 알아야 하며, 모든 타입의 값들은 같은 양의 메모리를 사용해야 합니다. 만약 러스트가 이 코드를 작성하도록 허용한다면, 이 두 <code>str</code> 값은 같은 양의 공간을 차지해야 합니다. 그러나 <code>s1</code>는 12바이트의 저장 공간이 필요하고 <code>s2</code>는 15개의 크기를 필요로 합니다. 이것이 가능한 이유입니다.</p>
-<p>그래서, 우리는 무엇을해야합니까? 이 경우, 당신은 이미 답을 알고 있습니다 : 우리는 <code>s1</code> 그리고 <code>s2</code> 문자열 슬라이스 (<code>&amp;str</code>(대신에 <code>str</code>상기로부터 Recall from the
-<a href="ch04-03-slices.html#string-slices">“끈적끈적 한 조각”</a> 무시  제 4 장에 있는 단면도는 조각 자료 구조가 단지 조각의 시작 위치 그리고 길이만 저장한다는 것을. 따라서, <code>&amp;T</code> 상기 메모리 주소를 저장하는 단일 값이며, The single value stores the memory address of where the <code>T</code> 상기 스트링 조각은, A string slice is <em>두 개</em> 의 주소 The address of the
-<code>str</code> 그리고 그 길이. 이와 같이, 우리는 컴파일 시간에 문자열 슬라이스 값의 크기를 알 수 있습니다: 그것은 a의 두 배의 길이입니다. <code>usize</code>. 즉, 우리는 항상 문자열 슬라이스의 크기를 알고 있습니다. 문자열이 얼마나 오래 언급되던지 상관 없습니다. 일반적으로, 이것은 동적으로 크기가 지정된 타입이 러스트에서 사용되는 방법입니다: 그들은 동적 정보의 크기를 저장하는 여분의 메타데이터를 가지고 있습니다. 동적으로 크기가 지정된 타입의 골든 룰은 어떤 종류의 포인터 뒤에 항상 동적으로 크기가 지정된 타입의 값을 넣어야 한다는 것입니다.</p>
+<p>Rust는 특정 타입의 모든 값에 대해 동일한 양의 메모리를 할당해야 합니다. 만약 Rust가 이 코드를 허용했다면, 이 두 <code>str</code> 값은 동일한 크기의 공간을 차지해야 합니다. 하지만 두 값의 길이는 다릅니다. <code>s1</code>에는 12바이트의 저장 공간이 필요하고 <code>s2</code>에는 15바이트가 필요합니다. 이것이 동적 크기 타입의 변수를 만들 수 없는 이유입니다.</p>
+<p>그렇다면 어떻게 해야 할까요? 이 경우 이미 답을 알고 있습니다. <code>s1</code>와 <code>s2</code>의 타입을 <code>str</code> 대신 문자열 슬라이스(<code>&amp;str</code>)로 만듭니다. 4장의 <a href="ch04-03-slices.html#string-slices">“String Slices”</a><!-- ignore --> 섹션에서 배운 것처럼, 슬라이스 데이터 구조는 슬라이스의 시작 위치와 길이만 저장합니다. 따라서 <code>&amp;T</code>가 <code>T</code>의 위치를 가리키는 메모리 주소를 저장하는 단일 값인 반면, 문자열 슬라이스는 <em>두</em> 값, 즉 <code>str</code>의 주소와 그 길이입니다. 이 때문에 컴파일 타임에 문자열 슬라이스 값의 크기를 알 수 있습니다. 그것은 <code>usize</code> 길이의 두 배입니다. 즉, 문자열 슬라이스가 가리키는 문자열이 얼마나 길든 우리는 항상 문자열 슬라이스의 크기를 알 수 있습니다. 일반적으로 이것이 Rust에서 동적 크기 타입이 사용되는 방식입니다. 동적 정보의 크기를 저장하는 추가 메타데이터가 있습니다. 동적 크기 타입의 황금 규칙은 동적 크기 타입의 값을 항상 어떤 종류의 포인터 뒤에 두어야 한다는 것입니다.</p>
 <p>결합할 수 있습니다. <code>str</code> 모든 종류의 포인터 : 예를 들어, <code>Box&lt;str&gt;</code> 또는
 <code>Rc&lt;str&gt;</code>. 사실, 당신은 전에 이것을 보았지만 다른 동적으로 크기의 유형 : 특성. 모든 특성은 특성의 이름을 사용하여 참조 할 수있는 동적으로 크기의 유형입니다. 에서 <a href="ch18-02-trait-objects.html#using-trait-objects-to-abstract-over-shared-behavior">"공유 된 행동을 추상화하기 위해 Trait 객체 사용"</a>
 무시  제 18 장에서, 우리는 특성 객체로 특성을 사용하기 위해, 우리는 포인터 뒤에 그들을 넣어해야한다고 언급, 같은 <code>&amp;dyn Trait</code> 또는 <code>Box&lt;dyn Trait&gt;</code> (<code>Rc&lt;dyn Trait&gt;</code> 또한 일할 것입니다.)</p>
-<p>DST를 사용하기 위해, 러스트는 <code>Sized</code> 트레잇을 제공하여 타입의 사이즈가 컴파일 타임에 알려져 있는지 여부를 결정합니다. 이 트레잇은 컴파일 타임에 사이즈가 알려진 모든 것에 대해 자동으로 구현됩니다. 또한, 러스트는 <code>Sized</code>에 대한 바운드를 모든 제네릭 함수에 암시적으로 추가합니다. 즉, 다음과 같은 제네릭 함수 정의입니다:</p>
+<p>DST를 다루기 위해 Rust는 타입의 크기가 컴파일 타임에 알려져 있는지 여부를 결정하기 위해 <code>Sized</code> 트레이트를 제공합니다. 이 트레이트는 컴파일 타임에 크기가 알려진 모든 타입에 대해 자동으로 구현됩니다. 또한, Rust는 모든 제네릭 함수에 <code>Sized</code>에 대한 바운드를 암시적으로 추가합니다. 즉, 다음과 같은 제네릭 함수 정의는:</p>
 <pre><code class="language-rust ignore">fn generic&lt;T&gt;(t: T) {
     // --snip--
 }</code></pre>
-<p>실제로 우리가 이것을 쓴 것처럼 취급됩니다 :</p>
+<p>실제로는 다음과 같이 작성한 것과 동일하게 취급됩니다.</p>
 <pre><code class="language-rust ignore">fn generic&lt;T: Sized&gt;(t: T) {
     // --snip--
 }</code></pre>
-<p>기본적으로 일반 함수는 컴파일 시간에 알려진 크기를 가진 형식에서만 작동합니다. 그러나 다음 특수 구문을 사용하여 이 제한을 완화할 수 있습니다.</p>
+<p>기본적으로 일반 함수는 컴파일 시간에 크기가 알려진 타입에서만 작동합니다. 그러나 다음 특수 구문을 사용하면 이 제한을 완화할 수 있습니다.</p>
 <pre><code class="language-rust ignore">fn generic&lt;T: ?Sized&gt;(t: &amp;T) {
     // --snip--
 }</code></pre>
-<p><code>?Sized</code>에 바인딩된 특성은 “<code>T</code>가 <code>Sized</code>일 수도 있고 아닐 수도 있습니다.”를 의미하며, 이 표기법은 일반 형식이 컴파일 시간에 알려진 크기를 가져야 한다는 기본값을 무시합니다. 이 의미를 가진 <code>?Trait</code> 구문은 <code>Sized</code>에서만 사용할 수 있으며 다른 특성은 사용할 수 없습니다.</p>
-<p>또한 <code>t</code> 매개 변수의 유형을 <code>T</code>에서 <code>&amp;T</code>로 전환했습니다. 유형이 <code>Sized</code>가 아닐 수도 있으므로 일종의 포인터 뒤에서 사용해야합니다. 이 경우 참조를 선택했습니다.</p>
-<p>다음으로 우리는 기능과 폐쇄에 대해 이야기 할 것입니다!</p>
+<p><code>?Sized</code>에 트레이트 바운드를 적용하는 것은 “<code>T</code>가 <code>Sized</code>일 수도 있고 아닐 수도 있다”는 것을 의미하며, 이 표기법은 일반 타입이 컴파일 시간에 크기가 알려져야 한다는 기본 규칙을 무시합니다. 이 의미를 가진 <code>?Trait</code> 구문은 <code>Sized</code>에서만 사용할 수 있으며, 다른 트레이트에는 사용할 수 없습니다.</p>
+<p>또한 <code>t</code> 매개변수의 타입을 <code>T</code>에서 <code>&amp;T</code>로 변경했습니다. 타입이 <code>Sized</code>일 수도 있으므로, 어떤 종류의 포인터를 통해 사용해야 합니다. 이 경우 참조를 선택했습니다.</p>
+<p>다음으로 함수와 클로저에 대해 이야기하겠습니다!</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

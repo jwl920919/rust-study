@@ -161,25 +161,25 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h2 id="hello-cargo"><a class="header" href="#hello-cargo">안녕, 카고!</a></h2>
-<p>Cargo는 러스트의 빌드 시스템 및 패키지 관리자입니다. 대부분의 러스트aceans는 러스트 프로젝트를 관리하기 위해 이 도구를 사용합니다. Cargo는 코드 작성, 코드에 의존하는 라이브러리 다운로드, 라이브러리 구축과 같은 많은 작업을 처리하기 때문입니다. (우리는 코드가 종속성을 필요로 하는 라이브러리를 호출합니다.)</p>
-<p>지금까지 작성한 것과 같은 가장 간단한 러스트 프로그램은 종속성이 없습니다. Cargo로 “Hello, world!” 프로젝트를 빌드했다면, 코드 빌드를 처리하는 Cargo의 부분만 사용할 것입니다. 더 복잡한 러스트 프로그램을 작성할 때 종속성을 추가하고, Cargo를 사용하여 프로젝트를 시작하면 종속성을 추가하는 것이 훨씬 쉬워질 것입니다.</p>
-<p>대부분의 러스트 프로젝트가 Cargo를 사용하기 때문에, 이 책의 나머지 부분에서도 Cargo를 사용하고 있다고 가정합니다. <a href="ch01-01-installation.html#installation">“설치”</a> 섹션에서 논의된 공식 설치 프로그램을 사용하면 러스트가 함께 설치됩니다. 다른 방법을 통해 러스트를 설치했다면, 터미널에 다음을 입력하여 Cargo가 설치되었는지 확인하십시오.</p>
+<h2 id="hello-cargo"><a class="header" href="#hello-cargo">안녕, Cargo!</a></h2>
+<p>Cargo는 Rust의 빌드 시스템이자 패키지 관리자입니다. 대부분의 Rust 개발자는 Rust 프로젝트를 관리하기 위해 이 도구를 사용합니다. Cargo는 코드 빌드, 코드가 의존하는 라이브러리 다운로드, 해당 라이브러리 빌드 등 많은 작업을 처리하기 때문입니다. (코드가 필요로 하는 라이브러리를 의존성(dependencies)이라고 합니다.)</p>
+<p>지금까지 작성한 것과 같은 가장 간단한 Rust 프로그램은 의존성이 없습니다. Cargo로 “Hello, world!” 프로젝트를 빌드했다면, 코드 빌드를 처리하는 Cargo 기능만 사용했을 것입니다. 더 복잡한 Rust 프로그램을 작성하면서 의존성을 추가하게 되는데, Cargo를 사용하여 프로젝트를 시작하면 의존성을 추가하는 것이 훨씬 쉬워집니다.</p>
+<p>Rust 프로젝트의 대부분이 Cargo를 사용하기 때문에, 이 책의 나머지 부분에서는 여러분도 Cargo를 사용하고 있다고 가정합니다. <a href="ch01-01-installation.html#installation">“설치”</a> 섹션에서 설명한 공식 설치 프로그램을 통해 Rust를 설치했다면, Cargo도 함께 설치되어 있습니다. 다른 방법으로 Rust를 설치했다면, 터미널에 다음 명령을 입력하여 Cargo가 설치되어 있는지 확인하십시오.</p>
 <pre><code class="language-console">$ cargo --version
 </code></pre>
-<p>버전 번호가 표시되면 해당 번호가 표시됩니다! <code>command not found</code>와 같은 오류가 표시되면 설치 방법에 대한 설명서를 살펴보고 Cargo를 별도로 설치하는 방법을 결정하십시오.</p>
-<h3 id="creating-a-project-with-cargo"><a class="header" href="#creating-a-project-with-cargo">Cargo를 이용한 프로젝트 만들기</a></h3>
-<p>Cargo를 사용하여 새 프로젝트를 만들고 원래의 "Hello, world!"프로젝트와 어떻게 다른지 살펴 보겠습니다. 프로젝트 디렉토리 (또는 코드를 저장하기로 결정한 곳)로 다시 이동하십시오. 그런 다음 모든 운영 체제에서 다음을 실행하십시오.</p>
+<p>버전 번호가 표시되면 설치되어 있는 것입니다. <code>command not found</code>와 같은 오류가 표시되면, 해당 설치 방법에 대한 설명서를 참고하여 Cargo를 별도로 설치하는 방법을 확인하십시오.</p>
+<h3 id="creating-a-project-with-cargo"><a class="header" href="#creating-a-project-with-cargo">Cargo를 사용하여 프로젝트 만들기</a></h3>
+<p>Cargo를 사용하여 새 프로젝트를 만들고, 원래의 “Hello, world!” 프로젝트와 어떻게 다른지 살펴 보겠습니다. 프로젝트 디렉터리(또는 코드를 저장하기로 한 위치)로 돌아가 다음 명령을 실행하십시오. 이 명령은 모든 운영 체제에서 사용할 수 있습니다.</p>
 <pre><code class="language-console">$ cargo new hello_cargo
 $ cd hello_cargo
 </code></pre>
-<p>첫 번째 명령은 hello_cargo라는 새 디렉토리와 프로젝트를 만듭니다. 우리는 프로젝트 hello_cargo를 명명했으며 Cargo는 같은 이름의 디렉토리에 파일을 만듭니다.</p>
-<p>hello_cargo 디렉토리로 가서 파일을 나열하십시오. Cargo가 두 개의 파일과 하나의 디렉토리를 생성했음을 알 수 있습니다 : Cargo.toml 파일과 main.rs 파일이 들어있는 src 디렉토리.</p>
-<p>또한 .gitignore 파일과 함께 새로운 Git 저장소를 초기화했습니다. 기존 Git 저장소에서 <code>cargo new</code>를 실행하면 Git 파일이 생성되지 않습니다. <code>cargo new --vcs=git</code>를 사용하여 이 동작을 재정의할 수 있습니다.</p>
+<p>첫 번째 명령은 hello_cargo라는 이름의 새 디렉터리와 프로젝트를 생성합니다. 프로젝트를 hello_cargo라고 이름 붙였으므로, Cargo는 같은 이름의 디렉터리에 파일을 생성합니다.</p>
+<p>hello_cargo 디렉토리로 이동하여 파일 목록을 확인해 보세요. Cargo가 두 개의 파일과 하나의 디렉토리를 생성한 것을 볼 수 있습니다. Cargo.toml 파일과 main.rs 파일이 포함된 src 디렉토리입니다.</p>
+<p>또한 .gitignore 파일과 함께 새로운 Git 저장소를 초기화했습니다. 기존 Git 저장소 내부에서 <code>cargo new</code>를 실행하면 Git 파일이 생성되지 않습니다. <code>cargo new --vcs=git</code>을(를) 사용하면 이 동작을 재정의할 수 있습니다.</p>
 <section aria-role="note" class="note">
-<p>참고: Git은 일반적인 버전 관리 시스템입니다. <code>cargo new</code>를 변경하여 <code>--vcs</code> 플래그를 사용하여 다른 버전 관리 시스템을 사용하거나 버전 관리 시스템을 사용할 수 없습니다. 사용 가능한 옵션을 보려면 <code>cargo new --help</code>를 실행하십시오.</p>
+<p>참고: Git은 널리 사용되는 버전 관리 시스템입니다. <code>cargo new</code> 명령에 <code>--vcs</code> 플래그를 추가하여 다른 버전 관리 시스템을 사용하거나 버전 관리 시스템을 사용하지 않도록 설정할 수 있습니다. 사용 가능한 옵션을 확인하려면 <code>cargo new --help</code>를 실행해 보세요.</p>
 </section>
-<p>선택한 텍스트 편집기에서 Cargo.toml을 엽니다. Listing 1-2의 코드와 비슷하게 보일 것입니다.</p>
+<p>편하게 사용하는 텍스트 편집기로 Cargo.toml 파일을 열어 보세요. Listing 1-2의 코드와 유사한 내용을 볼 수 있습니다.</p>
 <figure class="listing" id="listing-1-2">
 <span class="file-name">Filename: Cargo.toml</span>
 <pre><code class="language-toml">[package]
@@ -189,83 +189,82 @@ edition = "2024"
 
 [dependencies]
 </code></pre>
-<figcaption><a href="#listing-1-2">목록 1-2</a>: <code>cargo new</code>에 의해 생성 된 Cargo.toml의 내용</figcaption>
+<figcaption><a href="#listing-1-2">목록 1-2</a>: <code>cargo new</code>이 생성한 Cargo.toml의 내용</figcaption>
 </figure>
-<p>이 파일은 Cargo의 구성 형식인 <a href="https://toml.io"><em>토멀은</em></a>(Tom's Obvious, Minimal Language) 형식입니다.</p>
-<p>첫 번째 줄 인 <code>[package]</code>는 다음 문이 패키지를 구성하고 있음을 나타내는 섹션 제목입니다. 이 파일에 더 많은 정보를 추가하면 다른 섹션이 추가됩니다.</p>
-<p>다음 세 줄은 Cargo가 여러분의 프로그램을 컴파일하는 데 필요한 구성 정보, 즉 러스트의 이름, 버전, 버전을 설정합니다. <code>edition</code> 키 입력 <a href="appendix-05-editions.html">부록 E</a> 무시 .</p>
-<p>마지막 줄인 <code>[dependencies]</code>는 프로젝트의 종속성을 나열하는 섹션의 시작입니다. 러스트에서 코드 패키지는 크레이트라고 불립니다. 이 프로젝트에는 다른 크레이트가 필요하지 않지만 2 장의 첫 번째 프로젝트에서는이 종속성 섹션을 사용합니다.</p>
-<p>이제 src/main.rs를 열고 다음을 살펴보십시오.</p>
+<p>이 파일은 Cargo의 설정 형식인 <a href="https://toml.io"><em>TOML</em></a>(Tom's Obvious, Minimal Language) 형식입니다.</p>
+<p>첫 번째 줄인 <code>[package]</code>은 이후에 나오는 문들이 패키지를 설정하고 있음을 나타내는 섹션 제목입니다. 이 파일에 더 많은 정보를 추가하면 다른 섹션도 추가됩니다.</p>
+<p>다음 세 줄은 Cargo가 프로그램을 컴파일하는 데 필요한 설정 정보, 즉 이름, 버전, 그리고 사용할 Rust 에디션을 설정합니다. <code>edition</code> 키에 대해서는 <a href="appendix-05-editions.html">부록 E</a>에서 다룹니다.</p>
+<p>마지막 줄인 <code>[dependencies]</code>는 프로젝트의 종속성을 나열하는 섹션의 시작입니다. Rust에서 코드 패키지는 크레이트라고 불립니다. 이 프로젝트에는 다른 크레이트가 필요하지 않지만, 2장의 첫 번째 프로젝트에서는 이 종속성 섹션을 사용할 것입니다.</p>
+<p>이제 src/main.rs 파일을 열고 내용을 살펴보겠습니다.</p>
 <p>파일 이름: src/main.rs</p>
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     println!("Hello, world!");
 }</code></pre>
-<p>Cargo는 우리가 Listing 1-1에서 작성한 것과 같은 “Hello, world!” 프로그램을 생성했습니다! 지금까지 Cargo가 생성한 프로젝트와 프로젝트 간의 차이점은 Cargo가 코드를 src 디렉토리에 배치했으며, 우리는 상위 디렉토리에 Cargo.toml 구성 파일을 가지고 있다는 것입니다.</p>
-<p>Cargo는 소스 파일이 src 디렉토리 안에 있을 것으로 예상합니다. 최상위 프로젝트 디렉토리는 README 파일, 라이센스 정보, 구성 파일 및 코드와 관련이없는 다른 파일 용입니다. Cargo를 사용하면 프로젝트를 구성하는 데 도움이됩니다. 모든 것에 대한 장소가 있으며 모든 것이 제자리에 있습니다.</p>
-<p>Cargo를 사용하지 않는 프로젝트를 시작한 경우 "Hello, world!"프로젝트와 마찬가지로 Cargo를 사용하는 프로젝트로 변환 할 수 있습니다. 프로젝트 코드를 src 디렉토리로 이동하여 적절한 Cargo.toml 파일을 만듭니다. Cargo.toml 파일을 얻는 쉬운 방법 중 하나는 <code>cargo init</code>를 실행하는 것입니다.</p>
-<h3 id="building-and-running-a-cargo-project"><a class="header" href="#building-and-running-a-cargo-project">화물 프로젝트 구축 및 실행</a></h3>
-<p>이제 Cargo를 사용하여 "Hello, world!"프로그램을 빌드하고 실행할 때 다른 점을 살펴 보겠습니다! hello_cargo 디렉토리에서 다음 명령을 입력하여 프로젝트를 빌드하십시오.</p>
+<p>Cargo는 Listing 1-1에서 작성한 것과 동일한 “Hello, world!” 프로그램을 생성했습니다. 지금까지 우리 프로젝트와 Cargo가 생성한 프로젝트의 차이점은 두 가지입니다. 첫째, Cargo는 코드를 src 디렉토리에 배치했습니다. 둘째, 최상위 디렉토리에 Cargo.toml 구성 파일이 있습니다.</p>
+<p>Cargo는 소스 파일이 src 디렉토리 안에 위치하도록 기대합니다. 최상위 프로젝트 디렉토리는 README 파일, 라이선스 정보, 구성 파일, 그리고 코드와 관련이 없는 기타 파일을 위한 공간입니다. Cargo를 사용하면 프로젝트를 체계적으로 정리할 수 있습니다. 모든 것이 제자리에 있는 것입니다.</p>
+<p>“Hello, world!” 프로젝트처럼 Cargo를 사용하지 않고 프로젝트를 시작했다면, 이를 Cargo를 사용하는 프로젝트로 변환할 수 있습니다. 프로젝트 코드를 src 디렉토리로 이동하고 적절한 Cargo.toml 파일을 생성하면 됩니다. <code>cargo init</code>를 실행하면 이 파일을 자동으로 생성하므로, 이것이 Cargo.toml 파일을 얻는 쉬운 방법 중 하나입니다.</p>
+<h3 id="building-and-running-a-cargo-project"><a class="header" href="#building-and-running-a-cargo-project">Cargo 프로젝트 빌드 및 실행</a></h3>
+<p>이제 Cargo를 사용하여 “Hello, world!” 프로그램을 빌드하고 실행할 때 무엇이 다른지 살펴보겠습니다. hello_cargo 디렉토리에서 다음 명령을 입력하여 프로젝트를 빌드하세요.</p>
 <pre><code class="language-console">$ cargo build
    Compiling hello_cargo v0.1.0 (file:///projects/hello_cargo)
     Finished dev [unoptimized + debuginfo] target(s) in 2.85 secs
 </code></pre>
-<p>이 명령은 현재 디렉터리가 아닌 target/debug/hello_cargo(또는 Windows의 target\debug\hello_cargo.exe)에 실행 파일을 만듭니다. 기본 빌드는 디버그 빌드이므로 Cargo는 바이너리를 디버그라는 디렉터리에 넣습니다. 다음 명령을 사용하여 실행 파일을 실행할 수 있습니다.</p>
+<p>이 명령은 현재 디렉터리가 아닌 target/debug/hello_cargo(Windows의 경우 target\debug\hello_cargo.exe)에 실행 파일을 생성합니다. 기본 빌드는 디버그 빌드이므로 Cargo는 바이너리를 debug라는 이름의 디렉터리에 배치합니다. 다음 명령으로 실행 파일을 실행할 수 있습니다.</p>
 <pre><code class="language-console">$ ./target/debug/hello_cargo # or .\target\debug\hello_cargo.exe on Windows
 Hello, world!
 </code></pre>
-<p>모든 것이 잘되면 <code>Hello, world!</code>가 터미널에 인쇄됩니다. 처음으로 <code>cargo build</code>를 실행하면 Cargo가 최상위 레벨 인 Cargo.lock에서 새 파일을 만들 수 있습니다. 이 파일은 프로젝트의 정확한 종속성 버전을 추적합니다. 이 프로젝트에는 종속성이 없으므로 파일은 약간 희박합니다. 이 파일을 수동으로 변경할 필요는 없습니다. Cargo는 그 내용을 관리합니다.</p>
-<p>우리는 <code>cargo build</code>로 프로젝트를 빌드하고 <code>./target/debug/hello_cargo</code>로 실행했지만 <code>cargo run</code>를 사용하여 코드를 컴파일 한 다음 결과 실행 파일을 모두 하나의 명령으로 실행할 수도 있습니다.</p>
+<p>모든 것이 잘 진행되면 <code>Hello, world!</code>가 터미널에 출력됩니다. 처음 <code>cargo build</code>을 실행하면 Cargo가 최상위 레벨에 Cargo.lock이라는 새 파일을 생성합니다. 이 파일은 프로젝트의 종속성 정확한 버전을 추적합니다. 이 프로젝트에는 종속성이 없으므로 파일 내용이 다소 적습니다. 이 파일을 수동으로 변경할 필요가 없으며, Cargo가 그 내용을 관리합니다.</p>
+<p>우리는 <code>cargo build</code>로 프로젝트를 빌드하고 <code>./target/debug/hello_cargo</code>로 실행했지만, <code>cargo run</code>를 사용하면 코드를 컴파일한 후 생성된 실행 파일을 실행하는 과정을 하나의 명령으로 처리할 수도 있습니다.</p>
 <pre><code class="language-console">$ cargo run
     Finished dev [unoptimized + debuginfo] target(s) in 0.0 secs
      Running `target/debug/hello_cargo`
 Hello, world!
 </code></pre>
-<p><code>cargo run</code>를 사용하면 <code>cargo build</code>를 실행 한 다음 바이너리의 전체 경로를 사용하는 것보다 편리하므로 대부분의 개발자는 <code>cargo run</code>를 사용합니다.</p>
-<p>이번에는 Cargo가 <code>hello_cargo</code>를 컴파일하고 있음을 나타내는 출력을 보지 못했습니다. Cargo는 파일이 변경되지 않았 음을 알아 냈으므로 다시 작성하지 않고 바이너리를 실행했습니다. 소스 코드를 수정했다면 Cargo는 실행하기 전에 프로젝트를 다시 작성했을 것입니다.</p>
+<p><code>cargo run</code>를 사용하면 <code>cargo build</code>을 실행한 후 바이너리의 전체 경로를 입력해야 하는 것보다 편리하므로, 대부분의 개발자는 <code>cargo run</code>를 사용합니다.</p>
+<p>이번에는 Cargo가 <code>hello_cargo</code>을 컴파일하고 있다는 출력을 보지 못했습니다. Cargo는 파일이 변경되지 않았음을 감지했으므로 다시 빌드하지 않고 바이너리를 실행했습니다. 소스 코드를 수정했다면 Cargo는 실행하기 전에 프로젝트를 다시 빌드했을 것이며, 다음과 같은 출력을 보았을 것입니다:</p>
 <pre><code class="language-console">$ cargo run
    Compiling hello_cargo v0.1.0 (file:///projects/hello_cargo)
     Finished dev [unoptimized + debuginfo] target(s) in 0.33 secs
      Running `target/debug/hello_cargo`
 Hello, world!
 </code></pre>
-<p>Cargo는 또한 <code>cargo check</code>라는 명령을 제공합니다. 이 명령은 코드를 신속하게 검사하여 컴파일하지만 실행 파일을 생성하지 않습니다.</p>
+<p>Cargo는 또한 <code>cargo check</code>라는 명령을 제공합니다. 이 명령은 코드가 컴파일되는지 빠르게 검사하지만, 실행 파일을 생성하지 않습니다:</p>
 <pre><code class="language-console">$ cargo check
    Checking hello_cargo v0.1.0 (file:///projects/hello_cargo)
     Finished dev [unoptimized + debuginfo] target(s) in 0.32 secs
 </code></pre>
-<p>왜 실행 파일을 원하지 않습니까? 종종, <code>cargo check</code> 보다 훨씬 빠르다.
-<code>cargo build</code> 실행 파일을 생성하는 단계를 건너  ⁇ 니다. 코드를 작성하는 동안 작업을 지속적으로 확인하는 경우 <code>cargo check</code> 프로젝트가 여전히 컴파일되고 있는지 알려주는 과정을 가속화 할 것입니다! 따라서 많은 러스트aceans가 실행됩니다. <code>cargo check</code> 컴파일을 위해 주기적으로 프로그램을 작성합니다. 그런 다음 실행을 합니다. <code>cargo build</code> 실행 파일을 사용할 준비가 되면</p>
-<p>지금까지 카고에 대해 배운 것을 요약해 보겠습니다.</p>
+<p>왜 실행 파일을 원하지 않을까요? <code>cargo check</code>은 실행 파일을 생성하는 단계를 건너뛰기 때문에 <code>cargo build</code>보다 훨씬 빠른 경우가 많습니다. 코드를 작성하면서 지속적으로 작업을 확인하는 경우, <code>cargo check</code>을 사용하면 프로젝트가 여전히 컴파일되는지 알려주는 과정을 가속화할 수 있습니다! 따라서 많은 Rustaceans는 프로그램을 작성하면서 <code>cargo check</code>을 주기적으로 실행하여 컴파일이 정상적으로 이루어지는지 확인합니다. 그런 다음 실행 파일을 사용할 준비가 되면 <code>cargo build</code>을 실행합니다.</p>
+<p>지금까지 Cargo에 대해 배운 내용을 요약해 보겠습니다.</p>
 <ul>
 <li><code>cargo new</code>를 사용하여 프로젝트를 만들 수 있습니다.</li>
 <li><code>cargo build</code>를 사용하여 프로젝트를 빌드할 수 있습니다.</li>
-<li><code>cargo run</code>를 사용하여 한 단계에서 프로젝트를 빌드하고 실행할 수 있습니다.</li>
-<li><code>cargo check</code>를 사용하여 오류를 확인하기 위해 바이너리를 생성하지 않고 프로젝트를 빌드할 수 있습니다.</li>
-<li>빌드 결과를 코드와 동일한 디렉토리에 저장하는 대신 Cargo는 대상/디버그 디렉토리에 저장합니다.</li>
+<li><code>cargo run</code>를 사용하여 한 단계로 프로젝트를 빌드하고 실행할 수 있습니다.</li>
+<li><code>cargo check</code>를 사용하여 바이너리를 생성하지 않고 오류를 확인하기 위해 프로젝트를 빌드할 수 있습니다.</li>
+<li>빌드 결과를 코드와 동일한 디렉토리에 저장하는 대신, Cargo는 target/debug 디렉토리에 저장합니다.</li>
 </ul>
-<p>Cargo를 사용하는 또 다른 장점은 작업중인 운영 체제에 관계없이 명령이 동일하다는 것입니다. 따라서이 시점에서 Linux 및 macOS 대 Windows에 대한 구체적인 지침을 더 이상 제공하지 않습니다.</p>
-<h3 id="building-for-release"><a class="header" href="#building-for-release">방출을 위한 건물</a></h3>
-<p>프로젝트가 마침내 출시 될 준비가되면 사용할 수 있습니다. <code>cargo build --release</code> 최적화를 통해 컴파일합니다. 이 명령은 다음과 같이 실행 파일을 만듭니다. <em>목표/방출</em> 대신 <em>타겟/디버그</em>. 최적화를 통해 러스트 코드가 더 빨리 실행되지만, 프로그램을 컴파일하는 데 걸리는 시간이 길어집니다. 이것이 두 가지 프로파일이 있는 이유입니다. 하나는 개발을 위한 것이고, 하나는 빠르고 자주 다시 빌드하고 싶을 때이고, 다른 하나는 최종 프로그램을 빌드하기 위한 것입니다. 반복적으로 다시 빌드되지 않고 가능한 한 빨리 실행될 사용자에게 줄 것입니다. 코드의 실행 시간을 벤치마킹하고 있다면, 반드시 실행하십시오. <code>cargo build --release</code> 그리고 실행 파일에서 벤치 마크 <em>목표/방출</em>.</p>
+<p>Cargo를 사용하는 또 다른 장점은 어떤 운영 체제를 사용하더라도 명령이 동일하다는 것입니다. 따라서 이 시점부터는 Linux와 macOS, Windows에 대한 구체적인 지침을 더 이상 제공하지 않습니다.</p>
+<h3 id="building-for-release"><a class="header" href="#building-for-release">릴리스 빌드</a></h3>
+<p>프로젝트가 마침내 릴리스할 준비가 되면, <code>cargo build --release</code>를 사용하여 최적화를 적용하여 컴파일할 수 있습니다. 이 명령은 <em>target/release</em>에 실행 파일을 생성하며, <em>target/debug</em>에는 생성하지 않습니다. 최적화는 Rust 코드의 실행 속도를 높이지만, 컴파일 시간을 길어지게 합니다. 이것이 두 가지 프로파일이 존재하는 이유입니다. 하나는 개발용으로, 빠르고 자주 다시 빌드할 때 사용하며, 다른 하나는 사용자에게 제공할 최종 프로그램을 빌드하는 용도로, 반복적으로 다시 빌드되지 않고 최대한 빠르게 실행되도록 합니다. 코드의 실행 시간을 벤치마킹하는 경우, 반드시 <code>cargo build --release</code>를 실행하고 <em>target/release</em>의 실행 파일로 벤치마킹해야 합니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="cargo-as-convention"></a></p>
-<h3 id="leveraging-cargos-conventions"><a class="header" href="#leveraging-cargos-conventions">카고 의 대회 를 활용 함</a></h3>
-<p>간단한 프로젝트를 통해 Cargo는 <code>rustc</code>를 사용하는 것보다 많은 가치를 제공하지는 않지만 프로그램이 더욱 복잡해짐에 따라 그 가치가 입증됩니다. 프로그램이 여러 파일로 성장하거나 종속성이 필요한 경우 Cargo가 빌드를 조정하도록 하는 것이 훨씬 쉽습니다.</p>
-<p><code>hello_cargo</code> 프로젝트는 단순하지만 이제 나머지 러스트 경력에서 사용할 실제 툴을 많이 사용합니다. 실제로 기존 프로젝트에서 작업하기 위해 다음 명령을 사용하여 Git을 사용하여 코드를 확인하고 프로젝트 디렉토리로 변경하고 빌드 할 수 있습니다.</p>
+<h3 id="leveraging-cargos-conventions"><a class="header" href="#leveraging-cargos-conventions">Cargo의 관례를 활용하기</a></h3>
+<p>단순한 프로젝트에서는 <code>rustc</code>만 사용하는 것보다 Cargo가 제공하는 가치가 크지 않지만, 프로그램이 복잡해짐에 따라 그 가치가 드러납니다. 프로그램이 여러 파일로 구성되거나 종속성이 필요한 경우, 빌드 과정을 Cargo가 조정하도록 하는 것이 훨씬 쉽습니다.</p>
+<p><code>hello_cargo</code> 프로젝트는 단순하지만, 이제 Rust 경력을 쌓아가는 동안 사용할 실제 도구의 대부분을 활용하고 있습니다. 실제로 기존 프로젝트에서 작업하려면 다음 명령을 사용하여 Git으로 코드를 받아오고, 해당 프로젝트 디렉토리로 이동한 뒤 빌드할 수 있습니다.</p>
 <pre><code class="language-console">$ git clone example.org/someproject
 $ cd someproject
 $ cargo build
 </code></pre>
-<p>화물에 대한 자세한 내용은 <a href="https://doc.rust-lang.org/cargo/">#문서</a>를 확인하십시오.</p>
+<p>Cargo에 대한 자세한 내용은 <a href="https://doc.rust-lang.org/cargo/">#문서</a>를 확인하십시오.</p>
 <h2 id="summary"><a class="header" href="#summary">요약</a></h2>
-<p>여러분은 이미 러스트 여행을 시작할 준비가 되었습니다! 이 장에서는 다음 방법을 배웠습니다:</p>
+<p>Rust 여정을 훌륭하게 시작했습니다! 이 장에서는 다음 내용을 배웠습니다:</p>
 <ul>
-<li><code>rustup</code>를 사용하여 러스트의 최신 안정 버전을 설치하십시오.</li>
-<li>새로운 러스트 버전으로 업데이트합니다.</li>
+<li><code>rustup</code>를 사용하여 Rust의 최신 안정 버전 설치하기</li>
+<li>새로운 Rust 버전으로 업데이트하기</li>
 <li>로컬에 설치된 문서를 엽니다.</li>
 <li><code>rustc</code>를 직접 사용하여 "Hello, world!"프로그램을 작성하고 실행하십시오.</li>
-<li>Conventions of Cargo를 사용하여 새 프로젝트를 만들고 실행합니다.</li>
+<li>Cargo의 관례를 사용하여 새 프로젝트를 만들고 실행합니다.</li>
 </ul>
-<p>지금은 러스트 코드를 읽고 쓰는 데 익숙해지기에 좀 더 실질적인 프로그램을 만들 수 있는 좋은 시기입니다. 따라서 2장에서는 추측 게임 프로그램을 만들 것입니다. 러스트에서 일반적인 프로그래밍 개념이 어떻게 작동하는지 학습하는 것으로 시작하고 싶다면 3장을 참조한 다음 2장으로 돌아가세요.</p>
+<p>이제 Rust 코드를 읽고 쓰는 데 익숙해지도록 좀 더 실질적인 프로그램을 만들 좋은 시기입니다. 따라서 2장에서는 숫자 추측 게임 프로그램을 만들 것입니다. Rust에서 일반적인 프로그래밍 개념이 어떻게 작동하는지 먼저 학습하고 싶다면 3장을 참고한 뒤 2장으로 돌아오세요.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

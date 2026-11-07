@@ -161,19 +161,19 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h2 id="controlling-how-tests-are-run"><a class="header" href="#controlling-how-tests-are-run">테스트 실행 방법How Tests Are Run</a></h2>
-<p><code>cargo run</code>가 코드를 컴파일 한 다음 결과 바이너리를 실행하는 것처럼 <code>cargo test</code>는 테스트 모드에서 코드를 컴파일하고 결과 테스트 바이너리를 실행합니다. <code>cargo test</code>가 생성 한 바이너리의 기본 동작은 모든 테스트를 병렬로 실행하고 테스트 실행 중에 생성 된 출력을 캡처하여 출력이 표시되지 않도록하고 출력을보다 쉽게 읽을 수있게하는 것입니다.</p>
-<p>일부 명령줄 옵션 이동 <code>cargo test</code>, 그리고 일부는 결과 테스트 바이너리로 이동합니다. 인수의 이러한 두 가지 유형을 분리하려면, 당신은 이동 인수를 나열 <code>cargo test</code> 상기 분리부는 The separator <code>--</code> 그리고 테스트 이진으로 이동하는 것들. 실행 <code>cargo test --help</code> 사용할 수 있는 옵션을 표시합니다 <code>cargo test</code>그리고 Running <code>cargo test -- --help</code> 구분자 뒤에 사용할 수 있는 옵션을 표시합니다. 이 옵션들은 다음과 같이 문서화되어 있습니다. <a href="https://doc.rust-lang.org/rustc/tests/index.html">의 "테스트"섹션 <em>이름 * <code>rustc</code> 책</em></a>.</p>
-<h3 id="running-tests-in-parallel-or-consecutively"><a class="header" href="#running-tests-in-parallel-or-consecutively">병렬 또는 연속으로 테스트 실행Running Tests in Parallel or Consecutively</a></h3>
-<p>여러 테스트를 실행하면 기본적으로 스레드를 사용하여 병렬로 실행되므로 더 빠르게 실행되고 피드백을 더 빨리 받을 수 있습니다. 테스트가 동시에 실행되기 때문에 테스트는 현재 작업 디렉토리 또는 환경 변수와 같은 공유 환경을 포함하여 서로 또는 공유 상태에 의존하지 않아야 합니다.</p>
-<p>예를 들어, 각 테스트가 test-output.txt라는 이름의 디스크에 파일을 만들고 해당 파일에 일부 데이터를 기록하는 코드를 실행한다고 가정해 보겠습니다. 그런 다음 각 테스트가 해당 파일의 데이터를 읽고 각 테스트에서 다른 특정 값을 포함하고 있다고 주장합니다. 테스트가 동시에 실행되기 때문에 한 테스트가 다른 테스트가 파일을 쓰고 읽는 사이에 파일을 덮어쓸 수 있습니다. 두 번째 테스트가 서로 다른 테스트로 실행되기 때문에 각 테스트가 다른 테스트에 실패합니다.</p>
-<p>테스트를 병렬로 실행하고 싶지 않거나 사용 된 스레드 수를보다 세밀하게 제어하려면 <code>--test-threads</code> 플래그와 테스트 바이너리에 사용하려는 스레드 수를 보낼 수 있습니다. 다음 예제를 살펴보십시오.</p>
+<h2 id="controlling-how-tests-are-run"><a class="header" href="#controlling-how-tests-are-run">테스트 실행 방법 제어</a></h2>
+<p><code>cargo run</code>이 코드를 컴파일한 후 생성된 바이너리를 실행하는 것처럼, <code>cargo test</code>은 코드를 테스트 모드에서 컴파일하고 생성된 테스트 바이너리를 실행합니다. <code>cargo test</code>가 생성한 바이너리의 기본 동작은 모든 테스트를 병렬로 실행하고 테스트 실행 중 생성된 출력을 캡처하는 것입니다. 이렇게 하면 출력이 화면에 표시되지 않아 테스트 결과와 관련된 출력을 더 쉽게 읽을 수 있습니다. 하지만 커맨드라인 옵션을 지정하여 이 기본 동작을 변경할 수 있습니다.</p>
+<p>일부 커맨드라인 옵션은 <code>cargo test</code>로 전달되고, 일부는 생성된 테스트 바이너리로 전달됩니다. 이 두 가지 유형의 인수를 구분하려면 <code>cargo test</code>로 전달할 인수를 나열한 뒤 구분자 <code>--</code>를 사용하고, 그 뒤에 테스트 바이너리로 전달할 인수를 나열합니다. <code>cargo test --help</code>을 실행하면 <code>cargo test</code>에서 사용할 수 있는 옵션이 표시되고, <code>cargo test -- --help</code>을 실행하면 구분자 뒤에 사용할 수 있는 옵션이 표시됩니다. 이 옵션들은 <a href="https://doc.rust-lang.org/rustc/tests/index.html">의 “테스트” 섹션<em>에도 문서화되어 있습니다. <code>rustc</code> 책</em></a>.</p>
+<h3 id="running-tests-in-parallel-or-consecutively"><a class="header" href="#running-tests-in-parallel-or-consecutively">테스트를 병렬 또는 순차적으로 실행하기</a></h3>
+<p>여러 테스트를 실행하면 기본적으로 스레드를 사용하여 병렬로 실행됩니다. 이렇게 하면 테스트가 더 빠르게 완료되어 피드백을 더 빨리 받을 수 있습니다. 테스트가 동시에 실행되므로, 테스트가 서로 또는 현재 작업 디렉터리나 환경 변수와 같은 공유 환경 등 공유 상태에 의존하지 않도록 해야 합니다.</p>
+<p>예를 들어, 각 테스트가 디스크에 test-output.txt라는 이름의 파일을 생성하고 해당 파일에 데이터를 기록하는 코드를 실행한다고 가정해 보겠습니다. 그런 다음 각 테스트는 해당 파일의 데이터를 읽고, 각 테스트마다 다른 특정 값이 포함되어 있는지 검증합니다. 테스트가 동시에 실행되므로, 한 테스트가 다른 테스트가 파일을 쓰고 읽는 사이에 파일을 덮어쓸 수 있습니다. 그러면 두 번째 테스트는 코드가 잘못되었기 때문이 아니라, 병렬 실행 중 테스트가 서로 간섭했기 때문에 실패합니다. 해결 방법 중 하나는 각 테스트가 서로 다른 파일에 쓰도록 하는 것이며, 다른 해결 방법은 테스트를 한 번에 하나씩 실행하는 것입니다.</p>
+<p>테스트를 병렬로 실행하지 않거나 사용된 스레드 수를 더 세밀하게 제어하려면, <code>--test-threads</code> 플래그와 사용하려는 스레드 수를 테스트 바이너리로 전달할 수 있습니다. 다음 예시를 확인해 보세요.</p>
 <pre><code class="language-console">$ cargo test -- --test-threads=1
 </code></pre>
-<p>테스트 스레드 수를 <code>1</code>로 설정하여 병렬 처리를 사용하지 말 것을 권장합니다. 한 스레드를 사용하여 테스트를 실행하면 병렬로 실행하는 것보다 시간이 오래 걸리지만, 테스트가 상태를 공유하면 서로 방해하지 않습니다.</p>
-<h3 id="showing-function-output"><a class="header" href="#showing-function-output">함수 출력 보이기</a></h3>
-<p>기본적으로 테스트가 통과하면 러스트의 테스트 라이브러리는 표준 출력에 인쇄된 모든 것을 캡처합니다. 예를 들어, 테스트에서 <code>println!</code>를 호출하고 테스트 패스를 호출하면 터미널에서 <code>println!</code> 출력이 표시되지 않습니다. 테스트가 실패하면 나머지 실패 메시지와 함께 표준 출력에 인쇄된 모든 것을 볼 수 있습니다.</p>
-<p>예를 들어, Listing 11-10은 매개 변수의 값을 출력하고 10을 반환하는 우스꽝스러운 함수와 통과한 테스트와 실패하는 테스트를 가지고 있습니다.</p>
+<p>테스트 스레드 수를 <code>1</code>로 설정하면 프로그램에 병렬 처리를 사용하지 말라고 지시합니다. 한 스레드로 테스트를 실행하면 병렬로 실행하는 것보다 시간이 더 오래 걸리지만, 테스트가 상태를 공유하더라도 서로 간섭하지 않습니다.</p>
+<h3 id="showing-function-output"><a class="header" href="#showing-function-output">함수 출력 표시</a></h3>
+<p>기본적으로 테스트가 통과하면 Rust의 테스트 라이브러리가 표준 출력에 인쇄된 모든 내용을 캡처합니다. 예를 들어, 테스트에서 <code>println!</code>를 호출하고 테스트가 통과하면 터미널에서 <code>println!</code>의 출력을 볼 수 없으며, 테스트가 통과했다는 표시만 보입니다. 반면 테스트가 실패하면 실패 메시지와 함께 표준 출력에 인쇄된 내용을 볼 수 있습니다.</p>
+<p>예를 들어, Listing 11-10에는 매개변수의 값을 출력하고 10을 반환하는 단순한 함수와, 통과하는 테스트 및 실패하는 테스트가 포함되어 있습니다.</p>
 <figure class="listing" id="listing-11-10">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust panics noplayground">fn prints_and_returns_10(a: i32) -&gt; i32 {
@@ -197,9 +197,9 @@ mod tests {
         assert_eq!(value, 5);
     }
 }</code></pre>
-<figcaption><a href="#listing-11-10">목록 11-10</a>: <code>println!</code>를 호출하는 함수에 대한 테스트</figcaption>
+<figcaption><a href="#listing-11-10">Listing 11-10</a>: <code>println!</code>를 호출하는 함수에 대한 테스트</figcaption>
 </figure>
-<p><code>cargo test</code>로 이러한 테스트를 실행하면 다음 출력을 볼 수 있습니다.</p>
+<p><code>cargo test</code>로 이 테스트들을 실행하면 다음과 같은 출력을 볼 수 있습니다.</p>
 <pre><code class="language-console">$ cargo test
    Compiling silly-function v0.1.0 (file:///projects/silly-function)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.58s
@@ -228,11 +228,11 @@ test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; 
 
 error: test failed, to rerun pass `--lib`
 </code></pre>
-<p>이 출력의 아무 곳에서도 <code>I got the value 4</code>를 볼 수 없습니다.이 출력은 테스트가 실행 될 때 인쇄됩니다. 그 출력은 캡처되었습니다. 실패한 테스트의 출력 <code>I got the value 8</code>는 테스트 요약 출력의 섹션에 나타나며 테스트 실패의 원인을 보여줍니다.</p>
-<p>테스트를 통과하기 위한 인쇄된 값을 보고 싶다면, 러스트에게 <code>--show-output</code>로 성공적인 테스트의 결과를 보여주도록 할 수 있습니다:</p>
+<p>이 출력 어디에서도 <code>I got the value 4</code>를 볼 수 없습니다. 이 출력은 통과하는 테스트가 실행될 때 인쇄되는 내용입니다. 해당 출력은 캡처되었습니다. 실패한 테스트의 출력인 <code>I got the value 8</code>은 테스트 요약 출력 섹션에 나타나며, 여기에는 테스트 실패의 원인도 함께 표시됩니다.</p>
+<p>통과한 테스트의 출력 값도 보고 싶다면, <code>--show-output</code>를 사용하여 Rust가 성공한 테스트의 출력도 표시하도록 할 수 있습니다:</p>
 <pre><code class="language-console">$ cargo test -- --show-output
 </code></pre>
-<p>Listing 11-10에서 <code>--show-output</code> 플래그로 테스트를 다시 실행하면, 다음과 같은 결과를 볼 수 있습니다:</p>
+<p>Listing 11-10의 테스트를 <code>--show-output</code> 플래그와 함께 다시 실행하면 다음과 같은 출력을 볼 수 있습니다:</p>
 <pre><code class="language-console">$ cargo test -- --show-output
    Compiling silly-function v0.1.0 (file:///projects/silly-function)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
@@ -270,9 +270,9 @@ test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; 
 
 error: test failed, to rerun pass `--lib`
 </code></pre>
-<h3 id="running-a-subset-of-tests-by-name"><a class="header" href="#running-a-subset-of-tests-by-name">이름으로 하위 집합을 실행하려면To run a subset of tests by name</a></h3>
-<p>전체 테스트 스위트를 실행하려면 시간이 오래 걸릴 수 있습니다. 특정 영역에서 코드를 작업하는 경우 해당 코드와 관련된 테스트만 실행할 수 있습니다. <code>cargo test</code>에게 인수로 실행하려는 테스트의 이름이나 이름을 전달하여 실행할 테스트를 선택할 수 있습니다.</p>
-<p>테스트의 부분집합을 실행하는 방법을 보여주기 위해, 우리는 먼저 우리의 <code>add_two</code> 함수에 대한 3개의 테스트를 만들 것이고, Listing 11-11에서 보듯이, 어느 것을 실행할지를 선택할 것입니다.</p>
+<h3 id="running-a-subset-of-tests-by-name"><a class="header" href="#running-a-subset-of-tests-by-name">이름으로 테스트 하위 집합 실행</a></h3>
+<p>전체 테스트 스위트를 실행하는 데는 시간이 오래 걸릴 수 있습니다. 특정 영역의 코드를 작업 중이라면 해당 코드와 관련된 테스트만 실행하고 싶을 수 있습니다. <code>cargo test</code>에 실행하려는 테스트의 이름을 인수로 전달하여 실행할 테스트를 선택할 수 있습니다.</p>
+<p>테스트 하위 집합을 실행하는 방법을 보여주기 위해, 먼저 Listing 11-11에 나와 있듯이 <code>add_two</code> 함수에 대한 세 개의 테스트를 만들고 실행할 테스트를 선택하겠습니다.</p>
 <figure class="listing" id="listing-11-11">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground">pub fn add_two(a: u64) -&gt; u64 {
@@ -301,7 +301,7 @@ mod tests {
         assert_eq!(result, 102);
     }
 }</code></pre>
-<figcaption><a href="#listing-11-11">목록 11-11</a>: 세 가지 이름을 가진 세 가지 테스트</figcaption>
+<figcaption><a href="#listing-11-11">Listing 11-11</a>: 서로 다른 세 가지 이름을 가진 세 개의 테스트</figcaption>
 </figure>
 <p>앞에서 본 것처럼 인수를 전달하지 않고 테스트를 실행하면 모든 테스트가 병렬로 실행됩니다.</p>
 <pre><code class="language-console">$ cargo test
@@ -324,7 +324,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 </code></pre>
 <h4 id="running-single-tests"><a class="header" href="#running-single-tests">단일 테스트 실행</a></h4>
-<p>모든 테스트 함수의 이름을 <code>cargo test</code>에 전달하여 해당 테스트만 실행할 수 있습니다.</p>
+<p>테스트 함수의 이름을 <code>cargo test</code>에 전달하여 해당 테스트만 실행할 수 있습니다.</p>
 <pre><code class="language-console">$ cargo test one_hundred
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.69s
@@ -336,10 +336,10 @@ test tests::one_hundred ... ok
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
 
 </code></pre>
-<p><code>one_hundred</code>라는 이름으로만 테스트가 실행되었습니다. 다른 두 테스트가 해당 이름과 일치하지 않았습니다. 테스트 출력을 통해 <code>2 filtered out</code>를 끝까지 표시하여 실행하지 않은 테스트가 더 많음을 알 수 있습니다.</p>
-<p>이러한 방식으로 여러 테스트의 이름을 지정할 수 없습니다. <code>cargo test</code>에 주어진 첫 번째 값만 사용됩니다. 그러나 여러 테스트를 실행할 수 있는 방법이 있습니다.</p>
-<h4 id="filtering-to-run-multiple-tests"><a class="header" href="#filtering-to-run-multiple-tests">다중 테스트를 실행하기 위한 필터링</a></h4>
-<p>테스트 이름의 일부를 지정할 수 있으며, 이름이 해당 값과 일치하는 모든 테스트가 실행됩니다. 예를 들어, 테스트 이름 중 두 개가 <code>add</code>를 포함하기 때문에 <code>cargo test add</code>를 실행하여 두 가지를 실행할 수 있습니다.</p>
+<p><code>one_hundred</code>라는 이름의 테스트만 실행되었고, 다른 두 테스트는 해당 이름과 일치하지 않았습니다. 테스트 출력의 마지막에 <code>2 filtered out</code>이 표시되어 실행되지 않은 테스트가 더 있음을 알 수 있습니다.</p>
+<p>이러한 방식으로 여러 테스트의 이름을 지정할 수 없습니다. <code>cargo test</code>에 전달된 첫 번째 값만 사용됩니다. 하지만 여러 테스트를 실행하는 방법이 있습니다.</p>
+<h4 id="filtering-to-run-multiple-tests"><a class="header" href="#filtering-to-run-multiple-tests">여러 테스트를 실행하기 위한 필터링</a></h4>
+<p>테스트 이름의 일부를 지정할 수 있으며, 이름이 해당 값과 일치하는 모든 테스트가 실행됩니다. 예를 들어, 두 개의 테스트 이름에 <code>add</code>가 포함되어 있으므로 <code>cargo test add</code>을 실행하여 이 두 테스트를 실행할 수 있습니다.</p>
 <pre><code class="language-console">$ cargo test add
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
@@ -352,11 +352,11 @@ test tests::add_two_and_two ... ok
 test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
 
 </code></pre>
-<p>이 명령은 이름에 <code>add</code>를 사용하여 모든 테스트를 실행하고 <code>one_hundred</code>라는 테스트를 필터링했습니다. 또한 테스트가 나타나는 모듈이 테스트 이름의 일부가되므로 모듈의 이름을 필터링하여 모듈의 모든 테스트를 실행할 수 있습니다.</p>
+<p>이 명령은 이름에 <code>add</code>가 포함된 모든 테스트를 실행하고 <code>one_hundred</code> 테스트는 제외했습니다. 또한 테스트가 속한 모듈 이름도 테스트 이름의 일부가 되므로, 모듈 이름을 필터링하여 해당 모듈의 모든 테스트를 실행할 수 있습니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="ignoring-some-tests-unless-specifically-requested"></a></p>
 <h3 id="ignoring-tests-unless-specifically-requested"><a class="header" href="#ignoring-tests-unless-specifically-requested">특별히 요청하지 않는 한 테스트 무시하기</a></h3>
-<p>때로는 몇 가지 특정 테스트를 실행하는 데 시간이 많이 걸릴 수 있으므로 대부분의 <code>cargo test</code> 실행 중에 제외 할 수 있습니다. 실행하려는 모든 테스트에서 인수로 나열하는 대신 <code>ignore</code> 특성을 사용하여 시간을 많이 소비하는 테스트에 주석을 추가하여 제외 할 수 있습니다.</p>
+<p>때로는 특정 테스트를 실행하는 데 시간이 많이 걸릴 수 있으므로, 대부분의 <code>cargo test</code> 실행 시 이를 제외하고 싶을 수 있습니다. 실행하려는 모든 테스트를 인수로 나열하는 대신, <code>ignore</code> 속성을 사용하여 시간이 많이 걸리는 테스트를 제외할 수 있습니다. 방법은 다음과 같습니다:</p>
 <p>파일명: src/lib.rs</p>
 <pre><code class="language-rust noplayground"><span class="boring">pub fn add(left: u64, right: u64) -&gt; u64 {
 </span><span class="boring">    left + right
@@ -378,7 +378,7 @@ mod tests {
         // code that takes an hour to run
     }
 }</code></pre>
-<p><code>#[test]</code> 후에 제외하려는 테스트에 <code>#[ignore]</code> 라인을 추가합니다. 이제 테스트를 실행할 때 <code>it_works</code>가 실행되지만 <code>expensive_test</code>는 다음을 수행하지 않습니다.</p>
+<p><code>#[test]</code> 뒤에 제외하려는 테스트에 <code>#[ignore]</code> 라인을 추가합니다. 이제 테스트를 실행하면 <code>it_works</code>는 실행되지만 <code>expensive_test</code>는 실행되지 않습니다:</p>
 <pre><code class="language-console">$ cargo test
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.60s
@@ -397,7 +397,7 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 </code></pre>
-<p><code>expensive_test</code> 함수는 <code>ignored</code>로 나열됩니다. 무시된 테스트만 실행하려면 <code>cargo test -- --ignored</code>를 사용할 수 있습니다.</p>
+<p><code>expensive_test</code> 함수는 <code>ignored</code>로 표시되어 있습니다. 무시된 테스트만 실행하려면 <code>cargo test -- --ignored</code>를 사용할 수 있습니다.</p>
 <pre><code class="language-console">$ cargo test -- --ignored
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
@@ -415,7 +415,7 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 </code></pre>
-<p>어떤 테스트가 실행되는지 제어함으로써, 당신은 당신의 <code>cargo test</code> 결과는 빨리 돌려보내질 것입니다. 당신이 에의 결과를 검사하는 이해되는 점에 있을 때 <code>ignored</code> 테스트와 당신은 결과를 기다릴 시간이, 당신은 실행할 수 있습니다 <code>cargo test -- --ignored</code> 대신. 모든 테스트가 무시되는지 여부를 실행하려면 실행할 수 있습니다. <code>cargo test -- --include-ignored</code>.</p>
+<p>실행할 테스트를 제어하면 <code>cargo test</code> 결과를 빠르게 확인할 수 있습니다. 무시된 테스트의 결과를 확인하고 결과를 기다릴 시간이 있을 때, <code>ignored</code> 대신 <code>cargo test -- --ignored</code>를 실행할 수 있습니다. 무시된 테스트를 포함하여 모든 테스트를 실행하려면 <code>cargo test -- --include-ignored</code>를 실행하면 됩니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

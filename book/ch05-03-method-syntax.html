@@ -162,11 +162,11 @@
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
 <h2 id="methods"><a class="header" href="#methods">메서드</a></h2>
-<p>메서드는 함수와 유사합니다: 다음과 같이 선언합니다. <code>fn</code> 키워드와 이름은 매개변수와 반환 값을 가질 수 있으며, 메서드가 다른 곳에서 호출될 때 실행되는 코드를 포함합니다. 함수와 달리, 메소드는 구조체(또는 enum 또는 트레잇 객체)의 컨텍스트 내에서 정의됩니다. <a href="ch06-00-enums.html">제 6 장</a> 무시  그리고 <a href="ch18-02-trait-objects.html">창세기. Chapter 18</a> 무시 첫 번째 매개 변수는 항상 <code>self</code>메서드가 호출되는 구조체의 인스턴스를 나타냅니다.Represents the instance of the struct the method is being called on.</p>
+<p>메서드는 함수와 유사합니다. <code>fn</code> 키워드와 이름을 사용하여 선언하며, 매개변수와 반환 값을 가질 수 있고, 메서드가 다른 곳에서 호출될 때 실행되는 코드를 포함합니다. 함수와 달리 메서드는 구조체(또는 6장에서 다루는 열거형이나 18장에서 다루는 트레이트 객체)의 컨텍스트 내에서 정의됩니다. <a href="ch06-00-enums.html">6장</a><a href="ch18-02-trait-objects.html">18장</a> 첫 번째 매개변수는 항상 <code>self</code>이며, 이는 메서드가 호출되는 구조체의 인스턴스를 나타냅니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="defining-methods"></a></p>
 <h3 id="method-syntax"><a class="header" href="#method-syntax">메서드 문법</a></h3>
-<p>의를 변경하자 <code>area</code> 이 함수는 A <code>Rectangle</code> 매개 변수로 인스턴스를 만들고 대신 <code>area</code> 상기 정의된 방법은 The method defined on the <code>Rectangle</code> struct, Listing 5-13에 나와 있는 것처럼.</p>
+<p><code>area</code> 인스턴스를 매개변수로 받는 <code>Rectangle</code> 함수를 변경하여, 대신 <code>area</code> 구조체에 <code>Rectangle</code> 메서드를 정의하겠습니다. Listing 5-13을 참고하세요.</p>
 <figure class="listing" id="listing-5-13">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">#[derive(Debug)]
@@ -192,18 +192,13 @@ fn main() {
         rect1.area()
     );
 }</code></pre>
-<figcaption><a href="#listing-5-13">목록 5-13</a>: 정의하기 <code>area</code> 상기 방법은 The method <code>Rectangle</code> 구조체</figcaption>
+<figcaption><a href="#listing-5-13">목록 5-13</a>: <code>area</code> 구조체에 <code>Rectangle</code> 메서드를 정의하기</figcaption>
 </figure>
-<p>컨텍스트 내에서 함수 정의To define the function within the context <code>Rectangle</code>, 우리는 시작 <code>impl</code>
-(구현) 블록에 대한 <code>Rectangle</code>. 이 안에 모든 <code>impl</code> 블록은 다음과 같이 연결될 것이다. <code>Rectangle</code> 유형. 그 때, 우리는 이동합니다 <code>area</code> 기능 내부 <code>impl</code> curly brackets and change the first (그리고이 경우, 유일한) 매개 변수는 다음과 같습니다. <code>self</code> 서명에서 그리고 몸 내의 어디에나. 에서
-<code>main</code>상기 호출하는 단계는 Wherein the calling the <code>area</code> 기능 및 통과 <code>rect1</code> 인수로, 우리는 대신 사용할 수 있습니다. <em>메서드 문법</em> 전화 걸기 Call the <code>area</code> 우리의 방법에 <code>Rectangle</code>
-instance. 메서드 문법은 인스턴스 뒤에 있습니다. 우리는 점 뒤에 메서드 이름, 괄호 및 모든 인수를 추가합니다.</p>
-<p>서명에 대하여 For the signature <code>area</code>, 우리는 사용 <code>&amp;self</code> 대신 <code>rectangle: &amp;Rectangle</code>. 그 <code>&amp;self</code> 사실 짧아서 <code>self: &amp;Self</code>. 내부 <code>impl</code> 블록, 타입 <code>Self</code> 상기 타입에 대한 별칭은 The alias for the type <code>impl</code> block 은 for 이다. 메소드는 반드시 파라미터 이름을 가져야 한다. <code>self</code> 모든 제품 <code>Self</code> 그들의 첫 번째 매개 변수에 대해 러스트는 이것을 이름만으로 줄여줍니다. <code>self</code> 첫 번째 매개 변수의 자리입니다. 우리는 여전히 사용할 필요가 있습니다. <code>&amp;</code> 의 앞에 <code>self</code> 이 방법을 빌린다는 것을 나타냅니다. <code>Self</code> 예를 들어, 우리가 했던 것처럼
-<code>rectangle: &amp;Rectangle</code>. 방법은 소유권을의 가지고 갈 수 있다 <code>self</code>대출 <code>self</code>
-우리가 지금까지 해온 것처럼, 혹은 빌려온 것처럼 <code>self</code> 다른 매개 변수와 마찬가지로 가변적입니다.</p>
-<p>우리가 선택한 <code>&amp;self</code> 우리가 사용하는 것과 같은 이유로 <code>&amp;Rectangle</code> in the function version: 우리는 소유권을 원하지 않으며, 단지 struct 내의 데이터를 읽고 싶을 뿐입니다. 만약 우리가 메소드가 하는 일의 일부로 메소드를 호출한 인스턴스를 변경하고 싶다면, 우리는 <code>&amp;mut self</code> 첫 번째 매개 변수로. 단지를 사용하여 인스턴스의 소유권을 소요하는 메서드를 갖는 <code>self</code> 첫 번째 매개 변수는 드물기 때문에 이 기법은 일반적으로 메서드가 변환될 때 사용됩니다. <code>self</code> 다른 것으로 들어가서 변환 후 호출자가 원래 인스턴스를 사용하는 것을 방지하려고 합니다.</p>
-<p>함수 대신 메소드를 사용하는 주된 이유는 메소드 구문을 제공하고 모든 메소드의 서명에서 <code>self</code> 유형을 반복하지 않아도되는 것 외에도 조직을위한 것입니다. 우리는 라이브러리의 다양한 장소에서 <code>impl</code>의 기능에 대한 코드 검색의 미래 사용자를 만들기보다는 하나의 <code>Rectangle</code> 블록에 유형의 인스턴스로 할 수있는 모든 것을 넣었습니다.</p>
-<p>struct 필드 중 하나와 같은 이름을 가진 메서드를 선택할 수 있습니다. 예를 들어, <code>Rectangle</code>에서 <code>width</code>라는 메서드를 정의할 수 있습니다.</p>
+<p><code>Rectangle</code>의 컨텍스트 안에서 함수를 정의하려면, <code>Rectangle</code>에 대한 <code>impl</code>(구현) 블록을 시작합니다. 이 <code>impl</code> 블록 안의 모든 것은 <code>Rectangle</code> 타입과 연관됩니다. 그런 다음, <code>area</code> 함수를 <code>impl</code> 중괄호 안으로 이동하고, 시그니처와 본문 전체에서 첫 번째(이 경우 유일한) 매개변수를 <code>self</code>로 변경합니다. <code>main</code>에서 <code>area</code> 함수를 호출하고 <code>rect1</code>를 인자로 전달했던 부분을 <em>메서드 문법</em>으로 바꿔서 <code>Rectangle</code> 인스턴스에 <code>area</code> 메서드를 호출할 수 있습니다. 메서드 문법은 인스턴스 뒤에 옵니다. 마침표, 메서드 이름, 괄호, 그리고 인자를 추가합니다.</p>
+<p><code>area</code>의 시그니처에서 <code>rectangle: &amp;Rectangle</code> 대신 <code>&amp;self</code>을 사용합니다. <code>&amp;self</code>은 실제로 <code>self: &amp;Self</code>의 약자입니다. <code>impl</code> 블록 안에서, 타입 <code>Self</code>은 <code>impl</code> 블록이 대상인 타입의 별칭입니다. 메서드의 첫 번째 매개변수는 <code>self</code>이라는 이름의 <code>Self</code> 타입이어야 하므로, Rust는 첫 번째 매개변수 위치에서 이름 <code>self</code>만 사용하여 이를 약칭할 수 있게 합니다. <code>rectangle: &amp;Rectangle</code>에서와 마찬가지로, 이 메서드가 <code>Self</code> 인스턴스를 빌린다는 것을 나타내기 위해 <code>self</code> 약식 표기 앞에 <code>&amp;</code>을 사용해야 한다는 점에 유의하세요. 메서드는 <code>self</code>의 소유권을 가져갈 수도 있고, 여기에서 한 것처럼 <code>self</code>을 불변으로 빌릴 수도 있으며, 다른 매개변수와 마찬가지로 <code>self</code>을 가변으로 빌릴 수도 있습니다.</p>
+<p>여기서 <code>&amp;self</code>를 선택한 이유는 함수 버전에서 <code>&amp;Rectangle</code>를 사용한 것과 같습니다. 소유권을 가져오지 않고, 구조체 내의 데이터를 읽기만 할 뿐 쓰기 때문이죠. 메서드가 수행하는 작업의 일부로 메서드를 호출한 인스턴스를 변경하고 싶다면, 첫 번째 매개변수로 <code>&amp;mut self</code>를 사용합니다. 단순히 <code>self</code>를 첫 번째 매개변수로 사용하여 인스턴스의 소유권을 가져오는 메서드는 드뭅니다. 이 기법은 일반적으로 메서드가 <code>self</code>로 변환할 때, 변환 후 호출자가 원래 인스턴스를 사용하지 못하도록 방지하는 데 사용됩니다.</p>
+<p>함수 대신 메소드를 사용하는 주된 이유는 메소드 구문을 제공하고 모든 메소드의 서명에서 <code>self</code> 유형을 반복하지 않아도 되는 것 외에도, 코드 구성을 위한 것입니다. 우리는 제공한 라이브러리의 여러 곳에서 <code>impl</code>의 기능을 찾아야 하는 미래 사용자를 만들지 않고, 해당 유형의 인스턴스로 수행할 수 있는 모든 것을 하나의 <code>Rectangle</code> 블록에 모아 두었습니다.</p>
+<p>구조체 필드 중 하나와 동일한 이름을 메서드에 부여할 수 있습니다. 예를 들어, <code>Rectangle</code>에서 <code>width</code>라는 메서드를 정의할 수 있습니다.</p>
 <figure class="listing">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#[derive(Debug)]
@@ -229,18 +224,13 @@ fn main() {
     }
 }</code></pre>
 </figure>
-<p>여기, 우리는 만들기 위해 선택 <code>width</code> 반환 방법 <code>true</code> 만약 instance 의 값이 <code>width</code> 상기 보다 큰 값은 The greater than <code>0</code> 그리고 <code>false</code> 상기 값은 The value is
-<code>0</code>: 어떤 목적으로든 같은 이름의 메서드 내의 필드를 사용할 수 있습니다.
-<code>main</code>우리가 따라갈 때 <code>rect1.width</code> 괄호로, 러스트는 우리가 방법을 의미한다는 것을 알고 있습니다. <code>width</code>우리가 괄호를 사용하지 않을 때, 러스트는 우리가 필드를 의미한다는 것을 알고 있습니다.
-<code>width</code>.</p>
-<p>종종, 그러나 항상, 우리가 필드와 같은 이름을 메소드에 줄 때, 우리는 단지 필드에 값을 반환하고 다른 아무것도하지 않기를 원합니다. 이와 같은 메서드는 호출됩니다. <em>게터는</em>, 그리고 러스트는 다른 언어처럼 struct 필드에 자동으로 구현하지 않습니다. Getters는 필드를 비공개로 만들 수 있지만 메서드를 공개하므로 해당 필드에 대한 읽기 전용 액세스를 해당 유형의 공용 API의 일부로 활성화할 수 있기 때문에 유용합니다. public과 private이 무엇인지, public 또는 private으로 필드나 메서드를 지정하는 방법에 대해 논의할 것입니다. <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword">제 7 장</a> 무시 .</p>
+<p>여기서 우리는 인스턴스의 <code>width</code> 필드 값이 <code>0</code>보다 크면 <code>true</code>을, 값이 <code>0</code>이면 <code>false</code>를 반환하도록 <code>width</code> 메서드를 선택했습니다. 메서드 안에서 같은 이름의 필드를 어떤 목적으로든 사용할 수 있습니다. <code>main</code>에서 <code>rect1.width</code> 뒤에 괄호를 붙이면, Rust는 우리가 메서드 <code>width</code>을 의미한다고 알 수 있습니다. 괄호를 사용하지 않으면, Rust는 우리가 필드 <code>width</code>를 의미한다고 알 수 있습니다.</p>
+<p>필드와 같은 이름을 메서드에 부여할 때, 항상은 아니지만 대부분 해당 필드의 값만 반환하고 다른 것은 하지 않도록 합니다. 이러한 메서드는 <em>게터</em>라고 불리며, Rust는 다른 일부 언어처럼 구조체 필드에 대해 이를 자동으로 구현하지 않습니다. 게터는 유용합니다. 필드를 비공개로 유지하면서 메서드를 공개로 만들어, 타입의 공개 API의 일부로서 해당 필드에 대한 읽기 전용 접근을 가능하게 할 수 있기 때문입니다. 공개와 비공개의 개념 및 필드나 메서드를 공개 또는 비공개로 지정하는 방법은 <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword">7장</a><!-- ignore -->에서 다룹니다.</p>
 <section aria-role="note" class="note">
 <h3 id="wheres-the---operator"><a class="header" href="#wheres-the---operator">어디에 있습니까? <code>-&gt;</code> 통신사?</a></h3>
-<p>C와 C++에서는 두 개의 다른 연산자가 메서드 호출에 사용됩니다.
-<code>.</code> 객체에 대한 메서드를 직접 호출하는 경우 <code>-&gt;</code> 객체에 대한 포인터의 메서드를 호출하고 포인터를 역참조해야 하는 경우. 즉, <code>object</code> 상기 포인터는, The pointer,
-<code>object-&gt;something()</code> 비슷비슷한 <code>(*object).something()</code>.</p>
-<p>러스트는 <code>-&gt;</code> 연산자와 동등한 기능을 가지고 있지 않습니다. 대신, 러스트는 자동 참조 및 역참조라는 기능을 가지고 있습니다. 호출 메서드는 러스트에서 이러한 동작을 수행하는 몇 안되는 장소 중 하나입니다.</p>
-<p>작동 방식은 다음과 같습니다. <code>object.something()</code>를 사용하여 메서드를 호출하면 러스트는 자동으로 <code>&amp;</code>, <code>&amp;mut</code> 또는 <code>*</code>를 추가하여 <code>object</code>가 메서드의 서명과 일치하도록 합니다. 즉, 다음과 같습니다.</p>
+<p>C와 C++에서는 메서드 호출에 두 가지 다른 연산자를 사용합니다. <code>.</code>은 객체에 대해 메서드를 직접 호출할 때 사용하고, <code>-&gt;</code>은 객체를 가리키는 포인터에 대해 메서드를 호출할 때 사용합니다. 이 경우 먼저 포인터를 역참조해야 합니다. 즉, <code>object</code>이 포인터라면, <code>object-&gt;something()</code>은 <code>(*object).something()</code>과 유사합니다.</p>
+<p>Rust에는 <code>-&gt;</code> 연산자와 동등한 기능이 없습니다. 대신, Rust에는 자동 참조 및 역참조라는 기능이 있습니다. 메서드 호출은 Rust에서 이러한 동작이 발생하는 몇 안 되는 경우 중 하나입니다.</p>
+<p>작동 방식은 다음과 같습니다. <code>object.something()</code>을 사용하여 메서드를 호출하면 Rust는 자동으로 <code>&amp;</code>, <code>&amp;mut</code> 또는 <code>*</code>를 추가하여 <code>object</code>가 해당 메서드의 서명과 일치하도록 합니다. 즉, 다음 두 표현은 동일합니다.</p>
 <!-- CAN'T EXTRACT SEE BUG https://github.com/rust-lang/mdBook/issues/1127 -->
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -265,7 +255,7 @@ fn main() {
 <span class="boring">}</span></code></pre>
 <p>첫 번째는 훨씬 깔끔해 보입니다. 이 자동 참조 동작은 메서드가 <code>self</code>의 유형인 명확한 수신기를 가지고 있기 때문에 작동합니다. 메서드의 수신기와 이름을 감안할 때, 러스트는 메서드가 읽기(<code>&amp;self</code>), 뮤팅(<code>&amp;mut self</code>) 또는 소비(<code>self</code>)인지를 확실히 알아낼 수 있습니다.</p>
 </section>
-<h3 id="methods-with-more-parameters"><a class="header" href="#methods-with-more-parameters">더 많은 파라미터를 가진 메서드</a></h3>
+<h3 id="methods-with-more-parameters"><a class="header" href="#methods-with-more-parameters">더 많은 매개변수를 가진 메서드</a></h3>
 <p>의 두 번째 방법을 구현하여 방법을 사용하여 연습하자 <code>Rectangle</code>
 struct. 이번에는 instance를 <code>Rectangle</code> 또 다른 예를 들자면, <code>Rectangle</code> 그리고 return <code>true</code> 만약 두 번째 <code>Rectangle</code> 안에 완전히 들어갈 수 있습니다. <code>self</code> (첫번째 <code>Rectangle</code>); 그렇지 않으면, 반환한다 <code>false</code>. 즉, 우리가 정의 한 후 <code>can_hold</code> 메소드, 우리는 Listing 5-14에 표시된 프로그램을 작성할 수 있기를 원합니다.</p>
 <figure class="listing" id="listing-5-14">
@@ -287,17 +277,13 @@ struct. 이번에는 instance를 <code>Rectangle</code> 또 다른 예를 들자
     println!("Can rect1 hold rect2? {}", rect1.can_hold(&amp;rect2));
     println!("Can rect1 hold rect3? {}", rect1.can_hold(&amp;rect3));
 }</code></pre>
-<figcaption><a href="#listing-5-14">목록 5-14</a>: 아직 작성되지 않은 <code>can_hold</code> 방법 사용</figcaption>
+<figcaption><a href="#listing-5-14">Listing 5-14</a>: 아직 작성되지 않은 <code>can_hold</code> 메서드 사용</figcaption>
 </figure>
-<p><code>rect2</code>의 두 차원 모두 <code>rect1</code>의 차원보다 작기 때문에 예상 출력은 다음과 같이 보이지만 <code>rect3</code>는 <code>rect1</code>보다 넓습니다.</p>
+<p><code>rect2</code>의 두 차원 모두 <code>rect1</code>의 차원보다 작기 때문에 예상 출력은 다음과 같지만, <code>rect3</code>는 <code>rect1</code>보다 넓습니다.</p>
 <pre><code class="language-text">Can rect1 hold rect2? true
 Can rect1 hold rect3? false
 </code></pre>
-<p>우리는 우리가 방법을 정의하기를 원한다는 것을 알고 있습니다. <code>impl Rectangle</code>
-블록입니다. 메서드 이름은 다음과 같습니다. <code>can_hold</code>그리고 그것은 다른 것의 불변의 대출을 취할 것입니다. <code>Rectangle</code> 매개 변수로. 우리는 메소드를 호출하는 코드를 보면서 매개 변수의 유형이 무엇인지 알 수 있습니다.
-<code>rect1.can_hold(&amp;rect2)</code> 오시는 길 <code>&amp;rect2</code>[중고] 변치 않는 대출
-<code>rect2</code>예를 들어, Instance of <code>Rectangle</code>. 이것은 우리가 단지 읽을 필요가 있기 때문에 의미가 있습니다. <code>rect2</code> (쓰는 대신, 이는 우리가 가변 대출이 필요하다는 것을 의미합니다.) <code>main</code> 소유권을 유지하기 위하여 <code>rect2</code> 그래서 우리는 다시 호출 한 후 사용할 수 있습니다 <code>can_hold</code> 메서드입니다. 반환 값의 <code>can_hold</code> Boolean이 될 것이고, 구현체는 width와 height를 검사할 것이다.
-<code>self</code> 다른 것의 너비와 높이보다 더 큽니다. <code>Rectangle</code>, 각각. 새로운 것을 추가합시다. <code>can_hold</code> 상기 방법 The method <code>impl</code> Listing 5-13의 블록, Listing 5-15에 나타나 있습니다.</p>
+<p>우리는 메서드를 정의하고 싶으므로, 이는 <code>impl Rectangle</code> 블록 안에 있게 됩니다. 메서드 이름은 <code>can_hold</code>이며, 다른 <code>Rectangle</code>의 불변 빌림을 매개변수로 받습니다. 메서드를 호출하는 코드를 보면 매개변수의 타입을 알 수 있습니다: <code>rect1.can_hold(&amp;rect2)</code>은 <code>&amp;rect2</code>를 전달하는데, 이는 <code>Rectangle</code>의 인스턴스인 <code>rect2</code>에 대한 불변 빌림입니다. 이는 합리적입니다. 왜냐하면 우리는 <code>rect2</code>를 읽기만 해야 하므로(쓰기는 가변 빌림이 필요하므로), 그리고 <code>main</code>이 <code>rect2</code>의 소유권을 유지하여 <code>can_hold</code> 메서드 호출 후에도 다시 사용할 수 있기를 원하기 때문입니다. <code>can_hold</code>의 반환 값은 Boolean이 될 것이며, 구현에서는 <code>self</code>의 너비와 높이가 각각 다른 <code>Rectangle</code>의 너비와 높이보다 큰지 확인합니다. Listing 5-13의 <code>impl</code> 블록에 새로운 <code>can_hold</code> 메서드를 추가하면 Listing 5-15와 같습니다.</p>
 <figure class="listing" id="listing-5-15">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#[derive(Debug)]
@@ -335,12 +321,10 @@ Can rect1 hold rect3? false
 </span><span class="boring">}</span></code></pre>
 <figcaption><a href="#listing-5-15">목록 5-15</a>: 구현 The <code>can_hold</code> 메서드 켜짐 <code>Rectangle</code> 그것은 또 다른 <code>Rectangle</code> 매개 변수로 인스턴스</figcaption>
 </figure>
-<p>Listing 5-14에서 <code>main</code> 함수를 사용하여 이 코드를 실행하면 원하는 출력을 얻을 수 있습니다. 메서드는 <code>self</code> 매개 변수 다음에 서명에 추가하는 여러 매개 변수를 취할 수 있으며 이러한 매개 변수는 함수의 매개 변수와 동일하게 작동합니다.</p>
-<h3 id="associated-functions"><a class="header" href="#associated-functions">연결된 함수</a></h3>
-<p>모든 함수는 한 내에서 정의됩니다. <code>impl</code> block)이라고 부른다. <em>관련된 기능들</em>
-왜냐하면 그들은 다음과 같이 명명된 타입과 연관되어 있기 때문이다. <code>impl</code>. 우리는 가지고 있지 않은 연관 함수를 정의 할 수 있습니다. <code>self</code> 첫 번째 매개 변수로 (그리고 따라서는 메서드가 아닙니다) 작업 할 유형의 인스턴스가 필요하지 않기 때문입니다. 우리는 이미 다음과 같은 하나의 함수를 사용했습니다. <code>String::from</code> 상기 정의된 기능은 That is defined on the <code>String</code> 유형.</p>
-<p>메서드가 아닌 연관 함수는 struct의 새 인스턴스를 반환하는 생성자에 자주 사용됩니다. 이들은 종종 호출됩니다. <code>new</code>,하지만
-<code>new</code> 특별한 이름이 아니며 언어에 내장되어 있지 않습니다. 예를 들어, 우리는 명명 된 연관 함수을 제공하도록 선택할 수 있습니다. <code>square</code> 그것은 하나의 치수 매개 변수를 가지고 폭과 높이를 모두 사용하여 사각형을 쉽게 만들 수 있습니다. <code>Rectangle</code> 동일한 값을 두 번 지정하는 대신:</p>
+<p>Listing 5-14의 <code>main</code> 함수를 통해 이 코드를 실행하면 원하는 출력을 얻을 수 있습니다. 메서드는 <code>self</code> 매개변수 뒤에 서명에 여러 매개변수를 추가할 수 있으며, 이 매개변수들은 함수의 매개변수와 동일한 방식으로 동작합니다.</p>
+<h3 id="associated-functions"><a class="header" href="#associated-functions">연관 함수</a></h3>
+<p><code>impl</code> 블록 안에 정의된 모든 함수는 <em>연관 함수</em>라고 불립니다. 이는 <code>impl</code>로 이름 붙여진 타입과 연관되어 있기 때문입니다. 첫 번째 매개변수로 <code>self</code>를 받지 않는 연관 함수(따라서 메서드가 아닌 함수)를 정의할 수 있습니다. 이는 해당 타입의 인스턴스를 다루지 않아도 되기 때문입니다. 이미 이러한 함수를 하나 사용해 본 적이 있습니다. <code>String</code> 타입에 정의된 <code>String::from</code> 함수가 그것입니다.</p>
+<p>메서드가 아닌 연관 함수는 구조체의 새 인스턴스를 반환하는 생성자로 자주 사용됩니다. 이러한 함수는 보통 <code>new</code>로 이름 붙이지만, <code>new</code>은 특별한 이름이 아니며 언어에 내장되어 있지 않습니다. 예를 들어, <code>square</code>이라는 이름을 가진 연관 함수를 제공할 수 있습니다. 이 함수는 하나의 치수 매개변수를 받아 폭과 높이로 모두 사용하므로, 동일한 값을 두 번 지정해야 하는 것보다 <code>Rectangle</code>을 만드는 것이 더 쉬워집니다:</p>
 <p>파일 이름: src/main.rs</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#[derive(Debug)]
 </span><span class="boring">struct Rectangle {
@@ -360,10 +344,10 @@ Can rect1 hold rect3? false
 </span><span class="boring">fn main() {
 </span><span class="boring">    let sq = Rectangle::square(3);
 </span><span class="boring">}</span></code></pre>
-<p>반환 형식과 함수 본문의 <code>Self</code> 키워드는 <code>impl</code> 키워드 뒤에 나타나는 형식에 대한 별칭이며,이 경우 <code>Rectangle</code>입니다.</p>
-<p>이 연관 함수를 호출하기 위해 struct 이름을 가진 <code>::</code> 구문을 사용합니다. <code>let sq = Rectangle::square(3);</code>가 예제입니다. 이 함수는 struct에 의해 네임스페이스됩니다. <code>::</code> 구문은 모듈에서 만든 연관 함수와 네임스페이스 모두에 사용됩니다. <a href="ch07-02-defining-modules-to-control-scope-and-privacy.html">제 7 장</a>에서 모듈에 대해 설명합니다.</p>
-<h3 id="multiple-impl-blocks"><a class="header" href="#multiple-impl-blocks">다중 <code>impl</code> 블록</a></h3>
-<p>각 struct는 <code>impl</code> 블록을 여러 개 가질 수 있습니다. 예를 들어, Listing 5-15는 Listing 5-16에 표시된 코드와 동일하며, 각각의 메서드는 <code>impl</code> 블록에 있습니다.</p>
+<p>반환 형식과 함수 본문에 있는 <code>Self</code> 키워드는 <code>impl</code> 키워드 뒤에 나타나는 형식의 별칭입니다. 이 경우 해당 형식은 <code>Rectangle</code>입니다.</p>
+<p>이 연관 함수를 호출하려면 struct 이름과 함께 <code>::</code> 구문을 사용합니다. 예를 들어, <code>let sq = Rectangle::square(3);</code>이 있습니다. 이 함수는 struct에 의해 네임스페이스됩니다. <code>::</code> 구문은 연관 함수와 모듈이 생성한 네임스페이스 모두에 사용됩니다. <a href="ch07-02-defining-modules-to-control-scope-and-privacy.html">제 7장</a>에서 모듈에 대해 설명합니다.</p>
+<h3 id="multiple-impl-blocks"><a class="header" href="#multiple-impl-blocks">여러 <code>impl</code> 블록</a></h3>
+<p>각 구조체는 여러 <code>impl</code> 블록을 가질 수 있습니다. 예를 들어, Listing 5-15는 Listing 5-16에 표시된 코드와 동일하며, 각 메서드가 별도의 <code>impl</code> 블록에 정의되어 있습니다.</p>
 <figure class="listing" id="listing-5-16">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#[derive(Debug)]
 </span><span class="boring">struct Rectangle {
@@ -400,12 +384,12 @@ impl Rectangle {
 </span><span class="boring">    println!("Can rect1 hold rect2? {}", rect1.can_hold(&amp;rect2));
 </span><span class="boring">    println!("Can rect1 hold rect3? {}", rect1.can_hold(&amp;rect3));
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-5-16">목록 5-16</a>: 다중 <code>impl</code> 블록을 사용하여 Listing 5-15 재작성</figcaption>
+<figcaption><a href="#listing-5-16">목록 5-16</a>: 여러 <code>impl</code> 블록을 사용하여 목록 5-15를 다시 작성한 예</figcaption>
 </figure>
-<p>이 메서드를 여러 개의 <code>impl</code> 블록으로 분리할 이유는 없지만, 이것은 유효한 문법입니다. 여러 개의 <code>impl</code> 블록이 10장에서 유용한 경우를 볼 수 있습니다. 여기서는 일반적인 유형과 특성에 대해 설명합니다.</p>
+<p>여기서 이 메서드들을 여러 개의 <code>impl</code> 블록으로 분리할 이유는 없지만, 이는 유효한 문법입니다. 제네릭 타입과 트레이트를 다루는 10장에서는 여러 개의 <code>impl</code> 블록이 유용한 사례를 살펴보겠습니다.</p>
 <h2 id="summary"><a class="header" href="#summary">요약</a></h2>
-<p>Structs를 사용하면 도메인에 의미 있는 사용자 지정 형식을 만들 수 있습니다. structs를 사용하면 연결된 데이터 조각을 서로 연결하고 각 조각의 이름을 지정하여 코드를 명확하게 할 수 있습니다. <code>impl</code> 블록에서 유형과 관련된 함수를 정의할 수 있으며, 메서드는 구조체의 인스턴스가 갖는 동작을 지정할 수 있는 연관 함수의 일종입니다.</p>
-<p>그러나 structs가 사용자 지정 유형을 만들 수 있는 유일한 방법은 아닙니다: 도구 상자에 다른 도구를 추가하기 위해 러스트의 열거형 기능으로 돌아가 봅시다.</p>
+<p>구조체(struct)를 사용하면 도메인에 의미 있는 사용자 정의 타입을 만들 수 있습니다. 구조체를 사용하면 서로 관련 있는 데이터 조각을 연결하여 각 조각에 이름을 붙임으로써 코드를 명확하게 작성할 수 있습니다. <code>impl</code> 블록에서는 해당 타입과 연관된 함수를 정의할 수 있으며, 메서드는 구조체 인스턴스가 갖는 동작을 지정할 수 있는 연관 함수의 일종입니다.</p>
+<p>그러나 구조체가 사용자 정의 타입을 만드는 유일한 방법은 아닙니다. 이제 Rust의 열거형(enum) 기능을 살펴보고 도구함에 또 다른 도구를 추가해 보겠습니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

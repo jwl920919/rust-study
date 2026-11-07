@@ -162,17 +162,16 @@
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
 <h2 id="paths-for-referring-to-an-item-in-the-module-tree"><a class="header" href="#paths-for-referring-to-an-item-in-the-module-tree">모듈 트리에서 항목을 참조하기 위한 경로</a></h2>
-<p>러스트가 모듈 트리에서 아이템을 찾을 수 있는 곳을 보여주기 위해서, 우리는 파일시스템을 탐색할 때 path를 사용하는 것과 같은 방법으로 path를 사용합니다. 함수를 호출하기 위해서, 우리는 그 path를 알아야 합니다.</p>
-<p>경로는 두 가지 형태를 취할 수 있습니다.</p>
+<p>Rust가 모듈 트리에서 항목을 어디에서 찾을 수 있는지 알려주기 위해, 파일 시스템을 탐색할 때 경로를 사용하는 것과 동일한 방식으로 경로를 사용합니다. 함수를 호출하려면 해당 함수의 경로를 알아야 합니다.</p>
+<p>경로는 두 가지 형태를 가질 수 있습니다.</p>
 <ul>
-<li>절대 경로는 크레이트 루트로부터 시작하는 전체 경로이다; 외부 크레이트로부터의 코드에 대해, 절대 경로는 크레이트 이름으로 시작하고, 현재 크레이트로부터의 코드에 대해, 그것은 리터럴 <code>crate</code>로 시작한다.</li>
+<li>절대 경로는 크레이트 루트에서 시작하는 전체 경로입니다. 외부 크레이트의 코드에 대해서는 절대 경로가 크레이트 이름으로 시작하고, 현재 크레이트의 코드에 대해서는 리터럴 <code>crate</code>로 시작합니다.</li>
 <li>상대 경로는 현재 모듈에서 시작하여 <code>self</code>, <code>super</code> 또는 현재 모듈의 식별자를 사용합니다.</li>
 </ul>
-<p>절대 경로와 상대 경로 모두 이중 콜론(<code>::</code>)으로 구분된 하나 이상의 식별자가 뒤따릅니다.</p>
-<p>Listing 7-1로 돌아가서, <code>add_to_waitlist</code> 함수를 호출하고 싶습니다. 이것은 다음과 같은 질문과 같습니다. <code>add_to_waitlist</code> 함수의 경로는 무엇입니까? Listing 7-3에는 모듈과 함수 중 일부가 제거된 Listing 7-1이 포함되어 있습니다.</p>
-<p>우리는 새로운 함수 <code>add_to_waitlist</code>를 호출하는 두 가지 방법을 보여줄 것입니다. <code>eat_at_restaurant</code>, 크레이트 루트에 정의되어 있습니다. 이 경로는 정확하지만, 이 예제가 컴파일되는 것을 막는 또 다른 문제가 남아 있습니다. 우리는 그 이유를 조금 설명 할 것입니다.</p>
-<p><code>eat_at_restaurant</code> 기능은 라이브러리 크레이트의 공개 API의 일부이므로 <code>pub</code> 키워드로 표시합니다. <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword">[찬스에 강한 영어] exposing paths with the <code>pub</code>
-키워드”</a> 섹션에서 <code>pub</code>에 대해 자세히 설명합니다.</p>
+<p>절대 경로와 상대 경로 모두 이중 콜론(<code>::</code>)으로 구분된 하나 이상의 식별자가 뒤에 이어집니다.</p>
+<p>Listing 7-1로 돌아가서, <code>add_to_waitlist</code> 함수를 호출한다고 가정해 보겠습니다. 이는 다음과 같은 질문과 같습니다. <code>add_to_waitlist</code> 함수의 경로는 무엇입니까? Listing 7-3에는 일부 모듈과 함수가 제거된 Listing 7-1이 포함되어 있습니다.</p>
+<p>크레이트 루트에 정의된 새로운 함수 <code>add_to_waitlist</code>에서 <code>eat_at_restaurant</code> 함수를 호출하는 두 가지 방법을 보여 드리겠습니다. 이 경로들은 올바르지만, 이 예제가 있는 그대로 컴파일되는 것을 막는 또 다른 문제가 남아 있습니다. 그 이유는 잠시 후에 설명하겠습니다.</p>
+<p><code>eat_at_restaurant</code> 함수는 우리 라이브러리 크레이트의 공개 API의 일부이므로 <code>pub</code> 키워드로 표시합니다. <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword">“<code>pub</code> 키워드로 경로 노출하기”</a><!-- ignore --> 섹션에서 <code>pub</code>에 대해 더 자세히 다룹니다.</p>
 <figure class="listing" id="listing-7-3">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust ignore does_not_compile">mod front_of_house {
@@ -188,15 +187,13 @@ pub fn eat_at_restaurant() {
     // Relative path
     front_of_house::hosting::add_to_waitlist();
 }</code></pre>
-<figcaption><a href="#listing-7-3">목록 7-3</a>: 절대 및 상대 경로를 사용하여 <code>add_to_waitlist</code> 함수 호출</figcaption>
+<figcaption><a href="#listing-7-3">목록 7-3</a>: 절대 경로와 상대 경로를 사용하여 <code>add_to_waitlist</code> 함수 호출</figcaption>
 </figure>
 <p>우리가 처음 전화했을 때 <code>add_to_waitlist</code> 기능 IN <code>eat_at_restaurant</code>, 우리는 절대 경로를 사용합니다. <code>add_to_waitlist</code> 함수는 다음과 같은 크레이트에 정의되어 있습니다. <code>eat_at_restaurant</code>즉, 사용할 수 있는 <code>crate</code> 키워드는 절대 경로를 시작합니다. 그런 다음 다음 다음을 수행 할 때까지 각 연속 모듈을 포함합니다. <code>add_to_waitlist</code>. 같은 구조의 파일시스템을 상상할 수 있습니다. <code>/front_of_house/hosting/add_to_waitlist</code> 실행하려면To run the <code>add_to_waitlist</code> 프로그램; Using <code>crate</code> crate root에서 시작하는 이름은 다음과 같습니다. <code>/</code> 쉘의 파일 시스템 루트에서 시작합니다.</p>
 <p>우리가 부르는 두 번째 <code>add_to_waitlist</code> 에서 <code>eat_at_restaurant</code>, 상대 경로를 사용합니다. 경로는 다음과 같이 시작됩니다. <code>front_of_house</code>, 모듈 트리의 동일한 수준에서 정의된 모듈의 이름 <code>eat_at_restaurant</code>. 여기서 파일 시스템 상응은 경로를 사용하는 것입니다.
 <code>front_of_house/hosting/add_to_waitlist</code>. 모듈 이름으로 시작하면 경로가 상대적입니다.</p>
-<p>상대 경로 또는 절대 경로를 사용할지 여부를 선택하는 것은 프로젝트를 기반으로하는 결정이며, 항목을 사용하는 코드와 별도로 또는 함께 항목 정의 코드를 이동할 가능성이 더 높은지 여부에 따라 다릅니다. 예를 들어, 이동한 경우 <code>front_of_house</code> 모듈 및 The
-<code>eat_at_restaurant</code> 함수를 모듈 이름으로 <code>customer_experience</code>우리는 절대 경로를 업데이트해야합니다. <code>add_to_waitlist</code>, 그러나 상대 경로는 여전히 유효 할 것입니다. 그러나, 우리가 이동하면 <code>eat_at_restaurant</code> 함수를 따로따로 모듈명 <code>dining</code>상기 절대 경로는 The absolute path
-<code>add_to_waitlist</code> call은 동일하게 유지되지만 상대 경로는 업데이트해야합니다. 일반적으로 우리가 선호하는 것은 절대 경로를 지정하는 것입니다. 왜냐하면 우리는 코드 정의와 항목 호출을 서로 독립적으로 이동하기를 원할 가능성이 더 높기 때문입니다.</p>
-<p>Listing 7-3을 컴파일하고 왜 아직 컴파일되지 않는지 알아 봅시다! 우리가 얻는 오류는 Listing 7-4에 나와 있습니다.</p>
+<p>상대 경로와 절대 경로 중 어떤 것을 사용할지는 프로젝트에 따라 달라지는 결정입니다. 항목을 사용하는 코드와 항목 정의 코드를 함께 이동할 가능성이 높은지, 아니면 별도로 이동할 가능성이 높은지에 따라 선택해야 합니다. 예를 들어, <code>front_of_house</code> 모듈과 <code>eat_at_restaurant</code> 함수를 <code>customer_experience</code>라는 이름의 모듈로 이동한다면, <code>add_to_waitlist</code>에 대한 절대 경로를 업데이트해야 하지만, 상대 경로는 여전히 유효합니다. 반면, <code>eat_at_restaurant</code> 함수를 <code>dining</code>라는 이름의 모듈로만 별도로 이동한다면, <code>add_to_waitlist</code> 호출에 대한 절대 경로는 그대로 유지되지만, 상대 경로는 업데이트해야 합니다. 일반적으로 코드 정의와 항목 호출을 서로 독립적으로 이동할 가능성이 더 높기 때문에, 절대 경로를 지정하는 것을 선호합니다.</p>
+<p>목록 7-3을 컴파일하여 왜 아직 컴파일되지 않는지 확인해 보겠습니다. 발생하는 오류는 목록 7-4에 나와 있습니다.</p>
 <figure class="listing" id="listing-7-4">
 <pre><code class="language-console">$ cargo build
    Compiling restaurant v0.1.0 (file:///projects/restaurant)
@@ -231,13 +228,13 @@ note: the module `hosting` is defined here
 For more information about this error, try `rustc --explain E0603`.
 error: could not compile `restaurant` (lib) due to 2 previous errors
 </code></pre>
-<figcaption><a href="#listing-7-4">목록 7-4</a>: Listing 7-3에서 코드를 빌드할 때의 컴파일러 오류</figcaption>
+<figcaption><a href="#listing-7-4">목록 7-4</a>: 목록 7-3의 코드를 빌드할 때 발생하는 컴파일러 오류</figcaption>
 </figure>
-<p>오류 메시지는 모듈 <code>hosting</code>가 비공개라고 말합니다. 즉, <code>hosting</code> 모듈과 <code>add_to_waitlist</code> 함수에 대한 올바른 경로를 가지고 있지만, 개인 섹션에 대한 액세스 권한이 없기 때문에 러스트는 이를 사용할 수 없습니다. 러스트에서는 모든 항목(함수, 메서드, 구조체, enums, 모듈 및 상수)이 기본으로 설정되어 있습니다.</p>
-<p>부모 모듈의 항목은 자식 모듈 내부의 개인 항목을 사용할 수 없지만 자식 모듈의 항목은 조상 모듈의 항목을 사용할 수 있습니다. 이는 자식 모듈이 구현 세부 사항을 래핑하고 숨기지 만 자식 모듈이 정의 된 컨텍스트를 볼 수 있기 때문입니다. 우리의 은유를 계속하려면 개인 정보 보호 규칙을 레스토랑의 백 오피스처럼 생각하십시오. 레스토랑 고객은 개인이지만 사무실 관리자는 레스토랑의 모든 것을보고 수행 할 수 있습니다.</p>
-<p>러스트는 내부 구현 세부사항을 숨기는 것이 기본이 되도록 모듈 시스템 함수를 이런 식으로 선택했습니다. 그런 식으로, 외부 코드를 깨지 않고 내부 코드의 어떤 부분을 변경할 수 있는지 알 수 있습니다. 그러나, 러스트는 <code>pub</code> 키워드를 사용하여 항목을 공개함으로써 자식 모듈의 코드의 내부 부분을 외부 조상 모듈에 노출하는 옵션을 제공합니다.</p>
-<h3 id="exposing-paths-with-the-pub-keyword"><a class="header" href="#exposing-paths-with-the-pub-keyword">상기 경로는 The paths with <code>pub</code> 키워드</a></h3>
-<p><code>hosting</code> 모듈이 비공개라고 말한 Listing 7-4의 오류로 돌아가 보겠습니다. 우리는 부모 모듈의 <code>eat_at_restaurant</code> 함수가 자식 모듈의 <code>add_to_waitlist</code> 함수에 액세스 할 수 있기를 원합니다. 그래서 우리는 <code>hosting</code> 모듈을 <code>pub</code> 키워드로 표시합니다.</p>
+<p>오류 메시지는 모듈 <code>hosting</code>이 비공개라고 알려 줍니다. 즉, <code>hosting</code> 모듈과 <code>add_to_waitlist</code> 함수에 대한 올바른 경로를 가지고 있지만, Rust는 비공개 섹션에 접근할 권한이 없기 때문에 이를 사용할 수 없습니다. Rust에서는 모든 항목(함수, 메서드, 구조체, 열거형, 모듈, 상수)이 기본적으로 상위 모듈에 대해 비공개입니다. 함수나 구조체와 같은 항목을 비공개로 만들려면 해당 항목을 모듈 안에 두면 됩니다.</p>
+<p>부모 모듈의 항목은 자식 모듈 내부의 비공개 항목을 사용할 수 없지만, 자식 모듈의 항목은 조상 모듈의 항목을 사용할 수 있습니다. 이는 자식 모듈이 구현 세부 사항을 감싸고 숨기지만, 자식 모듈은 자신이 정의된 컨텍스트를 볼 수 있기 때문입니다. 비유를 계속하자면, 프라이버시 규칙을 레스토랑의 백오피스처럼 생각할 수 있습니다. 백오피스에서 일어나는 일은 레스토랑 고객에게는 비공개이지만, 해당 레스토랑을 운영하는 사무실 관리자는 레스토랑 안의 모든 것을 보고 처리할 수 있습니다.</p>
+<p>Rust는 내부 구현 세부 사항을 숨기는 것이 기본이 되도록 모듈 시스템을 이 방식으로 설계했습니다. 이렇게 하면 외부 코드를 깨뜨리지 않고 내부 코드의 어떤 부분을 변경할 수 있는지 알 수 있습니다. 하지만 Rust는 <code>pub</code> 키워드를 사용하여 항목을 공개함으로써 자식 모듈 코드의 내부 부분을 외부 조상 모듈에 노출하는 옵션도 제공합니다.</p>
+<h3 id="exposing-paths-with-the-pub-keyword"><a class="header" href="#exposing-paths-with-the-pub-keyword"><code>pub</code> 키워드로 경로 노출하기</a></h3>
+<p>Listing 7-4의 오류에서 <code>hosting</code> 모듈이 비공개라고 알려주었습니다. 부모 모듈의 <code>eat_at_restaurant</code> 함수가 자식 모듈의 <code>add_to_waitlist</code> 함수에 접근할 수 있도록 하려면, Listing 7-5에 나와 있듯이 <code>hosting</code> 모듈에 <code>pub</code> 키워드를 붙여야 합니다.</p>
 <figure class="listing" id="listing-7-5">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust ignore does_not_compile">mod front_of_house {
@@ -254,9 +251,9 @@ error: could not compile `restaurant` (lib) due to 2 previous errors
 </span><span class="boring">    // Relative path
 </span><span class="boring">    front_of_house::hosting::add_to_waitlist();
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-7-5">목록 7-5</a>: <code>hosting</code> 모듈을 <code>pub</code>로 선언하여 <code>eat_at_restaurant</code>에서 사용합니다.</figcaption>
+<figcaption><a href="#listing-7-5">목록 7-5</a>: <code>hosting</code> 모듈을 <code>pub</code>로 선언하여 <code>eat_at_restaurant</code>에서 사용할 수 있게 합니다.</figcaption>
 </figure>
-<p>불행히도, Listing 7-5의 코드는 여전히 Listing 7-6과 같이 컴파일러 오류를 초래합니다.</p>
+<p>불행히도, Listing 7-5의 코드는 여전히 Listing 7-6과 같이 컴파일러 오류를 발생시킵니다.</p>
 <figure class="listing" id="listing-7-6">
 <pre><code class="language-console">$ cargo build
    Compiling restaurant v0.1.0 (file:///projects/restaurant)
@@ -287,12 +284,11 @@ note: the function `add_to_waitlist` is defined here
 For more information about this error, try `rustc --explain E0603`.
 error: could not compile `restaurant` (lib) due to 2 previous errors
 </code></pre>
-<figcaption><a href="#listing-7-6">목록 7-6</a>: Listing 7-5에서 코드를 컴파일할 때의 컴파일러 오류</figcaption>
+<figcaption><a href="#listing-7-6">Listing 7-6</a>: Listing 7-5의 코드를 빌드할 때 발생하는 컴파일러 오류</figcaption>
 </figure>
 <p>무슨 일이 일어 났습니까? 추가 <code>pub</code> 앞의 키워드 <code>mod hosting</code> 모듈을 public으로 만듭니다. 이 변경으로, 우리가 접근할 수 있다면 <code>front_of_house</code>우리는 액세스할 수 있습니다. <code>hosting</code>. 그러나 <em>상품정보</em> 또는 <code>hosting</code> 아직 비공개입니다. 모듈을 공개하는 것은 그 내용을 공개하지 않습니다. <code>pub</code> module의 keyword는 ancestor modules에서만 참조할 수 있고, 내부 코드에는 접근하지 않습니다. modules는 container이기 때문에, module을 public으로만 만들어서 할 수 있는 일은 많지 않습니다. 우리는 더 나아가 module 내에서 하나 이상의 item을 public으로 만들 필요가 있습니다.</p>
-<p>Listing 7-6의 오류는 <code>add_to_waitlist</code> 함수가 비공개라고 말합니다. 개인 정보 보호 규칙은 모듈뿐만 아니라 구조체, 열거형, 함수 및 메서드에도 적용됩니다.</p>
-<p>우리 또한 만들어요~ <code>add_to_waitlist</code> public 기능을 추가하여 <code>pub</code>
-Listing 7-7에서와 같이 정의 전의 키워드입니다.</p>
+<p>Listing 7-6의 오류 메시지는 <code>add_to_waitlist</code> 함수가 비공개라고 알려 줍니다. 비공개 규칙은 모듈뿐만 아니라 구조체, 열거형, 함수, 메서드에도 적용됩니다.</p>
+<p>Listing 7-7에서와 같이 <code>add_to_waitlist</code> 함수 정의 앞에 <code>pub</code> 키워드를 추가하여 이 함수를 공개로 변경해 보겠습니다.</p>
 <figure class="listing" id="listing-7-7">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground test_harness">mod front_of_house {
@@ -309,29 +305,21 @@ Listing 7-7에서와 같이 정의 전의 키워드입니다.</p>
 </span><span class="boring">    // Relative path
 </span><span class="boring">    front_of_house::hosting::add_to_waitlist();
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-7-7">목록 7-7</a>: <code>pub</code> 키워드를 <code>mod hosting</code> 및 <code>fn add_to_waitlist</code>에 추가하면 <code>eat_at_restaurant</code>에서 함수를 호출할 수 있습니다.</figcaption>
+<figcaption><a href="#listing-7-7">Listing 7-7</a>: <code>pub</code> 모듈과 <code>mod hosting</code> 함수에 <code>fn add_to_waitlist</code> 키워드를 추가하면 <code>eat_at_restaurant</code> 함수에서 해당 함수를 호출할 수 있습니다.</figcaption>
 </figure>
-<p>이제 코드가 컴파일됩니다! <code>pub</code> 키워드를 추가하면 개인 정보 보호 규칙에 대해 <code>eat_at_restaurant</code>에서 이러한 경로를 사용할 수있는 이유를 보려면 절대 경로와 상대 경로를 살펴 보겠습니다.</p>
-<p>절대 경로에서, 우리는 <code>crate</code>, 우리의 크레이트의 단위 나무의 뿌리. <code>front_of_house</code> module은 crate root에 정의되어 있습니다.
-<code>front_of_house</code> 공개하지 않기 때문에, 그 <code>eat_at_restaurant</code> 함수는 다음과 같은 모듈에 정의되어 있습니다. <code>front_of_house</code> (그게, <code>eat_at_restaurant</code>
-그리고 <code>front_of_house</code> 우리는 형제입니다), 우리는 언급 할 수 있습니다. <code>front_of_house</code> 보낸 사람
-<code>eat_at_restaurant</code>. 다음은 <code>hosting</code> 모듈 표시됨 <code>pub</code>. 우리는 부모 단위에의 접근해서 좋습니다 <code>hosting</code>그래서 우리는 접근 할 수 있습니다. <code>hosting</code>. 마지막으로, the
-<code>add_to_waitlist</code> 기능은으로 표를 합니다 <code>pub</code>그리고 우리는 부모 모듈에 접근할 수 있고, 그래서 이 함수 호출이 작동한다!</p>
-<p>상대 경로에서 로직은 첫 번째 단계를 제외한 절대 경로와 동일합니다. 크레이트 루트에서 시작하는 대신 경로는
-<code>front_of_house</code>. 그 <code>front_of_house</code> 모듈은 다음과 같은 모듈 내에서 정의됩니다. <code>eat_at_restaurant</code>상기 모듈로부터 시작하는 상대 경로는 The relative path starting from the module
-<code>eat_at_restaurant</code> 정의 된 작품입니다. 그 다음, 왜냐하면 <code>hosting</code> 그리고
-<code>add_to_waitlist</code> 로 표시됨 <code>pub</code>나머지 경로는 작동하고 이 함수 호출은 유효합니다!</p>
-<p>다른 프로젝트에서 코드를 사용할 수 있도록 라이브러리 크레이트를 공유할 계획이라면, 공개 API는 크레이트 사용자가 코드와 상호 작용하는 방법을 결정하는 계약입니다. 사람들이 더 쉽게 크레이트에 의존할 수 있도록 공개 API의 변경을 관리하는 것에 대한 많은 고려 사항이 있습니다. 이러한 고려 사항은 이 책의 범위를 벗어납니다. 이 주제에 관심이 있다면 <a href="https://rust-lang.github.io/api-guidelines/">러스트 API 가이드라인을</a>를 참조하십시오.</p>
+<p>이제 코드가 컴파일됩니다! 비공개 규칙에 따라 <code>pub</code> 키워드를 추가하면 <code>eat_at_restaurant</code>에서 이러한 경로를 사용할 수 있는 이유를 이해하기 위해 절대 경로와 상대 경로를 살펴 보겠습니다.</p>
+<p>절대 경로에서는 크레이트 모듈 트리의 루트인 <code>crate</code>에서 시작합니다. <code>front_of_house</code> 모듈은 크레이트 루트에 정의되어 있습니다. <code>front_of_house</code>는 비공개이지만, <code>eat_at_restaurant</code> 함수가 <code>front_of_house</code>와 동일한 모듈에 정의되어 있기 때문에(즉, <code>eat_at_restaurant</code>와 <code>front_of_house</code>는 형제 관계이므로) <code>front_of_house</code>에서 <code>eat_at_restaurant</code>에 참조할 수 있습니다. 다음으로 <code>hosting</code> 모듈은 <code>pub</code>로 표시되어 있습니다. <code>hosting</code>의 부모 모듈에 접근할 수 있으므로 <code>hosting</code>에도 접근할 수 있습니다. 마지막으로, <code>add_to_waitlist</code> 함수는 <code>pub</code>로 표시되어 있고, 이 함수의 부모 모듈에 접근할 수 있으므로 이 함수 호출이 성공합니다!</p>
+<p>상대 경로의 논리는 첫 번째 단계를 제외하면 절대 경로와 동일합니다. 크레이트 루트에서 시작하는 대신 경로는 <code>front_of_house</code>에서 시작합니다. <code>front_of_house</code> 모듈은 <code>eat_at_restaurant</code>와 동일한 모듈 내에 정의되어 있으므로, <code>eat_at_restaurant</code>이 정의된 모듈에서 시작하는 상대 경로는 유효합니다. 그 다음, <code>hosting</code>와 <code>add_to_waitlist</code>가 <code>pub</code>로 표시되어 있으므로 나머지 경로는 유효하며, 이 함수 호출은 성공합니다!</p>
+<p>다른 프로젝트에서 코드를 사용할 수 있도록 라이브러리 크레이트를 공유할 계획이라면, 공개 API는 크레이트 사용자가 코드와 상호 작용하는 방법을 결정하는 계약입니다. 사람들이 더 쉽게 크레이트에 의존할 수 있도록 공개 API의 변경을 관리하는 데 고려해야 할 사항이 많습니다. 이러한 고려 사항은 이 책의 범위를 벗어납니다. 이 주제에 관심이 있다면 <a href="https://rust-lang.github.io/api-guidelines/">Rust API Guidelines</a>를 참조하십시오.</p>
 <section aria-role="note" class="note">
-<h4 id="best-practices-for-packages-with-a-binary-and-a-library"><a class="header" href="#best-practices-for-packages-with-a-binary-and-a-library">이진 및 라이브러리가 있는 패키지에 대한 모범 사례</a></h4>
-<p>패키지는 src/main.rs 바이너리 크레이트 루트와 src/lib.rs 라이브러리 크레이트 루트를 모두 포함할 수 있으며, 두 크레이트 모두 기본적으로 패키지 이름을 갖습니다. 일반적으로 이러한 패턴의 라이브러리와 바이너리 크레이트 모두를 포함하는 패키지는 라이브러리 크레이트에 정의된 코드를 호출하는 실행 파일을 시작하기에 충분한 코드를 가지고 있습니다. 이를 통해 다른 프로젝트들이 공유된 크레이트 라이브러리가 제공하는 대부분의 기능을 활용할 수 있습니다.</p>
-<p>모듈 트리는 src/lib.rs에 정의되어야 합니다. 그런 다음, 모든 공개 항목은 패키지의 이름으로 경로를 시작함으로써 바이너리 크레이트에서 사용될 수 있습니다. 바이너리 크레이트는 라이브러리 크레이트를 사용하는 것처럼 라이브러리 크레이트의 사용자가 됩니다: 그것은 오직 공개 API만 사용할 수 있습니다. 이것은 당신이 좋은 API를 디자인하는데 도움을 줍니다; 당신은 저자일 뿐만 아니라 클라이언트이기도 합니다!</p>
-<p><a href="ch12-00-an-io-project.html">제 12 장</a>에서는 바이너리 크레이트와 라이브러리 크레이트를 모두 포함하는 명령줄 프로그램으로 이러한 조직적 관행을 시연할 것입니다.</p>
+<h4 id="best-practices-for-packages-with-a-binary-and-a-library"><a class="header" href="#best-practices-for-packages-with-a-binary-and-a-library">바이너리와 라이브러리가 포함된 패키지의 모범 사례</a></h4>
+<p>패키지는 src/main.rs 바이너리 크레이트 루트와 src/lib.rs 라이브러리 크레이트 루트를 모두 포함할 수 있으며, 두 크레이트 모두 기본적으로 패키지 이름을 갖습니다. 일반적으로 라이브러리와 바이너리 크레이트를 모두 포함하는 패키지는 바이너리 크레이트에 실행 파일을 시작하고 라이브러리 크레이트에 정의된 코드를 호출하는 데 필요한 최소한의 코드만 포함합니다. 이를 통해 라이브러리 크레이트의 코드를 공유할 수 있으므로, 다른 프로젝트가 해당 패키지가 제공하는 대부분의 기능을 활용할 수 있습니다.</p>
+<p>모듈 트리는 src/lib.rs에 정의되어야 합니다. 그러면 공개 항목은 패키지 이름으로 시작하는 경로를 사용하여 바이너리 크레이트에서 사용할 수 있습니다. 바이너리 크레이트는 완전히 외부의 크레이트가 라이브러리 크레이트를 사용하는 것과 마찬가지로 라이브러리 크레이트의 사용자가 되며, 오직 공개 API만 사용할 수 있습니다. 이는 좋은 API를 설계하는 데 도움이 됩니다. 당신은 저자일 뿐만 아니라 클라이언트이기도 하니까요!</p>
+<p><a href="ch12-00-an-io-project.html">제12장</a>에서는 바이너리 크레이트와 라이브러리 크레이트를 모두 포함하는 명령줄 프로그램을 통해 이러한 조직 관행을 시연할 것입니다.</p>
 </section>
-<h3 id="starting-relative-paths-with-super"><a class="header" href="#starting-relative-paths-with-super">상대 경로 시작 <code>super</code></a></h3>
-<p>경로의 시작 부분에서 <code>super</code>를 사용하여 현재 모듈이나 크레이트 루트가 아닌 부모 모듈에서 시작하는 상대 경로를 구성할 수 있습니다. 이것은 부모 디렉토리로 가는 것을 의미하는 <code>..</code> 구문으로 파일 시스템 경로를 시작하는 것과 같습니다. <code>super</code>를 사용하면 부모 모듈에 있는 항목을 참조할 수 있으며, 이는 모듈이 다른 곳에서 쉽게 재배열될 수 있습니다.</p>
-<p>Listing 7-8의 코드는 요리사가 잘못된 주문을 수정하여 개인적으로 고객에게 전달하는 상황을 모델링한다고 가정해 봅시다. 함수 <code>fix_incorrect_order</code> 에 정의되어 있음 <code>back_of_house</code> module 함수 호출 <code>deliver_order</code> 부모 모듈에서 다음 경로로 지정
-<code>deliver_order</code>, 시작으로 <code>super</code>.</p>
+<h3 id="starting-relative-paths-with-super"><a class="header" href="#starting-relative-paths-with-super">super로 시작하는 상대 경로<code>super</code></a></h3>
+<p>경로 시작 부분에 <code>super</code>를 사용하면 현재 모듈이나 크레이트 루트가 아닌 부모 모듈에서 시작하는 상대 경로를 구성할 수 있습니다. 이는 파일 시스템에서 부모 디렉토리로 이동하는 <code>..</code> 구문을 사용하는 것과 같은 원리입니다. <code>super</code>를 사용하면 부모 모듈에 있는 항목을 참조할 수 있습니다. 이는 해당 모듈이 부모 모듈과 밀접한 관련이 있지만, 나중에 모듈 트리 내에서 부모 모듈이 다른 위치로 이동할 수 있는 경우 모듈 트리를 재배열하는 작업을 용이하게 합니다.</p>
+<p>Listing 7-8의 코드는 요리사가 잘못된 주문을 수정한 뒤 직접 고객에게 전달하는 상황을 모델링합니다. <code>fix_incorrect_order</code> 함수는 <code>back_of_house</code> 모듈에 정의되어 있으며, <code>deliver_order</code>로 시작하는 경로를 지정하여 부모 모듈에 정의된 <code>deliver_order</code> 함수를 호출합니다. 이 경로는 <code>super</code>로 시작합니다.</p>
 <figure class="listing" id="listing-7-8">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground test_harness">fn deliver_order() {}
@@ -346,10 +334,9 @@ mod back_of_house {
 }</code></pre>
 <figcaption><a href="#listing-7-8">목록 7-8</a>: <code>super</code>로 시작하는 상대 경로를 사용하여 함수 호출</figcaption>
 </figure>
-<p>이름 * <code>fix_incorrect_order</code> 상기 기능은 In the function is <code>back_of_house</code> 모듈, 그래서 우리는 사용할 수 있습니다 <code>super</code> 부모 모듈로 이동하려면 <code>back_of_house</code>상기 경우에, Wherein this case, <code>crate</code>, 루트. 거기에서, 우리는 찾습니다 <code>deliver_order</code> 그리고 그것을 찾으십시오. 성공! 우리는 <code>back_of_house</code> 모듈 및 The <code>deliver_order</code> 함수는 서로 같은 관계를 유지하고 크레이트의 모듈 트리를 재구성하기로 결정해야 함께 움직일 수 있습니다. 따라서 우리는 <code>super</code> 앞으로 이 코드가 다른 모듈로 이동될 경우 코드를 업데이트할 수 있는 장소가 더 적어질 것입니다.</p>
-<h3 id="making-structs-and-enums-public"><a class="header" href="#making-structs-and-enums-public">구조체 및 열거형 공개</a></h3>
-<p>우리는 또한 사용할 수 있습니다 <code>pub</code> structs와 enums를 public으로 지정하지만 사용법에 대한 몇 가지 추가 세부 사항이 있습니다. <code>pub</code> 구조체와 enums로. 우리가 사용하는 경우에 <code>pub</code>
-struct 정의 전에, struct를 public으로 만들지만, struct의 필드는 여전히 private일 것입니다. 우리는 각 필드를 public으로 만들 수 있습니다. Listing 7-9에서 public을 정의했습니다. <code>back_of_house::Breakfast</code> public으로 구조화 <code>toast</code> 필드하지만 개인 <code>seasonal_fruit</code> 이 모델은 고객이 식사와 함께 제공되는 빵의 유형을 선택할 수있는 식당의 경우이지만 요리사는 계절과 재고에 따라 어떤 과일이 함께 제공되는지 결정합니다. 사용 가능한 과일은 신속하게 변경되므로 고객은 과일을 선택하거나 어떤 과일을 얻을 수 있는지 볼 수 없습니다.</p>
+<p><code>fix_incorrect_order</code> 함수는 <code>back_of_house</code> 모듈에 있으므로, <code>super</code>를 사용하여 <code>back_of_house</code>의 상위 모듈로 이동할 수 있습니다. 이 경우 상위 모듈은 루트인 <code>crate</code>입니다. 그곳에서 <code>deliver_order</code>를 찾아 찾습니다. 성공입니다! <code>back_of_house</code> 모듈과 <code>deliver_order</code> 함수는 서로 같은 관계를 유지할 가능성이 높으며, 크레이트의 모듈 트리를 재구성하기로 결정하면 함께 이동할 것입니다. 따라서 이 코드가 다른 모듈로 이동하더라도 향후 코드 업데이트가 필요한 곳이 적도록 <code>super</code>을 사용했습니다.</p>
+<h3 id="making-structs-and-enums-public"><a class="header" href="#making-structs-and-enums-public">구조체와 열거형 공개</a></h3>
+<p><code>pub</code>를 사용하여 구조체와 열거형도 공개로 지정할 수 있습니다. 다만 구조체와 열거형에 <code>pub</code>을 사용할 때는 몇 가지 추가적인 사항이 있습니다. 구조체 정의 앞에 <code>pub</code>를 붙이면 구조체 자체는 공개가 되지만, 구조체의 필드는 여전히 비공개로 유지됩니다. 각 필드를 개별적으로 공개할지 비공개로 둘지 결정할 수 있습니다. Listing 7-9에서는 <code>back_of_house::Breakfast</code> 구조체를 공개로 정의했으며, <code>toast</code> 필드는 공개로, <code>seasonal_fruit</code> 필드는 비공개로 설정했습니다. 이는 식당에서 고객이 식사와 함께 제공되는 빵의 종류는 선택할 수 있지만, 셰프가 계절과 재고 상황에 따라 어떤 과일을 함께 제공할지 결정하는 상황을 모델링한 것입니다. 제공 가능한 과일은 자주 바뀌므로, 고객은 과일을 선택하거나 어떤 과일을 받을지 확인할 수 없습니다.</p>
 <figure class="listing" id="listing-7-9">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground">mod back_of_house {
@@ -379,14 +366,11 @@ pub fn eat_at_restaurant() {
     // to see or modify the seasonal fruit that comes with the meal.
     // meal.seasonal_fruit = String::from("blueberries");
 }</code></pre>
-<figcaption><a href="#listing-7-9">목록 7-9</a>: 일부 공용 필드와 일부 개인 필드가 있는 구조체</figcaption>
+<figcaption><a href="#listing-7-9">Listing 7-9</a>: 일부 필드가 공개되고 일부 필드가 비공개인 구조체</figcaption>
 </figure>
-<p>왜냐하면 <code>toast</code> 에서 필드는 <code>back_of_house::Breakfast</code> struct 는 public 으로, <code>eat_at_restaurant</code> 우리는 읽고 쓸 수 있습니다. <code>toast</code> dot 표기법을 사용하는 분야. 우리가 사용할 수 없다는 것을 주의하십시오 <code>seasonal_fruit</code> 오시는 길
-<code>eat_at_restaurant</code>왜냐하면 <code>seasonal_fruit</code> is private. 라인 수정을 주석을 풀어보십시오. <code>seasonal_fruit</code> 어떤 오류가 발생하는지 볼 수 있는 필드 값!</p>
-<p>또한, 그 이유는 <code>back_of_house::Breakfast</code> struct는 private 필드를 가지고 있고, struct는 instance를 구성하는 public associated 함수를 제공해야 한다. <code>Breakfast</code> (우리는 그것을 지명했습니다) <code>summer</code> 여기). 경우 <code>Breakfast</code> 그런 함수가 없었으므로 인스턴스를 만들 수 없었습니다. <code>Breakfast</code> 에서
-<code>eat_at_restaurant</code>왜냐하면 우리는 private의 값을 설정할 수 없기 때문입니다.
-<code>seasonal_fruit</code> 오시는 길 <code>eat_at_restaurant</code>.</p>
-<p>반대로, 만약 우리가 열거형을 공개한다면, 그 모든 변형은 공개될 것입니다. <code>pub</code> 이전 <code>enum</code> 키워드, Listing 7-10에 나와 있습니다.</p>
+<p><code>toast</code> 구조체의 <code>back_of_house::Breakfast</code> 필드가 공개(public)되어 있으므로, <code>eat_at_restaurant</code> 함수에서 점(dot) 표기법을 사용하여 <code>toast</code> 필드에 값을 읽고 쓸 수 있습니다. <code>seasonal_fruit</code> 필드는 비공개(private)이므로 <code>eat_at_restaurant</code> 함수에서 사용할 수 없다는 점에 유의하세요. <code>seasonal_fruit</code> 필드의 값을 수정하는 줄의 주석을 해제하여 어떤 오류가 발생하는지 확인해 보세요! <code>seasonal_fruit</code></p>
+<p>또한, <code>back_of_house::Breakfast</code> 구조체는 private 필드를 가지고 있으므로, <code>Breakfast</code> 인스턴스를 생성하는 public associated 함수를 제공해야 합니다. 여기서는 해당 함수 이름을 <code>summer</code> 로 지었습니다. 만약 <code>Breakfast</code> 에 그런 함수가 없었더라면, <code>Breakfast</code> 에서 <code>eat_at_restaurant</code> 인스턴스를 생성할 수 없었을 것입니다. 그 이유는 <code>seasonal_fruit</code> 에서 private 필드인 <code>eat_at_restaurant</code> 의 값을 설정할 수 없기 때문입니다.</p>
+<p>반면, 열거형을 공개로 지정하면 그 열거형의 모든 변형(variant)이 자동으로 공개됩니다. Listing 7-10에 보여지듯, <code>pub</code> 키워드 앞에 <code>enum</code>만 붙이면 됩니다.</p>
 <figure class="listing" id="listing-7-10">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground">mod back_of_house {
@@ -400,11 +384,11 @@ pub fn eat_at_restaurant() {
     let order1 = back_of_house::Appetizer::Soup;
     let order2 = back_of_house::Appetizer::Salad;
 }</code></pre>
-<figcaption><a href="#listing-7-10">등록 7-10</a>: 열거형을 public으로 지정하면 모든 변형이 공개됩니다.</figcaption>
+<figcaption><a href="#listing-7-10">Listing 7-10</a>: 열거형을 공개로 지정하면 모든 변형이 공개됩니다.</figcaption>
 </figure>
-<p><code>Appetizer</code> 열거형을 공개했기 때문에 <code>Soup</code> 및 <code>Salad</code> 변형을 <code>eat_at_restaurant</code>에서 사용할 수 있습니다.</p>
-<p>Enums는 변형이 public이 아니라면 매우 유용하지 않습니다. 모든 경우에 <code>pub</code>로 모든 enum 변형에 주석을 달아야하는 것은 성가신 일이기 때문에 enum 변형의 기본값은 public입니다. Structs는 필드가 public이 아니더라도 종종 유용하므로 struct 필드는 <code>pub</code>로 주석을 달지 않는 한 모든 것이 private이라는 일반적인 규칙을 따릅니다.</p>
-<p>우리가 다루지 않은 <code>pub</code>와 관련된 상황이 하나 더 있는데, 이것이 마지막 모듈 시스템 기능입니다. <code>use</code> 키워드입니다. 먼저 <code>use</code>를 다루겠습니다. 그러면 <code>pub</code>와 <code>use</code>를 결합하는 방법을 보여 드리겠습니다.</p>
+<p><code>Appetizer</code> 열거형을 공개로 지정했으므로, <code>Soup</code>와 <code>Salad</code> 변형을 <code>eat_at_restaurant</code>에서 사용할 수 있습니다.</p>
+<p>변형이 public이 아니라면 enum은 큰 실용성이 없습니다. 모든 enum 변형에 <code>pub</code>를 붙여야 하는 것은 번거로우므로, enum 변형은 기본적으로 public입니다. 반면 struct는 필드가 public이 아니더라도 유용한 경우가 많으므로, struct 필드는 <code>pub</code>로 명시적으로 지정하지 않는 한 기본적으로 private인 일반적인 규칙을 따릅니다.</p>
+<p>아직 다루지 않은 <code>pub</code>와 관련된 상황이 하나 더 있습니다. 바로 마지막 모듈 시스템 기능인 <code>use</code> 키워드입니다. 먼저 <code>use</code> 자체에 대해 설명한 뒤, <code>pub</code>과 <code>use</code>를 결합하는 방법을 보여 드리겠습니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

@@ -161,32 +161,32 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h2 id="comments"><a class="header" href="#comments">댓글</a></h2>
-<p>모든 프로그래머는 코드를 이해하기 쉽게 만들기 위해 노력하지만 때로는 추가 설명이 보증됩니다. 이러한 경우 프로그래머는 컴파일러가 무시할 소스 코드에 주석을 남기지만 소스 코드를 읽는 사람들은 유용 할 수 있습니다.</p>
-<p>여기 간단한 코멘트가 있다:</p>
+<h2 id="comments"><a class="header" href="#comments">주석</a></h2>
+<p>모든 프로그래머는 코드를 이해하기 쉽게 작성하려고 노력하지만, 때로는 추가적인 설명이 필요합니다. 이러한 경우 프로그래머는 컴파일러가 무시하지만 소스 코드를 읽는 사람에게 유용할 수 있는 주석을 소스 코드에 남깁니다.</p>
+<p>다음은 간단한 주석의 예입니다:</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>// hello, world
 <span class="boring">}</span></code></pre>
-<p>러스트에서 관용적 주석 스타일은 두 개의 슬래시로 주석을 시작하고 주석은 줄이 끝날 때까지 계속됩니다. 한 줄을 넘어서는 주석의 경우, 다음과 같이 각 줄에 <code>//</code>를 포함시켜야 합니다:</p>
+<p>Rust에서 관용적인 주석 스타일은 두 개의 슬래시로 주석을 시작하며, 주석은 줄의 끝까지 계속됩니다. 한 줄을 넘어가는 주석의 경우, 다음과 같이 각 줄에 <code>//</code>를 포함해야 합니다:</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>// So we're doing something complicated here, long enough that we need
 // multiple lines of comments to do it! Whew! Hopefully, this comment will
 // explain what's going on.
 <span class="boring">}</span></code></pre>
-<p>주석은 코드를 포함하는 줄의 끝에 배치될 수 있습니다:</p>
+<p>주석은 코드가 포함된 줄의 끝에 배치할 수도 있습니다:</p>
 <p>파일 이름: src/main.rs</p>
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let lucky_number = 7; // I'm feeling lucky today
 }</code></pre>
-<p>그러나 주석을 달고있는 코드 위의 별도의 줄에 주석이 달린이 형식으로 사용되는 것을 더 자주 보게 될 것입니다.</p>
+<p>하지만 주석이 설명하는 코드 위에 별도의 줄로 주석이 놓인 형식을 더 자주 볼 것입니다:</p>
 <p>파일 이름: src/main.rs</p>
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     // I'm feeling lucky today
     let lucky_number = 7;
 }</code></pre>
-<p>러스트는 또한 다른 종류의 코멘트, 문서 코멘트를 가지고 있으며, 우리는 14장의 <a href="ch14-02-publishing-to-crates-io.html">“Crates.io에 크레이트를 게시”</a> 섹션에서 논의할 것입니다.</p>
+<p>Rust에는 문서 주석이라는 다른 종류의 주석도 있으며, 이 내용은 14장의 <a href="ch14-02-publishing-to-crates-io.html">“Crates.io에 크레이트를 게시”</a> 섹션에서 다룹니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

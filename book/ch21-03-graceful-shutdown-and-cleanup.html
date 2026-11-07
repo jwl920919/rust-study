@@ -162,11 +162,11 @@
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
 <h2 id="graceful-shutdown-and-cleanup"><a class="header" href="#graceful-shutdown-and-cleanup">우아한 종료 및 정리</a></h2>
-<p>Listing 21-20의 코드는 의도한 대로 스레드 풀을 사용하여 비동기적으로 요청에 응답하고 있습니다. <code>workers</code>, <code>id</code> 및 <code>thread</code> 필드에 대한 몇 가지 경고를 얻을 수 있습니다. 이는 우리가 아무 것도 청소하지 않는다는 것을 직접적으로 상기시켜줍니다. 우리가 덜 우아한 ctrl-C 메소드를 사용하여 중간 스레드를 중단하면 다른 스레드도 즉시 중단됩니다.</p>
-<p>그런 다음 <code>Drop</code> 트레잇을 구현하여 풀의 각 스레드에 <code>join</code>를 호출하여 종료하기 전에 작업중인 요청을 완료 할 수 있습니다. 그런 다음 스레드에 새 요청을 수락하지 말고 종료해야한다고 알리는 방법을 구현합니다. 이 코드를 실행하려면 스레드를 정상적으로 종료하기 전에 두 개의 요청 만 수락하도록 서버를 수정합니다.</p>
-<p>우리가 갈 때 한 가지 주목해야 할 점은, 이 중 어느 것도 클로저를 실행하는 코드의 부분에 영향을 미치지 않으므로, 우리가 비동기 런타임을 위해 스레드 풀을 사용한다면 모든 것이 똑같을 것입니다.</p>
-<h3 id="implementing-the-drop-trait-on-threadpool"><a class="header" href="#implementing-the-drop-trait-on-threadpool">상기 구현 The implementing <code>Drop</code> 트레이트 온 <code>ThreadPool</code></a></h3>
-<p>스레드 풀에서 <code>Drop</code> 구현부터 시작하겠습니다. 풀이 삭제되면 스레드가 모두 참여하여 작업을 완료해야 합니다. Listing 21-22는 <code>Drop</code> 구현에 대한 첫 번째 시도를 보여줍니다. 이 코드는 아직 작동하지 않습니다.</p>
+<p>Listing 21-20의 코드는 의도한 대로 스레드 풀을 사용하여 비동기적으로 요청에 응답하고 있습니다. <code>workers</code>, <code>id</code> 및 <code>thread</code> 필드를 직접적으로 사용하지 않기 때문에 이에 대한 몇 가지 경고가 발생합니다. 이는 우리가 아무것도 정리하지 않고 있다는 점을 상기시킵니다. 덜 우아한 ctrl-C 방법으로 메인 스레드를 중단하면, 요청을 처리하는 중이더라도 다른 모든 스레드가 즉시 중단됩니다.</p>
+<p>다음으로, <code>Drop</code> 트레이트를 구현하여 풀 내 각 스레드에 <code>join</code>을 호출하겠습니다. 이를 통해 스레드가 종료되기 전에 현재 처리 중인 요청을 완료할 수 있습니다. 또한, 스레드가 새 요청을 더 이상 수락하지 않고 종료하도록 지시하는 방법을 구현하겠습니다. 이 코드의 동작을 확인하기 위해, 서버를 수정하여 스레드 풀을 우아하게 종료하기 전에 두 개의 요청만 수락하도록 하겠습니다.</p>
+<p>진행하면서 주목해야 할 한 가지 점은, 이 변경 사항이 클로저를 실행하는 코드 부분에 영향을 미치지 않는다는 것입니다. 따라서 비동기 런타임에 스레드 풀을 사용하는 경우에도 여기의 모든 내용은 동일할 것입니다.</p>
+<h3 id="implementing-the-drop-trait-on-threadpool"><a class="header" href="#implementing-the-drop-trait-on-threadpool">ThreadPool에서 Drop 트레이트 구현<code>Drop</code><code>ThreadPool</code></a></h3>
+<p>우선 스레드 풀에 <code>Drop</code>을 구현하는 것부터 시작하겠습니다. 풀이 드롭되면, 모든 스레드가 작업을 완료하도록 join을 수행해야 합니다. Listing 21-22는 <code>Drop</code> 구현의 첫 번째 시도를 보여줍니다. 이 코드는 아직 완전히 작동하지 않습니다.</p>
 <figure class="listing" id="listing-21-22">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::{
@@ -245,12 +245,9 @@
 </span><span class="boring">        Worker { id, thread }
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-21-22">목록 21-22</a>: 스레드 풀이 범위를 벗어날 때 각 스레드에 연결</figcaption>
+<figcaption><a href="#listing-21-22">Listing 21-22</a>: 스레드 풀이 스코프를 벗어날 때 각 스레드 join</figcaption>
 </figure>
-<p>먼저, 각 스레드 풀을 반복합니다. <code>workers</code>. 우리는 사용 <code>&amp;mut</code> 그 이유 때문에 <code>self</code> 변경 가능한 참조이며, 또한 변경이 가능해야 합니다.
-<code>worker</code>. 각각을 위해 <code>worker</code>이 특정 메시지를 출력합니다.Print a message that this specific.
-<code>Worker</code> 인스턴스가 종료되고 호출됩니다. <code>join</code> 그 위에 <code>Worker</code>
-instance의 thread입니다. 호출할 경우 <code>join</code> 실패, 우리는 사용 <code>unwrap</code> 러스트를 패닉에 빠뜨리고 비열한 셧다운으로 들어갑니다.</p>
+<p>먼저, 스레드 풀의 각 워커를 순회합니다. <code>workers</code>. <code>&amp;mut</code>을 사용하는 이유는 <code>self</code>가 변경 가능한 참조이므로, <code>worker</code>도 변경할 수 있어야 하기 때문입니다. 각 워커에 대해 해당 <code>worker</code> 인스턴스가 종료되고 있다는 메시지를 출력한 후, 그 <code>Worker</code> 인스턴스의 스레드에서 <code>join</code>을 호출합니다. <code>Worker</code> 호출이 실패하면, <code>join</code>을 사용하여 Rust가 패닉하도록 하고 비정상적인 종료 상태로 전환합니다. <code>unwrap</code></p>
 <p>이 코드를 컴파일할 때 발생하는 오류는 다음과 같습니다.</p>
 <pre><code class="language-console">$ cargo check
     Checking hello v0.1.0 (file:///projects/hello)
@@ -268,17 +265,12 @@ note: `JoinHandle::&lt;T&gt;::join` takes ownership of the receiver `self`, whic
 For more information about this error, try `rustc --explain E0507`.
 error: could not compile `hello` (lib) due to 1 previous error
 </code></pre>
-<p>실수는 우리가 전화 할 수 없다는 것을 말해줍니다. <code>join</code> 왜냐하면 우리는 단지 각각의 가변 차입을 가지고 있기 때문입니다. <code>worker</code> 그리고 <code>join</code> 인수의 소유권을 취합니다. 이 문제를 해결하려면 스레드를 이동해야 합니다. <code>Worker</code> 소유하고 있는 사례
-<code>thread</code> 그래서 <code>join</code> 스레드를 사용할 수 있습니다. 이를 위한 한 가지 방법은 Listing 18-15에서 했던 것과 같은 접근 방식을 취하는 것입니다. <code>Worker</code> 잡아라
-<code>Option&lt;thread::JoinHandle&lt;()&gt;&gt;</code>을 호출할 수 있습니다.We could call the <code>take</code> 상기 방법은 The method
-<code>Option</code> 값을 밖으로 이동하려면To move the value out of the <code>Some</code> 변형 및 A를 떠나 <code>None</code> 그 자리에 변형. 즉, <code>Worker</code> 상기 실행하는 단계는 Wherein running is a <code>Some</code>
-변수 in <code>thread</code>우리가 청소를 하고 싶을 때 <code>Worker</code>우리는 교체 할 것입니다.
-<code>Some</code> 으로 <code>None</code> 그래서 that the <code>Worker</code> 달려야 할 목이 하나도 없었다.</p>
+<p><code>join</code>을 호출할 수 없는 이유는 각 <code>worker</code>을 가변으로 빌렸을 뿐이고, <code>join</code>는 인수의 소유권을 가져가기 때문입니다. 이 문제를 해결하려면 스레드를 소유한 <code>Worker</code> 인스턴스에서 <code>thread</code>를 꺼내야 <code>join</code>가 그 스레드의 소유권을 가져갈 수 있습니다. 한 가지 방법은 예제 18-15에서 사용한 접근법입니다. <code>Worker</code>이 <code>Option&lt;thread::JoinHandle&lt;()&gt;&gt;</code>을 보관하게 하면, <code>take</code> 메서드를 <code>Option</code>에 호출해 값을 <code>Some</code> 변형에서 꺼내고 그 자리에 <code>None</code> 변형을 남길 수 있습니다. 즉 실행 중인 <code>Worker</code>의 <code>thread</code> 필드는 <code>Some</code> 변형을 가집니다. <code>Worker</code>을 정리할 때 <code>Some</code>을 <code>None</code>로 바꾸면 해당 <code>Worker</code>에는 실행할 스레드가 남지 않습니다.</p>
 <p>그러나, the <em>만</em> 이 시간이 올 것이다 때 떨어지는 것입니다
 <code>Worker</code>. 교환에서, 우리는을 취급해야 할 것입니다
 <code>Option&lt;thread::JoinHandle&lt;()&gt;&gt;</code> 우리가 접근한 어느 곳이든 <code>worker.thread</code>. 바보같은 러스트 사용 <code>Option</code> 아주 조금,하지만 당신이 뭔가를 포장하는 자신을 발견 할 때 당신은 항상에있을 것입니다 알고 <code>Option</code> 이와 같은 해결 방법으로 코드를 더 깔끔하고 오류가 덜 발생하기 쉬운 다른 방법을 찾는 것이 좋습니다.</p>
-<p>이 경우 <code>Vec::drain</code> 메소드가 더 나은 대안입니다. 벡터에서 제거할 항목을 지정하고 해당 항목의 반복자를 반환하는 범위 매개 변수를 허용합니다. <code>..</code> 범위 구문을 전달하면 벡터의 모든 값이 제거됩니다.</p>
-<p>따라서 <code>ThreadPool</code> <code>drop</code> 구현을 다음과 같이 업데이트해야합니다.</p>
+<p>이 경우 더 나은 대안이 있습니다. 바로 <code>Vec::drain</code> 메소드입니다. 이 메소드는 벡터에서 제거할 항목을 지정하는 범위 매개변수를 받아 해당 항목들의 반복자를 반환합니다. <code>..</code> 범위 구문을 전달하면 벡터의 모든 값이 제거됩니다.</p>
+<p>따라서 <code>ThreadPool</code> <code>drop</code> 구현을 다음과 같이 업데이트해야 합니다.</p>
 <figure class="listing">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
@@ -361,14 +353,13 @@ error: could not compile `hello` (lib) due to 1 previous error
 </span><span class="boring">}
 </span><span class="boring">}</span></code></pre>
 </figure>
-<p>이것은 컴파일러 오류를 해결하고 코드에 다른 변경이 필요하지 않습니다. Drop은 패닉 할 때 호출 될 수 있기 때문에 unwrap은 패닉을 일으킬 수 있으며 이중 패닉을 일으켜 즉시 프로그램을 중단하고 진행중인 정리를 종료합니다. 이것은 예제 프로그램에는 적합하지만 프로덕션 코드에는 권장되지 않습니다.</p>
-<h3 id="signaling-to-the-threads-to-stop-listening-for-jobs"><a class="header" href="#signaling-to-the-threads-to-stop-listening-for-jobs">작업에 대 한 듣기를 중지 하려면 스레드에 신호</a></h3>
+<p>이로써 컴파일러 오류가 해결되며 코드에 다른 변경이 필요하지 않습니다. 단, drop은 패닉이 발생했을 때 호출될 수 있으므로 unwrap도 패닉을 일으켜 이중 패닉을 유발할 수 있습니다. 이는 프로그램을 즉시 중단하고 진행 중인 정리를 종료시킵니다. 예제 프로그램에는 괜찮지만, 프로덕션 코드에는 권장되지 않습니다.</p>
+<h3 id="signaling-to-the-threads-to-stop-listening-for-jobs"><a class="header" href="#signaling-to-the-threads-to-stop-listening-for-jobs">스레드에 작업을 더 이상 수신하지 말라는 신호를 보내기</a></h3>
 <p>우리가 만든 모든 변경 사항으로, 우리의 코드는 아무런 경고없이 컴파일됩니다. 그러나 나쁜 소식은이 코드가 아직 우리가 원하는 방식으로 작동하지 않는다는 것입니다. 키는 스레드에 의해 실행되는 클로저의 논리입니다. <code>Worker</code>
 Instance: 지금 이 순간 <code>join</code>하지만, 그들은 그 스레드를 종료하지 않습니다, 왜냐하면 그들은 <code>loop</code> 영원히 일자리를 찾고. 우리가 우리를 떨어 뜨리려고한다면
 <code>ThreadPool</code> 우리의 현재 구현으로 <code>drop</code>주 스레드는 첫 번째 스레드가 완료되기를 기다리며 영원히 차단됩니다.</p>
-<p>이 문제를 해결하려면 <code>ThreadPool</code> <code>drop</code> 구현에서 변경 한 다음 <code>Worker</code> 루프에서 변경해야합니다.</p>
-<p>먼저, 우리는 변화할 것이다. <code>ThreadPool</code> <code>drop</code> 구현을 명시적으로 삭제하려면 <code>sender</code> 스레드가 끝날 때까지 기다리기 전에. Listing 21-23은 다음과 같은 변경 사항을 보여줍니다. <code>ThreadPool</code> explicitly 삭제하기 <code>sender</code>. 실과는 다른, 여기에서 우리는 <em>지원하다</em> 를 사용해야 합니다. <code>Option</code> 움직일 수 있는 <code>sender</code> 아웃 오브
-<code>ThreadPool</code> 으로 <code>Option::take</code>.</p>
+<p>이 문제를 해결하려면 <code>ThreadPool</code>의 <code>drop</code> 구현을 변경한 다음, <code>Worker</code> 루프를 변경해야 합니다.</p>
+<p>먼저, 스레드가 종료될 때까지 기다리기 전에 <code>ThreadPool</code>의 <code>drop</code> 구현을 변경하여 <code>sender</code>를 명시적으로 드롭(drop)하도록 하겠습니다. Listing 21-23은 <code>ThreadPool</code>를 명시적으로 드롭하도록 <code>sender</code>를 변경하는 내용을 보여줍니다. 스레드와 달리, 여기서는 <em>Option</em>을 사용하여 <code>Option</code>를 <code>sender</code>에서 <code>ThreadPool</code>로 이동(move)할 수 있어야 하므로, <code>Option::take</code>을 사용해야 합니다.</p>
 <figure class="listing" id="listing-21-23">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground not_desired_behavior"><span class="boring">use std::{
@@ -550,9 +541,9 @@ impl Drop for ThreadPool {
         Worker { id, thread }
     }
 }</code></pre>
-<figcaption><a href="#listing-21-24">목록 21-24</a>: <code>recv</code>가 오류를 반환할 때 루프를 명시적으로 분리합니다.</figcaption>
+<figcaption><a href="#listing-21-24">Listing 21-24</a>: <code>recv</code>가 에러를 반환할 때 루프를 명시적으로 빠져나오기</figcaption>
 </figure>
-<p>이 코드가 동작하는 것을 보기 위해, Listing 21-25에서 보듯이, 서버를 정상적으로 종료하기 전에 <code>main</code>를 수정하여 두 개의 요청만 수락하도록 합시다.</p>
+<p>이 코드가 동작하는 것을 확인해 보겠습니다. Listing 21-25에 나와 있듯이, 서버를 정상적으로 종료하기 전에 두 개의 요청만 수락하도록 <code>main</code>를 수정합니다.</p>
 <figure class="listing" id="listing-21-25">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore"><span class="boring">use hello::ThreadPool;
@@ -600,11 +591,11 @@ impl Drop for ThreadPool {
 </span><span class="boring">
 </span><span class="boring">    stream.write_all(response.as_bytes()).unwrap();
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-21-25">목록 21-25</a>: 루프를 종료하여 두 개의 요청을 처리한 후 서버 종료</figcaption>
+<figcaption><a href="#listing-21-25">Listing 21-25</a>: 두 개의 요청을 처리한 후 루프를 종료하여 서버를 종료하기</figcaption>
 </figure>
-<p>실제 웹 서버가 두 개의 요청만 한 후에 종료되는 것을 원하지 않을 것입니다. 이 코드는 우아한 종료 및 정리가 작동 순서에 있음을 보여줍니다.</p>
-<p><code>take</code> 메서드는 <code>Iterator</code> 트레잇에 정의되어 있으며, 이 반복을 최대로 처음 두 항목으로 제한합니다. <code>ThreadPool</code>는 <code>main</code>의 끝에 스코프를 벗어나 <code>drop</code> 구현이 실행됩니다.</p>
-<p><code>cargo run</code>로 서버를 시작하고 세 가지 요청을 합니다. 세 번째 요청은 오류가 발생해야 하며 터미널에서 다음과 유사한 출력을 볼 수 있습니다.</p>
+<p>실제 웹 서버가 두 개의 요청만 처리한 후 종료되도록 하고 싶지는 않을 것입니다. 이 코드는 정상적인 종료와 정리 과정이 올바르게 작동함을 보여주기 위한 것입니다.</p>
+<p><code>take</code> 메서드는 <code>Iterator</code> 트레잇에 정의되어 있으며, 반복을 최대 두 항목까지만 수행하도록 제한합니다. <code>ThreadPool</code>는 <code>main</code>의 끝에서 스코프를 벗어나면 <code>drop</code> 구현이 실행됩니다.</p>
+<p><code>cargo run</code>로 서버를 시작하고 세 가지 요청을 보냅니다. 세 번째 요청은 오류가 발생해야 하며, 터미널에서 다음과 유사한 출력을 볼 수 있습니다.</p>
 <!-- manual-regeneration
 cd listings/ch21-web-server/listing-21-25
 cargo run
@@ -633,11 +624,9 @@ Shutting down worker 3
 </code></pre>
 <p>당신은 다른 순서를 볼 수 있습니다 <code>Worker</code> ID와 메시지가 인쇄되었습니다. 이 코드가 메시지에서 어떻게 작동하는지 볼 수 있습니다. <code>Worker</code> 인스턴스 0과 3은 처음 두 개의 요청을 받았습니다. 서버는 두 번째 연결 후 연결을 수락하지 않고 <code>Drop</code> 구현 켜짐 <code>ThreadPool</code> 시작하기 전에 실행하기 <code>Worker 3</code> 심지어 그 일을 시작합니다. <code>sender</code> 모든 연결 끊기
 <code>Worker</code> instances 그리고 그들에게 종료하라고 지시한다. <code>Worker</code> 각 인스턴스는 연결이 끊겼을 때 메시지를 출력한 다음 스레드 풀이 호출됩니다. <code>join</code> 각각을 기다리는 <code>Worker</code> Thread 마무리</p>
-<p>이 특정 실행의 한 가지 흥미로운 측면을 주목하십시오. <code>ThreadPool</code>
-떨어뜨린 <code>sender</code>그리고 어떤 전에 <code>Worker</code> 오류가 발생하였습니다, 참여하려고 합니다. <code>Worker 0</code>. <code>Worker 0</code> 아직 실수를 하지 않았으니 <code>recv</code>, 그래서 메인 스레드가 차단, 대기 <code>Worker 0</code> 마무리. 한편, <code>Worker 3</code>
-작업을 받은 다음 모든 스레드에 오류가 발생했습니다. <code>Worker 0</code> 끝마친, 주요 스레드는 나머지를 기다렸다 <code>Worker</code> 종료할 인스턴스. 그 시점에서, 그들은 모두 자신의 루프를 종료하고 중지했다.</p>
-<p>축하합니다! 이제 프로젝트를 완료했습니다. 비동기적으로 응답하기 위해 스레드 풀을 사용하는 기본 웹 서버가 있습니다. 우리는 풀의 모든 스레드를 정리하는 서버의 우아한 종료를 수행 할 수 있습니다.</p>
-<p>참고를 위한 가득 차있는 부호는 여기 있습니다:</p>
+<p>이 특정 실행의 흥미로운 측면을 주목하십시오. <code>ThreadPool</code>이 <code>sender</code>을 드롭한 후, 어떤 <code>Worker</code>도 오류를 수신하기 전에 <code>Worker 0</code>을 조인(join)하려고 했습니다. <code>Worker 0</code>는 아직 <code>recv</code>로부터 오류를 받지 못했기 때문에, 메인 스레드는 <code>Worker 0</code>가 종료하기를 기다리며 차단되었습니다. 그 사이, <code>Worker 3</code>는 작업을 수신했고, 이후 모든 스레드가 오류를 수신했습니다. <code>Worker 0</code>가 종료하자, 메인 스레드는 나머지 <code>Worker</code> 인스턴스가 종료하기를 기다렸습니다. 그 시점에서, 모든 인스턴스는 루프를 종료하고 멈춰 있었습니다.</p>
+<p>축하합니다! 이제 프로젝트를 완료했습니다. 스레드 풀을 사용하여 비동기적으로 응답하는 기본 웹 서버를 만들었고, 풀의 모든 스레드를 정리하는 서버의 정상적인 종료를 수행할 수 있습니다.</p>
+<p>참고용 전체 코드는 다음과 같습니다:</p>
 <figure class="listing">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore">use hello::ThreadPool;
@@ -783,16 +772,16 @@ impl Worker {
     }
 }</code></pre>
 </figure>
-<p>우리는 여기에서 더 많은 일을 할 수 있습니다! 이 프로젝트를 계속 향상 시키려면 다음과 같은 아이디어가 있습니다.</p>
+<p>여기서 더 많은 일을 할 수 있습니다! 이 프로젝트를 계속 개선하고 싶다면 다음 아이디어를 참고해 보세요:</p>
 <ul>
 <li><code>ThreadPool</code> 및 공개 메서드에 더 많은 문서를 추가합니다.</li>
 <li>라이브러리의 기능에 대한 테스트를 추가합니다.</li>
-<li><code>unwrap</code> 호출을 보다 강력한 오류 처리로 변경합니다.</li>
-<li><code>ThreadPool</code>를 사용하여 웹 요청을 제공하는 것 이외의 작업을 수행하십시오.</li>
-<li><a href="https://crates.io/">크레이트.io</a>에서 스레드 풀 크레이트를 찾고 대신 크레이트를 사용하여 유사한 웹 서버를 구현하십시오. 그런 다음 API와 견고성을 우리가 구현 한 스레드 풀과 비교하십시오.</li>
+<li><code>unwrap</code> 호출을 보다 견고한 오류 처리로 변경합니다.</li>
+<li><code>ThreadPool</code>를 사용하여 웹 요청 처리 이외의 작업을 수행합니다.</li>
+<li><a href="https://crates.io/">크레이트.io</a>에서 스레드 풀 크레이트를 찾아, 해당 크레이트를 사용하여 유사한 웹 서버를 구현합니다. 그런 다음, 그 API와 견고성을 우리가 구현한 스레드 풀과 비교해 보세요.</li>
 </ul>
 <h2 id="summary"><a class="header" href="#summary">요약</a></h2>
-<p>잘했습니다! 이 책의 끝까지 왔습니다! 이 러스트 투어에 참여해 주셔서 감사합니다. 이제 자신의 러스트 프로젝트를 구현하고 다른 사람들의 프로젝트를 도울 준비가 되었습니다. 러스트 여정에서 직면하는 모든 도전에 도움을 주고자 하는 다른 러스트aceans의 환영하는 커뮤니티가 있다는 것을 명심하십시오.</p>
+<p>잘하셨습니다! 이 책의 끝까지 오셨습니다! Rust 투어를 함께해 주셔서 감사합니다. 이제 독자님의 Rust 프로젝트를 구현하고 다른 사람들의 프로젝트에 기여할 준비가 되었습니다. Rust 여정에서 마주칠 수 있는 모든 도전에 도움을 주고 싶어 하는 환영하는 Rustacean 커뮤니티가 있다는 점을 기억해 두세요.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

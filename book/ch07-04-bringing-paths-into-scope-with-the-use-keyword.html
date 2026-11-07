@@ -162,10 +162,8 @@
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
 <h2 id="bringing-paths-into-scope-with-the-use-keyword"><a class="header" href="#bringing-paths-into-scope-with-the-use-keyword">Paths 를 Scope 로 가져옴 <code>use</code> 키워드</a></h2>
-<p>함수를 호출하기 위한 경로를 작성하는 것은 불편하고 반복적일 수 있습니다. Listing 7-7에서, <code>add_to_waitlist</code> 기능, 우리가 부르고 싶을 때마다 <code>add_to_waitlist</code>
-우리는 specify 해야 했다. <code>front_of_house</code> 그리고 <code>hosting</code> 또한. 다행스럽게도, 이 프로세스를 단순화하는 방법이 있습니다. <code>use</code>
-키워드를 한 번 사용하고 범위의 다른 모든 곳에서 더 짧은 이름을 사용하십시오.</p>
-<p>Listing 7-11에서 <code>crate::front_of_house::hosting</code> 모듈을 <code>eat_at_restaurant</code> 함수의 범위로 가져와서 <code>hosting::add_to_waitlist</code>에서 <code>add_to_waitlist</code> 함수를 호출하기 위해 <code>eat_at_restaurant</code>만 지정하면 됩니다.</p>
+<p>함수를 호출할 때마다 경로를 직접 작성해야 하는 것은 불편하고 반복적으로 느껴질 수 있습니다. Listing 7-7에서 <code>add_to_waitlist</code> 함수의 절대 경로든 상대 경로든 상관없이, <code>add_to_waitlist</code> 함수를 호출할 때마다 <code>front_of_house</code>와 <code>hosting</code>를 지정해야 했습니다. 다행히 이 과정을 단순화하는 방법이 있습니다. <code>use</code> 키워드를 한 번 사용해 경로의 단축 경로를 만들면, 해당 스코프의 다른 모든 곳에서 더 짧은 이름을 사용할 수 있습니다.</p>
+<p>Listing 7-11에서 <code>crate::front_of_house::hosting</code> 모듈을 <code>eat_at_restaurant</code> 함수의 스코프에 가져옵니다. 이렇게 하면 <code>hosting::add_to_waitlist</code>에서 <code>add_to_waitlist</code> 함수를 호출할 때 <code>eat_at_restaurant</code>만 지정하면 됩니다.</p>
 <figure class="listing" id="listing-7-11">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground test_harness">mod front_of_house {
@@ -179,12 +177,10 @@ use crate::front_of_house::hosting;
 pub fn eat_at_restaurant() {
     hosting::add_to_waitlist();
 }</code></pre>
-<figcaption><a href="#listing-7-11">목록 7-11</a>: <code>use</code>를 가진 범위로 단위 가져오기</figcaption>
+<figcaption><a href="#listing-7-11">목록 7-11</a>: <code>use</code>를 사용하여 모듈을 스코프에 가져오기</figcaption>
 </figure>
-<p><code>use</code>와 스코프의 경로를 추가하는 것은 파일 시스템에 심볼릭 링크를 만드는 것과 비슷합니다. 크레이트 루트에 <code>use crate::front_of_house::hosting</code>를 추가함으로써 <code>hosting</code>는 이제 크레이트 루트에 <code>hosting</code> 모듈이 정의 된 것처럼 해당 범위의 유효한 이름입니다. <code>use</code>와 함께 범위로 가져온 경로도 개인 정보 보호 정책을 확인합니다.</p>
-<p>그 참고 <code>use</code> 특정 범위에 대한 바로 가기를 만듭니다.
-<code>use</code> occurs. Listing 7-12는 다음과 같이 움직입니다. <code>eat_at_restaurant</code> 새로운 자식 모듈에 대한 함수 <code>customer</code>상기 다른 범위는 The different scope is <code>use</code>
-함수 본문이 컴파일되지 않습니다.The function body will not compile.</p>
+<p><code>use</code>와 경로를 스코프에 추가하는 것은 파일 시스템에 심볼릭 링크를 만드는 것과 비슷합니다. 크레이트 루트에 <code>use crate::front_of_house::hosting</code>를 추가하면, <code>hosting</code>는 이제 크레이트 루트에 <code>hosting</code> 모듈이 정의된 것처럼 해당 스코프에서 유효한 이름이 됩니다. <code>use</code>를 통해 스코프에 가져온 경로도 다른 경로와 마찬가지로 프라이버시 규칙을 따릅니다.</p>
+<p><code>use</code>은 <code>use</code>이 발생하는 특정 스코프에 대해서만 단축 경로를 생성한다는 점에 유의하십시오. Listing 7-12는 <code>eat_at_restaurant</code> 함수를 <code>customer</code>이라는 이름의 새로운 자식 모듈로 이동시킵니다. 이로 인해 <code>use</code> 문장과는 다른 스코프가 되므로, 함수 본문은 컴파일되지 않습니다.</p>
 <figure class="listing" id="listing-7-12">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground test_harness does_not_compile ignore">mod front_of_house {
@@ -200,9 +196,9 @@ mod customer {
         hosting::add_to_waitlist();
     }
 }</code></pre>
-<figcaption><a href="#listing-7-12">등록 7-12</a>: <code>use</code> 문은 해당 범위에만 적용됩니다.</figcaption>
+<figcaption><a href="#listing-7-12">예제 7-12</a>: <code>use</code> 문장은 선언된 스코프 내에서만 적용됩니다.</figcaption>
 </figure>
-<p>컴파일러 오류는 바로 가기가 <code>customer</code> 모듈에 더 이상 적용되지 않음을 보여줍니다.</p>
+<p>컴파일러 오류는 단축 경로가 더 이상 <code>customer</code> 모듈 내에서 적용되지 않음을 보여줍니다.</p>
 <pre><code class="language-console">$ cargo build
    Compiling restaurant v0.1.0 (file:///projects/restaurant)
 error[E0433]: cannot find module or crate `hosting` in this scope
@@ -231,9 +227,8 @@ error: could not compile `restaurant` (lib) due to 1 previous error; 1 warning e
 </code></pre>
 <p>또한 경고가 있음을 알 수 있습니다. <code>use</code> 더 이상 범위에 사용되지 않습니다! 이 문제를 해결하려면 <code>use</code> 내부 The <code>customer</code> module 너무, 또는 부모 모듈의 바로 가기를 참조 <code>super::hosting</code> #아이 안에
 <code>customer</code> 모듈.</p>
-<h3 id="creating-idiomatic-use-paths"><a class="header" href="#creating-idiomatic-use-paths">바보 같은 짓 만들기 <code>use</code> 경로</a></h3>
-<p>Listing 7-11에서, 여러분은 왜 우리가 명시했는지 궁금했을 것입니다. <code>use crate::front_of_house::hosting</code> 그리고 나서 전화 <code>hosting::add_to_waitlist</code> 에서
-<code>eat_at_restaurant</code>를 명시하는 대신, Instead to specify the <code>use</code> 오시는 길 All the Way <code>add_to_waitlist</code> 함수는 Listing 7-13에서와 같은 결과를 얻을 수 있습니다.</p>
+<h3 id="creating-idiomatic-use-paths"><a class="header" href="#creating-idiomatic-use-paths">관용적인 use 경로 만들기<code>use</code></a></h3>
+<p>Listing 7-11에서 <code>use crate::front_of_house::hosting</code>을 지정하고 <code>eat_at_restaurant</code>에서 <code>hosting::add_to_waitlist</code>을 호출한 이유를 궁금해했을 수 있습니다. 이는 Listing 7-13과 같이 <code>add_to_waitlist</code> 함수까지 <code>use</code> 경로를 모두 지정하여 동일한 결과를 얻는 것보다 나은 방법입니다.</p>
 <figure class="listing" id="listing-7-13">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground test_harness">mod front_of_house {
@@ -250,7 +245,7 @@ pub fn eat_at_restaurant() {
 <figcaption><a href="#listing-7-13">목록 7-13</a>태그 보관물: Bringing the <code>add_to_waitlist</code> 범위로 기능을 가진 <code>use</code>그것은 unidiomatic하다.</figcaption>
 </figure>
 <p>Listing 7-11과 Listing 7-13 모두 동일한 작업을 수행하지만, Listing 7-11은 함수를 범위로 가져 오는 관용적 방법입니다. <code>use</code>. 기능의 부모 단위를 범위로 가져오기를 가진 <code>use</code> 즉, 함수를 호출할 때 부모 모듈을 지정해야 합니다. 함수를 호출할 때 부모 모듈을 지정하면 전체 경로의 반복을 최소화하면서 함수가 로컬로 정의되지 않음을 분명히 알 수 있습니다. Listing 7-13의 코드는 어디에 있는지 명확하지 않습니다. <code>add_to_waitlist</code> 정의된다.</p>
-<p>반면에 <code>use</code>를 사용하여 structs, enums 및 기타 항목을 가져올 때 전체 경로를 지정하는 것은 관용적입니다. Listing 7-14는 표준 라이브러리의 <code>HashMap</code> struct를 바이너리 크레이트의 범위로 가져 오는 관용적 방법을 보여줍니다.</p>
+<p>반면에 <code>use</code>를 사용해 구조체, 열거형 및 기타 항목을 가져올 때는 전체 경로를 지정하는 것이 관용적입니다. Listing 7-14는 표준 라이브러리의 <code>HashMap</code> 구조체를 바이너리 크레이트의 스코프로 가져오는 관용적 방법을 보여줍니다.</p>
 <figure class="listing" id="listing-7-14">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">use std::collections::HashMap;
@@ -259,10 +254,10 @@ fn main() {
     let mut map = HashMap::new();
     map.insert(1, 2);
 }</code></pre>
-<figcaption><a href="#listing-7-14">목록 7-14</a>: <code>HashMap</code>를 관용적인 방식으로 범위로 가져오기</figcaption>
+<figcaption><a href="#listing-7-14">목록 7-14</a>: <code>HashMap</code>를 관용적인 방식으로 스코프에 가져오기</figcaption>
 </figure>
-<p>이 관용구 뒤에는 강력한 이유가 없습니다: 그것은 단지 컨벤션이 등장하고, 사람들은 이런 식으로 러스트 코드를 읽고 쓰는 것에 익숙해졌습니다.</p>
-<p>이 관용구의 예외는 같은 이름을 가진 두 개의 항목을 <code>use</code> 문 범위로 가져오는 경우입니다. 러스트는 이를 허용하지 않기 때문입니다. Listing 7-15는 두 개의 <code>Result</code> 유형을 같은 이름을 가지지만 다른 부모 모듈이 있는 범위로 가져오는 방법과 이들을 참조하는 방법을 보여줍니다.</p>
+<p>이 관용적 방식에는 특별한 이유가 있는 것이 아닙니다. 그저 시간이 지나면서 자연스럽게 형성된 관례이며, 개발자들은 이러한 방식으로 Rust 코드를 읽고 쓰는 데 익숙해져 있습니다.</p>
+<p>이 관용법의 예외는 <code>use</code> 문으로 같은 이름을 가진 두 항목을 스코프에 가져오는 경우입니다. Rust는 이를 허용하지 않기 때문입니다. Listing 7-15는 이름은 같지만 부모 모듈이 다른 두 개의 <code>Result</code> 타입을 스코프에 가져오는 방법과 이를 참조하는 방법을 보여줍니다.</p>
 <figure class="listing" id="listing-7-15">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground">use std::fmt;
@@ -277,11 +272,11 @@ fn function2() -&gt; io::Result&lt;()&gt; {
     // --snip--
 <span class="boring">    Ok(())
 </span>}</code></pre>
-<figcaption><a href="#listing-7-15">목록 7-15</a>: 같은 이름을 가진 두 가지 유형을 같은 범위에 가져오려면 부모 모듈을 사용해야 합니다.</figcaption>
+<figcaption><a href="#listing-7-15">Listing 7-15</a>: 같은 이름을 가진 두 타입을 동일한 스코프에 가져오려면 부모 모듈을 사용해야 합니다.</figcaption>
 </figure>
-<p>보시다시피, 부모 모듈을 사용하면 두 개의 <code>Result</code> 타입을 구분할 수 있습니다. 대신 <code>use std::fmt::Result</code>와 <code>use std::io::Result</code>를 지정한다면, 같은 범위에 두 개의 <code>Result</code> 타입을 가질 것이고, 러스트는 <code>Result</code>를 사용할 때 어떤 것을 의미하는지 알지 못할 것입니다.</p>
-<h3 id="providing-new-names-with-the-as-keyword"><a class="header" href="#providing-new-names-with-the-as-keyword">새로운 이름들을 추가하여 <code>as</code> 키워드</a></h3>
-<p>같은 이름의 두 가지 유형을 동일한 범위로 가져 오는 문제에 대한 또 다른 해결책이 있습니다. <code>use</code>: 경로 뒤에, 우리는 지정할 수 있습니다 <code>as</code> 새로운 지역 이름, 또는 <em>별칭</em>Listing 7-16은 Listing 7-15의 코드를 작성하는 또 다른 방법을 보여줍니다. <code>Result</code> 타입 사용 <code>as</code>.</p>
+<p>보시다시피, 부모 모듈을 사용하면 두 개의 <code>Result</code> 타입을 구분할 수 있습니다. 대신 <code>use std::fmt::Result</code>과 <code>use std::io::Result</code>를 지정한다면, 동일한 스코프에 두 개의 <code>Result</code> 타입이 존재하게 되어 Rust가 <code>Result</code>를 사용할 때 어떤 타입을 의미하는지 알 수 없게 됩니다.</p>
+<h3 id="providing-new-names-with-the-as-keyword"><a class="header" href="#providing-new-names-with-the-as-keyword">as 키워드를 사용하여 새 이름 지정<code>as</code></a></h3>
+<p>같은 이름의 두 타입을 <code>use</code>를 사용하여 동일한 스코프에 가져오는 문제에 대한 또 다른 해결책이 있습니다. 경로 뒤에 <code>as</code>와 타입의 새 지역 이름, 즉 <em>별칭</em>을 지정할 수 있습니다. Listing 7-16은 <code>Result</code>을 사용하여 두 <code>as</code> 타입 중 하나를 이름 변경함으로써 Listing 7-15의 코드를 작성하는 또 다른 방법을 보여줍니다.</p>
 <figure class="listing" id="listing-7-16">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground">use std::fmt::Result;
@@ -296,13 +291,11 @@ fn function2() -&gt; IoResult&lt;()&gt; {
     // --snip--
 <span class="boring">    Ok(())
 </span>}</code></pre>
-<figcaption><a href="#listing-7-16">목록 7-16</a>: <code>as</code> 키워드를 사용하여 범위로 가져올 때 유형 이름 바꾸기</figcaption>
+<figcaption><a href="#listing-7-16">목록 7-16</a>: <code>as</code> 키워드를 사용해 스코프에 가져올 때 타입 이름 변경</figcaption>
 </figure>
-<p>두 번째 <code>use</code> 성명, 우리는 새 이름을 선택 <code>IoResult</code> 이름 *
-<code>std::io::Result</code> 타입과 충돌하지 않는 타입 <code>Result</code> 보낸 사람 <code>std::fmt</code>
-Listing 7-15 및 Listing 7-16은 관용적인 것으로 간주되므로 선택은 귀하에게 달려 있습니다!</p>
-<h3 id="re-exporting-names-with-pub-use"><a class="header" href="#re-exporting-names-with-pub-use">다른 이름으로 다시 내보내기 <code>pub use</code></a></h3>
-<p><code>use</code> 키워드로 이름을 가져올 때 이름은 가져온 범위에 대해 비공개입니다. 해당 범위 외부의 코드를 해당 범위에 정의 된 것처럼 해당 이름을 참조 할 수 있도록 <code>pub</code>와 <code>use</code>를 결합 할 수 있습니다. 이 기술은 항목을 범위로 가져오고 다른 항목을 사용할 수 있도록하기 때문에 다시 내보내기라고합니다.</p>
+<p>두 번째 <code>use</code> 문에서 <code>IoResult</code> 타입에 대해 새 이름 <code>std::io::Result</code>을 선택했습니다. 이는 함께 스코프에 가져온 <code>Result</code>의 <code>std::fmt</code>와 충돌하지 않습니다. Listing 7-15와 Listing 7-16 모두 관용적(idiomatic)으로 간주되므로 선택은 개발자에게 달려 있습니다!</p>
+<h3 id="re-exporting-names-with-pub-use"><a class="header" href="#re-exporting-names-with-pub-use">pub use를 사용하여 이름 재내보내기<code>pub use</code></a></h3>
+<p><code>use</code> 키워드를 사용하여 이름을 스코프에 가져오면, 그 이름은 가져온 스코프 내에서만 비공개로 유지됩니다. 해당 스코프 외부의 코드가 마치 그 이름이 해당 스코프에서 정의된 것처럼 참조할 수 있도록 하려면 <code>pub</code>와 <code>use</code>를 함께 사용할 수 있습니다. 이 기법은 항목을 스코프에 가져오는 동시에 다른 사람이 그 항목을 자신의 스코프에 가져올 수 있게 하므로 재수출(re-exporting)이라고 합니다.</p>
 <p>Listing 7-17은 루트 모듈에서 <code>use</code>가 <code>pub use</code>로 변경된 Listing 7-11의 코드를 보여줍니다.</p>
 <figure class="listing" id="listing-7-17">
 <span class="file-name">Filename: src/lib.rs</span>
@@ -317,15 +310,12 @@ pub use crate::front_of_house::hosting;
 pub fn eat_at_restaurant() {
     hosting::add_to_waitlist();
 }</code></pre>
-<figcaption><a href="#listing-7-17">목록 7-17</a>: <code>pub use</code>를 가진 새로운 범위에서 사용할 것이다 어떤 부호든지를 위해 유효한 이름을 만들기</figcaption>
+<figcaption><a href="#listing-7-17">Listing 7-17</a>: <code>pub use</code>를 사용하여 새로운 스코프에서 모든 코드가 사용할 수 있도록 이름을 노출하기</figcaption>
 </figure>
-<p>이 변경 전에, 외부 코드는 다음과 같이 호출해야 합니다. <code>add_to_waitlist</code>
-path를 사용하는 함수
-<code>restaurant::front_of_house::hosting::add_to_waitlist()</code>또한, 필요한 것은 <code>front_of_house</code> 다음과 같이 표시할 모듈 <code>pub</code>. 지금이 <code>pub use</code> 다시 export 된 <code>hosting</code> 루트 모듈에서 모듈, 외부 코드는 경로를 사용할 수 있습니다 <code>restaurant::hosting::add_to_waitlist()</code> 대신.</p>
-<p>재수출은 코드의 내부 구조가 프로그래머가 코드에 대해 생각하는 것과 다를 때 유용합니다. 예를 들어,이 레스토랑 은유에서 레스토랑을 운영하는 사람들은 "집 앞"과 "집 뒤"에 대해 생각합니다. 그러나 레스토랑을 방문하는 고객은 아마도 그 용어로 레스토랑의 부분에 대해 생각하지 않을 것입니다. <code>pub use</code>, 우리는 하나의 구조로 코드를 작성할 수 있지만 다른 구조를 노출 할 수 있습니다. 이렇게하면 라이브러리에서 작업하는 프로그래머와 라이브러리를 호출하는 프로그래머를 위해 라이브러리가 잘 조직됩니다. 우리는 다른 예를 살펴 보겠습니다. <code>pub use</code>
-그리고 그것은 당신의 크레이트의 문서에 영향을 미치는 방법 <a href="ch14-02-publishing-to-crates-io.html#exporting-a-convenient-public-api">“편리한 공용 API 내보내기”</a> 무시  챕터 14.</p>
+<p>이 변경 사항 이전에는 외부 코드가 <code>add_to_waitlist</code> 경로를 사용하여 <code>restaurant::front_of_house::hosting::add_to_waitlist()</code> 함수를 호출해야 했으며, 이를 위해서는 <code>front_of_house</code> 모듈이 <code>pub</code>로 표시되어 있어야 했습니다. 이제 루트 모듈에서 <code>pub use</code>를 통해 <code>hosting</code> 모듈이 재수출되었으므로, 외부 코드는 대신 <code>restaurant::hosting::add_to_waitlist()</code> 경로를 사용할 수 있습니다.</p>
+<p>재수출은 코드의 내부 구조가 라이브러리를 사용하는 프로그래머가 해당 분야를 이해하는 방식과 다를 때 유용합니다. 식당 비유를 들면, 식당 운영자는 “홀(front of house)”과 “주방(back of house)”으로 나누어 생각합니다. 하지만 고객은 식당을 그런 영역으로 구분해 생각하지 않을 수 있습니다. <code>pub use</code>를 사용하면 코드는 한 구조로 작성하면서 외부에는 다른 구조를 공개할 수 있습니다. 이렇게 하면 라이브러리를 개발하는 사람과 사용하는 사람 모두가 이해하기 쉬운 구조를 만들 수 있습니다. 14장에서 <code>pub use</code>의 또 다른 예를 살펴보고, 이것이 크레이트 문서에 미치는 영향도 알아보겠습니다. 자세한 내용은 <a href="ch14-02-publishing-to-crates-io.html#exporting-a-convenient-public-api">“편리한 공개 API 내보내기”</a><!-- ignore --> 절을 참고하세요.</p>
 <h3 id="using-external-packages"><a class="header" href="#using-external-packages">외부 패키지 사용</a></h3>
-<p>2 장에서는 임의의 숫자를 얻기 위해 <code>rand</code>라는 외부 패키지를 사용하는 추측 게임 프로젝트를 프로그래밍했습니다. 우리 프로젝트에서 <code>rand</code>를 사용하려면 Cargo.toml에이 줄을 추가했습니다.</p>
+<p>2장에서 우리는 임의의 숫자를 얻기 위해 <code>rand</code>라는 외부 패키지를 사용한 추측 게임 프로젝트를 프로그래밍했습니다. 프로젝트에서 <code>rand</code>를 사용하려면 Cargo.toml에 다음 줄을 추가했습니다.</p>
 <!-- When updating the version of `rand` used, also update the version of
 `rand` used in these files so they all match:
 
@@ -338,7 +328,7 @@ path를 사용하는 함수
 <pre><code class="language-toml">rand = "0.10.1"
 </code></pre>
 </figure>
-<p><code>rand</code>를 Cargo.toml에 종속성으로 추가하면 Cargo는 <code>rand</code> 패키지 및 <a href="https://crates.io/">크레이트.io</a>의 종속성을 다운로드하고 <code>rand</code>를 프로젝트에 사용할 수 있습니다.</p>
+<p><code>rand</code>를 Cargo.toml에 종속성으로 추가하면 Cargo는 <code>rand</code> 패키지 및 <a href="https://crates.io/">크레이트.io</a>의 종속성을 다운로드하고 <code>rand</code>를 프로젝트에서 사용할 수 있게 합니다.</p>
 <p>그래서, Bring <code>rand</code> 우리의 패키지의 범위에 정의, 우리는 추가
 <code>use</code> 크레이트의 이름으로 시작하는 선, <code>rand</code>, 그리고 우리가 범위로 가지고 가고 싶었던 품목을 목록으로 만들었습니다. 그것을 안으로 되새기십시오 <a href="ch02-00-guessing-game-tutorial.html#generating-a-random-number">“무작위 숫자 를 만들어 내는 일”</a> 무시  제 2 장에서, 우리는에 항목을 가져
 <code>rand::prelude</code> module을 호출하고, <code>rand::rng</code> 기능:</p>
@@ -363,7 +353,7 @@ fn main() {
 </span><span class="boring">
 </span><span class="boring">    println!("You guessed: {guess}");
 </span>}</code></pre>
-<p>러스트 커뮤니티의 회원들은 <a href="https://crates.io/">크레이트.io</a>에서 많은 패키지를 사용할 수 있도록 했으며, 패키지에 패키지를 가져오는 것은 동일한 단계를 포함합니다: 패키지의 Cargo.toml 파일에 패키지를 나열하고 <code>use</code>를 사용하여 상자의 항목을 범위로 가져옵니다.</p>
+<p>Rust 커뮤니티의 구성원들은 <a href="https://crates.io/">crates.io</a>에 다양한 패키지를 제공하고 있으며, 이 중 어떤 패키지를 자신의 프로젝트에 가져오더라도 동일한 단계를 거칩니다. 즉, 자신의 크레이트의 Cargo.toml 파일에 해당 패키지를 나열하고 <code>use</code>를 사용하여 해당 크레이트의 항목을 현재 스코프에 가져오는 것입니다.</p>
 <p>상기 기준은 The standard <code>std</code> 라이브러리는 또한 패키지 외부의 크레이트입니다. 표준 라이브러리는 러스트 언어와 함께 제공되므로 변경할 필요가 없습니다. <em>카고.toml</em> 포함하다 <code>std</code>. 그러나 우리는 그것을 참조 할 필요가 <code>use</code> 우리의 패키지의 범위에 거기에서 항목을 가지고. 예를 들면, <code>HashMap</code> 우리는이 라인을 사용합니다 :</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
@@ -372,8 +362,8 @@ fn main() {
 <p>이것은 표준 라이브러리 크레이트의 이름인 <code>std</code>로 시작하는 절대 경로입니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="using-nested-paths-to-clean-up-large-use-lists"></a></p>
-<h3 id="using-nested-paths-to-clean-up-use-lists"><a class="header" href="#using-nested-paths-to-clean-up-use-lists">정리하기 위해 중첩된 경로 사용 <code>use</code> 목록</a></h3>
-<p>동일한 크레이트나 모듈에 정의된 여러 항목을 사용하는 경우, 각 항목을 자체 줄에 나열하는 것은 파일에서 많은 세로 공간을 차지할 수 있습니다. 예를 들어, 이 두 가지 <code>use</code> Listing 2-4의 guessing game에서 가지고 있던 문장 <code>std</code> 범위 내:</p>
+<h3 id="using-nested-paths-to-clean-up-use-lists"><a class="header" href="#using-nested-paths-to-clean-up-use-lists">use 목록을 정리하기 위해 중첩된 경로 사용 <code>use</code></a></h3>
+<p>동일한 크레이트나 모듈에 정의된 여러 항목을 사용할 때, 각 항목을 별도의 줄에 나열하면 파일에서 세로 공간이 많이 차지할 수 있습니다. 예를 들어, 나열 2-4의 추측 게임에서 사용했던 두 개의 <code>use</code> 문장은 std의 항목을 <code>std</code>에 가져옵니다:</p>
 <figure class="listing">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore">// --snip--
@@ -407,7 +397,7 @@ use std::io;
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
 </figure>
-<p>대신, 같은 항목을 한 줄에 범위로 가져오기 위해 중첩된 경로를 사용할 수 있습니다. Listing 7-18에서 볼 수 있듯이, 경로의 공통 부분을 지정하고, 두 개의 콜론을 누른 다음, 서로 다른 경로의 부분 목록을 중심으로 중괄호를 지정합니다.</p>
+<p>대신, 중첩 경로를 사용하여 동일한 항목들을 한 줄로 범위로 가져올 수 있습니다. 목록 7-18에 나와 있듯이, 경로의 공통 부분을 지정하고, 두 개의 콜론(:)을 붙인 다음, 서로 다른 경로 부분들의 목록을 중괄호({})로 묶어 표현합니다.</p>
 <figure class="listing" id="listing-7-18">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore"><span class="boring">use rand::prelude::*;
@@ -440,33 +430,33 @@ use std::{cmp::Ordering, io};
 </span><span class="boring">        Ordering::Equal =&gt; println!("You win!"),
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-7-18">목록 7-18</a>: 같은 접두사를 가진 여러 항목을 범위로 가져오기 위한 중첩된 경로 지정</figcaption>
+<figcaption><a href="#listing-7-18">목록 7-18</a>: 동일한 접두사를 가진 여러 항목을 스코프에 가져오기 위한 중첩 경로 지정</figcaption>
 </figure>
-<p>더 큰 프로그램에서는 중첩 된 경로를 사용하여 동일한 상자 또는 모듈에서 많은 항목을 범위로 가져 오면 필요한 별도의 <code>use</code> 문 수를 줄일 수 있습니다!</p>
-<p>경로의 모든 수준에서 중첩된 경로를 사용할 수 있습니다. 이는 서브패스를 공유하는 두 개의 <code>use</code> 문을 결합할 때 유용합니다. 예를 들어, Listing 7-19는 두 개의 <code>use</code> 문을 보여줍니다. 하나는 <code>std::io</code>를 범위로 가져오고 하나는 <code>std::io::Write</code>를 범위로 가져옵니다.</p>
+<p>더 큰 프로그램에서는 중첩 경로를 사용해 동일한 크레이트나 모듈에서 여러 항목을 스코프에 가져오면 필요한 별도의 <code>use</code> 문 수를 크게 줄일 수 있습니다!</p>
+<p>경로의 모든 수준에서 중첩된 경로를 사용할 수 있으며, 이는 서브패스를 공유하는 두 개의 <code>use</code> 문을 결합할 때 유용합니다. 예를 들어, Listing 7-19에는 두 개의 <code>use</code> 문이 있습니다. 하나는 <code>std::io</code>를 스코프에 가져오고, 다른 하나는 <code>std::io::Write</code>를 스코프에 가져옵니다.</p>
 <figure class="listing" id="listing-7-19">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground">use std::io;
 use std::io::Write;</code></pre>
-<figcaption><a href="#listing-7-19">목록 7-19</a>: 한 쪽이 다른 쪽의 하위 경로인 두 개의 <code>use</code> 문</figcaption>
+<figcaption><a href="#listing-7-19">목록 7-19</a>: 한 쪽이 다른 쪽의 하위 경로인 두 개의 <code>use</code> 문장</figcaption>
 </figure>
-<p>이 두 경로의 일반적인 부분은 <code>std::io</code>이며, 이것이 완전한 첫 번째 경로입니다. 이 두 경로를 하나의 <code>use</code> 문으로 병합하려면 Listing 7-20과 같이 중첩된 경로에서 <code>self</code>를 사용할 수 있습니다.</p>
+<p>이 두 경로의 공통된 부분은 <code>std::io</code>이며, 이것이 완전한 첫 번째 경로입니다. 이 두 경로를 하나의 <code>use</code> 문으로 병합하려면 Listing 7-20과 같이 중첩된 경로에서 <code>self</code>를 사용할 수 있습니다.</p>
 <figure class="listing" id="listing-7-20">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground">use std::io::{self, Write};</code></pre>
-<figcaption><a href="#listing-7-20">목록 7-20</a>: Listing 7-19의 경로를 하나의 <code>use</code> 문으로 결합</figcaption>
+<figcaption><a href="#listing-7-20">목록 7-20</a>: 목록 7-19의 경로를 하나의 <code>use</code> 문으로 결합</figcaption>
 </figure>
-<p>이 선은 범위로 <code>std::io</code>와 <code>std::io::Write</code>를 가져옵니다.</p>
+<p>이 줄은 <code>std::io</code>과 <code>std::io::Write</code>을 스코프에 가져옵니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="the-glob-operator"></a></p>
 <h3 id="importing-items-with-the-glob-operator"><a class="header" href="#importing-items-with-the-glob-operator">Glob 연산자로 항목 가져오기</a></h3>
-<p>경로에 정의된 모든 공용 항목을 범위로 가져오려면 <code>*</code> glob 연산자 다음에 해당 경로를 지정할 수 있습니다.</p>
+<p>경로에 정의된 모든 공개 항목을 현재 범위로 가져오려면, 해당 경로를 지정하고 그 뒤에 <code>*</code> 글롭 연산자를 사용할 수 있습니다.</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>use std::collections::*;
 <span class="boring">}</span></code></pre>
-<p>이 <code>use</code> 문은 <code>std::collections</code>에 정의 된 모든 공개 항목을 현재 범위에 가져옵니다. glob 연산자를 사용할 때는주의하십시오! Glob은 범위에 어떤 이름이 있는지, 프로그램에서 사용 된 이름이 정의 된 위치를 말하기 어렵게 만들 수 있습니다. 또한 종속성이 정의를 변경하면 가져온 내용이 변경되므로 종속성이 동일한 정의를 추가하면 종속성을 업그레이드 할 때 컴파일러 오류가 발생할 수 있습니다.</p>
-<p>glob 연산자는 <code>tests</code> 모듈에 모든 것을 테스트 할 때 종종 사용됩니다. 11 장의 <a href="ch11-01-writing-tests.html#how-to-write-tests">“테스트 작성 방법”</a>에서 이야기 할 것입니다. glob 연산자는 때때로 전주 패턴의 일부로 사용됩니다. <a href="../std/prelude/index.html#other-preludes">표준 라이브러리 문서</a> 해당 패턴에 대한 자세한 내용은.</p>
+<p>이 <code>use</code> 문은 <code>std::collections</code>에 정의된 모든 공개 항목을 현재 범위로 가져옵니다. glob 연산자를 사용할 때는 주의하십시오! glob 연산자는 현재 범위에 어떤 이름이 있는지, 그리고 프로그램에서 사용된 이름이 어디서 정의되었는지를 파악하기 어렵게 만들 수 있습니다. 또한 종속성이 정의를 변경하면 가져온 내용도 함께 변경되므로, 같은 범위에 있는 자신의 정의와 동일한 이름의 정의를 종속성이 추가하는 경우와 같이 종속성을 업그레이드할 때 컴파일러 오류가 발생할 수 있습니다.</p>
+<p>glob 연산자는 테스트 시 <code>tests</code> 모듈에 테스트 대상 전체를 가져올 때 자주 사용됩니다. 이 내용은 11장의 <a href="ch11-01-writing-tests.html#how-to-write-tests">“테스트 작성 방법”</a>에서 자세히 다루겠습니다. 또한 glob 연산자는 prelude 패턴의 일부로 사용되기도 합니다. 해당 패턴에 대한 자세한 내용은 <a href="../std/prelude/index.html#other-preludes">표준 라이브러리 문서</a>를 참고하세요.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

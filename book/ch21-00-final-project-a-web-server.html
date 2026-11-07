@@ -161,23 +161,23 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h1 id="final-project-building-a-multithreaded-web-server"><a class="header" href="#final-project-building-a-multithreaded-web-server">최종 프로젝트: Multithreaded 웹 서버 구축</a></h1>
-<p>긴 여정 이었지만 책의 끝에 도달했습니다. 이 장에서는 마지막 장에서 다루었던 개념 중 일부를 설명하고 이전 수업을 요약하기 위해 함께 프로젝트를 구축 할 것입니다.</p>
-<p>최종 프로젝트의 경우 "Hello!"라는 웹 서버를 만들고 웹 브라우저에서 그림 21-1처럼 보입니다.</p>
-<p>여기에 웹 서버를 구축하기위한 우리의 계획입니다 :</p>
+<h1 id="final-project-building-a-multithreaded-web-server"><a class="header" href="#final-project-building-a-multithreaded-web-server">최종 프로젝트: 멀티스레드 웹 서버 구축</a></h1>
+<p>긴 여정이었지만 이제 책의 마지막에 도달했습니다. 이 장에서는 마지막 장에서 다루었던 개념 중 일부를 보여주고, 이전 장에서 배운 내용을 복습하기 위해 함께 프로젝트를 하나 더 만들어 보겠습니다.</p>
+<p>최종 프로젝트로, 웹 브라우저에서 그림 21-1과 같이 "Hello!"라고 표시되는 웹 서버를 만들어 보겠습니다.</p>
+<p>웹 서버를 구축하기 위한 계획은 다음과 같습니다.</p>
 <ol>
-<li>TCP 및 HTTP에 대해 자세히 알아보십시오.</li>
-<li>소켓에서 TCP 연결을 듣습니다.</li>
-<li>HTTP 요청의 작은 수를 분석합니다.</li>
-<li>적절한 HTTP 응답을 만듭니다.</li>
+<li>TCP와 HTTP에 대해 조금 알아봅니다.</li>
+<li>소켓에서 TCP 연결을 수신합니다.</li>
+<li>소수의 HTTP 요청을 파싱합니다.</li>
+<li>적절한 HTTP 응답을 생성합니다.</li>
 <li>스레드 풀을 사용하여 서버의 처리량을 개선합니다.</li>
 </ol>
 <img alt="Screenshot of a web browser visiting the address 127.0.0.1:8080 displaying a webpage with the text content “Hello! Hi from Rust”" class="center" src="img/trpl21-01.png" style="width: 50%;"/>
 <p>그림 21-1: 최종 공유 프로젝트</p>
 <p>시작하기 전에 두 가지 세부 사항을 언급해야 합니다. 첫째, 러스트를 사용하여 웹 서버를 구축하는 가장 좋은 방법은 아닙니다. 커뮤니티 회원은 다음에서 사용할 수 있는 여러 가지 프로덕션 지원 상자를 게시했습니다.
 <a href="https://crates.io/">크레이트.io</a> 우리가 만드는 것보다 더 완벽한 웹 서버와 스레드 풀 구현을 제공합니다. 그러나, 이 장에서 우리의 의도는 당신이 쉬운 경로를 택하지 않고 배우는 것을 돕는 것입니다. 러스트는 시스템 프로그래밍 언어이기 때문에, 우리는 우리가 작업하기를 원하는 추상화 수준을 선택할 수 있고 다른 언어에서 가능하거나 실용적인 것보다 더 낮은 수준으로 갈 수 있습니다.</p>
-<p>둘째, 우리는 async를 사용하지 않고 여기서 기다릴 것입니다. 스레드 풀을 구축하는 것은 async 런타임을 추가하지 않고도 충분히 큰 도전입니다! 그러나이 장에서 볼 수있는 것과 동일한 문제에 async와 await가 어떻게 적용될 수 있는지 알아 보겠습니다. 궁극적으로 17 장에서 언급했듯이 많은 async 런타임은 스레드 풀을 사용하여 작업을 관리합니다.</p>
-<p>따라서 기본 HTTP 서버와 스레드 풀을 수동으로 작성하여 나중에 사용할 수있는 크레이트 뒤에있는 일반적인 아이디어와 기술을 배울 수 있습니다.</p>
+<p>둘째, 여기서는 async와 await를 사용하지 않습니다. async 런타임 구축을 추가하지 않아도 스레드 풀 구축 자체는 충분히 큰 도전입니다! 그러나 이 장에서 다룰 일부 동일한 문제에 async와 await가 어떻게 적용될 수 있는지 언급하겠습니다. 궁극적으로 17장에서 언급했듯이, 많은 async 런타임은 작업을 관리하기 위해 스레드 풀을 사용합니다.</p>
+<p>따라서 나중에 사용할 수 있는 크레이트 뒤에 있는 일반적인 아이디어와 기술을 배울 수 있도록, 기본 HTTP 서버와 스레드 풀을 수동으로 작성하겠습니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

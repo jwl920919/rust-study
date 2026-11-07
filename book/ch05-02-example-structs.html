@@ -162,8 +162,8 @@
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
 <h2 id="an-example-program-using-structs"><a class="header" href="#an-example-program-using-structs">구조체를 사용한 예제 프로그램</a></h2>
-<p>언제 구조체를 사용할지 이해하기 위해 사각형의 면적을 계산하는 프로그램을 작성해 봅시다. 우리는 단일 변수를 사용하여 시작하고 대신 구조체를 사용할 때까지 프로그램을 리팩터링 할 것입니다.</p>
-<p>Cargo라는 새로운 바이너리 프로젝트를 픽셀로 지정된 직사각형의 너비와 높이를 취하고 직사각형의 면적을 계산합니다. Listing 5-8은 프로젝트의 src / main.rs에서 정확히 수행하는 한 가지 방법으로 짧은 프로그램을 보여줍니다.</p>
+<p>구조체를 언제 사용해야 하는지 이해하기 위해 직사각형의 면적을 계산하는 프로그램을 작성해 보겠습니다. 먼저 단일 변수를 사용해서 시작하고, 이후 구조체를 사용하도록 프로그램을 리팩터링하겠습니다.</p>
+<p>Cargo를 사용해 픽셀 단위로 지정된 직사각형의 너비와 높이를 받아 면적을 계산하는 새로운 바이너리 프로젝트인 rectangles를 만들어 보겠습니다. Listing 5-8은 프로젝트의 src/main.rs 파일에 이 작업을 수행하는 방법 중 하나를 보여주는 짧은 프로그램입니다.</p>
 <figure class="listing" id="listing-5-8">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">fn main() {
@@ -179,17 +179,17 @@
 fn area(width: u32, height: u32) -&gt; u32 {
     width * height
 }</code></pre>
-<figcaption><a href="#listing-5-8">목록 5-8</a>: 별도의 너비 및 높이 변수로 지정된 직사각형의 면적 계산</figcaption>
+<figcaption><a href="#listing-5-8">Listing 5-8</a>: 별도의 너비와 높이 변수로 지정된 직사각형의 면적 계산</figcaption>
 </figure>
-<p>이제 <code>cargo run</code>를 사용하여이 프로그램을 실행하십시오.</p>
+<p>이제 <code>cargo run</code>을 사용해 이 프로그램을 실행해 보세요.</p>
 <pre><code class="language-console">$ cargo run
    Compiling rectangles v0.1.0 (file:///projects/rectangles)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.42s
      Running `target/debug/rectangles`
 The area of the rectangle is 1500 square pixels.
 </code></pre>
-<p>이 코드는 각 차원마다 <code>area</code> 함수를 호출하여 사각형의 영역을 알아내는 데 성공하지만이 코드를 명확하고 읽기 쉽게 만들기 위해 더 많은 작업을 수행 할 수 있습니다.</p>
-<p>이 코드의 문제는 <code>area</code>의 서명에서 분명합니다.</p>
+<p>이 코드는 각 차원을 인수로 전달하여 <code>area</code> 함수를 호출함으로써 직사각형의 면적을 계산하는 데 성공합니다. 하지만 이 코드를 더 명확하고 읽기 쉽게 만들 수 있는 방법이 더 있습니다.</p>
+<p>이 코드의 문제는 <code>area</code>의 시그니처에서 분명히 드러납니다.</p>
 <pre><code class="language-rust ignore"><span class="boring">fn main() {
 </span><span class="boring">    let width1 = 30;
 </span><span class="boring">    let height1 = 50;
@@ -203,9 +203,9 @@ The area of the rectangle is 1500 square pixels.
 </span>fn area(width: u32, height: u32) -&gt; u32 {
 <span class="boring">    width * height
 </span><span class="boring">}</span></code></pre>
-<p><code>area</code> 함수는 한 직사각형의 면적을 계산해야하지만 작성한 함수에는 두 가지 매개 변수가 있으며 프로그램의 어느 곳에서도 매개 변수가 관련되어 있는지 명확하지 않습니다. 함께 너비와 높이를 그룹화하는 것이 더 읽기 쉽고 관리하기 쉽습니다. 우리는 이미 튜플을 사용하여 <a href="ch03-02-data-types.html#the-tuple-type">튜플 타입(The Tuple Type)</a> 섹션에서 그렇게 할 수있는 한 가지 방법을 논의했습니다.</p>
+<p><code>area</code> 함수는 한 직사각형의 면적을 계산하는 것이 목적이지만, 작성한 함수에는 두 개의 매개변수가 있으며 프로그램 어디에서도 이 매개변수들이 서로 관련되어 있다는 것을 알 수 없습니다. 너비와 높이를 함께 묶으면 가독성과 관리성이 모두 좋아집니다. 이미 3장의 '튜플 타입' 섹션에서 <a href="ch03-02-data-types.html#the-tuple-type">튜플 타입</a>을 사용하여 이 문제를 해결할 수 있는 한 가지 방법에 대해 논의했습니다.</p>
 <h3 id="refactoring-with-tuples"><a class="header" href="#refactoring-with-tuples">튜플을 이용한 리팩토링</a></h3>
-<p>Listing 5-9는 튜플을 사용하는 다른 버전의 프로그램을 보여줍니다.</p>
+<p>Listing 5-9는 튜플을 사용하는 프로그램의 다른 버전을 보여줍니다.</p>
 <figure class="listing" id="listing-5-9">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">fn main() {
@@ -220,14 +220,14 @@ The area of the rectangle is 1500 square pixels.
 fn area(dimensions: (u32, u32)) -&gt; u32 {
     dimensions.0 * dimensions.1
 }</code></pre>
-<figcaption><a href="#listing-5-9">목록 5-9</a>: 튜플로 직사각형의 너비와 높이 지정하기</figcaption>
+<figcaption><a href="#listing-5-9">Listing 5-9</a>: 튜플로 직사각형의 너비와 높이를 지정하기</figcaption>
 </figure>
-<p>어떤 면에서는 이 프로그램이 더 좋습니다. 튜플을 통해 약간의 구조를 추가하면 이제 하나의 인자만 전달하게 됩니다. 하지만 다른 면에서는 이 버전이 덜 명확합니다. 튜플은 엘리먼트의 이름을 지정하지 않으므로 튜플의 부분에 인덱스를 지정해야 하므로 계산이 덜 명확해집니다.</p>
+<p>어떤 면에서는 이 프로그램이 더 좋습니다. 튜플을 사용하면 약간의 구조를 추가할 수 있고, 이제 인자 하나만 전달하면 됩니다. 하지만 다른 면에서는 이 버전이 덜 명확합니다. 튜플은 요소의 이름을 지정하지 않으므로 튜플의 각 부분에 인덱스를 지정해야 하며, 이로 인해 계산이 덜 명확해집니다.</p>
 <p>너비와 높이를 섞는 것은 면적 계산에는 중요하지 않지만 화면에 사각형을 그리려면 중요합니다! 우리는 <code>width</code>가 튜플 인덱스 <code>0</code>이고 <code>height</code>가 튜플 인덱스 <code>1</code>이기 때문에 다른 사람이 코드를 더 쉽게 이해할 수 있기 때문에 더 어려울 것입니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="refactoring-with-structs-adding-more-meaning"></a></p>
-<h3 id="refactoring-with-structs"><a class="header" href="#refactoring-with-structs">Structs를 이용한 리팩토링</a></h3>
-<p>우리는 structs를 사용하여 데이터를 레이블링하여 의미를 추가합니다. Listing 5-10에 표시된 것처럼, 우리는 우리가 사용하고 있는 튜플을 전체 이름과 부품 이름을 가진 struct로 변환할 수 있습니다.</p>
+<h3 id="refactoring-with-structs"><a class="header" href="#refactoring-with-structs">구조체를 이용한 리팩토링</a></h3>
+<p>구조체를 사용하면 데이터에 라벨을 붙여 의미를 부여할 수 있습니다. Listing 5-10에 표시된 것처럼, 현재 사용하고 있는 튜플을 전체 이름과 각 부분의 이름을 가진 구조체로 변환할 수 있습니다.</p>
 <figure class="listing" id="listing-5-10">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">struct Rectangle {
@@ -250,19 +250,16 @@ fn main() {
 fn area(rectangle: &amp;Rectangle) -&gt; u32 {
     rectangle.width * rectangle.height
 }</code></pre>
-<figcaption><a href="#listing-5-10">목록 5-10</a>: <code>Rectangle</code> 구조체 정의</figcaption>
+<figcaption><a href="#listing-5-10">Listing 5-10</a>: <code>Rectangle</code> 구조체 정의</figcaption>
 </figure>
 <p>여기서, 우리는 struct를 정의하고 이름을 붙였습니다. <code>Rectangle</code>. 중괄호 안에, 우리는 필드를 다음과 같이 정의했다. <code>width</code> 그리고 <code>height</code>둘 다 유형이 있습니다. <code>u32</code>. 그런 다음, in <code>main</code>그리고 우리는 특정한 경우를 <code>Rectangle</code>
 넓이가 넓으니 <code>30</code> 한 높이의 <code>50</code>.</p>
-<p>우리의 <code>area</code> 함수는 이제 우리가 명명한 하나의 파라미터로 정의됩니다.
-<code>rectangle</code>, 그의 유형은 구조체의 불변 차용이다 <code>Rectangle</code>
-instance. 4 장에서 언급했듯이, 우리는 그것을 소유하기보다는 구조체를 빌리고 싶습니다. 이 방법으로, <code>main</code> 소유권을 유지하고 계속 사용할 수 있습니다. <code>rect1</code>이것이 우리가 사용하는 이유입니다. <code>&amp;</code> 함수 서명에서 그리고 우리가 함수를 호출하는 곳에서.</p>
-<p>이름 * <code>area</code> 기능은 접근합니다 <code>width</code> 그리고 <code>height</code> 필드 of the <code>Rectangle</code>
-instance (빌린 struct 인스턴스의 필드 액세스는 필드 값을 이동하지 않으므로 종종 struct의 차용을 보게됩니다). 우리의 함수 서명 <code>area</code> 이제 우리가 의미하는 것을 정확하게 말해줍니다. <code>Rectangle</code>를 사용하여 Using Its <code>width</code> 그리고 <code>height</code> 필드. 이것은 너비와 높이가 서로 관련이 있음을 전달하며, 튜플 인덱스 값을 사용하는 대신 값에 설명적인 이름을 부여합니다. <code>0</code> 그리고 <code>1</code>. 이것은 명확성을 위한 승리입니다.</p>
+<p>이제 <code>area</code> 함수는 <code>rectangle</code>이라는 이름의 하나의 파라미터로 정의됩니다. 이 파라미터의 타입은 <code>Rectangle</code> 구조체 인스턴스의 불변 빌림입니다. 4장에서 언급했듯이, 구조체를 소유하는 대신 빌리고 싶습니다. 이렇게 하면 <code>main</code>이 소유권을 유지하면서 <code>rect1</code>을 계속 사용할 수 있습니다. 이것이 함수 서명과 함수 호출 부분에 <code>&amp;</code>를 사용하는 이유입니다.</p>
+<p><code>area</code> 함수는 <code>Rectangle</code> 인스턴스의 <code>width</code>과 <code>height</code> 필드에 접근합니다. 구조체 인스턴스를 빌려 온 경우 필드에 접근해도 필드 값의 소유권이 이동하지 않습니다. 그래서 구조체를 빌려 쓰는 경우가 많습니다. 이제 <code>area</code> 함수 시그니처는 의도를 정확히 표현합니다. <code>Rectangle</code>의 <code>width</code>과 <code>height</code> 필드를 사용해 면적을 계산한다는 뜻입니다. 너비와 높이가 서로 관련된 값이라는 점도 드러납니다. 튜플 인덱스인 <code>0</code>과 <code>1</code> 대신 각 값의 의미를 나타내는 이름을 사용하므로 더 명확합니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="adding-useful-functionality-with-derived-traits"></a></p>
-<h3 id="adding-functionality-with-derived-traits"><a class="header" href="#adding-functionality-with-derived-traits">파생된 특성으로 기능 추가</a></h3>
-<p>프로그램을 디버깅하는 동안 <code>Rectangle</code>의 인스턴스를 인쇄하고 모든 필드에 대한 값을 보는 것이 유용할 것입니다. Listing 5-11은 이전 장에서 사용한 것처럼 <a href="../std/macro.println.html"><code>println!</code> 매크로</a>를 사용하려고 시도합니다. 그러나 이것은 작동하지 않습니다.</p>
+<h3 id="adding-functionality-with-derived-traits"><a class="header" href="#adding-functionality-with-derived-traits">파생 트레이트를 통한 기능 추가</a></h3>
+<p>프로그램을 디버깅하는 동안 <code>Rectangle</code>의 인스턴스를 출력하고 모든 필드의 값을 확인하는 것이 유용할 것입니다. Listing 5-11에서는 이전 장에서 사용했던 것처럼 <a href="../std/macro.println.html"><code>println!</code> 매크로</a>를 사용하려고 시도합니다. 하지만 이렇게 하면 작동하지 않습니다.</p>
 <figure class="listing" id="listing-5-11">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore does_not_compile">struct Rectangle {
@@ -278,26 +275,25 @@ fn main() {
 
     println!("rect1 is {rect1}");
 }</code></pre>
-<figcaption><a href="#listing-5-11">목록 5-11</a>: <code>Rectangle</code> 인스턴스를 인쇄하려고 합니다.</figcaption>
+<figcaption><a href="#listing-5-11">목록 5-11</a>: <code>Rectangle</code> 인스턴스를 출력해 보기</figcaption>
 </figure>
-<p>이 코드를 컴파일 할 때, 우리는이 핵심 메시지와 함께 오류가 발생합니다 :</p>
+<p>이 코드를 컴파일하면 다음과 같은 핵심 메시지가 포함된 오류가 발생합니다:</p>
 <pre><code class="language-text">error[E0277]: `Rectangle` doesn't implement `std::fmt::Display`
 </code></pre>
-<p>이름 * <code>println!</code> 매크로는 많은 종류의 서식을 할 수 있으며 기본적으로 중괄호는 <code>println!</code> 로 알려진 서식을 사용 하려면 <code>Display</code>: 직접 최종 사용자 소비를 위한 출력입니다. 지금까지 구현한 기본 유형 <code>Display</code> 왜냐하면 당신이 보여줄 수있는 유일한 방법이 있기 때문입니다. <code>1</code> 또는 사용자에게 다른 원시적인 유형. 그러나 구조체로, 방법
-<code>println!</code> 더 많은 표시 가능성이 있기 때문에 출력을 포맷해야 합니다: 쉼표를 원하십니까? 중괄호를 인쇄하시겠습니까? 모든 필드를 표시해야 합니까? 이러한 모호성으로 인해 러스트는 우리가 원하는 것을 추측하려고 하지 않으며, 구조체는 제공된 구현을 가지고 있지 않습니다. <code>Display</code> 이용하기 위하여 <code>println!</code> 그리고 The <code>{}</code> 위치 지정자.</p>
-<p>우리가 계속 오류를 읽으면이 유용한 메모를 찾을 수 있습니다.</p>
+<p><code>println!</code> 매크로는 다양한 종류의 포맷팅을 수행할 수 있으며, 기본적으로 중괄호는 <code>println!</code>이 <code>Display</code>로 알려진 포맷팅을 사용하도록 지시합니다: 최종 사용자에게 직접 제공하기 위한 출력입니다. 지금까지 살펴본 원시 타입은 <code>1</code>나 다른 원시 타입을 사용자에게 보여줄 방법이 하나뿐이므로 기본적으로 <code>Display</code>을 구현합니다. 하지만 구조체의 경우, <code>println!</code>가 출력을 포맷팅해야 하는 방식이 명확하지 않습니다. 왜냐하면 더 많은 표시 가능성이 있기 때문입니다: 쉼표를 사용할까요? 중괄호를 출력할까요? 모든 필드를 보여줄까요? 이러한 모호성 때문에 Rust는 우리가 원하는 것을 추측하려 하지 않으며, 구조체는 <code>println!</code>과 <code>{}</code> 플레이스홀더와 함께 사용할 <code>Display</code>의 제공된 구현이 없습니다.</p>
+<p>오류를 계속 읽다 보면 다음과 같은 유용한 주석을 발견할 수 있습니다.</p>
 <pre><code class="language-text">help: the trait `std::fmt::Display` is not implemented for `Rectangle`
   --&gt; src/main.rs:1:1
 </code></pre>
-<p>한번 해봅시다! <code>println!</code> 매크로 호출은 이제 <code>println!("rect1 is {rect1:?}");</code>처럼 보일 것입니다. 지정자 <code>:?</code>를 중괄호 안에 넣으면 <code>println!</code>가 <code>Debug</code>라는 출력 형식을 사용하기를 원한다는 것을 알 수 있습니다. <code>Debug</code> 트레잇은 우리가 구조체를 유용한 방식으로 인쇄할 수 있게 해줍니다.</p>
-<p>이 변경으로 코드를 컴파일하십시오. Drat! 우리는 여전히 오류가 발생합니다 :</p>
+<p>한번 시도해 보겠습니다! <code>println!</code> 매크로 호출은 이제 <code>println!("rect1 is {rect1:?}");</code>처럼 보일 것입니다. 중괄호 안에 <code>:?</code> 지정자를 넣으면 <code>println!</code>에 <code>Debug</code>라는 출력 형식을 사용하라고 알려주는 것입니다. <code>Debug</code> 트레이트는 개발자가 디버깅 중 구조체의 값을 확인할 수 있도록 유용한 방식으로 구조체를 출력할 수 있게 해줍니다.</p>
+<p>이 변경 사항을 적용하여 코드를 컴파일해 보겠습니다. 아! 여전히 오류가 발생합니다:</p>
 <pre><code class="language-text">error[E0277]: `Rectangle` doesn't implement `Debug`
 </code></pre>
-<p>그러나 다시, 컴파일러는 우리에게 유용한 메모를 제공합니다 :</p>
+<p>다시 한번, 컴파일러가 유용한 주석을 제공합니다:</p>
 <pre><code class="language-text">   |                        required by this formatting parameter
    |
 </code></pre>
-<p>러스트는 디버깅 정보를 출력하기 위한 기능을 포함하고 있지만, 우리는 그 기능을 우리의 구조체에 사용할 수 있도록 명시적으로 선택해야 합니다. 이를 위해, 우리는 struct 정의 바로 전에 외부 속성 <code>#[derive(Debug)]</code>를 추가합니다, Listing 5-12와 같이.</p>
+<p>Rust에는 디버깅 정보를 출력하는 기능이 포함되어 있지만, 이 기능을 구조체에 사용할 수 있도록 명시적으로 선택해야 합니다. 이를 위해 Listing 5-12에 표시된 것처럼 구조체 정의 바로 앞에 외부 속성 <code>#[derive(Debug)]</code>를 추가합니다.</p>
 <figure class="listing" id="listing-5-12">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">#[derive(Debug)]
@@ -314,9 +310,9 @@ fn main() {
 
     println!("rect1 is {rect1:?}");
 }</code></pre>
-<figcaption><a href="#listing-5-12">목록 5-12</a>: 디버그 포맷을 사용하여 <code>Debug</code> 트레잇을 유도하고 <code>Rectangle</code> 인스턴스를 인쇄하기 위한 속성 추가</figcaption>
+<figcaption><a href="#listing-5-12">목록 5-12</a>: <code>Debug</code> 트레잇을 유도하기 위한 속성을 추가하고, 디버그 포맷으로 <code>Rectangle</code> 인스턴스를 출력합니다</figcaption>
 </figure>
-<p>이제 프로그램을 실행하면 오류가 발생하지 않으며 다음 결과를 볼 수 있습니다.</p>
+<p>이제 프로그램을 실행하면 오류가 발생하지 않으며 다음 출력을 볼 수 있습니다:</p>
 <pre><code class="language-console">$ cargo run
    Compiling rectangles v0.1.0 (file:///projects/rectangles)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
@@ -336,10 +332,9 @@ rect1 is Rectangle {
 <p><code>Debug</code> 형식을 사용하여 값을 인쇄하는 또 다른 방법은 표현식의 소유권을 갖는 <a href="../std/macro.dbg.html"><code>dbg!</code>
 매크로</a>를 사용하는 것입니다(참조를 받는 <code>println!</code>와는 반대로), <code>dbg!</code> 매크로 호출이 코드에서 해당 표현식의 결과값과 함께 발생하고 값의 소유권을 반환하는 파일 및 라인 번호를 인쇄합니다.</p>
 <section aria-role="note" class="note">
-<p>이름: Calling <code>dbg!</code> 표준 오류 콘솔 스트림에 매크로 인쇄 (<code>stderr</code>(반대되는 경우 <code>println!</code>표준 출력 콘솔 스트림(Standard Output Console Stream)<code>stdout</code>). 우리는에 대해 더 이야기 할 것이다 <code>stderr</code> 그리고 <code>stdout</code> 다음에서
-<a href="ch12-06-writing-to-stderr-instead-of-stdout.html">12 장의 "표준 오류로 오류 리디렉션"섹션</a> 무시 .</p>
+<p>참고: <code>dbg!</code> 매크로를 호출하면 표준 오류 콘솔 스트림(<code>stderr</code>)에 출력됩니다. 이는 표준 출력 콘솔 스트림(<code>println!</code>)에 출력하는 <code>stdout</code>과 다릅니다. <code>stderr</code>와 <code>stdout</code>에 대해서는 12장의 <a href="ch12-06-writing-to-stderr-instead-of-stdout.html">"표준 오류로 오류 리디렉션"</a> 섹션에서 더 자세히 다룹니다.</p>
 </section>
-<p>다음은 <code>width</code> 필드에 할당되는 값과 <code>rect1</code>의 전체 구조체 값에 관심이 있는 예입니다.</p>
+<p>다음은 <code>width</code> 필드에 할당되는 값과 <code>rect1</code> 구조체 전체의 값에 관심이 있는 예입니다.</p>
 <pre class="playground"><code class="language-rust edition2024">#[derive(Debug)]
 struct Rectangle {
     width: u32,
@@ -355,8 +350,7 @@ fn main() {
 
     dbg!(&amp;rect1);
 }</code></pre>
-<p>우리는 넣을 수 있습니다 <code>dbg!</code> 표현식의 주위에 <code>30 * scale</code> 그리고, 왜냐하면 <code>dbg!</code>
-표현식의 값의 소유권을 반환한다. <code>width</code> 필드는 우리가 가지고 있지 않은 경우와 같은 값을 얻을 것이다. <code>dbg!</code> 전화하십시오. 우리는 원하지 않습니다. <code>dbg!</code> 소유권을 소유하기 위하여 <code>rect1</code>그래서, 우리는 참조를 사용합니다. <code>rect1</code> 다음 호출에서. 이 예제의 출력은 다음과 같습니다.</p>
+<p><code>dbg!</code> 표현식 주위에 <code>30 * scale</code>를 사용할 수 있습니다. <code>dbg!</code>는 표현식의 값에 대한 소유권을 반환하므로, <code>width</code> 필드는 <code>dbg!</code> 호출이 없는 경우와 동일한 값을 갖게 됩니다. <code>dbg!</code>가 <code>rect1</code>의 소유권을 가져가지 않도록 하려면, 다음 호출에서 <code>rect1</code>에 대한 참조를 사용합니다. 이 예제의 출력은 다음과 같습니다.</p>
 <pre><code class="language-console">$ cargo run
    Compiling rectangles v0.1.0 (file:///projects/rectangles)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.61s
@@ -367,13 +361,10 @@ fn main() {
     height: 50,
 }
 </code></pre>
-<p>출력의 첫 조각이 나오는 것을 볼 수 있습니다 <em>한국어 (ko)</em> 10번째 줄에서 우리는 표현식을 디버깅하고 있습니다. <code>30 * scale</code>그리고 그 결과의 가치는 <code>60</code> (그
-<code>Debug</code> 정수에 대해 구현된 서식은 해당 값만 인쇄하는 것입니다.
-<code>dbg!</code> 전화 번호: Line 14 <em>한국어 (ko)</em> 값의 출력 <code>&amp;rect1</code>이는, which <code>Rectangle</code> struct. 이 산출은 예쁜 것 사용합니다 <code>Debug</code> 형식화 of the
-<code>Rectangle</code> 유형. the <code>dbg!</code> 매크로는 코드가 무엇을 하고 있는지 알아내려고 할 때 정말 도움이 될 수 있습니다!</p>
-<p>또한, The <code>Debug</code> 러스트는 우리가 사용할 수있는 많은 특성을 제공했습니다. <code>derive</code> 사용자 지정 유형에 유용한 동작을 추가할 수 있는 속성입니다. 이러한 특성과 동작은 다음 항목에 나열됩니다. <a href="appendix-03-derivable-traits.html">부록 C</a>
-무시 . 우리는 이러한 특성을 사용자 정의 행동으로 구현하는 방법과 10 장에서 자신의 특성을 만드는 방법을 다룰 것입니다. <code>derive</code>자세한 내용은 다음을 참조하십시오.For more information, see <a href="../reference/attributes.html">러스트 참조의 "속성" 섹션</a>.</p>
-<p>우리의 <code>area</code> 함수는 매우 구체적입니다 : 직사각형의 면적 만 계산합니다. 이 행동을 우리와 더 가깝게 묶는 것이 도움이 될 것입니다. <code>Rectangle</code> struct는 다른 타입에서는 동작하지 않기 때문입니다. 이 코드를 돌려서 어떻게 리팩토링을 계속할 수 있는지 살펴봅시다. <code>area</code> 으로 기능 <code>area</code> 우리에 정의된 방법 <code>Rectangle</code> 유형.</p>
+<p>첫 번째 출력 부분이 <em>src/main.rs</em>의 10번째 줄에서 <code>30 * scale</code> 식을 디버깅하는 것에서 왔음을 볼 수 있으며, 그 결과 값은 <code>60</code>입니다(정수에 대해 구현된 <code>Debug</code> 포맷팅은 값만 출력하는 것입니다). <em>src/main.rs</em>의 14번째 줄의 <code>dbg!</code> 호출은 <code>&amp;rect1</code>의 값을 출력하며, 이는 <code>Rectangle</code> 구조체입니다. 이 출력은 <code>Rectangle</code> 타입의 pretty <code>Debug</code> 포맷팅을 사용합니다. <code>dbg!</code> 매크로는 코드가 무엇을 하고 있는지 파악하려고 할 때 매우 유용할 수 있습니다!</p>
+<p><code>Debug</code> 트레이트 외에도, Rust는 <code>derive</code> 속성과 함께 사용하여 사용자 정의 타입에 유용한 동작을 추가할 수 있는 여러 트레이트를 제공합니다. 이러한 트레이트와 그 동작은 <a href="appendix-03-derivable-traits.html">부록 C</a><!--
+ignore -->에 나열되어 있습니다. 10장에서 이러한 트레이트를 사용자 정의 동작으로 구현하는 방법과 자체 트레이트를 만드는 방법에 대해 다룰 것입니다. <code>derive</code> 외에도 많은 속성이 있습니다. 자세한 내용은 <a href="../reference/attributes.html">Rust Reference의 “Attributes” 섹션</a>을 참조하십시오.</p>
+<p>우리의 <code>area</code> 함수는 매우 구체적입니다. 직사각형의 면적만 계산할 뿐입니다. 이 동작을 <code>Rectangle</code> 구조체와 더 밀접하게 연결하는 것이 도움이 될 것입니다. 다른 타입에서는 동작하지 않기 때문입니다. <code>area</code> 함수를 <code>area</code> 메서드로 바꾸어 <code>Rectangle</code> 타입에 정의함으로써 이 코드를 계속 리팩토링하는 방법을 살펴보겠습니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

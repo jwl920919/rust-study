@@ -161,21 +161,19 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h2 id="refutability-whether-a-pattern-might-fail-to-match"><a class="header" href="#refutability-whether-a-pattern-might-fail-to-match">Refutability : 패턴이 일치하지 않을 수 있음</a></h2>
-<p>패턴은 두 가지 형태로 제공됩니다 : refusable과 irrefutable. 전달 된 가능한 값에 일치하는 패턴은 다음과 같습니다. <em>부정할 수 없는</em>. 예를 들면 다음과 같습니다. <code>x</code> 문의 내용 <code>let x = 5;</code> 왜냐하면 <code>x</code> 아무것도 일치하므로 일치에 실패할 수 없습니다. 일부 가능한 값에 대해 일치하지 않을 수 있는 패턴은 다음과 같습니다.
-<em>품질 관리</em>. 예를 들면 다음과 같습니다. <code>Some(x)</code> 표현식에서 In the expression <code>if let Some(x) = a_value</code> 상기 값들은 The values in the <code>a_value</code> 변수는 <code>None</code> 보다는
-<code>Some</code>, 이 <code>Some(x)</code> 패턴이 일치하지 않습니다.</p>
-<p>함수 매개 변수, <code>let</code> 문 및 <code>for</code> 루프는 값이 일치하지 않을 때 프로그램이 의미있는 일을 할 수 없기 때문에 반박 할 수없는 패턴 만 받아 들일 수 있습니다. <code>if let</code> 및 <code>while let</code> 식과 <code>let...else</code> 문은 반박 할 수없고 반박 할 수없는 패턴을 수용하지만 컴파일러는 의도 된 실패에 대해 경고합니다.</p>
-<p>일반적으로 반박할 수 있는 패턴과 반박할 수 없는 패턴의 구별에 대해 걱정할 필요가 없습니다. 그러나, 오류 메시지에서 볼 때 응답할 수 있도록 반박할 수 있는 개념에 대해 잘 알고 있어야 합니다. 이러한 경우, 코드의 의도된 동작에 따라 패턴이나 사용 중인 구문을 변경해야 합니다.</p>
-<p>러스트가 반박할 수 없는 패턴을 요구하는 반박할 수 없는 패턴을 사용하려고 할 때 어떤 일이 일어나는지 예를 들어 보겠습니다. Listing 19-8은 <code>let</code> 문을 보여 주지만, 패턴에 대해서는 반박할 수 있는 패턴인 <code>Some(x)</code>를 지정했습니다. 예상하셨겠지만, 이 코드는 컴파일되지 않습니다.</p>
+<h2 id="refutability-whether-a-pattern-might-fail-to-match"><a class="header" href="#refutability-whether-a-pattern-might-fail-to-match">반박 가능성: 패턴이 일치하지 않을 수 있는지 여부</a></h2>
+<p>패턴은 반증 가능(refutable)과 반증 불가능(irrefutable) 두 가지 형태로 나뉩니다. 전달되는 모든 가능한 값에 대해 항상 일치하는 패턴은 <em>반증 불가능</em>입니다. 예를 들어, <code>let x = 5;</code> 문장 안의 <code>x</code>가 해당하는데, <code>x</code>는 어떤 값이든 일치하므로 일치에 실패할 수 없기 때문입니다. 어떤 가능한 값에 대해 일치에 실패할 수 있는 패턴은 <em>반증 가능</em>입니다. 예를 들어, <code>if let Some(x) = a_value</code> 식 안의 <code>Some(x)</code>가 해당하는데, <code>a_value</code> 변수의 값이 <code>Some</code>이 아니라 <code>None</code>인 경우, <code>Some(x)</code> 패턴은 일치하지 않기 때문입니다.</p>
+<p>함수 매개변수, <code>let</code> 문, <code>for</code> 루프는 값이 일치하지 않을 때 프로그램이 의미 있는 동작을 수행할 수 없기 때문에 반박 불가능한 패턴만 허용합니다. <code>if let</code> 및 <code>while let</code> 식과 <code>let...else</code> 문은 반박 가능하고 반박 불가능한 패턴 모두를 허용하지만, 컴파일러는 반박 불가능한 패턴 사용 시 경고를 표시합니다. 이는 이러한 구문이 정의상 실패 가능성을 처리하도록 설계되었기 때문입니다. 조건문의 기능은 성공 여부에 따라 다르게 동작할 수 있는 능력에 있기 때문입니다.</p>
+<p>일반적으로 반박 가능 패턴과 반박 불가능 패턴의 구분에 대해 걱정할 필요가 없습니다. 그러나 오류 메시지에서 이 개념을 마주쳤을 때 대응할 수 있도록 반박 가능성(refutability) 개념에 익숙해져야 합니다. 이러한 경우, 코드의 의도된 동작에 따라 패턴 자체를 변경하거나 패턴을 사용하는 구문을 변경해야 합니다.</p>
+<p>Rust가 반박 불가능한 패턴을 요구하는 위치에 반박 가능한 패턴을 사용하려고 할 때 발생하는 상황을 예시로 살펴보겠습니다. Listing 19-8은 <code>let</code> 문을 보여주지만, 패턴으로 반박 가능한 패턴인 <code>Some(x)</code>을 지정했습니다. 예상할 수 있듯이 이 코드는 컴파일되지 않습니다.</p>
 <figure class="listing" id="listing-19-8">
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
 </span><span class="boring">    let some_option_value: Option&lt;i32&gt; = None;
 </span>    let Some(x) = some_option_value;
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-19-8">목록 19-8</a>: <code>let</code>에서 반박할 수 있는 패턴을 사용하려고 시도함</figcaption>
+<figcaption><a href="#listing-19-8">Listing 19-8</a>: <code>let</code>에서 반박 가능한 패턴을 사용하려는 시도</figcaption>
 </figure>
-<p><code>some_option_value</code>가 <code>None</code> 값이라면 <code>Some(x)</code> 패턴과 일치하지 않을 것입니다. 즉, 패턴이 반박할 수 있다는 의미입니다. 그러나 <code>let</code> 문은 코드가 <code>None</code> 값으로 할 수 있는 유효한 것이 없기 때문에 반박할 수 없는 패턴만을 받아들일 수 있습니다. 컴파일 타임에 러스트는 필요한 패턴을 사용합니다.</p>
+<p><code>some_option_value</code>이 <code>None</code> 값이라면 <code>Some(x)</code> 패턴과 일치하지 않게 됩니다. 즉, 이 패턴은 반박 가능하다는 의미입니다. 그러나 <code>let</code> 문은 <code>None</code> 값으로 수행할 수 있는 유효한 동작이 없기 때문에 반박 불가능한 패턴만 허용합니다. 컴파일 타임에 Rust는 반박 불가능한 패턴이 필요한 위치에 반박 가능한 패턴을 사용하려고 했다는 컴파일러 오류를 보고합니다:</p>
 <pre><code class="language-console">$ cargo run
    Compiling patterns v0.1.0 (file:///projects/patterns)
 error[E0005]: refutable pattern in local binding
@@ -195,8 +193,8 @@ help: you might want to use `let...else` to handle the variant that isn't matche
 For more information about this error, try `rustc --explain E0005`.
 error: could not compile `patterns` (bin "patterns") due to 1 previous error
 </code></pre>
-<p>우리가 모든 유효한 값을 <code>Some(x)</code> 패턴으로 커버하지 않았기 때문에(그리고 커버할 수 없었기 때문에!), 러스트는 컴파일러 오류를 정당하게 생성합니다.</p>
-<p>반박할 수 없는 패턴이 필요한 경우 패턴을 사용하는 코드를 변경하여 수정할 수 있습니다. <code>let</code>를 사용하는 대신 <code>let...else</code>를 사용할 수 있습니다. 그런 다음 패턴이 일치하지 않으면 중괄호의 코드가 해당 값을 처리합니다. Listing 19-9는 Listing 19-8에서 코드를 수정하는 방법을 보여줍니다.</p>
+<p>우리는 <code>Some(x)</code> 패턴으로 모든 유효한 값을 커버하지(커버할 수 없) 않았기 때문에, Rust는 정당하게 컴파일러 오류를 생성합니다.</p>
+<p>반박 가능한 패턴이 필요한 위치에 반박할 수 없는 패턴을 사용해야 하는 경우, 패턴을 사용하는 코드를 변경하여 수정할 수 있습니다. <code>let</code> 대신 <code>let...else</code>를 사용할 수 있습니다. 이렇게 하면 패턴이 일치하지 않을 때 중괄호 안의 코드가 해당 값을 처리합니다. Listing 19-9는 Listing 19-8의 코드를 수정하는 방법을 보여줍니다.</p>
 <figure class="listing" id="listing-19-9">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span><span class="boring">    let some_option_value: Option&lt;i32&gt; = None;
@@ -204,18 +202,18 @@ error: could not compile `patterns` (bin "patterns") due to 1 previous error
         return;
     };
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-19-9">목록 19-9</a>: <code>let...else</code> 및 <code>let</code> 대신 반박 가능한 패턴이 있는 블록 사용</figcaption>
+<figcaption><a href="#listing-19-9">Listing 19-9</a>: <code>let...else</code> 대신 반박 가능한 패턴과 함께 <code>let</code> 블록 사용</figcaption>
 </figure>
-<p>우리는 코드를 출력했습니다! 이 코드는 경고를받지 않고 반박 할 수없는 패턴을 사용할 수 없다는 것을 의미하지만 완벽하게 유효합니다. <code>let...else</code>에게 <code>x</code>와 같은 항상 일치하는 패턴을 주면 컴파일러가 경고를 줄 것입니다.</p>
+<p>이 코드는 유효하지만, 경고를 받지 않고 반박할 수 없는 패턴을 사용할 수 없음을 의미합니다. Listing 19-10에 보여지듯이 <code>let...else</code>에 <code>x</code>처럼 항상 일치하는 패턴을 주면 컴파일러가 경고를 출력합니다.</p>
 <figure class="listing" id="listing-19-10">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    let x = 5 else {
         return;
     };
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-19-10">목록 19-10</a>: <code>let...else</code>에서 반박할 수 없는 패턴을 사용하려고 시도</figcaption>
+<figcaption><a href="#listing-19-10">Listing 19-10</a>: <code>let...else</code>에서 반박할 수 없는 패턴을 사용하려는 시도</figcaption>
 </figure>
-<p>러스트는 사용하는 것이 의미가 없다고 불평합니다. <code>let...else</code> 상기 반박할 수 없는 패턴은, The irrefutable pattern, <code>else</code> 결코 도달하지 못할 것입니다:</p>
+<p>Rust는 <code>let...else</code>와 반박할 수 없는 패턴을 함께 사용하는 것이 의미가 없다고 경고합니다. 왜냐하면 <code>else</code> 분기는 결코 도달하지 않기 때문입니다:</p>
 <pre><code class="language-console">$ cargo run
    Compiling patterns v0.1.0 (file:///projects/patterns)
 warning: unreachable `else` clause
@@ -234,7 +232,7 @@ warning: `patterns` (bin "patterns") generated 1 warning
      Running `target/debug/patterns`
 </code></pre>
 <p>이러한 이유로, match arms은 마지막 arm을 제외하고 refutable pattern을 사용해야 하며, 이는 나머지 값과 반박할 수 없는 pattern과 일치해야 합니다. 러스트를 사용하면 <code>match</code>에서 반박할 수 없는 pattern을 한 arm으로만 사용할 수 있지만, 이 문법은 특히 유용하지 않으며 더 간단한 <code>let</code> 문으로 대체될 수 있습니다.</p>
-<p>이제 패턴을 어디에 사용해야 하는지와 반박할 수 없는 패턴과 반박할 수 없는 패턴의 차이를 알았으니, 패턴을 만드는 데 사용할 수 있는 모든 구문을 살펴봅시다.</p>
+<p>이제 패턴을 어디에 사용해야 하는지와 반박 가능한 패턴과 반박할 수 없는 패턴의 차이를 알았으니, 패턴을 만드는 데 사용할 수 있는 모든 구문을 살펴봅시다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

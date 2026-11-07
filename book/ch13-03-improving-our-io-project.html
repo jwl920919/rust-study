@@ -162,9 +162,9 @@
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
 <h2 id="improving-our-io-project"><a class="header" href="#improving-our-io-project">I/O 프로젝트 개선</a></h2>
-<p>반복기에 대한 새로운 지식을 통해 반복자를 사용하여 코드의 장소를보다 명확하고 간결하게 만들어 12 장의 I / O 프로젝트를 개선 할 수 있습니다. 반복기가 <code>Config::build</code> 기능과 <code>search</code> 기능의 구현을 향상시킬 수있는 방법을 살펴 보겠습니다.</p>
-<h3 id="removing-a-clone-using-an-iterator"><a class="header" href="#removing-a-clone-using-an-iterator">삭제 A <code>clone</code> Iterator 사용하기</a></h3>
-<p>Listing 12-6에서, 우리는 <code>String</code> 값들을 슬라이스하고 그 값들을 복제함으로써 <code>Config</code> 구조체의 인스턴스를 생성하여 <code>Config</code> 구조체가 그 값들을 소유할 수 있도록 했습니다. Listing 13-17에서, 우리는 12-23에서와 같이 <code>Config::build</code> 함수의 구현을 재현했습니다.</p>
+<p>반복자에 대한 새로운 지식을 활용하면, 12장의 I/O 프로젝트에서 반복자를 사용하여 코드의 특정 부분을 더 명확하고 간결하게 만들 수 있습니다. 반복자가 <code>Config::build</code> 함수와 <code>search</code> 함수의 구현을 어떻게 개선할 수 있는지 살펴보겠습니다.</p>
+<h3 id="removing-a-clone-using-an-iterator"><a class="header" href="#removing-a-clone-using-an-iterator"><code>clone</code> 호출 제거: 반복자 사용</a></h3>
+<p>Listing 12-6에서는 <code>String</code> 값들의 슬라이스를 인수로 받아 슬라이스에서 인덱싱을 통해 값을 가져오고 복제하여 <code>Config</code> 구조체의 인스턴스를 생성했습니다. 이를 통해 <code>Config</code> 구조체가 해당 값들의 소유권을 가질 수 있었습니다. Listing 13-17에서는 Listing 12-23에 있던 <code>Config::build</code> 함수의 구현을 그대로 재현했습니다.</p>
 <figure class="listing" id="listing-13-17">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
@@ -228,15 +228,14 @@
 </span><span class="boring">
 </span><span class="boring">    Ok(())
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-13-17">목록 13-17</a>: 리스트 12-23 에서 <code>Config::build</code> 함수의 복제</figcaption>
+<figcaption><a href="#listing-13-17">Listing 13-17</a>: Listing 12-23의 <code>Config::build</code> 함수 구현 재현</figcaption>
 </figure>
-<p>그 당시, 우리는 우리가 미래에 그들을 제거하기 때문에 비효율적 <code>clone</code> 호출에 대해 걱정하지 말했다. 음, 그 시간이 지금이다!</p>
-<p>우리는 필요했습니다 <code>clone</code> 왜냐하면 우리는 조각이 있고, <code>String</code> 매개 변수의 요소 <code>args</code>그러나, The <code>build</code> 기능은 소유하지 않습니다. <code>args</code>. a의 소유권을 반환하려면 <code>Config</code> 예를 들어, 우리는 the 의 값들을 복제해야 했습니다. <code>query</code>
-그리고 <code>file_path</code> 필드 of <code>Config</code> 그래서 that the <code>Config</code> 예를 들어 자신의 값을 가질 수 있습니다.</p>
-<p>반복자에 대한 새로운 지식을 통해 <code>build</code> 함수를 변경하여 슬라이스를 빌리는 대신 이터레이터의 소유권을 인수로 사용할 수 있습니다. 우리는 슬라이스의 길이와 인덱스를 특정 위치로 확인하는 코드 대신 반복기 기능을 사용할 것입니다. 이것은 반복자가 값에 액세스하기 때문에 <code>Config::build</code> 함수가 무엇을 하고 있는지 명확히 할 것입니다.</p>
+<p>그 당시에는 비효율적인 <code>clone</code> 호출에 대해 걱정하지 않아도 된다고 말했지만, 이제 그 시기가 왔습니다!</p>
+<p>여기서 <code>clone</code>이 필요한 이유는, 매개변수인 <code>String</code>에 <code>args</code> 요소가 담긴 슬라이스가 있지만, <code>build</code> 함수는 <code>args</code>의 소유권을 가지지 않기 때문입니다. <code>Config</code> 인스턴스의 소유권을 반환하려면, <code>query</code> 구조체의 <code>file_path</code> 필드와 <code>Config</code> 필드에서 값을 복제해야 했습니다. 이렇게 하면 <code>Config</code> 인스턴스가 자신의 값을 소유할 수 있습니다.</p>
+<p>반복자에 대한 새로운 지식을 활용하여, <code>build</code> 함수가 슬라이스를 빌리는 대신 반복자의 소유권을 인수로 받도록 변경할 수 있습니다. 슬라이스의 길이를 확인하고 특정 위치를 인덱싱하는 코드 대신 반복자 기능을 사용하겠습니다. 반복자가 값에 접근하기 때문에, 이는 <code>Config::build</code> 함수가 수행하는 작업을 명확하게 보여줍니다.</p>
 <p>일단 <code>Config::build</code>가 이터레이터의 소유권을 취하고 차용하는 인덱싱 작업을 중단하면 <code>String</code> 값을 이터레이터에서 <code>Config</code>로 이동하고 <code>clone</code>를 호출하고 새 할당을 만들 수 있습니다.</p>
-<h4 id="using-the-returned-iterator-directly"><a class="header" href="#using-the-returned-iterator-directly">반환된 Iterator를 직접 사용</a></h4>
-<p>I/O 프로젝트의 src/main.rs 파일을 다음과 같이 엽니다.</p>
+<h4 id="using-the-returned-iterator-directly"><a class="header" href="#using-the-returned-iterator-directly">반환된 반복자를 직접 사용</a></h4>
+<p>I/O 프로젝트의 src/main.rs 파일을 엽니다. 이 파일은 다음과 같은 내용을 포함해야 합니다:</p>
 <p>파일 이름: src/main.rs</p>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
 </span><span class="boring">use std::error::Error;
@@ -301,7 +300,7 @@
 </span><span class="boring">
 </span><span class="boring">    Ok(())
 </span><span class="boring">}</span></code></pre>
-<p>먼저 Listing 12-24에 있는 <code>main</code> 함수의 시작을 Listing 13-18의 코드로 변경하겠습니다. 이번에는 반복자를 사용합니다. <code>Config::build</code>도 업데이트할 때까지 컴파일되지 않습니다.</p>
+<p>먼저 Listing 12-24에 있는 <code>main</code> 함수의 시작 부분을 Listing 13-18의 코드로 변경하겠습니다. 이번에는 반복자를 사용합니다. <code>Config::build</code>도 함께 업데이트할 때까지 컴파일되지 않습니다.</p>
 <figure class="listing" id="listing-13-18">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
@@ -365,10 +364,10 @@
 </span><span class="boring">
 </span><span class="boring">    Ok(())
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-13-18">목록 13-18</a>: <code>env::args</code>의 반환 값을 <code>Config::build</code>에 전달</figcaption>
+<figcaption><a href="#listing-13-18">Listing 13-18</a>: <code>env::args</code>의 반환 값을 <code>Config::build</code>에 전달</figcaption>
 </figure>
-<p><code>env::args</code> 함수는 이터레이터를 반환합니다! 이터레이터 값을 벡터로 수집하고 <code>Config::build</code>로 슬라이스를 전달하는 대신 이제 <code>env::args</code>에서 <code>Config::build</code>로 직접 반환된 이터레이터의 소유권을 전달합니다.</p>
-<p>다음으로 <code>Config::build</code>의 정의를 업데이트해야합니다. <code>Config::build</code>의 서명을 Listing 13-19처럼 변경합시다. 함수 본문을 업데이트해야하기 때문에 여전히 컴파일되지 않습니다.</p>
+<p><code>env::args</code> 함수는 반복자를 반환합니다! 반복자의 값을 벡터로 수집한 후 슬라이스를 <code>Config::build</code>에 전달하는 대신, 이제 <code>env::args</code>에서 반환된 반복자의 소유권을 직접 <code>Config::build</code>에 전달합니다.</p>
+<p>다음으로 <code>Config::build</code>의 정의를 업데이트해야 합니다. <code>Config::build</code>의 시그니처를 Listing 13-19와 같이 변경해 보겠습니다. 함수 본문을 업데이트해야 하므로 여전히 컴파일되지 않습니다.</p>
 <figure class="listing" id="listing-13-19">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
@@ -433,17 +432,15 @@
 </span><span class="boring">
 </span><span class="boring">    Ok(())
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-13-19">목록 13-19</a>: <code>Config::build</code>의 서명을 업데이트하여 반복자를 예상</figcaption>
+<figcaption><a href="#listing-13-19">목록 13-19</a>: <code>Config::build</code>의 서명을 업데이트하여 반복자를 기대하도록 변경</figcaption>
 </figure>
-<p><code>env::args</code> 함수에 대한 표준 라이브러리 문서는 반환되는 반복기의 유형이 <code>std::env::Args</code>이며 해당 유형이 <code>Iterator</code> 트레잇을 구현하고 <code>String</code> 값을 반환함을 보여줍니다.</p>
-<p>We've updated the signature of the ~의 서명을 업데이트했습니다 <code>Config::build</code> 상기 파라미터는 The parameter <code>args</code> 특성 경계가 있는 일반 유형이 있습니다. <code>impl Iterator&lt;Item = String&gt;</code> 대신 <code>&amp;[String]</code>. 이 사용의 <code>impl Trait</code> 우리가 논의한 syntax <a href="ch10-02-traits.html#traits-as-parameters">매개 변수로 특성 사용Using Traits as Parameters</a> 무시 
-CHAPTER 10 그 뜻은 <code>args</code> 를 구현하는 모든 타입이 될 수 있다.
-<code>Iterator</code> 특성 및 반환 <code>String</code> 견적 요청</p>
-<p>우리는 <code>args</code>의 소유권을 가지고 있기 때문에 <code>args</code>를 반복하여 변경 할 것이므로 <code>mut</code> 키워드를 <code>args</code> 매개 변수의 사양에 추가하여 변경할 수 있습니다.</p>
+<p><code>env::args</code> 함수에 대한 표준 라이브러리 문서를 보면, 이 함수가 반환하는 반복자의 유형이 <code>std::env::Args</code>이며, 이 유형은 <code>Iterator</code> 트레이트를 구현하고 <code>String</code> 값을 반환한다고 나와 있습니다.</p>
+<p><code>Config::build</code> 함수의 시그니처를 업데이트하여, 매개변수 <code>args</code>의 타입을 <code>&amp;[String]</code> 대신 트레이트 바운드 <code>impl Iterator&lt;Item = String&gt;</code>를 가진 제네릭 타입으로 변경했습니다. 10장의 <a href="ch10-02-traits.html#traits-as-parameters">“트레이트를 매개변수로 사용”</a><!-- ignore --> 섹션에서 논의한 <code>impl Trait</code> 문법의 이 사용법은, <code>args</code>이 <code>Iterator</code> 트레이트를 구현하고 <code>String</code> 항목을 반환하는 어떤 타입이든 될 수 있음을 의미합니다.</p>
+<p><code>args</code>의 소유권을 가져오고 반복을 통해 <code>args</code>을 변경할 것이므로, <code>mut</code> 키워드를 <code>args</code> 매개변수 사양에 추가하여 변경 가능하게 만들 수 있습니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="using-iterator-trait-methods-instead-of-indexing"></a></p>
-<h4 id="using-iterator-trait-methods"><a class="header" href="#using-iterator-trait-methods">사용 <code>Iterator</code> Trait 방법</a></h4>
-<p>다음으로 <code>Config::build</code>의 본문을 수정하겠습니다. <code>args</code>는 <code>Iterator</code> 트레잇을 구현하기 때문에 <code>next</code> 메소드를 호출 할 수 있습니다! Listing 13-20은 <code>next</code> 메소드를 사용하기 위해 Listing 12-23의 코드를 업데이트합니다.</p>
+<h4 id="using-iterator-trait-methods"><a class="header" href="#using-iterator-trait-methods">반복자 트레이트 메서드 사용<code>Iterator</code></a></h4>
+<p>다음으로, <code>Config::build</code>의 본문(body)을 수정하겠습니다. <code>args</code>이 <code>Iterator</code> 트레이트를 구현하므로, <code>next</code> 메서드를 호출할 수 있다는 것을 알 수 있습니다! 목록 13-20은 <code>next</code> 메서드를 사용하도록 목록 12-23의 코드를 업데이트합니다.</p>
 <figure class="listing" id="listing-13-20">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore noplayground"><span class="boring">use std::env;
@@ -512,15 +509,15 @@ CHAPTER 10 그 뜻은 <code>args</code> 를 구현하는 모든 타입이 될 �
 </span><span class="boring">
 </span><span class="boring">    Ok(())
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-13-20">목록 13-20</a>: 반복기 방법을 사용하기 위하여 <code>Config::build</code>의 몸을 바꾸기</figcaption>
+<figcaption><a href="#listing-13-20">목록 13-20</a>: 반복자 메서드를 사용하도록 <code>Config::build</code>의 본문을 변경</figcaption>
 </figure>
 <p>반환 값의 첫 번째 값 <code>env::args</code> 프로그램의 이름입니다. 우리는 그것을 무시하고 다음 값을 얻기를 원합니다.
 <code>next</code> 반환값으로 아무것도 하지 않습니다. 그런 다음 호출합니다. <code>next</code> 우리가 원하는 값을 얻기 위해 <code>query</code> 분야의 <code>Config</code>. 경우 <code>next</code> 반환
 <code>Some</code>우리는 A를 사용합니다. <code>match</code> 값을 추출합니다. 반환하는 경우 <code>None</code>그것은 충분한 논쟁이 주어지지 않았다는 것을 의미하며, 우리는 일찍 돌아 왔습니다. <code>Err</code> 가치. 우리는을 위해 동일한 일을 합니다 <code>file_path</code> 값.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="making-code-clearer-with-iterator-adapters"></a></p>
-<h3 id="clarifying-code-with-iterator-adapters"><a class="header" href="#clarifying-code-with-iterator-adapters">반복기 어댑터를 사용한 코드 명확히 하기</a></h3>
-<p>우리는 또한 우리의 I/O 프로젝트에서 <code>search</code> 함수에서 반복자를 이용할 수 있는데, 이것은 Listing 12-19에서와 같이 Listing 13-21에서 재현됩니다.</p>
+<h3 id="clarifying-code-with-iterator-adapters"><a class="header" href="#clarifying-code-with-iterator-adapters">반복자 어댑터를 사용하여 코드를 명확하게 하기</a></h3>
+<p>I/O 프로젝트의 <code>search</code> 함수에서도 반복자를 활용할 수 있습니다. 이 코드는 Listing 12-19와 동일하게 Listing 13-21에 다시 제시되어 있습니다.</p>
 <figure class="listing" id="listing-13-21">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust ignore">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
@@ -550,9 +547,9 @@ CHAPTER 10 그 뜻은 <code>args</code> 를 구현하는 모든 타입이 될 �
 </span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-13-21">목록 13-21</a>: Listing 12-19의 <code>search</code> 함수 구현</figcaption>
+<figcaption><a href="#listing-13-21">Listing 13-21</a>: Listing 12-19의 <code>search</code> 함수 구현</figcaption>
 </figure>
-<p>반복자 어댑터 메서드를 사용하여 이 코드를 좀 더 간결하게 작성할 수 있습니다. 또한, 가변 중간 <code>results</code> 벡터를 사용하지 않도록 할 수 있습니다. 함수형 프로그래밍 스타일은 코드를 더 명확하게 만들기 위해 가변 상태의 양을 최소화하는 것을 선호합니다. 가변 상태를 제거하면 <code>results</code> 벡터에 대한 동시 액세스를 관리할 필요가 없기 때문에 향후 검색을 병렬로 수행할 수 있습니다.</p>
+<p>반복자 어댑터 메서드를 사용하면 이 코드를 더 간결하게 작성할 수 있습니다. 이를 통해 가변 중간 <code>results</code> 벡터를 사용하지 않아도 됩니다. 함수형 프로그래밍 스타일은 코드를 명확하게 만들기 위해 가변 상태를 최소화하는 것을 선호합니다. 가변 상태를 제거하면 <code>results</code> 벡터에 대한 동시 접근을 관리할 필요가 없으므로, 향후 검색을 병렬로 수행하도록 기능을 확장할 수 있게 됩니다. Listing 13-22에서 이 변경 사항을 보여줍니다.</p>
 <figure class="listing" id="listing-13-22">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust ignore">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
@@ -609,18 +606,15 @@ CHAPTER 10 그 뜻은 <code>args</code> 를 구현하는 모든 타입이 될 �
 </span><span class="boring">        );
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-13-22">목록 13-22</a>: <code>search</code> 기능의 실시에 있는 반복자 접합기 방법 사용하기</figcaption>
+<figcaption><a href="#listing-13-22">Listing 13-22</a>: <code>search</code> 함수 구현에서 반복자 어댑터 메서드 사용</figcaption>
 </figure>
-<p>상기의 목적은 The purpose of the <code>search</code> 기능은 안으로 모든 선을 돌려보내기 위한 것이다
-<code>contents</code> 을 포함하는 It includes the <code>query</code>. 과 유사 <code>filter</code> Listing 13-16의 예제에서, 이 코드는 <code>filter</code> 어댑터는 다음과 같은 라인만 유지합니다.
-<code>line.contains(query)</code> 반환 <code>true</code>. 그런 다음 일치하는 선을 다른 벡터로 수집합니다. <code>collect</code>. 훨씬 더 간단합니다! 이터레이터 메서드를 사용하는 것과 같은 변경을 자유롭게 하세요. <code>search_case_insensitive</code> 기능도 마찬가지다.</p>
-<p>더 많은 개선을 위해, iterator를 <code>search</code> 호출을 삭제하려면To remove the call <code>collect</code> 반환 형식을 변경하려면To change the return type <code>impl Iterator&lt;Item = &amp;'a str&gt;</code> 기능이 반복자 어댑터가되도록하십시오. 테스트를 업데이트해야합니다! 큰 파일을 사용하여 검색하십시오. <code>minigrep</code> 행동의 차이를 관찰하기 위해이 변경을하기 전과 후에 도구입니다. 이 변경 전에 프로그램은 모든 결과를 수집 할 때까지 결과를 인쇄하지 않지만 변경 후 각 일치하는 줄이 발견되므로 결과가 인쇄됩니다. <code>for</code> 루프 인 더
-<code>run</code> 기능은 반복기의 게으름을 이용할 수 있습니다.</p>
+<p><code>search</code> 함수의 목적은 <code>contents</code> 에 포함된 모든 줄 중 <code>query</code> 를 포함하는 줄을 반환하는 것입니다. <code>filter</code> Listing 13-16의 filter 예제와 유사하게, 이 코드는 <code>filter</code> 어댑터를 사용하여 <code>line.contains(query)</code> 가 true 를 반환하는 줄만 유지합니다. 그런 다음 <code>true</code> 로 일치하는 줄을 다른 벡터로 수집합니다. 훨씬 더 간단해졌습니다! <code>collect</code> 함수에서도 반복자 메서드를 사용하도록 동일한 변경을 적용해 보세요. <code>search_case_insensitive</code></p>
+<p>더욱 개선하기 위해, <code>collect</code> 호출을 제거하고 반환 타입을 <code>impl Iterator&lt;Item = &amp;'a str&gt;</code>로 변경하여 <code>search</code> 함수에서 반복자를 반환하도록 하면, 이 함수가 반복자 어댑터가 됩니다. 테스트도 업데이트해야 한다는 점에 유의하세요. 이 변경 사항을 적용하기 전후로 <code>minigrep</code> 도구를 사용하여 큰 파일을 검색하면 동작의 차이를 관찰할 수 있습니다. 이 변경 사항 이전에는 모든 결과를 수집할 때까지 프로그램이 어떤 결과도 출력하지 않지만, 변경 사항 이후에는 <code>run</code> 함수의 <code>for</code> 루프가 반복자의 지연 평가(laziness)를 활용할 수 있으므로, 각 일치하는 줄이 발견될 때마다 결과가 출력됩니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="choosing-between-loops-or-iterators"></a></p>
-<h3 id="choosing-between-loops-and-iterators"><a class="header" href="#choosing-between-loops-and-iterators">루프와 반복자 사이에서 선택</a></h3>
-<p>다음 논리적인 질문은 여러분 자신의 코드에서 어떤 스타일을 선택해야 하는지와 그 이유에 대한 것입니다: Listing 13-21의 원래 구현 또는 Listing 13-22의 반복자를 사용하는 버전 (우리가 반복자를 반환하기 전에 모든 결과를 수집한다고 가정). 대부분의 러스트 프로그래머는 반복자 스타일을 사용하는 것을 선호합니다. 처음에는 더 높은 코드를 얻기가 쉽지만, 이 반복기의 다양한 코드를 더 쉽게 이해할 수 있습니다.</p>
-<p>그러나 두 구현이 정말 동등합니까? 직관적 인 가정은 저수준 루프가 더 빠를 것이라는 것입니다. 성능에 대해 이야기 해 봅시다.</p>
+<h3 id="choosing-between-loops-and-iterators"><a class="header" href="#choosing-between-loops-and-iterators">루프와 반복자 중 선택하기</a></h3>
+<p>다음으로 자연스럽게 떠오르는 질문은, 여러분 자신의 코드에서 어떤 스타일을 선택해야 하는지와 그 이유입니다. Listing 13-21의 원래 구현과 Listing 13-22의 반복자(iterator)를 사용하는 버전 중 어느 것을 선택할까요? (반복자를 반환하는 대신 모든 결과를 수집한 후에 반환한다고 가정합니다.) 대부분의 Rust 개발자는 반복자 스타일을 선호합니다. 처음에는 적응하는 데 조금 시간이 걸리지만, 다양한 반복자 어댑터와 그 동작 방식을 익히면 반복자를 사용하는 코드가 더 이해하기 쉬워집니다. 반복과 새 벡터 생성을 위한 세부적인 코드를 직접 다루지 않고, 루프의 고수준 목표를 중심으로 코드를 작성할 수 있기 때문입니다. 이 방식은 일반적인 코드를 추상화하여, 반복자의 각 요소가 통과해야 하는 필터링 조건처럼 이 코드에 고유한 개념을 더 명확하게 보여줍니다.</p>
+<p>하지만 두 구현 방식이 정말로 동등할까요? 직관적으로는 저수준 루프가 더 빠를 것이라고 가정할 수 있습니다. 이제 성능에 대해 이야기해 보겠습니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

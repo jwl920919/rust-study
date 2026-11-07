@@ -162,27 +162,25 @@
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
 <h2 id="characteristics-of-object-oriented-languages"><a class="header" href="#characteristics-of-object-oriented-languages">객체 지향 언어의 특성</a></h2>
-<p>러스트는 OOP를 포함한 많은 프로그래밍 패러다임의 영향을 받습니다. 예를 들어, 우리는 13장에서 함수형 프로그래밍에서 나온 기능들을 탐구했습니다. 아마도, OOP 언어들은 특정한 공통적인 특성, 즉 객체, 캡슐화, 상속을 공유합니다. 각각의 특성이 무엇을 의미하는지, 러스트가 이를 지원하는지 살펴봅시다.</p>
-<h3 id="objects-contain-data-and-behavior"><a class="header" href="#objects-contain-data-and-behavior">개체에 데이터 및 동작 포함</a></h3>
-<p>Erich Gamma, Richard Helm, Ralph Johnson 및 John Vlissides (Addison-Wesley, 1994)의 책 Design Patterns : Reusable Object-Oriented Software 요소는 구어체로 The Gang of Four 책이라고합니다. 객체 지향 디자인 패턴의 카탈로그입니다. 이 방법으로 OOP를 정의합니다.</p>
+<p>프로그래밍 커뮤니티에서는 어떤 기능이 있어야 해당 언어를 객체 지향으로 볼 수 있는지에 대해 합의가 이루어져 있지 않습니다. Rust는 OOP를 포함한 다양한 프로그래밍 패러다임의 영향을 받았습니다. 예를 들어, 13장에서는 함수형 프로그래밍에서 유래한 기능들을 살펴보았습니다. 논쟁의 여지가 있지만, OOP 언어들은 객체, 캡슐화, 상속이라는 공통적인 특성을 공유합니다. 이제 각 특성이 무엇을 의미하는지, 그리고 Rust가 이를 지원하는지 살펴봅시다.</p>
+<h3 id="objects-contain-data-and-behavior"><a class="header" href="#objects-contain-data-and-behavior">데이터와 동작을 포함하는 객체</a></h3>
+<p>에리히 가마, 리처드 헬름, 랄프 존슨, 존 블리시즈(애덤스-웨슬리, 1994)의 저서 <em>Design Patterns: Elements of Reusable Object-Oriented Software</em>는 통상 <em>The Gang of Four</em> 책이라고 불리며, 객체 지향 디자인 패턴의 목록을 담고 있습니다. 이 책은 객체 지향 프로그래밍(OOP)을 다음과 같이 정의합니다:</p>
 <blockquote>
-<p>객체 지향 프로그램은 객체로 구성된다. 객체는 데이터와 그 데이터에서 동작하는 프로시저를 모두 패키징한다. 프로시저는 일반적으로 메소드 또는 오퍼레이션이라고 불린다.</p>
+<p>객체 지향 프로그램은 객체로 구성됩니다. 객체는 데이터와 그 데이터를 조작하는 프로시저를 모두 패키징합니다. 이러한 프로시저는 일반적으로 메소드 또는 오퍼레이션이라고 불립니다.</p>
 </blockquote>
-<p>이 정의를 사용하면, 러스트는 객체 지향입니다: Structs와 enums는 데이터를 가지고 있고, <code>impl</code> 블록은 structs와 enums에 대한 메소드를 제공합니다. 메소드를 가진 structs와 enums는 객체라고 불리지 않지만, Gang of Four의 객체 정의에 따라 동일한 기능을 제공합니다.</p>
+<p>이 정의를 적용하면 Rust는 객체 지향 언어입니다. struct와 enum은 데이터를 가지며, <code>impl</code> 블록은 struct와 enum에 메소드를 제공합니다. 메소드를 가진 struct와 enum은 객체라고 불리지는 않지만, Gang of Four의 객체 정의에 따라 동일한 기능을 제공합니다.</p>
 <h3 id="encapsulation-that-hides-implementation-details"><a class="header" href="#encapsulation-that-hides-implementation-details">구현 세부 정보를 숨기는 캡슐화</a></h3>
-<p>OOP와 일반적으로 관련된 또 다른 측면은 캡슐화의 아이디어입니다. 즉, 객체의 구현 세부 정보는 해당 객체를 사용하여 코드에 액세스 할 수 없습니다. 따라서 객체와 상호 작용하는 유일한 방법은 공개 API를 사용하는 것입니다. 객체를 사용하는 코드는 객체의 내부로 도달하여 데이터 또는 동작을 직접 변경할 수 없어야합니다. 이를 통해 프로그래머는 코드를 변경할 필요없이 객체의 내부를 변경하고 리팩토링 할 수 있습니다.</p>
-<p>7 장에서 캡슐화를 제어하는 방법에 대해 논의했습니다. <code>pub</code>
-우리 코드에서 어떤 모듈, 유형, 함수 및 메서드가 공개되어야 하는지 결정하는 키워드이며, 기본적으로 다른 모든 것은 비공개입니다. 예를 들어, 구조체를 정의할 수 있습니다. <code>AveragedCollection</code> 상기 벡터는, A vector, <code>i32</code> values. struct는 벡터의 값의 평균을 포함하는 필드를 가질 수 있습니다. 즉, 누군가가 필요할 때마다 평균을 계산할 필요가 없습니다. 즉, <code>AveragedCollection</code> 우리는 계산된 평균을 캐시할 것입니다. Listing 18-1은 다음과 같은 정의를 가지고 있습니다.
-<code>AveragedCollection</code> 구조체.</p>
+<p>OOP와 일반적으로 연관되는 또 다른 측면은 캡슐화입니다. 캡슐화란 객체의 구현 세부 정보가 해당 객체를 사용하는 코드에서 접근할 수 없음을 의미합니다. 따라서 객체와 상호작용하는 유일한 방법은 공개된 API를 사용하는 것입니다. 객체를 사용하는 코드는 객체의 내부에 직접 접근하여 데이터나 동작을 변경할 수 없어야 합니다. 이를 통해 프로그래머는 객체를 사용하는 코드를 변경할 필요 없이 객체의 내부를 변경하고 리팩토링할 수 있습니다.</p>
+<p>7장에서 캡슐화를 제어하는 방법에 대해 논의했습니다. <code>pub</code> 키워드를 사용하여 코드 내의 어떤 모듈, 타입, 함수, 메서드를 공개할지 결정할 수 있으며, 기본적으로 나머지는 모두 비공개입니다. 예를 들어, <code>AveragedCollection</code> 구조체를 정의할 수 있습니다. 이 구조체는 <code>i32</code> 값의 벡터를 포함하는 필드를 가질 수 있습니다. 또한, 벡터 내 값들의 평균을 포함하는 필드도 가질 수 있습니다. 즉, 누군가가 필요할 때마다 평균을 계산할 필요가 없다는 뜻입니다. 다시 말해, <code>AveragedCollection</code>는 계산된 평균을 캐시해 줍니다. Listing 18-1에는 <code>AveragedCollection</code> 구조체의 정의가 나와 있습니다.</p>
 <figure class="listing" id="listing-18-1">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground">pub struct AveragedCollection {
     list: Vec&lt;i32&gt;,
     average: f64,
 }</code></pre>
-<figcaption><a href="#listing-18-1">목록 18-1</a>: 정수 목록과 컬렉션의 항목 평균을 유지하는 <code>AveragedCollection</code> 구조체</figcaption>
+<figcaption><a href="#listing-18-1">Listing 18-1</a>: 정수 목록과 컬렉션 내 항목들의 평균을 유지하는 <code>AveragedCollection</code> 구조체</figcaption>
 </figure>
-<p>struct는 다른 코드가 사용할 수 있도록 <code>pub</code>로 표시되어 있지만 struct 내의 필드는 비공개로 유지됩니다. 이 경우 값이 목록에서 추가되거나 제거 될 때마다 평균도 업데이트되기를 원하기 때문에 중요합니다. 우리는 <code>add</code>, <code>remove</code> 및 <code>average</code>를 구현하여이 작업을 수행합니다.</p>
+<p>구조체는 다른 코드가 사용할 수 있도록 <code>pub</code>로 표시되어 있지만, 구조체 내부의 필드는 비공개로 유지됩니다. 이 경우 값이 목록에서 추가되거나 제거될 때마다 평균도 업데이트되도록 보장해야 하므로 중요합니다. 이를 위해 Listing 18-2에 나와 있듯이 구조체에 <code>add</code>, <code>remove</code>, <code>average</code> 메서드를 구현합니다.</p>
 <figure class="listing" id="listing-18-2">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground"><span class="boring">pub struct AveragedCollection {
@@ -218,29 +216,23 @@
 }</code></pre>
 <figcaption><a href="#listing-18-2">목록 18-2</a>: 공개 방법의 구현 <code>add</code>, <code>remove</code>, <code>average</code> 에 <code>AveragedCollection</code></figcaption>
 </figure>
-<p>공공 방법 <code>add</code>, <code>remove</code>, 그리고 <code>average</code> 이 경우 데이터에 액세스하거나 수정할 수 있는 유일한 방법은 다음과 같습니다. <code>AveragedCollection</code>. 항목이 추가될 때
-<code>list</code> 를 사용하여 Using the <code>add</code> 상기 제거하는 단계는 Remove using the <code>remove</code> 메서드, 각 호출의 구현 private <code>update_average</code> 상기 업데이트하는 단계는 Wherein the updating the <code>average</code> 필드도 마찬가지다.</p>
-<p>우리는 떠나 The <code>list</code> 그리고 <code>average</code> fields private 그래서 외부 코드가 아이템을 추가하거나 제거할 수 있는 방법이 없다. <code>list</code> 그렇지 않으면; The otherwise; <code>average</code> 상기 동기화하는 단계는, Wherein the sync, <code>list</code>
-변화. the <code>average</code> 메서드는 값의 값을 반환합니다.The method returns the value. <code>average</code> 필드, 외부 코드를 읽을 수 있도록 허용 <code>average</code> 그러나 그것을 수정하지 마십시오.</p>
-<p>struct의 구현 세부사항을 캡슐화했기 때문에
-<code>AveragedCollection</code>, 우리는 쉽게 미래에 데이터 구조와 같은 측면을 변경할 수 있습니다. 예를 들어, 우리는 <code>HashSet&lt;i32&gt;</code> 대신 A
-<code>Vec&lt;i32&gt;</code> 이름 * <code>list</code> 필드입니다. 만큼 서명의 <code>add</code>,
-<code>remove</code>, 그리고 <code>average</code> public 메서드는 동일하게 유지되고, 코드는
-<code>AveragedCollection</code> 변경할 필요가 없습니다. 우리가 만든 경우 <code>list</code> 대신, 이것은 반드시 사실이 아닐 것입니다 : <code>HashSet&lt;i32&gt;</code> 그리고 <code>Vec&lt;i32&gt;</code> 항목을 추가하고 제거하는 다른 방법을 가지고 있으므로 외부 코드가 수정되는 경우 변경해야 할 수 있습니다. <code>list</code> 직접.</p>
-<p>언어가 객체 지향으로 간주되기 위해 캡슐화가 필수 요소인 경우, 러스트는 해당 요구 사항을 충족합니다. <code>pub</code>를 사용하는 옵션 또는 코드의 다른 부분에 대한 옵션이 없으면 구현 세부 사항을 캡슐화할 수 있습니다.</p>
-<h3 id="inheritance-as-a-type-system-and-as-code-sharing"><a class="header" href="#inheritance-as-a-type-system-and-as-code-sharing">타입 시스템으로서 그리고 코드 공유로서의 상속</a></h3>
-<p>상속은 개체가 다른 개체의 정의에서 요소를 상속할 수 있는 메커니즘이므로 다시 정의하지 않고도 부모 개체의 데이터와 동작을 얻을 수 있습니다.</p>
-<p>만약 언어가 객체 지향적이어야 한다면, 러스트는 그런 언어가 아닙니다. 매크로를 사용하지 않고 부모 구조체의 필드와 메서드 구현을 상속받는 구조체를 정의할 수 있는 방법은 없습니다.</p>
-<p>그러나 프로그래밍 도구 상자에서 상속을 받는 데 익숙하다면 러스트에서 상속을 받는 이유에 따라 다른 솔루션을 사용할 수 있습니다.</p>
-<p>두 가지 주된 이유로 상속을 선택할 수 있습니다. 하나는 코드를 재사용하기 위한 것입니다. 한 타입에 대한 특정 동작을 구현할 수 있고, 상속을 통해 다른 타입에 대한 그 구현을 재사용할 수 있습니다. 기본 트레잇 메소드 구현을 사용하여 러스트 코드에서 제한된 방식으로 이것을 할 수 있습니다. Listing 10-14에서 우리가 기본 구현을 추가했을 때 <code>summarize</code> 상기 방법은 The method <code>Summary</code> 특색. 를 실행하는 어떤 유형 <code>Summary</code> 상기 갖는 단계는 Wherein have the <code>summarize</code> 더 이상의 코드 없이도 사용할 수 있는 메소드입니다. 이것은 메소드의 구현을 가진 부모 클래스와 메소드의 구현을 가진 상속 자식 클래스와 유사합니다. 우리는 또한 기본 구현을 재정의 할 수 있습니다. <code>summarize</code> 상기 구현하는 단계는, Wherein implementing the <code>Summary</code> 부모 클래스에서 상속된 메서드의 구현을 재정의하는 자식 클래스와 비슷합니다.This is similar to a child class overriding the implementation of a method inherited from a parent class.</p>
-<p>상속을 사용하는 또 다른 이유는 유형 시스템과 관련이 있습니다. 자식 형식을 부모 유형과 동일한 위치에서 사용할 수 있도록합니다. 이것은 다형성이라고도합니다. 즉, 특정 특성을 공유하는 경우 런타임에 여러 개체를 서로 대체 할 수 있습니다.</p>
+<p>공개 메서드 <code>add</code>, <code>remove</code>, <code>average</code>는 <code>AveragedCollection</code> 인스턴스의 데이터에 접근하거나 수정하는 유일한 방법입니다. <code>list</code>에 <code>add</code> 메서드를 사용하여 항목을 추가하거나 <code>remove</code> 메서드를 사용하여 항목을 제거할 때, 각 메서드의 구현은 <code>average</code> 필드를 업데이트하는 작업을 처리하는 비공개 <code>update_average</code> 메서드를 호출합니다.</p>
+<p><code>list</code>와 <code>average</code> 필드를 비공개로 유지함으로써, 외부 코드가 <code>list</code> 필드에 직접 항목을 추가하거나 제거할 수 없도록 합니다. 그렇지 않으면 <code>average</code>가 변경될 때 <code>list</code> 필드가 동기화되지 않을 수 있습니다. <code>average</code> 메서드는 <code>average</code> 필드의 값을 반환하여, 외부 코드가 평균을 읽을 수는 있지만 수정할 수는 없도록 합니다. <code>average</code></p>
+<p><code>AveragedCollection</code> 구조체의 구현 세부 사항을 캡슐화했기 때문에, 향후 데이터 구조와 같은 측면을 쉽게 변경할 수 있습니다. 예를 들어, <code>HashSet&lt;i32&gt;</code> 필드에 <code>Vec&lt;i32&gt;</code> 대신 <code>list</code>를 사용할 수 있습니다. <code>add</code>, <code>remove</code>, <code>average</code> 공개 메서드의 시그니처가 동일하게 유지되는 한, <code>AveragedCollection</code>를 사용하는 코드는 변경할 필요가 없습니다. 만약 <code>list</code>을 공개로 만들었다면, 상황이 달라질 수 있습니다. <code>HashSet&lt;i32&gt;</code>와 <code>Vec&lt;i32&gt;</code>는 항목을 추가하고 제거하는 메서드가 다르기 때문에, 외부 코드가 <code>list</code>를 직접 수정하고 있었다면 변경이 필요할 가능성이 높습니다.</p>
+<p>캡슐화가 객체 지향 언어로 간주되기 위한 필수 요소라면, Rust는 그 요구 사항을 충족합니다. 코드의 다른 부분에 <code>pub</code>를 사용할지 여부를 선택할 수 있기 때문에 구현 세부 사항을 캡슐화할 수 있습니다.</p>
+<h3 id="inheritance-as-a-type-system-and-as-code-sharing"><a class="header" href="#inheritance-as-a-type-system-and-as-code-sharing">타입 시스템으로서의 상속과 코드 공유로서의 상속</a></h3>
+<p>상속은 한 개체가 다른 개체의 정의에서 요소를 물려받아, 다시 정의하지 않고도 부모 개체의 데이터와 동작을 얻을 수 있게 하는 메커니즘입니다.</p>
+<p>언어가 객체 지향적이려면 상속이 필수적이라면, Rust는 그런 언어가 아닙니다. 매크로를 사용하지 않고 부모 구조체의 필드와 메서드 구현을 상속받는 구조체를 정의할 수 있는 방법은 없습니다.</p>
+<p>그러나 프로그래밍 도구상자에서 상속을 사용하는 데 익숙하다면, 처음부터 상속을 사용하려는 이유에 따라 Rust에서 다른 해결책을 사용할 수 있습니다.</p>
+<p>상속을 선택하는 주된 이유는 두 가지입니다. 하나는 코드 재사용입니다. 한 타입에 대해 특정 동작을 구현한 후, 상속을 통해 다른 타입에서도 그 구현을 재사용할 수 있습니다. Rust에서는 트레이트 메서드의 기본 구현을 사용하여 제한된 방식으로 이를 수행할 수 있습니다. Listing 10-14에서 <code>summarize</code> 트레이트에 <code>Summary</code> 메서드의 기본 구현을 추가했을 때를 떠올려 보세요. <code>Summary</code> 트레이트를 구현하는 모든 타입은 추가 코드가 없어도 <code>summarize</code> 메서드를 사용할 수 있습니다. 이는 메서드 구현을 가진 부모 클래스와 해당 메서드 구현을 상속받은 자식 클래스의 관계와 유사합니다. 또한 <code>summarize</code> 트레이트를 구현할 때 <code>Summary</code> 메서드의 기본 구현을 재정의할 수도 있는데, 이는 부모 클래스에서 상속받은 메서드 구현을 자식 클래스에서 재정의하는 것과 비슷합니다.</p>
+<p>상속을 사용하는 또 다른 이유는 타입 시스템과 관련이 있습니다. 자식 타입을 부모 타입과 동일한 위치에서 사용할 수 있도록 하는 것입니다. 이를 다형성(polymorphism)이라고도 하며, 특정 특성을 공유하는 경우 런타임에 여러 개체를 서로 대체할 수 있음을 의미합니다.</p>
 <section aria-role="note" class="note">
 <h3 id="polymorphism"><a class="header" href="#polymorphism">다형성</a></h3>
-<p>많은 사람들에게 다형성은 상속과 동의어입니다. 그러나 실제로 여러 유형의 데이터로 작업 할 수있는 코드를 지칭하는보다 일반적인 개념입니다. 상속의 경우 이러한 유형은 일반적으로 하위 클래스입니다.</p>
-<p>대신 러스트는 제네릭을 사용하여 다른 가능한 유형과 특성 경계를 추상화하여 이러한 유형이 제공해야하는 것에 제약을 가합니다. 이것은 때때로 경계 파라메트릭 다형성이라고합니다.</p>
+<p>많은 사람에게 다형성은 상속과 동의어입니다. 하지만 실제로 다형성은 여러 타입의 데이터로 동작할 수 있는 코드를 지칭하는 더 일반적인 개념입니다. 상속의 경우, 이러한 타입은 일반적으로 하위 클래스입니다.</p>
+<p>Rust는 대신 제네릭을 사용하여 다양한 가능한 타입을 추상화하고, 트레이트 바운드를 통해 해당 타입이 제공해야 할 것에 제약을 부과합니다. 이를 때때로 경계 있는 매개변수적 다형성(bounded parametric polymorphism)이라고 합니다.</p>
 </section>
-<p>러스트는 상속을 제공하지 않음으로써 다른 트레이드오프를 선택했습니다. 상속은 종종 필요한 것보다 더 많은 코드를 공유할 위험이 있습니다. 서브클래스는 항상 부모 클래스의 모든 특성을 공유해서는 안되며 상속과도 동일해야 합니다. 이것은 프로그램의 디자인을 덜 유연하게 만들 수 있습니다. 또한 의미가 없는 서브클래스에서 메서드를 호출하거나 서브클래스에서 오류가 발생할 수 있는 가능성을 소개합니다.</p>
-<p>이러한 이유로 러스트는 런타임에 다형성을 달성하기 위해 상속 대신 트레잇 객체를 사용하는 다른 접근 방식을 취합니다. 트레잇 객체가 어떻게 작동하는지 살펴 보겠습니다.</p>
+<p>Rust는 상속을 제공하지 않음으로써 다른 트레이드오프를 선택했습니다. 상속은 종종 필요한 것보다 더 많은 코드를 공유할 위험이 있습니다. 서브클래스는 항상 부모 클래스의 모든 특성을 공유해야 하는 것은 아니지만, 상속을 사용하면 그렇게 됩니다. 이는 프로그램의 설계를 덜 유연하게 만들 수 있습니다. 또한 서브클래스에 적용되지 않아 의미가 없거나 오류를 일으킬 수 있는 메서드를 호출할 가능성도 생깁니다. 게다가 일부 언어는 단일 상속만 허용하여(서브클래스가 하나의 클래스에서만 상속할 수 있음을 의미) 프로그램 설계의 유연성을 더욱 제한합니다.</p>
+<p>이러한 이유로 Rust는 런타임에 다형성을 달성하기 위해 상속 대신 트레이트 객체를 사용하는 다른 접근 방식을 취합니다. 트레이트 객체가 어떻게 작동하는지 살펴보겠습니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

@@ -162,23 +162,23 @@
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
 <h2 id="appendix-b-operators-and-symbols"><a class="header" href="#appendix-b-operators-and-symbols">부록 B: 연산자와 기호</a></h2>
-<p>이 부록에는 러스트의 문법 용어집이 포함되어 있습니다. 연산자와 그 자체로 나타나는 다른 기호 또는 경로, 제네릭, 트레잇 바운드, 매크로, 속성, 코멘트, 튜플, 브래킷을 포함합니다.</p>
-<h3 id="operators"><a class="header" href="#operators">운영자</a></h3>
-<p>표 B-1은 러스트의 연산자를 포함하고 있습니다. 이 예제는 컨텍스트에서 연산자가 어떻게 나타나는지, 간단한 설명, 그리고 연산자가 오버로드 가능한지 여부를 보여줍니다. 연산자가 오버로드 가능한 경우, 해당 연산자를 오버로드하는 데 사용할 관련 특성이 나열됩니다.</p>
-<p>표 B-1 : 운영자</p>
+<p>이 부록에는 Rust의 문법 용어집이 포함되어 있습니다. 여기에는 경로, 제네릭, 트레이트 바운드, 매크로, 속성, 주석, 튜플, 괄호의 문맥에서 단독으로 나타나는 연산자와 기타 기호가 포함되어 있습니다.</p>
+<h3 id="operators"><a class="header" href="#operators">연산자</a></h3>
+<p>표 B-1에는 Rust의 연산자, 해당 연산자가 문맥에서 어떻게 나타나는지 보여주는 예시, 간단한 설명, 그리고 해당 연산자가 오버로드 가능한지 여부가 포함되어 있습니다. 연산자가 오버로드 가능한 경우, 해당 연산자를 오버로드하는 데 사용할 관련 트레이트가 나열됩니다.</p>
+<p>표 B-1: 연산자</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>운영자</th><th>예시</th><th>설명</th><th>과부하가 되나요?</th></tr>
+<tr><th>연산자</th><th>예시</th><th>설명</th><th>오버로딩이 가능한가요?</th></tr>
 </thead>
 <tbody>
 <tr><td><code>!</code></td><td><code>ident!(...)</code>, <code>ident!{...}</code>, <code>ident![...]</code></td><td>매크로 확장</td><td></td></tr>
-<tr><td><code>!</code></td><td><code>!expr</code></td><td>비트단위 또는 논리적인 보완</td><td><code>Not</code></td></tr>
-<tr><td><code>!=</code></td><td><code>expr != expr</code></td><td>Nonequality 비교하기</td><td><code>PartialEq</code></td></tr>
+<tr><td><code>!</code></td><td><code>!expr</code></td><td>비트 단위 또는 논리적 보수</td><td><code>Not</code></td></tr>
+<tr><td><code>!=</code></td><td><code>expr != expr</code></td><td>불등호 비교</td><td><code>PartialEq</code></td></tr>
 <tr><td><code>%</code></td><td><code>expr % expr</code></td><td>산술 나머지</td><td><code>Rem</code></td></tr>
 <tr><td><code>%=</code></td><td><code>var %= expr</code></td><td>산술 나머지 및 할당</td><td><code>RemAssign</code></td></tr>
-<tr><td><code>&amp;</code></td><td><code>&amp;expr</code>, <code>&amp;mut expr</code></td><td>대출</td><td></td></tr>
-<tr><td><code>&amp;</code></td><td><code>&amp;type</code>, <code>&amp;mut type</code>, <code>&amp;'a type</code>, <code>&amp;'a mut type</code></td><td>빌린 포인터 종류</td><td></td></tr>
+<tr><td><code>&amp;</code></td><td><code>&amp;expr</code>, <code>&amp;mut expr</code></td><td>빌림</td><td></td></tr>
+<tr><td><code>&amp;</code></td><td><code>&amp;type</code>, <code>&amp;mut type</code>, <code>&amp;'a type</code>, <code>&amp;'a mut type</code></td><td>빌림 포인터 타입</td><td></td></tr>
 <tr><td><code>&amp;</code></td><td><code>expr &amp; expr</code></td><td>비트 단위 AND</td><td><code>BitAnd</code></td></tr>
 <tr><td><code>&amp;=</code></td><td><code>var &amp;= expr</code></td><td>비트 AND 및 할당</td><td><code>BitAndAssign</code></td></tr>
 <tr><td><code>&amp;&amp;</code></td><td><code>expr &amp;&amp; expr</code></td><td>단락 논리 AND</td><td></td></tr>
@@ -187,208 +187,208 @@
 <tr><td><code>*</code></td><td><code>*expr</code></td><td>역참조</td><td><code>Deref</code></td></tr>
 <tr><td><code>*</code></td><td><code>*const type</code>, <code>*mut type</code></td><td>원시 포인터</td><td></td></tr>
 <tr><td><code>+</code></td><td><code>trait + trait</code>, <code>'a + trait</code></td><td>복합형 제약</td><td></td></tr>
-<tr><td><code>+</code></td><td><code>expr + expr</code></td><td>산술 추가</td><td><code>Add</code></td></tr>
-<tr><td><code>+=</code></td><td><code>var += expr</code></td><td>산술 추가 및 할당</td><td><code>AddAssign</code></td></tr>
+<tr><td><code>+</code></td><td><code>expr + expr</code></td><td>산술 덧셈</td><td><code>Add</code></td></tr>
+<tr><td><code>+=</code></td><td><code>var += expr</code></td><td>산술 덧셈 및 할당</td><td><code>AddAssign</code></td></tr>
 <tr><td><code>,</code></td><td><code>expr, expr</code></td><td>인자와 요소 구분자</td><td></td></tr>
 <tr><td><code>-</code></td><td><code>- expr</code></td><td>산술 부정</td><td><code>Neg</code></td></tr>
 <tr><td><code>-</code></td><td><code>expr - expr</code></td><td>산술 뺄셈</td><td><code>Sub</code></td></tr>
 <tr><td><code>-=</code></td><td><code>var -= expr</code></td><td>산술 뺄셈 및 할당</td><td><code>SubAssign</code></td></tr>
-<tr><td><code>-&gt;</code></td><td><code>fn(...) -&gt; type</code>, <code>|…| -&gt; type</code></td><td>기능과 마감 반환 유형</td><td></td></tr>
-<tr><td><code>.</code></td><td><code>expr.ident</code></td><td>필드 액세스</td><td></td></tr>
+<tr><td><code>-&gt;</code></td><td><code>fn(...) -&gt; type</code>, <code>|…| -&gt; type</code></td><td>함수와 클로저 반환 타입</td><td></td></tr>
+<tr><td><code>.</code></td><td><code>expr.ident</code></td><td>필드 접근</td><td></td></tr>
 <tr><td><code>.</code></td><td><code>expr.ident(expr, ...)</code></td><td>메서드 호출</td><td></td></tr>
-<tr><td><code>.</code></td><td><code>expr.0</code>, <code>expr.1</code>, 등</td><td>튜플 인덱싱</td><td></td></tr>
-<tr><td><code>..</code></td><td><code>..</code>, <code>expr..</code>, <code>..expr</code>, <code>expr..expr</code></td><td>오른쪽 전용 범위 리터럴</td><td><code>PartialOrd</code></td></tr>
+<tr><td><code>.</code></td><td><code>expr.0</code>, <code>expr.1</code> 등</td><td>튜플 인덱싱</td><td></td></tr>
+<tr><td><code>..</code></td><td><code>..</code>, <code>expr..</code>, <code>..expr</code>, <code>expr..expr</code></td><td>우측 비포함 범위 리터럴</td><td><code>PartialOrd</code></td></tr>
 <tr><td><code>..=</code></td><td><code>..=expr</code>, <code>expr..=expr</code></td><td>오른쪽 포함 범위 리터럴</td><td><code>PartialOrd</code></td></tr>
-<tr><td><code>..</code></td><td><code>..expr</code></td><td>Struct 리터럴 업데이트 문법</td><td></td></tr>
-<tr><td><code>..</code></td><td><code>variant(x, ..)</code>, <code>struct_type { x, .. }</code></td><td>"그리고 나머지"패턴 바인딩</td><td></td></tr>
-<tr><td><code>...</code></td><td><code>expr...expr</code></td><td>(더 이상 사용되지 않음, 대신 <code>..=</code> 사용) 패턴에서: 포괄적 범위 패턴</td><td></td></tr>
-<tr><td><code>/</code></td><td><code>expr / expr</code></td><td>산술 부문</td><td><code>Div</code></td></tr>
-<tr><td><code>/=</code></td><td><code>var /= expr</code></td><td>산술 부문 및 과제</td><td><code>DivAssign</code></td></tr>
+<tr><td><code>..</code></td><td><code>..expr</code></td><td>구조체 리터럴 업데이트 문법</td><td></td></tr>
+<tr><td><code>..</code></td><td><code>variant(x, ..)</code>, <code>struct_type { x, .. }</code></td><td>"그리고 나머지" 패턴 바인딩</td><td></td></tr>
+<tr><td><code>...</code></td><td><code>expr...expr</code></td><td>(비추천, 대신 <code>..=</code> 사용) 패턴에서: 포괄적 범위 패턴</td><td></td></tr>
+<tr><td><code>/</code></td><td><code>expr / expr</code></td><td>산술 나눗셈</td><td><code>Div</code></td></tr>
+<tr><td><code>/=</code></td><td><code>var /= expr</code></td><td>산술 나눗셈 및 대입</td><td><code>DivAssign</code></td></tr>
 <tr><td><code>:</code></td><td><code>pat: type</code>, <code>ident: type</code></td><td>제약 조건</td><td></td></tr>
-<tr><td><code>:</code></td><td><code>ident: expr</code></td><td>Struct 필드 초기화</td><td></td></tr>
+<tr><td><code>:</code></td><td><code>ident: expr</code></td><td>구조체 필드 초기화</td><td></td></tr>
 <tr><td><code>:</code></td><td><code>'a: loop {...}</code></td><td>루프 레이블</td><td></td></tr>
-<tr><td><code>;</code></td><td><code>expr;</code></td><td>문 및 항목 터미네이터</td><td></td></tr>
+<tr><td><code>;</code></td><td><code>expr;</code></td><td>문과 항목의 종결자</td><td></td></tr>
 <tr><td><code>;</code></td><td><code>[...; len]</code></td><td>고정 크기 배열 구문의 일부</td><td></td></tr>
 <tr><td><code>&lt;&lt;</code></td><td><code>expr &lt;&lt; expr</code></td><td>왼쪽 시프트</td><td><code>Shl</code></td></tr>
 <tr><td><code>&lt;&lt;=</code></td><td><code>var &lt;&lt;= expr</code></td><td>왼쪽 이동 및 할당</td><td><code>ShlAssign</code></td></tr>
-<tr><td><code>&lt;</code></td><td><code>expr &lt; expr</code></td><td>비교보다 적게</td><td><code>PartialOrd</code></td></tr>
-<tr><td><code>&lt;=</code></td><td><code>expr &lt;= expr</code></td><td>비교보다 작거나 같음</td><td><code>PartialOrd</code></td></tr>
-<tr><td><code>=</code></td><td><code>var = expr</code>, <code>ident = type</code></td><td>과제/동등성</td><td></td></tr>
-<tr><td><code>==</code></td><td><code>expr == expr</code></td><td>평등 비교</td><td><code>PartialEq</code></td></tr>
-<tr><td><code>=&gt;</code></td><td><code>pat =&gt; expr</code></td><td>일치 암 문법의 일부</td><td></td></tr>
-<tr><td><code>&gt;</code></td><td><code>expr &gt; expr</code></td><td>비교보다 더 큰</td><td><code>PartialOrd</code></td></tr>
-<tr><td><code>&gt;=</code></td><td><code>expr &gt;= expr</code></td><td>비교보다 크거나 같음</td><td><code>PartialOrd</code></td></tr>
-<tr><td><code>&gt;&gt;</code></td><td><code>expr &gt;&gt; expr</code></td><td>오른쪽 쉬프트</td><td><code>Shr</code></td></tr>
+<tr><td><code>&lt;</code></td><td><code>expr &lt; expr</code></td><td>작음 비교</td><td><code>PartialOrd</code></td></tr>
+<tr><td><code>&lt;=</code></td><td><code>expr &lt;= expr</code></td><td>작거나 같은 비교</td><td><code>PartialOrd</code></td></tr>
+<tr><td><code>=</code></td><td><code>var = expr</code>, <code>ident = type</code></td><td>할당/동등성</td><td></td></tr>
+<tr><td><code>==</code></td><td><code>expr == expr</code></td><td>동등성 비교</td><td><code>PartialEq</code></td></tr>
+<tr><td><code>=&gt;</code></td><td><code>pat =&gt; expr</code></td><td>매치 암 문법의 일부</td><td></td></tr>
+<tr><td><code>&gt;</code></td><td><code>expr &gt; expr</code></td><td>크기 비교</td><td><code>PartialOrd</code></td></tr>
+<tr><td><code>&gt;=</code></td><td><code>expr &gt;= expr</code></td><td>크거나 같은 비교</td><td><code>PartialOrd</code></td></tr>
+<tr><td><code>&gt;&gt;</code></td><td><code>expr &gt;&gt; expr</code></td><td>오른쪽 시프트</td><td><code>Shr</code></td></tr>
 <tr><td><code>&gt;&gt;=</code></td><td><code>var &gt;&gt;= expr</code></td><td>오른쪽 이동 및 할당</td><td><code>ShrAssign</code></td></tr>
 <tr><td><code>@</code></td><td><code>ident @ pat</code></td><td>패턴 바인딩</td><td></td></tr>
-<tr><td><code>^</code></td><td><code>expr ^ expr</code></td><td>Bitwise 독점 또는</td><td><code>BitXor</code></td></tr>
-<tr><td><code>^=</code></td><td><code>var ^= expr</code></td><td>Bitwise 독점 OR 및 할당</td><td><code>BitXorAssign</code></td></tr>
+<tr><td><code>^</code></td><td><code>expr ^ expr</code></td><td>비트 단위 배타적 OR</td><td><code>BitXor</code></td></tr>
+<tr><td><code>^=</code></td><td><code>var ^= expr</code></td><td>비트 단위 배타적 OR 및 할당</td><td><code>BitXorAssign</code></td></tr>
 <tr><td><code>|</code></td><td><code>pat | pat</code></td><td>패턴 대안</td><td></td></tr>
 <tr><td><code>|</code></td><td><code>expr | expr</code></td><td>비트 단위 OR</td><td><code>BitOr</code></td></tr>
-<tr><td><code>|=</code></td><td><code>var |= expr</code></td><td>Bitwise 또는 할당</td><td><code>BitOrAssign</code></td></tr>
+<tr><td><code>|=</code></td><td><code>var |= expr</code></td><td>비트 단위 OR 및 할당</td><td><code>BitOrAssign</code></td></tr>
 <tr><td><code>||</code></td><td><code>expr || expr</code></td><td>단락 논리 OR</td><td></td></tr>
 <tr><td><code>?</code></td><td><code>expr?</code></td><td>오류 전파</td><td></td></tr>
 </tbody>
 </table>
 </div>
-<h3 id="non-operator-symbols"><a class="header" href="#non-operator-symbols">비운영자 기호</a></h3>
-<p>다음 표에는 연산자로 작동하지 않는 모든 기호가 포함되어 있습니다. 즉, 함수나 메서드 호출처럼 동작하지 않습니다.</p>
-<p>표 B-2는 자체적으로 나타나고 다양한 위치에서 유효한 기호를 보여줍니다.</p>
-<p>표 B-2: 독립 실행형 구문</p>
+<h3 id="non-operator-symbols"><a class="header" href="#non-operator-symbols">비연산자 기호</a></h3>
+<p>다음 표에는 연산자로 기능하지 않는 모든 기호가 포함되어 있습니다. 즉, 함수나 메서드 호출처럼 동작하지 않습니다.</p>
+<p>표 B-2는 단독으로 나타나며 다양한 위치에서 유효한 기호를 보여줍니다.</p>
+<p>표 B-2: 독립 구문</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>상징</th><th>설명</th></tr>
+<tr><th>기호</th><th>설명</th></tr>
 </thead>
 <tbody>
-<tr><td><code>'ident</code></td><td>명명된 수명 또는 루프 레이블</td></tr>
-<tr><td>숫자 바로 뒤에 <code>u8</code>, <code>i32</code>, <code>f64</code>, <code>usize</code> 등이 있습니다.</td><td>특정 유형의 숫자 리터럴</td></tr>
+<tr><td><code>'ident</code></td><td>명명된 라이프타임 또는 루프 레이블</td></tr>
+<tr><td>숫자 바로 뒤에 <code>u8</code>, <code>i32</code>, <code>f64</code>, <code>usize</code> 등이 오는 경우</td><td>특정 유형의 숫자 리터럴</td></tr>
 <tr><td><code>"..."</code></td><td>문자열 리터럴</td></tr>
-<tr><td><code>r"..."</code>, <code>r#"..."#</code>, <code>r##"..."##</code>는, 등 포함합니다</td><td>원시 문자열 리터럴; 이스케이프 문자가 처리되지 않음</td></tr>
-<tr><td><code>b"..."</code></td><td>바이트 문자열 리터럴; 문자열 대신 바이트 배열을 구성합니다.</td></tr>
-<tr><td><code>br"..."</code>, <code>br#"..."#</code>, <code>br##"..."##</code>는, 등 포함합니다</td><td>원시 바이트 문자열 리터럴; 원시 및 바이트 문자열 리터럴의 조합</td></tr>
+<tr><td><code>r"..."</code>, <code>r#"..."#</code>, <code>r##"..."##</code> 등</td><td>원시 문자열 리터럴; 이스케이프 문자가 처리되지 않음</td></tr>
+<tr><td><code>b"..."</code></td><td>바이트 문자열 리터럴; 문자열 대신 바이트 배열을 생성합니다.</td></tr>
+<tr><td><code>br"..."</code>, <code>br#"..."#</code>, <code>br##"..."##</code> 등</td><td>원시 바이트 문자열 리터럴; 원시 문자열 리터럴과 바이트 문자열 리터럴의 조합</td></tr>
 <tr><td><code>'...'</code></td><td>문자 리터럴</td></tr>
 <tr><td><code>b'...'</code></td><td>ASCII 바이트 리터럴</td></tr>
-<tr><td><code>|…| expr</code></td><td>닫기</td></tr>
-<tr><td><code>!</code></td><td>Diverging 기능을 위한 항상 빈 바닥 유형</td></tr>
-<tr><td><code>_</code></td><td>"무시된" 패턴 바인딩; 정수 리터럴을 읽을 수 있도록 하는 데도 사용됩니다.</td></tr>
+<tr><td><code>|…| expr</code></td><td>클로저</td></tr>
+<tr><td><code>!</code></td><td>발산 함수를 위한 항상 빈 바닥 타입</td></tr>
+<tr><td><code>_</code></td><td>“무시” 패턴 바인딩; 정수 리터럴의 가독성을 높이는 데에도 사용됩니다.</td></tr>
 </tbody>
 </table>
 </div>
-<p>표 B-3은 모듈 계층 구조를 통해 항목으로 전달되는 경로의 컨텍스트에 표시되는 기호를 보여줍니다.</p>
-<p>표 B-3 : 경로 관련 구문</p>
+<p>표 B-3은 모듈 계층 구조를 따라 항목으로 이어지는 경로 컨텍스트에 나타나는 기호를 보여줍니다.</p>
+<p>표 B-3: 경로 관련 구문</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>상징</th><th>설명</th></tr>
+<tr><th>기호</th><th>설명</th></tr>
 </thead>
 <tbody>
 <tr><td><code>ident::ident</code></td><td>네임스페이스 경로</td></tr>
-<tr><td><code>::path</code></td><td>크레이트 루트에 상대적인 경로 (즉, 명시 적으로 절대 경로)</td></tr>
-<tr><td><code>self::path</code></td><td>현재 모듈에 대한 상대 경로(즉, 명시적으로 상대 경로)</td></tr>
-<tr><td><code>super::path</code></td><td>현재 모듈의 부모에 대한 경로 상대</td></tr>
-<tr><td><code>type::ident</code>, <code>&lt;type as trait&gt;::ident</code></td><td>연결된 상수, 함수 및 유형</td></tr>
-<tr><td><code>&lt;type&gt;::...</code></td><td>직접 이름을 지정할 수 없는 형식에 대한 관련 항목(예: <code>&lt;&amp;T&gt;::...</code>, <code>&lt;[T]&gt;::...</code> 등)</td></tr>
-<tr><td><code>trait::method(...)</code></td><td>메서드를 정의하는 트레잇의 이름을 지정하여 메서드 호출을 모호하게 합니다.</td></tr>
-<tr><td><code>type::method(...)</code></td><td>정의된 유형의 이름을 지정하여 메서드 호출을 모호하게 합니다.Disambiguating a method call by named the type for which it's defined.</td></tr>
-<tr><td><code>&lt;type as trait&gt;::method(...)</code></td><td>트레잇과 타입의 이름을 지정하여 메서드 호출을 모호하게 함</td></tr>
+<tr><td><code>::path</code></td><td>크레이트 루트를 기준으로 한 상대 경로(즉, 명시적으로 지정된 절대 경로)</td></tr>
+<tr><td><code>self::path</code></td><td>현재 모듈을 기준으로 한 상대 경로(즉, 명시적으로 지정된 상대 경로)</td></tr>
+<tr><td><code>super::path</code></td><td>현재 모듈의 상위 모듈을 기준으로 한 상대 경로</td></tr>
+<tr><td><code>type::ident</code>, <code>&lt;type as trait&gt;::ident</code></td><td>연관 상수, 함수, 타입</td></tr>
+<tr><td><code>&lt;type&gt;::...</code></td><td>직접 이름을 지정할 수 없는 타입에 대한 연관 항목(예: <code>&lt;&amp;T&gt;::...</code>, <code>&lt;[T]&gt;::...</code> 등)</td></tr>
+<tr><td><code>trait::method(...)</code></td><td>해당 메서드를 정의하는 트레이트의 이름을 지정하여 메서드 호출의 모호성을 제거합니다.</td></tr>
+<tr><td><code>type::method(...)</code></td><td>해당 메서드가 정의된 타입의 이름을 지정하여 메서드 호출의 모호성을 제거합니다.</td></tr>
+<tr><td><code>&lt;type as trait&gt;::method(...)</code></td><td>트레이트와 타입의 이름을 명시하여 메서드 호출의 모호성을 제거합니다</td></tr>
 </tbody>
 </table>
 </div>
-<p>표 B-4는 일반 유형 매개 변수를 사용하는 컨텍스트에 나타나는 기호를 보여줍니다.</p>
-<p>표 B-4 : 일반</p>
+<p>표 B-4는 제네릭 타입 매개변수를 사용하는 맥락에서 나타나는 기호를 보여줍니다.</p>
+<p>표 B-4: 제네릭</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>상징</th><th>설명</th></tr>
+<tr><th>기호</th><th>설명</th></tr>
 </thead>
 <tbody>
-<tr><td><code>path&lt;...&gt;</code></td><td>형식에서 일반 형식으로 매개 변수를 지정합니다(예: <code>Vec&lt;u8&gt;</code>).</td></tr>
-<tr><td><code>path::&lt;...&gt;</code>, <code>method::&lt;...&gt;</code></td><td>표현식에서 일반적인 유형, 함수 또는 메서드에 대한 매개 변수를 지정합니다. 종종 turbofish라고 합니다(예: <code>"42".parse::&lt;i32&gt;()</code>).</td></tr>
-<tr><td><code>fn ident&lt;...&gt; ...</code></td><td>일반 함수 정의</td></tr>
-<tr><td><code>struct ident&lt;...&gt; ...</code></td><td>일반적인 구조 정의</td></tr>
-<tr><td><code>enum ident&lt;...&gt; ...</code></td><td>일반 열거 정의</td></tr>
-<tr><td><code>impl&lt;...&gt; ...</code></td><td>일반 구현 정의</td></tr>
-<tr><td><code>for&lt;...&gt; type</code></td><td>더 높은 순위의 수명 범위</td></tr>
-<tr><td><code>type&lt;ident=type&gt;</code></td><td>하나 이상의 관련 유형이 특정 할당을 갖는 일반 유형(예: <code>Iterator&lt;Item=T&gt;</code>)</td></tr>
+<tr><td><code>path&lt;...&gt;</code></td><td>타입에서 제네릭 타입의 매개변수를 지정합니다(예: <code>Vec&lt;u8&gt;</code>).</td></tr>
+<tr><td><code>path::&lt;...&gt;</code>, <code>method::&lt;...&gt;</code></td><td>표현식에서 제네릭 타입, 함수, 또는 메서드에 대한 매개변수를 지정합니다. 흔히 터보피시(turbofish)라고 부릅니다(예: <code>"42".parse::&lt;i32&gt;()</code>).</td></tr>
+<tr><td><code>fn ident&lt;...&gt; ...</code></td><td>제네릭 함수 정의</td></tr>
+<tr><td><code>struct ident&lt;...&gt; ...</code></td><td>제네릭 구조체 정의</td></tr>
+<tr><td><code>enum ident&lt;...&gt; ...</code></td><td>제네릭 열거형 정의</td></tr>
+<tr><td><code>impl&lt;...&gt; ...</code></td><td>제네릭 구현 정의</td></tr>
+<tr><td><code>for&lt;...&gt; type</code></td><td>고위 랭킹 라이프타임 바운드</td></tr>
+<tr><td><code>type&lt;ident=type&gt;</code></td><td>하나 이상의 연관 타입이 특정 할당 값을 갖는 제네릭 타입(예: <code>Iterator&lt;Item=T&gt;</code>)</td></tr>
 </tbody>
 </table>
 </div>
-<p>표 B-5는 특성 경계가 있는 일반 형식 매개 변수를 제한하는 컨텍스트에서 나타나는 기호를 보여줍니다.</p>
-<p>표 B-5 : 특성 바운드 제약</p>
+<p>표 B-5는 트레이트 바운드로 제네릭 타입 매개변수를 제약하는 문맥에서 나타나는 기호를 보여줍니다.</p>
+<p>표 B-5: 트레이트 바운드 제약</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>상징</th><th>설명</th></tr>
+<tr><th>기호</th><th>설명</th></tr>
 </thead>
 <tbody>
 <tr><td><code>T: U</code></td><td>일반 매개 변수 <code>T</code> <code>U</code>를 구현하는 유형으로 제한됨</td></tr>
-<tr><td><code>T: 'a</code></td><td>일반 형식 <code>T</code> #평생 필수 <code>'a</code> (즉, 이 타입은 수명보다 짧은 어떠한 참조도 전이적으로 포함할 수 없다. <code>'a</code>)</td></tr>
-<tr><td><code>T: 'static</code></td><td>일반 유형 <code>T</code>에는 <code>'static</code> 이외의 빌린 참조가 없습니다.</td></tr>
-<tr><td><code>'b: 'a</code></td><td>일반적인 일생 <code>'b</code>는 일생 <code>'a</code>를 오래 살아야 합니다</td></tr>
-<tr><td><code>T: ?Sized</code></td><td>제네릭 형식 매개 변수가 동적으로 크기가 지정되도록 허용</td></tr>
+<tr><td><code>T: 'a</code></td><td>일반 형식 <code>T</code>은(는) 라이프타임 <code>'a</code>보다 오래 살아야 합니다(즉, 이 타입은 라이프타임이 <code>'a</code>보다 짧은 참조를 전이적으로 포함할 수 없습니다).</td></tr>
+<tr><td><code>T: 'static</code></td><td>제네릭 타입 <code>T</code>에는 <code>'static</code>를 제외한 빌림 참조가 없습니다.</td></tr>
+<tr><td><code>'b: 'a</code></td><td>제네릭 라이프타임 <code>'b</code>은 라이프타임 <code>'a</code>보다 오래 지속되어야 합니다</td></tr>
+<tr><td><code>T: ?Sized</code></td><td>제네릭 타입 매개변수가 동적 크기 타입이 될 수 있도록 허용합니다</td></tr>
 <tr><td><code>'a + trait</code>, <code>trait + trait</code></td><td>복합형 제약</td></tr>
 </tbody>
 </table>
 </div>
-<p>표 B-6은 매크로를 호출하거나 정의하고 항목의 속성을 지정하는 상황에서 나타나는 기호를 보여줍니다.</p>
-<p>표 B-6 : 매크로 및 속성</p>
+<p>표 B-6은 매크로를 호출하거나 정의하고, 항목에 속성을 지정하는 맥락에서 나타나는 기호를 보여줍니다.</p>
+<p>표 B-6: 매크로 및 속성</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>상징</th><th>설명</th></tr>
+<tr><th>기호</th><th>설명</th></tr>
 </thead>
 <tbody>
 <tr><td><code>#[meta]</code></td><td>외부 속성</td></tr>
 <tr><td><code>#![meta]</code></td><td>내부 속성</td></tr>
-<tr><td><code>$ident</code></td><td>매크로 대체</td></tr>
-<tr><td><code>$ident:kind</code></td><td>매크로 메타 변수</td></tr>
+<tr><td><code>$ident</code></td><td>매크로 치환</td></tr>
+<tr><td><code>$ident:kind</code></td><td>매크로 메타변수</td></tr>
 <tr><td><code>$(...)...</code></td><td>매크로 반복</td></tr>
 <tr><td><code>ident!(...)</code>, <code>ident!{...}</code>, <code>ident![...]</code></td><td>매크로 호출</td></tr>
 </tbody>
 </table>
 </div>
-<p>표 B-7은 주석을 만드는 기호를 보여줍니다.</p>
-<p>표 B-7 : 댓글</p>
+<p>표 B-7은 주석을 생성하는 기호를 보여줍니다.</p>
+<p>표 B-7: 주석</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>상징</th><th>설명</th></tr>
+<tr><th>기호</th><th>설명</th></tr>
 </thead>
 <tbody>
-<tr><td><code>//</code></td><td>줄 설명</td></tr>
-<tr><td><code>//!</code></td><td>내부 줄 doc 코멘트</td></tr>
-<tr><td><code>///</code></td><td>외부 줄 doc 코멘트</td></tr>
-<tr><td><code>/*...*/</code></td><td>댓글 차단</td></tr>
-<tr><td><code>/*!...*/</code></td><td>내부 블록 문서 코멘트</td></tr>
-<tr><td><code>/**...*/</code></td><td>외부 블록 doc 코멘트</td></tr>
+<tr><td><code>//</code></td><td>줄 주석</td></tr>
+<tr><td><code>//!</code></td><td>내부 줄 문서 주석</td></tr>
+<tr><td><code>///</code></td><td>외부 줄 문서 주석</td></tr>
+<tr><td><code>/*...*/</code></td><td>블록 주석</td></tr>
+<tr><td><code>/*!...*/</code></td><td>내부 블록 문서 주석</td></tr>
+<tr><td><code>/**...*/</code></td><td>외부 블록 문서 주석</td></tr>
 </tbody>
 </table>
 </div>
-<p>표 B-8은 괄호가 사용되는 컨텍스트를 보여줍니다.</p>
-<p>표 B-8 : 괄호</p>
+<p>표 B-8은 괄호가 사용되는 문맥을 보여줍니다.</p>
+<p>표 B-8: 괄호</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>상징</th><th>설명</th></tr>
+<tr><th>기호</th><th>설명</th></tr>
 </thead>
 <tbody>
-<tr><td><code>()</code></td><td>빈 튜플 (일명 단위), 리터럴 및 타입 모두</td></tr>
-<tr><td><code>(expr)</code></td><td>괄호 모양 표현</td></tr>
+<tr><td><code>()</code></td><td>빈 튜플(일명 단위), 리터럴과 타입 모두</td></tr>
+<tr><td><code>(expr)</code></td><td>괄호로 묶은 표현식</td></tr>
 <tr><td><code>(expr,)</code></td><td>단일 요소 튜플 표현식</td></tr>
-<tr><td><code>(type,)</code></td><td>단일 요소 튜플 유형</td></tr>
-<tr><td><code>(expr, ...)</code></td><td>튜플 표현</td></tr>
-<tr><td><code>(type, ...)</code></td><td>튜플 유형</td></tr>
+<tr><td><code>(type,)</code></td><td>단일 요소 튜플 타입</td></tr>
+<tr><td><code>(expr, ...)</code></td><td>튜플 식</td></tr>
+<tr><td><code>(type, ...)</code></td><td>튜플 타입</td></tr>
 <tr><td><code>expr(expr, ...)</code></td><td>함수 호출 표현식; 튜플 <code>struct</code> 및 튜플 <code>enum</code> 변형을 초기화하는 데도 사용됩니다.</td></tr>
 </tbody>
 </table>
 </div>
-<p>표 B-9는 중괄호가 사용되는 컨텍스트를 보여줍니다.</p>
-<p>표 B-9 : 곱슬 브래킷</p>
+<p>표 B-9는 중괄호가 사용되는 맥락을 보여줍니다.</p>
+<p>표 B-9: 중괄호</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>컨텍스트</th><th>설명</th></tr>
+<tr><th>맥락</th><th>설명</th></tr>
 </thead>
 <tbody>
-<tr><td><code>{...}</code></td><td>블록 표현</td></tr>
+<tr><td><code>{...}</code></td><td>블록 표현식</td></tr>
 <tr><td><code>Type {...}</code></td><td>구조체 리터럴</td></tr>
 </tbody>
 </table>
 </div>
-<p>표 B-10은 대괄호가 사용되는 컨텍스트를 보여줍니다.</p>
-<p>테이블 B-10: 정연한 부류</p>
+<p>표 B-10은 대괄호가 사용되는 문맥을 보여줍니다.</p>
+<p>표 B-10: 대괄호</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>컨텍스트</th><th>설명</th></tr>
+<tr><th>맥락</th><th>설명</th></tr>
 </thead>
 <tbody>
 <tr><td><code>[...]</code></td><td>배열 리터럴</td></tr>
-<tr><td><code>[expr; len]</code></td><td>배열 리터럴 포함 <code>len</code> 사본의 <code>expr</code></td></tr>
-<tr><td><code>[type; len]</code></td><td>배열 형식 포함 <code>len</code> 사례들 ¶ <code>type</code></td></tr>
+<tr><td><code>[expr; len]</code></td><td><code>len</code>의 사본을 <code>expr</code>개 포함하는 배열 리터럴</td></tr>
+<tr><td><code>[type; len]</code></td><td><code>len</code> 타입의 인스턴스 <code>type</code>개를 포함하는 배열 타입</td></tr>
 <tr><td><code>expr[expr]</code></td><td>컬렉션 인덱싱; 오버로드 가능 (<code>Index</code>, <code>IndexMut</code>)</td></tr>
-<tr><td><code>expr[..]</code>, <code>expr[a..]</code>, <code>expr[..b]</code>, <code>expr[a..b]</code></td><td><code>Range</code>, <code>RangeFrom</code>, <code>RangeTo</code> 또는 <code>RangeFull</code>를 “인덱스”로 사용하여 컬렉션 슬라이싱인 척하는 컬렉션 인덱싱</td></tr>
+<tr><td><code>expr[..]</code>, <code>expr[a..]</code>, <code>expr[..b]</code>, <code>expr[a..b]</code></td><td><code>Range</code>, <code>RangeFrom</code>, <code>RangeTo</code> 또는 <code>RangeFull</code>를 '인덱스'로 사용하여 컬렉션 슬라이싱처럼 동작하는 컬렉션 인덱싱</td></tr>
 </tbody>
 </table>
 </div>

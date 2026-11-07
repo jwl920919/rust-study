@@ -161,17 +161,15 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h2 id="storing-utf-8-encoded-text-with-strings"><a class="header" href="#storing-utf-8-encoded-text-with-strings">UTF-8 인코딩된 텍스트 문자열 저장</a></h2>
-<p>우리는 4장에서 문자열에 대해 이야기했지만, 이제 더 자세히 살펴볼 것입니다. 새로운 러스트aceans는 일반적으로 가능한 오류를 노출하는 러스트의 성향, 많은 프로그래머가 인정하는 것보다 더 복잡한 데이터 구조, UTF-8과 같은 세 가지 이유 때문에 문자열에 갇히게 됩니다. 이러한 요소들은 다른 프로그래밍 언어에서 왔을 때 어려워 보일 수 있는 방식으로 결합됩니다.</p>
-<p>문자열이 바이트의 컬렉션으로 구현되기 때문에 컬렉션의 컨텍스트에서 문자열과 해당 바이트가 텍스트로 해석 될 때 유용한 기능을 제공하는 몇 가지 방법을 논의합니다. 이 섹션에서는 다음과 같은 작업에 대해 이야기 할 것입니다. <code>String</code> 모든 컬렉션 유형에는 생성, 업데이트 및 읽기와 같은 것이 있습니다. 우리는 또한 방법에 대해 논의 할 것입니다. <code>String</code>
-다른 컬렉션과는 다른, 즉, 어떻게 인덱싱 <code>String</code> 사람과 컴퓨터의 차이로 인해 복잡해집니다.
-<code>String</code> 자료.</p>
+<h2 id="storing-utf-8-encoded-text-with-strings"><a class="header" href="#storing-utf-8-encoded-text-with-strings">String으로 UTF-8 인코딩된 텍스트 저장하기</a></h2>
+<p>4장에서 문자열에 대해 다루었지만, 이제 더 깊이 살펴볼 것입니다. Rust를 처음 접하는 개발자들은 세 가지 복합적인 이유로 인해 문자열에서 자주 막히게 됩니다. Rust가 잠재적인 오류를 노출하려는 성향, 많은 개발자가 생각하는 것보다 문자열이 더 복잡한 데이터 구조라는 점, 그리고 UTF-8 때문입니다. 이러한 요소들이 결합되어 다른 프로그래밍 언어에서 넘어온 개발자에게는 어렵게 느껴질 수 있습니다.</p>
+<p>문자열은 바이트의 컬렉션으로 구현되며, 해당 바이트가 텍스트로 해석될 때 유용한 기능을 제공하는 메서드를 추가로 제공합니다. 이 때문에 문자열은 컬렉션의 맥락에서 다루어집니다. 이 섹션에서는 생성, 업데이트, 읽기 등 모든 컬렉션 타입에 공통적으로 존재하는 <code>String</code>에 대한 작업을 설명합니다. 또한, <code>String</code>이 다른 컬렉션과 다른 점, 즉 사람과 컴퓨터가 <code>String</code> 데이터를 해석하는 방식의 차이로 인해 인덱싱이 복잡해지는 점에 대해서도 논의합니다. <code>String</code></p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="what-is-a-string"></a></p>
-<h3 id="defining-strings"><a class="header" href="#defining-strings">문자열 정의</a></h3>
-<p>우리는 먼저 문자열이라는 용어가 무엇을 의미하는지 정의할 것입니다. 러스트는 코어 언어에서 단 하나의 문자열 유형을 가지고 있는데, 이는 일반적으로 빌린 형태인 <code>str</code>, <code>&amp;str</code>입니다. 4장에서는 다른 곳에 저장된 UTF-8 인코딩된 문자열 데이터를 참조하는 문자열 슬라이스에 대해 이야기했습니다. 예를 들어, 문자열 리터럴은 프로그램의 바이너리에 저장되고 따라서 슬라이스입니다.</p>
-<p>이름 * <code>String</code> 핵심 언어로 코딩되지 않고 러스트의 표준 라이브러리에 의해 제공되는 type은 growable, mutable, owned, UTF-8 encoded string type입니다. 러스트aceans가 러스트에서 “strings”를 참조할 때, 그들은 다음 중 하나를 참조할 수 있습니다. <code>String</code> 또는 스트링 슬라이스 <code>&amp;str</code> types, not just one of those types. 이 섹션은 대부분 다음과 같습니다. <code>String</code>두 가지 유형 모두 러스트의 표준 라이브러리에서 많이 사용되고 있습니다. <code>String</code> 그리고 문자열 조각은 UTF-8로 인코딩됩니다.</p>
-<h3 id="creating-a-new-string"><a class="header" href="#creating-a-new-string">새 문자열 만들기</a></h3>
+<h3 id="defining-strings"><a class="header" href="#defining-strings">문자열 정의하기</a></h3>
+<p>먼저 문자열이라는 용어가 무엇을 의미하는지 정의하겠습니다. Rust 코어 언어에는 문자열 타입이 하나뿐인데, 이는 문자열 슬라이스인 <code>str</code>이며, 보통 빌림 형태인 <code>&amp;str</code>로 사용됩니다. 4장에서는 다른 곳에 저장된 UTF-8 인코딩 문자열 데이터를 참조하는 문자열 슬라이스에 대해 다루었습니다. 예를 들어, 문자열 리터럴은 프로그램의 바이너리에 저장되므로 문자열 슬라이스에 해당합니다.</p>
+<p>Rust 표준 라이브러리가 제공하며 핵심 언어에 내장되어 있지 않은 <code>String</code> 타입은 확장 가능하고, 변경 가능하며, 소유권을 가지며, UTF-8 인코딩된 문자열 타입입니다. Rustacean들이 Rust에서 “문자열”이라고 말할 때, 이는 <code>String</code> 또는 문자열 슬라이스 <code>&amp;str</code> 타입 중 하나를 가리킬 수 있으며, 반드시 그중 하나만 지칭하는 것은 아닙니다. 이 섹션은 주로 <code>String</code>에 대해 다루지만, 두 타입 모두 Rust 표준 라이브러리에서 널리 사용되며, <code>String</code>와 문자열 슬라이스 모두 UTF-8 인코딩됩니다.</p>
+<h3 id="creating-a-new-string"><a class="header" href="#creating-a-new-string">새로운 String 만들기</a></h3>
 <p>다음과 같은 많은 작업이 가능합니다. <code>Vec&lt;T&gt;</code> 사용할 수 있습니다 <code>String</code>
 또한 왜냐하면 <code>String</code> 실제로 몇 가지 추가 보장, 제한 및 기능을 가진 바이트 벡터 주위에 래퍼로 구현됩니다. 와 같은 방식으로 작동하는 함수의 예 <code>Vec&lt;T&gt;</code> 그리고 <code>String</code> 는 The <code>new</code>
 인스턴스를 생성하는 함수로, Listing 8-11에 나와 있습니다.</p>
@@ -181,7 +179,7 @@
 <span class="boring">}</span></code></pre>
 <figcaption><a href="#listing-8-11">목록 8-11</a>: 새로운 빈 <code>String</code> 만들기</figcaption>
 </figure>
-<p>이 줄은 <code>s</code>라는 새로운 빈 문자열을 생성합니다. 그러면 데이터를 로드할 수 있습니다. 종종 문자열을 시작하려는 초기 데이터가 있습니다. 이를 위해 <code>to_string</code> 메소드를 사용합니다. <code>Display</code> 트레잇을 구현하는 모든 유형에서 사용할 수 있습니다. Listing 8-12는 두 가지 예제를 보여줍니다.</p>
+<p>이 줄은 <code>s</code>이라는 새로운 빈 문자열을 생성합니다. 이후 이 문자열에 데이터를 저장할 수 있습니다. 보통 문자열을 시작할 때 사용할 초기 데이터가 있는 경우가 많습니다. 이를 위해 <code>to_string</code> 메서드를 사용합니다. 이 메서드는 문자열 리터럴처럼 <code>Display</code> 트레잇을 구현하는 모든 타입에서 사용할 수 있습니다. 목록 8-12에는 두 가지 예제가 나와 있습니다.</p>
 <figure class="listing" id="listing-8-12">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    let data = "initial contents";
@@ -191,18 +189,18 @@
     // The method also works on a literal directly:
     let s = "initial contents".to_string();
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-8-12">명부작성 8-12</a>: <code>to_string</code> 메서드를 사용하여 문자열 리터럴에서 <code>String</code> 만들기</figcaption>
+<figcaption><a href="#listing-8-12">목록 8-12</a>: <code>to_string</code> 메서드를 사용하여 문자열 리터럴에서 <code>String</code> 만들기</figcaption>
 </figure>
 <p>이 코드는 <code>initial contents</code>를 포함하는 문자열을 생성합니다.</p>
-<p>또한 <code>String::from</code> 함수를 사용하여 문자열 리터럴에서 <code>String</code>를 생성할 수 있습니다. Listing 8-13의 코드는 <code>to_string</code>를 사용하는 Listing 8-12의 코드와 동일합니다.</p>
+<p>또한 <code>String::from</code> 함수를 사용하여 문자열 리터럴에서 <code>String</code>를 생성할 수 있습니다. 목록 8-13의 코드는 <code>to_string</code>를 사용하는 목록 8-12의 코드와 동일합니다.</p>
 <figure class="listing" id="listing-8-13">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    let s = String::from("initial contents");
 <span class="boring">}</span></code></pre>
 <figcaption><a href="#listing-8-13">목록 8-13</a>: <code>String::from</code> 함수를 사용하여 문자열 리터럴에서 <code>String</code> 만들기</figcaption>
 </figure>
-<p>문자열이 여러 가지 용도로 사용되기 때문에 문자열에 다양한 일반 API를 사용하여 많은 옵션을 제공 할 수 있습니다. 그들 중 일부는 중복 될 수 있지만 모두 자신의 자리를 가지고 있습니다! 이 경우 <code>String::from</code>와 <code>to_string</code>는 동일한 작업을 수행하므로 선택한 것은 스타일과 가독성의 문제입니다.</p>
-<p>문자열은 UTF-8로 인코딩되어 있으므로, Listing 8-14에서 볼 수 있듯이 적절하게 인코딩된 데이터를 포함할 수 있습니다.</p>
+<p>문자열은 다양한 용도로 사용되므로, 문자열을 위한 여러 가지 제네릭 API를 사용할 수 있어 많은 옵션을 제공합니다. 일부는 중복된 것처럼 보일 수 있지만, 모두 제 역할을 합니다! 이 경우 <code>String::from</code>와 <code>to_string</code>는 동일한 작업을 수행하므로, 어떤 것을 선택할지는 스타일과 가독성의 문제입니다.</p>
+<p>문자열은 UTF-8로 인코딩되어 있으므로, 목록 8-14에서 볼 수 있듯이 적절하게 인코딩된 데이터를 포함할 수 있습니다.</p>
 <figure class="listing" id="listing-8-14">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    let hello = String::from("السلام عليكم");
@@ -217,21 +215,21 @@
     let hello = String::from("Здравствуйте");
     let hello = String::from("Hola");
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-8-14">목록 8-14</a>: 다른 언어로 된 인사말을 문자열로 저장</figcaption>
+<figcaption><a href="#listing-8-14">목록 8-14</a>: 문자열에 다양한 언어의 인사말 저장</figcaption>
 </figure>
-<p>이들 모두 유효한 <code>String</code> 값입니다.</p>
-<h3 id="updating-a-string"><a class="header" href="#updating-a-string">문자열 업데이트 중</a></h3>
-<p><code>String</code>는 크기가 커질 수 있으며 <code>Vec&lt;T&gt;</code>의 내용과 마찬가지로 더 많은 데이터를 푸시하면 내용이 변경 될 수 있습니다. 또한 <code>+</code> 연산자 또는 <code>format!</code> 매크로를 사용하여 <code>String</code> 값을 연결할 수 있습니다.</p>
+<p>이들은 모두 유효한 <code>String</code> 값입니다.</p>
+<h3 id="updating-a-string"><a class="header" href="#updating-a-string">문자열 업데이트</a></h3>
+<p><code>String</code>은 크기가 커질 수 있으며, <code>Vec&lt;T&gt;</code>의 내용처럼 더 많은 데이터를 추가하면 내용이 변경될 수 있습니다. 또한 <code>+</code> 연산자 또는 <code>format!</code> 매크로를 사용하여 <code>String</code> 값을 연결할 수 있습니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="appending-to-a-string-with-push_str-and-push"></a></p>
-<h4 id="appending-with-push_str-or-push"><a class="header" href="#appending-with-push_str-or-push">다음에 추가 <code>push_str</code> 또는 <code>push</code></a></h4>
-<p>우리는 성장할 수 있습니다. <code>String</code> 를 사용하여 Using the <code>push_str</code> Listing 8-15와 같이 문자열 슬라이스를 추가하는 메서드입니다.</p>
+<h4 id="appending-with-push_str-or-push"><a class="header" href="#appending-with-push_str-or-push">`push_str` 또는 `push`로 추가하기 <code>push_str</code> <code>push</code> </a></h4>
+<p><code>String</code> 메서드를 사용하여 문자열 슬라이스를 추가하면 <code>push_str</code>을 성장시킬 수 있습니다. 목록 8-15에 그 예가 나와 있습니다.</p>
 <figure class="listing" id="listing-8-15">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    let mut s = String::from("foo");
     s.push_str("bar");
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-8-15">상장 8-15</a>: <code>String</code> 메서드를 사용하여 문자열 슬라이스를 <code>push_str</code>에 추가</figcaption>
+<figcaption><a href="#listing-8-15">목록 8-15</a>: <code>String</code> 메서드를 사용하여 문자열 슬라이스를 <code>push_str</code>에 추가</figcaption>
 </figure>
 <p>이 두 줄 후에 <code>s</code>에는 <code>foobar</code>가 포함됩니다. <code>push_str</code> 방법은 매개 변수의 소유권을 반드시 원하지 않기 때문에 문자열 슬라이스를 취합니다. 예를 들어, 목록 8-16의 코드에서 <code>s2</code>에 내용을 추가 한 후 <code>s1</code>를 사용할 수 있기를 원합니다.</p>
 <figure class="listing" id="listing-8-16">
@@ -243,41 +241,39 @@
 <span class="boring">}</span></code></pre>
 <figcaption><a href="#listing-8-16">목록 8-16</a>: <code>String</code>에 내용을 추가한 후 문자열 슬라이스 사용</figcaption>
 </figure>
-<p><code>push_str</code> 메소드가 <code>s2</code>의 소유권을 가져 가면 마지막 줄에 값을 인쇄 할 수 없습니다. 그러나이 코드는 예상대로 작동합니다!</p>
-<p>이름 * <code>push</code> 메서드는 단일 문자를 매개 변수로 가져와서 해당 매개 변수에 추가합니다.
-<code>String</code>. Listing 8-17은 문자를 추가합니다 <em>l</em> 에 대 한 <code>String</code> 를 사용하여 Using the <code>push</code>
-방법.</p>
+<p><code>push_str</code> 메서드가 <code>s2</code>의 소유권을 가져간다면 마지막 줄에서 그 값을 출력할 수 없습니다. 하지만 이 코드는 예상대로 작동합니다!</p>
+<p><code>push</code> 메서드는 단일 문자를 매개변수로 받아 <code>String</code>에 추가합니다. Listing 8-17에서는 <code>push</code> 메서드를 사용하여 <code>String</code>에 <em>l</em> 문자를 추가합니다.</p>
 <figure class="listing" id="listing-8-17">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    let mut s = String::from("lo");
     s.push('l');
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-8-17">목록 8-17</a>: <code>String</code> 값을 사용하여 <code>push</code>에 한 문자 추가</figcaption>
+<figcaption><a href="#listing-8-17">목록 8-17</a>: <code>String</code>을 사용하여 <code>push</code>에 한 문자 추가</figcaption>
 </figure>
-<p>따라서 <code>s</code>에는 <code>lol</code>가 포함됩니다.</p>
+<p>그 결과, <code>s</code>에는 <code>lol</code>이 포함됩니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="concatenation-with-the--operator-or-the-format-macro"></a></p>
-<h4 id="concatenating-with--or-format"><a class="header" href="#concatenating-with--or-format">와 연결하기 <code>+</code> 또는 <code>format!</code></a></h4>
-<p>종종 두 개의 기존 문자열을 결합해야 합니다. 한 가지 방법은 Listing 8-18과 같이 <code>+</code> 연산자를 사용하는 것입니다.</p>
+<h4 id="concatenating-with--or-format"><a class="header" href="#concatenating-with--or-format"> 또는 <code>+</code>, <code>format!</code></a>를 사용하여 연결하기</h4>
+<p>종종 두 개의 기존 문자열을 결합해야 하는 경우가 있습니다. 한 가지 방법은 Listing 8-18에 나와 있듯이 <code>+</code> 연산자를 사용하는 것입니다.</p>
 <figure class="listing" id="listing-8-18">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    let s1 = String::from("Hello, ");
     let s2 = String::from("world!");
     let s3 = s1 + &amp;s2; // note s1 has been moved here and can no longer be used
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-8-18">목록 8-18</a>: 를 사용하여 <code>+</code> 2개를 결합하는 통신수 <code>String</code> 새로운 가치로 <code>String</code> 값</figcaption>
+<figcaption><a href="#listing-8-18">목록 8-18</a>: <code>+</code> 연산자를 사용하여 두 개의 <code>String</code> 값을 하나의 새로운 <code>String</code> 값으로 결합하기</figcaption>
 </figure>
 <p>문자열 <code>s3</code> 윌 포함 <code>Hello, world!</code>. 이유 <code>s1</code> 덧셈 후에 더 이상 유효하지 않고, 우리가 참조를 사용한 이유는 다음과 같습니다. <code>s2</code>, 우리가 사용할 때 호출되는 메서드의 서명과 관련이 있습니다. <code>+</code> 연산자입니다. <code>+</code> 연산자는 The <code>add</code> 메서드는 다음과 같이 서명합니다.</p>
 <pre><code class="language-rust ignore">fn add(self, s: &amp;str) -&gt; String {</code></pre>
-<p>표준 라이브러리에서는 제네릭 및 관련 유형을 사용하여 정의 된 <code>add</code>를 볼 수 있습니다. 여기서 우리는 구체적인 유형으로 대체했습니다. <code>String</code> 값을 사용하여이 메소드를 호출 할 때 발생합니다. 10 장에서 제네릭에 대해 논의 할 것입니다. 이 서명은 <code>+</code> 연산자의 까다로운 비트를 이해하기 위해 필요한 단서를 제공합니다.</p>
+<p>표준 라이브러리에서는 제네릭과 연관 트레이트를 사용하여 <code>add</code>가 정의되어 있습니다. 여기서는 구체적인 타입으로 대체되어 있는데, 이는 <code>String</code> 값을 사용하여 이 메서드를 호출할 때 발생하는 상황입니다. 제네릭에 대해서는 10장에서 다룹니다. 이 서명은 <code>+</code> 연산자의 복잡한 부분을 이해하는 데 필요한 단서를 제공합니다.</p>
 <p>첫째, <code>s2</code> 있습니다. <code>&amp;</code>, 첫 번째 문자열에 두 번째 문자열의 참조를 추가한다는 의미입니다. 이것은 다음과 같습니다. <code>s</code> 매개 변수: <code>add</code>
 함수: 문자열 조각만 a에 추가할 수 있습니다. <code>String</code>* 2개를 추가할 수 없습니다.
 <code>String</code> 함께 가치. 그러나 기다려 -의 유형 <code>&amp;s2</code> 있습니다. <code>&amp;String</code>, 하지 않음 <code>&amp;str</code>두 번째 매개 변수에서 지정한 대로 <code>add</code>. 그렇다면 왜 Listing 8-18이 컴파일됩니까?</p>
-<p>사용할 수 있는 이유 ¶ <code>&amp;s2</code> 자주 묻는 질문 <code>add</code> 상기 컴파일러는, The compiler, <code>&amp;String</code> argument in a ~으로의 논쟁 <code>&amp;str</code>. 우리가 부를 때 <code>add</code> 메서드, 러스트는 deref를 사용합니다. <code>&amp;s2</code> 다음으로 <code>&amp;s2[..]</code>. 우리는 15 장에서 더 깊이 deref 강압에 대해 논의 할 것입니다. <code>add</code> 의 소유권을 갖지 아니한다. <code>s</code> 매개 변수, <code>s2</code> 유효한 값이 될 것입니다. <code>String</code> 이 수술 후.</p>
+<p><code>add</code> 호출에서 <code>&amp;s2</code>를 사용할 수 있는 이유는 컴파일러가 <code>&amp;String</code> 인수를 <code>&amp;str</code>로 강제 변환할 수 있기 때문입니다. <code>add</code> 메서드를 호출할 때, Rust는 deref 강제 변환을 사용하여 여기서는 <code>&amp;s2</code>를 <code>&amp;s2[..]</code>로 변환합니다. deref 강제 변환에 대해서는 15장에서 더 자세히 다룹니다. <code>add</code>은 <code>s</code> 매개변수에 대한 소유권을 가져가지 않으므로, 이 연산 후에도 <code>s2</code>은 여전히 유효한 <code>String</code>입니다.</p>
 <p>둘째, 우리는 서명에서 볼 수 있습니다. <code>add</code> 소유권의 취득 <code>self</code>
 왜냐하면 <code>self</code> 안 함 <em>하지 않음</em> 있습니다. <code>&amp;</code>. 이것은 <code>s1</code> Listing 8-18에서 다음과 같이 옮겨질 것입니다. <code>add</code> 호출 후 더 이상 유효하지 않습니다. 그래서,
 <code>let s3 = s1 + &amp;s2;</code> 두 문자열을 모두 복사하고 새 문자열을 만드는 것처럼 보입니다. 이 문장은 실제로 <code>s1</code>의 내용의 복사본을 추가한다. <code>s2</code>, 그리고 결과의 소유권을 반환합니다. 즉, 많은 복사본을 만드는 것처럼 보이지만 그렇지 않습니다. 구현은 복사보다 효율적입니다.</p>
-<p>여러 문자열을 연결해야 하는 경우 <code>+</code> 연산자의 동작이 다루기 어려워집니다.</p>
+<p>여러 문자열을 연결해야 하는 경우, <code>+</code> 연산자의 동작이 복잡해집니다.</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    let s1 = String::from("tic");
     let s2 = String::from("tac");
@@ -285,7 +281,7 @@
 
     let s = s1 + "-" + &amp;s2 + "-" + &amp;s3;
 <span class="boring">}</span></code></pre>
-<p>이 시점에서 <code>s</code>는 <code>tic-tac-toe</code>입니다. 모든 <code>+</code> 및 <code>"</code> 문자를 사용하면 무슨 일이 일어나고 있는지 알기가 어렵습니다. 문자열을보다 복잡한 방법으로 결합하려면 <code>format!</code> 매크로를 대신 사용할 수 있습니다.</p>
+<p>이 시점에서 <code>s</code>의 값은 <code>tic-tac-toe</code>입니다. <code>+</code>와 <code>"</code> 문자가 섞여 있어 어떤 문자열이 생성되었는지 한눈에 파악하기 어렵습니다. 문자열을 더 복잡한 방식으로 조합해야 할 때는 <code>format!</code> 매크로를 사용하는 것이 좋습니다.</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    let s1 = String::from("tic");
     let s2 = String::from("tac");
@@ -293,19 +289,17 @@
 
     let s = format!("{s1}-{s2}-{s3}");
 <span class="boring">}</span></code></pre>
-<p>이 코드는 또한 <code>s</code> 오시는 길 <code>tic-tac-toe</code>. 그 <code>format!</code> 매크로는 다음과 같습니다.
-<code>println!</code>출력을 화면에 출력하는 대신,
-<code>String</code> with the contents. 사용하는 코드의 버전 <code>format!</code> 훨씬 읽기 쉽고, 코드에 의해 생성 된 <code>format!</code> 매크로는 참조를 사용하여 이 호출이 매개 변수의 소유권을 가지지 않도록 합니다.</p>
+<p>이 코드는 또한 <code>s</code>를 <code>tic-tac-toe</code>로 설정합니다. <code>format!</code> 매크로는 <code>println!</code>처럼 작동하지만, 출력을 화면에 출력하는 대신 내용을 담은 <code>String</code>를 반환합니다. <code>format!</code>를 사용하는 버전의 코드는 훨씬 읽기 쉽고, <code>format!</code> 매크로가 생성하는 코드는 참조를 사용하므로 이 호출은 매개변수 중 어느 것의 소유권도 가져가지 않습니다.</p>
 <h3 id="indexing-into-strings"><a class="header" href="#indexing-into-strings">문자열 인덱싱</a></h3>
-<p>다른 많은 프로그래밍 언어에서 인덱스로 참조하여 문자열의 개별 문자에 액세스하는 것은 유효하고 일반적인 작업입니다. 그러나 러스트에서 인덱싱 구문을 사용하여 <code>String</code>의 일부에 액세스하려고 하면 오류가 발생합니다. Listing 8-19의 잘못된 코드를 고려하십시오.</p>
+<p>다른 많은 프로그래밍 언어에서는 인덱스를 참조하여 문자열의 개별 문자에 접근하는 것이 유효하고 일반적인 작업입니다. 그러나 Rust에서 인덱싱 구문을 사용하여 <code>String</code>의 일부에 접근하려고 하면 오류가 발생합니다. Listing 8-19의 잘못된 코드를 살펴보세요.</p>
 <figure class="listing" id="listing-8-19">
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
 </span>    let s1 = String::from("hi");
     let h = s1[0];
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-8-19">목록 8-19</a>: <code>String</code>와 함께 인덱싱 구문을 사용하려고 합니다.</figcaption>
+<figcaption><a href="#listing-8-19">Listing 8-19</a>: <code>String</code>에 인덱싱 구문을 사용하려는 시도</figcaption>
 </figure>
-<p>이 코드는 다음과 같은 오류가 발생합니다:</p>
+<p>이 코드는 다음과 같은 오류를 발생시킵니다:</p>
 <pre><code class="language-console">$ cargo run
    Compiling collections v0.1.0 (file:///projects/collections)
 error[E0277]: the type `str` cannot be indexed by `{integer}`
@@ -329,9 +323,9 @@ help: `usize` implements trait `SliceIndex&lt;T&gt;`
 For more information about this error, try `rustc --explain E0277`.
 error: could not compile `collections` (bin "collections") due to 1 previous error
 </code></pre>
-<p>이 오류는 다음과 같은 이야기를 들려줍니다. 러스트 문자열은 인덱싱을 지원하지 않습니다. 하지만 왜 그럴까요? 이 질문에 답하기 위해, 우리는 러스트가 어떻게 메모리에 문자열을 저장하는지 논의할 필요가 있습니다.</p>
-<h4 id="internal-representation"><a class="header" href="#internal-representation">내부 대표</a></h4>
-<p><code>String</code>는 <code>Vec&lt;u8&gt;</code>에 대한 래퍼입니다. Listing 8-14에서 적절히 인코딩된 UTF-8 예제 문자열을 살펴봅시다. 먼저, 이 문자열은:</p>
+<p>이 오류 메시지는 상황을 잘 보여줍니다. Rust 문자열은 인덱싱을 지원하지 않습니다. 왜 그런 것일까요? 이 질문에 답하려면 Rust가 메모리에 문자열을 저장하는 방식을 알아야 합니다.</p>
+<h4 id="internal-representation"><a class="header" href="#internal-representation">내부 표현</a></h4>
+<p><code>String</code>는 <code>Vec&lt;u8&gt;</code>을 감싸는 래퍼입니다. Listing 8-14의 올바르게 인코딩된 UTF-8 예제 문자열을 살펴봅시다. 먼저, 이 문자열입니다:</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span><span class="boring">    let hello = String::from("السلام عليكم");
 </span><span class="boring">    let hello = String::from("Dobrý den");
@@ -345,7 +339,7 @@ error: could not compile `collections` (bin "collections") due to 1 previous err
 </span><span class="boring">    let hello = String::from("Здравствуйте");
 </span>    let hello = String::from("Hola");
 <span class="boring">}</span></code></pre>
-<p>이 경우 <code>len</code>는 <code>4</code>가됩니다. 즉, 문자열 <code>"Hola"</code>를 저장하는 벡터의 길이는 4 바이트입니다. 이 각 문자는 UTF-8로 인코딩 될 때 1 바이트가 걸립니다. 그러나 다음 줄은 당신을 놀라게 할 수 있습니다 (이 문자열은 숫자 3이 아닌 대문자 키릴 문자 Ze로 시작됩니다).</p>
+<p>이 경우 <code>len</code>는 <code>4</code>입니다. 즉, 문자열 <code>"Hola"</code>를 저장하는 벡터의 길이는 4바이트입니다. 이 문자들은 UTF-8로 인코딩될 때 각각 1바이트를 차지합니다. 그러나 다음 줄은 놀라움을 줄 수 있습니다(이 문자열은 숫자 3이 아닌 키릴 문자 대문자 Ze로 시작한다는 점에 유의하세요).</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span><span class="boring">    let hello = String::from("السلام عليكم");
 </span><span class="boring">    let hello = String::from("Dobrý den");
@@ -359,38 +353,38 @@ error: could not compile `collections` (bin "collections") due to 1 previous err
 </span>    let hello = String::from("Здравствуйте");
 <span class="boring">    let hello = String::from("Hola");
 </span><span class="boring">}</span></code></pre>
-<p>문자열이 얼마나 긴지 묻는다면, 12라고 말할 수 있습니다. 사실, 러스트의 대답은 24입니다: 그것이 UTF-8에서 “ ⁇ ”를 인코딩하는 데 걸리는 바이트 수입니다. 왜냐하면 그 문자열의 각 유니코드 스칼라 값은 2바이트의 저장 공간을 차지하기 때문입니다. 그러므로, 문자열의 바이트에 대한 인덱스는 항상 유효한 유니코드 스칼라 값과 관련이 있는 것은 아닙니다. 증명을 위해, 이 유효하지 않은 러스트 코드를 고려하십시오:</p>
+<p>문자열의 길이를 묻는다면 12라고 답할 수 있습니다. 하지만 Rust의 답은 24입니다. 이는 UTF-8로 “Здравствуйте”를 인코딩하는 데 필요한 바이트 수이며, 해당 문자열의 각 유니코드 스칼라 값이 2바이트의 저장 공간을 차지하기 때문입니다. 따라서 문자열의 바이트 인덱스는 항상 유효한 유니코드 스칼라 값과 대응하지 않습니다. 이를 보여주기 위해 다음 잘못된 Rust 코드를 살펴보세요:</p>
 <pre><code class="language-rust ignore does_not_compile">let hello = "Здравствуйте";
 let answer = &amp;hello[0];</code></pre>
-<p>이미 알고 계시죠 <code>answer</code> 없을 것이다. <code>З</code>, 첫 번째 문자. UTF-8로 인코딩 될 때, 의 첫 번째 바이트 <code>З</code> 있습니다. <code>208</code> 그리고 두번째는 <code>151</code>그래서, 그것은 것 같다 <code>answer</code> 사실 이어야 한다. <code>208</code>,하지만 <code>208</code> 자체적으로 유효한 문자가 아닙니다. 반환 <code>208</code> 이 문자열의 첫 글자를 요구한다면 사용자가 원하는 것은 아닐 것입니다; 그러나, 이것이 러스트가 바이트 인덱스 0에 가지고 있는 유일한 데이터입니다. 사용자는 일반적으로 문자열에 라틴 문자만 포함되어 있더라도 바이트 값이 반환되는 것을 원하지 않습니다: <code>&amp;"hi"[0]</code> 바이트 값을 반환하는 올바른 코드라면 반환할 것입니다. <code>104</code>, 하지 않음 <code>h</code>.</p>
-<p>그에 대한 답은 예상치 못한 값을 반환하고 즉시 발견되지 않을 수 있는 버그를 유발하는 것을 피하기 위해, 러스트는 이 코드를 전혀 컴파일하지 않고 개발 프로세스 초기에 오해를 방지한다는 것입니다.</p>
+<p>이미 알고 있듯이 <code>answer</code>은 <code>З</code>, 즉 첫 번째 문자가 아닙니다. UTF-8로 인코딩하면 <code>З</code>의 첫 번째 바이트는 <code>208</code>이고 두 번째 바이트는 <code>151</code>입니다. 따라서 <code>answer</code>가 사실이어야 할 것 같지만, <code>208</code>은 자체적으로 유효한 문자가 아닙니다. 사용자가 이 문자열의 첫 번째 문자를 요청했을 때 <code>208</code>을 반환하는 것은 사용자의 의도와 맞지 않을 가능성이 높습니다. 하지만 Rust가 바이트 인덱스 0에서 가진 유일한 데이터가 바로 그것입니다. 사용자는 일반적으로 문자열에 라틴 문자만 포함되어 있더라도 바이트 값이 반환되는 것을 원하지 않습니다. 만약 <code>208</code>이 바이트 값을 반환하는 유효한 코드였다면, <code>&amp;"hi"[0]</code>을 반환했을 것입니다. <code>104</code>이 아니라 <code>h</code>입니다.</p>
+<p>결국 답은 다음과 같습니다. 예상치 못한 값을 반환하여 즉시 발견되지 않을 수 있는 버그를 유발하는 것을 피하기 위해, Rust는 이 코드를 아예 컴파일하지 않고 개발 과정 초기에 오해를 방지합니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="bytes-and-scalar-values-and-grapheme-clusters-oh-my"></a></p>
-<h4 id="bytes-scalar-values-and-grapheme-clusters"><a class="header" href="#bytes-scalar-values-and-grapheme-clusters">바이트, 스칼라 값, 그래핀 클러스터</a></h4>
-<p>UTF-8에 대한 또 다른 요점은 실제로 러스트의 관점에서 문자열을 보는 세 가지 관련 방법이 있다는 것입니다: 바이트, 스칼라 값, 그리고 grapheme 클러스터 (우리가 문자라고 부르는 것에 가장 가까운 것).</p>
-<p>Devanagari 스크립트로 작성된 힌디어 단어 “ ⁇ ”를 보면 다음과 같이 보이는 <code>u8</code> 값의 벡터로 저장됩니다.</p>
+<h4 id="bytes-scalar-values-and-grapheme-clusters"><a class="header" href="#bytes-scalar-values-and-grapheme-clusters">바이트, 스칼라 값, 그리고 그래프 클러스터</a></h4>
+<p>UTF-8에 대해 알아야 할 또 다른 점은, Rust의 관점에서 문자열을 바라보는 관련 있는 세 가지 방식이 있다는 것입니다. 바로 바이트, 스칼라 값, 그리고 그래프 클러스터(우리가 '문자'라고 부르는 것에 가장 가까운 개념)입니다.</p>
+<p>데바나가리 문자로 작성된 힌디어 단어 “नमस्ते”를 살펴보면, 이는 다음과 같이 보이는 <code>u8</code> 값의 벡터로 저장됩니다:</p>
 <pre><code class="language-text">[224, 164, 168, 224, 164, 174, 224, 164, 184, 224, 165, 141, 224, 164, 164,
 224, 165, 135]
 </code></pre>
-<p>이것은 18 바이트이며 컴퓨터가 궁극적으로이 데이터를 저장하는 방법입니다. 러스트의 <code>char</code> 유형 인 Unicode 스칼라 값으로 보면 그 바이트는 다음과 같습니다.</p>
+<p>이것은 18바이트이며, 컴퓨터가 궁극적으로 이 데이터를 저장하는 방식입니다. Rust의 <code>char</code> 타입인 유니코드 스칼라 값으로 보면, 해당 바이트는 다음과 같이 보입니다:</p>
 <pre><code class="language-text">['न', 'म', 'स', '्', 'त', 'े']
 </code></pre>
-<p>여기에 6 개의 <code>char</code> 값이 있지만, 네 번째와 여섯 번째 문자는 문자가 아닙니다. 그들은 스스로 의미가없는 발음 부호입니다. 마지막으로, 우리가 grapheme 클러스터로 본다면, 우리는 사람이 힌디어 단어를 구성하는 네 글자를 얻을 것입니다.</p>
+<p>여기에는 6개의 <code>char</code> 값이 있지만, 네 번째와 여섯 번째는 문자가 아닙니다. 이들은 단독으로 의미를 가지지 않는 발음 부호입니다. 마지막으로, 그래프 클러스터로 보면 사람이 인식하는 힌디어 단어의 네 글자를 얻을 수 있습니다:</p>
 <pre><code class="language-text">["न", "म", "स्", "ते"]
 </code></pre>
-<p>러스트는 컴퓨터가 저장하는 원시 문자열 데이터를 해석하는 다양한 방법을 제공하므로 각 프로그램은 데이터가 어떤 인간 언어에 있든 필요한 해석을 선택할 수 있습니다.</p>
-<p>러스트가 캐릭터를 얻기 위해 <code>String</code>로 인덱스를 만들 수 없는 마지막 이유는 인덱싱 작업은 항상 일정한 시간(O(1))이 걸릴 것으로 예상되기 때문입니다. 하지만 <code>String</code>로 성능을 보장할 수는 없습니다. 왜냐하면 러스트는 처음부터 인덱스까지 얼마나 많은 유효한 캐릭터가 있었는지를 결정하기 위해 컨텐츠를 통과해야 하기 때문입니다.</p>
-<h3 id="slicing-strings"><a class="header" href="#slicing-strings">슬라이싱 문자열</a></h3>
-<p>문자열로 인덱싱하는 것은 종종 좋지 않은 생각입니다. 왜냐하면 문자열 인덱싱 작업의 반환 타입이 어떤 것인지 분명하지 않기 때문입니다: 바이트 값, 문자, grapheme cluster, 또는 문자열 슬라이스. 문자열 슬라이스를 만들기 위해 인덱스를 사용해야 한다면, 러스트는 여러분이 좀 더 구체적이기를 요청합니다.</p>
-<p><code>[]</code>를 단일 숫자로 인덱싱하는 대신, <code>[]</code>를 범위와 함께 사용하여 특정 바이트를 포함하는 문자열 슬라이스를 생성할 수 있습니다.</p>
+<p>Rust는 컴퓨터가 저장하는 원시 문자열 데이터를 해석하는 다양한 방법을 제공합니다. 이를 통해 각 프로그램은 데이터가 어떤 인간 언어로 작성되었든 필요한 방식으로 해석을 선택할 수 있습니다.</p>
+<p>Rust가 문자를 얻기 위해 <code>String</code>로 인덱싱하는 것을 허용하지 않는 마지막 이유는, 인덱싱 작업은 항상 일정한 시간(O(1))에 수행되어야 한다고 기대하기 때문입니다. 하지만 <code>String</code>의 경우 이러한 성능을 보장할 수 없습니다. Rust는 처음부터 인덱스 위치까지 내용을 순회하며 유효한 문자가 몇 개인지 확인해야 하기 때문입니다.</p>
+<h3 id="slicing-strings"><a class="header" href="#slicing-strings">문자열 슬라이싱</a></h3>
+<p>문자열 인덱싱은 반환 타입이 바이트 값, 문자, 글리프 클러스터, 문자열 슬라이스 중 무엇이어야 하는지 명확하지 않기 때문에 종종 권장되지 않습니다. 따라서 문자열 슬라이스를 만들기 위해 인덱스를 사용해야 한다면, Rust는 더 구체적인 지시를 요구합니다.</p>
+<p>단일 숫자를 사용해 <code>[]</code>로 인덱싱하는 대신, 범위를 사용해 <code>[]</code>를 적용하면 특정 바이트를 포함하는 문자열 슬라이스를 생성할 수 있습니다:</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let hello = "Здравствуйте";
 
 let s = &amp;hello[0..4];
 <span class="boring">}</span></code></pre>
-<p>여기서 <code>s</code>는 문자열의 첫 번째 4 바이트를 포함하는 <code>&amp;str</code>입니다. 앞서 우리는이 문자들 각각이 2 바이트라고 언급했는데, 이는 <code>s</code>가 <code>Зд</code>임을 의미합니다.</p>
-<p>만약 우리가 <code>&amp;hello[0..1]</code>와 같은 문자 바이트의 일부만 슬라이스하려고 한다면, 러스트는 마치 벡터에서 유효하지 않은 인덱스에 접근한 것과 같은 방식으로 런타임에 패닉을 일으킬 것입니다:</p>
+<p>여기서 <code>s</code>는 문자열의 첫 4바이트를 포함하는 <code>&amp;str</code>입니다. 앞서 언급했듯이 각 문자는 2바이트를 차지하므로, <code>s</code>의 값은 <code>Зд</code>가 됩니다.</p>
+<p>만약 <code>&amp;hello[0..1]</code>처럼 문자 바이트의 일부만 슬라이스하려고 하면, Rust는 벡터에서 유효하지 않은 인덱스에 접근한 경우와 마찬가지로 런타임에 패닉을 일으킵니다:</p>
 <pre><code class="language-console">$ cargo run
    Compiling collections v0.1.0 (file:///projects/collections)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
@@ -400,42 +394,42 @@ thread 'main' (6017738) panicked at src/main.rs:4:19:
 end byte index 1 is not a char boundary; it is inside 'З' (bytes 0..2 of string)
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </code></pre>
-<p>범위를 가진 문자열 슬라이스를 만들 때 주의해야 합니다, 그렇게 하면 프로그램이 충돌할 수 있기 때문입니다.</p>
+<p>범위를 사용해 문자열 슬라이스를 만들 때는 주의해야 합니다. 잘못된 범위를 사용하면 프로그램이 충돌할 수 있기 때문입니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="methods-for-iterating-over-strings"></a></p>
 <h3 id="iterating-over-strings"><a class="header" href="#iterating-over-strings">문자열 반복</a></h3>
-<p>문자열 조각으로 작업하는 가장 좋은 방법은 문자 또는 바이트를 원하는지 여부를 명시하는 것입니다. 개별 유니코드 스칼라 값의 경우 <code>chars</code> 메서드를 사용하십시오. “ ⁇ ”에서 <code>chars</code>를 호출하면 분리되어 두 가지 유형의 <code>char</code> 값을 반환하고 결과를 반복하여 각 요소에 액세스 할 수 있습니다.</p>
+<p>문자열의 일부로 작업하는 가장 좋은 방법은 문자(char)인지 바이트인지 명시하는 것입니다. 개별 유니코드 스칼라 값의 경우 <code>chars</code> 메서드를 사용합니다. “Зд”에서 <code>chars</code>를 호출하면 두 개의 <code>char</code> 값으로 분리되어 반환되며, 이 결과를 반복하여 각 요소에 접근할 수 있습니다.</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>for c in "Зд".chars() {
     println!("{c}");
 }
 <span class="boring">}</span></code></pre>
-<p>이 코드는 다음을 출력합니다:</p>
+<p>이 코드는 다음과 같이 출력합니다:</p>
 <pre><code class="language-text">З
 д
 </code></pre>
-<p>또는 <code>bytes</code> 메서드가 각 원시 바이트를 반환하므로 도메인에 적합할 수 있습니다.</p>
+<p>또는 <code>bytes</code> 메서드를 사용하면 각 원시 바이트를 반환하므로, 도메인에 따라 적합할 수 있습니다:</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>for b in "Зд".bytes() {
     println!("{b}");
 }
 <span class="boring">}</span></code></pre>
-<p>이 코드는 이 문자열을 구성하는 4 바이트를 인쇄합니다:</p>
+<p>이 코드는 이 문자열을 구성하는 4바이트를 출력합니다:</p>
 <pre><code class="language-text">208
 151
 208
 180
 </code></pre>
-<p>그러나 유효한 유니코드 스칼라 값은 1 바이트 이상으로 구성 될 수 있음을 기억하십시오.</p>
+<p>다만, 유효한 유니코드 스칼라 값은 1바이트보다 많은 바이트로 구성될 수 있음을 기억하십시오.</p>
 <p>Devanagari 스크립트와 마찬가지로 문자열에서 grapheme 클러스터를 가져 오는 것은 복잡하므로이 기능은 표준 라이브러리에서 제공하지 않습니다. 이것이 필요한 기능이라면 <a href="https://crates.io/">크레이트.io</a>에서 크레이트를 사용할 수 있습니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="strings-are-not-so-simple"></a></p>
-<h3 id="handling-the-complexities-of-strings"><a class="header" href="#handling-the-complexities-of-strings">끈 의 복잡성 을 다루는 일</a></h3>
-<p>요약하자면, 문자열은 복잡합니다. 다른 프로그래밍 언어들은 이 복잡성을 프로그래머에게 제시하는 방법에 대해 다른 선택을 합니다. 러스트는 <code>String</code> 데이터의 올바른 처리를 모든 러스트 프로그램의 기본 동작으로 만들기로 선택했습니다. 즉, 프로그래머는 UTF-8 데이터를 처리하기 위해 더 많은 생각을 해야 합니다. 이 트레이드오프는 다른 프로그래밍 언어에서 보이는 것보다 문자열의 복잡성을 더 많이 드러내지만, 나중에는 CI와 관련된 오류를 처리하지 못하게 합니다.</p>
-<p>좋은 소식은 표준 라이브러리가 이러한 복잡한 상황을 올바르게 처리하는 데 도움이되는 <code>String</code> 및 <code>&amp;str</code> 유형을 기반으로하는 많은 기능을 제공한다는 것입니다. <code>contains</code>와 같은 유용한 방법에 대한 설명서를 체크 아웃하십시오. 문자열의 일부를 다른 문자열로 대체하기위한 <code>replace</code>.</p>
-<p>조금 덜 복잡한 것 : 해시 맵으로 전환합시다!</p>
+<h3 id="handling-the-complexities-of-strings"><a class="header" href="#handling-the-complexities-of-strings">문자열의 복잡성 처리</a></h3>
+<p>요약하자면, 문자열은 복잡합니다. 다른 프로그래밍 언어들은 이 복잡성을 프로그래머에게 어떻게 제시할지에 대해 각기 다른 선택을 합니다. Rust는 <code>String</code> 데이터의 올바른 처리를 모든 Rust 프로그램의 기본 동작으로 선택했습니다. 이는 프로그래머가 UTF-8 데이터 처리에 대해 사전에 더 많은 고민을 해야 함을 의미합니다. 이러한 트레이드오프는 다른 프로그래밍 언어에서 드러나는 것보다 문자열의 복잡성을 더 많이 노출하지만, 개발 라이프사이클 후반부에 비-ASCII 문자와 관련된 오류를 처리해야 하는 상황을 방지합니다.</p>
+<p>좋은 소식은 표준 라이브러리가 <code>String</code> 및 <code>&amp;str</code> 유형을 기반으로 이러한 복잡한 상황을 올바르게 처리하는 데 도움이 되는 다양한 기능을 제공한다는 것입니다. 문자열에서 검색하는 데 유용한 <code>contains</code>와 문자열의 일부를 다른 문자열로 치환하는 데 유용한 <code>replace</code> 같은 메서드에 대한 문서를 꼭 확인해 보세요.</p>
+<p>조금 덜 복잡한 주제로 넘어가 보겠습니다: 해시 맵입니다!</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

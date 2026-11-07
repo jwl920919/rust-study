@@ -163,20 +163,19 @@
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="developing-the-librarys-functionality-with-test-driven-development"></a></p>
-<h2 id="adding-functionality-with-test-driven-development"><a class="header" href="#adding-functionality-with-test-driven-development">Test-Driven 개발을 통한 기능 추가</a></h2>
-<p>이제 src/lib.rs의 검색 로직을 <code>main</code> 함수와 분리했기 때문에 코드의 핵심 기능에 대한 테스트를 작성하는 것이 훨씬 쉬워졌습니다. 다양한 인수로 직접 함수를 호출하고 명령줄에서 바이너리를 호출하지 않고도 반환 값을 확인할 수 있습니다.</p>
-<p>이 섹션에서는 다음 단계와 함께 테스트 중심 개발(TDD) 프로세스를 사용하여 <code>minigrep</code> 프로그램에 검색 로직을 추가합니다.</p>
+<h2 id="adding-functionality-with-test-driven-development"><a class="header" href="#adding-functionality-with-test-driven-development">테스트 주도 개발을 통한 기능 추가</a></h2>
+<p>이제 src/lib.rs의 검색 로직을 <code>main</code> 함수와 분리했기 때문에 코드의 핵심 기능에 대한 테스트를 작성하는 것이 훨씬 쉬워졌습니다. 다양한 인수로 함수를 직접 호출하고, 명령줄에서 바이너리를 실행하지 않아도 반환 값을 확인할 수 있습니다.</p>
+<p>이 섹션에서는 다음 단계를 따라 테스트 주도 개발(TDD) 프로세스를 사용하여 <code>minigrep</code> 프로그램에 검색 로직을 추가합니다.</p>
 <ol>
-<li>실패하는 테스트를 작성하고 예상한 이유로 실패했는지 확인합니다.</li>
-<li>새 테스트 패스를 만들기에 충분한 코드를 작성하거나 수정합니다.</li>
-<li>방금 추가하거나 변경한 코드를 리팩토링하고 테스트가 계속 통과되는지 확인합니다.</li>
-<li>1 단계에서 반복하십시오!</li>
+<li>실패하는 테스트를 작성하고 실행하여, 예상한 이유로 실패하는지 확인합니다.</li>
+<li>새 테스트를 통과시키기에 충분한 코드만 작성하거나 수정합니다.</li>
+<li>방금 추가하거나 변경한 코드를 리팩토링하고, 테스트가 계속 통과하는지 확인합니다.</li>
+<li>1단계부터 반복합니다!</li>
 </ol>
-<p>소프트웨어를 작성하는 여러 가지 방법 중 하나 일 뿐이지만 TDD는 코드 설계를 유도하는 데 도움이 될 수 있습니다. 테스트 패스를 만드는 코드를 작성하기 전에 테스트를 작성하면 프로세스 전반에 걸쳐 높은 테스트 범위를 유지하는 데 도움이됩니다.</p>
-<p>우리는 실제로 파일 내용에서 쿼리 문자열을 검색하는 기능을 테스트하고 쿼리와 일치하는 줄 목록을 생성합니다. <code>search</code>라는 함수에이 기능을 추가 할 것입니다.</p>
-<h3 id="writing-a-failing-test"><a class="header" href="#writing-a-failing-test">실패한 테스트 만들기Create a failing test</a></h3>
-<p>에서 <em>src/lib.rs 파일에서</em>우리는 추가 할 것이다. a <code>tests</code> 테스트 함수를 가진 모듈, 우리가했던 것처럼
-<a href="ch11-01-writing-tests.html#the-anatomy-of-a-test-function">제 11 장</a> 무시 . 테스트 함수는 우리가 원하는 동작을 지정합니다. <code>search</code> function to have: 쿼리와 텍스트를 검색에 가져오고 쿼리를 포함하는 텍스트의 줄만 반환합니다. Listing 12-15는 이 테스트를 보여줍니다.</p>
+<p>TDD는 소프트웨어를 작성하는 여러 방법 중 하나일 뿐이지만, 코드 설계를 주도하는 데 도움이 될 수 있습니다. 테스트를 통과시키는 코드를 작성하기 전에 테스트를 작성하면, 개발 과정 전반에 걸쳐 높은 테스트 커버리지를 유지하는 데 도움이 됩니다.</p>
+<p>실제로 파일 내용에서 쿼리 문자열을 검색하고 쿼리와 일치하는 줄 목록을 생성하는 기능의 구현을 테스트해 보겠습니다. 이 기능을 <code>search</code>라는 함수에 추가합니다.</p>
+<h3 id="writing-a-failing-test"><a class="header" href="#writing-a-failing-test">실패하는 테스트 작성</a></h3>
+<p><em>src/lib.rs</em> 파일에 <code>tests</code> 모듈과 테스트 함수를 추가하겠습니다. <a href="ch11-01-writing-tests.html#the-anatomy-of-a-test-function">11장</a><!-- ignore -->에서 했던 것과 같습니다. 이 테스트 함수는 <code>search</code> 함수가 가져야 할 동작을 정의합니다. 즉, 쿼리와 검색할 텍스트를 인자로 받아, 텍스트에서 쿼리를 포함하는 줄만 반환해야 합니다. 12-15번 목록에 이 테스트가 나와 있습니다.</p>
 <figure class="listing" id="listing-12-15">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
@@ -200,10 +199,10 @@ Pick three.";
         assert_eq!(vec!["safe, fast, productive."], search(query, contents));
     }
 }</code></pre>
-<figcaption><a href="#listing-12-15">목록 12-15</a>: 우리가 원하는 기능에 대한 <code>search</code> 기능에 대한 실패한 테스트 생성</figcaption>
+<figcaption><a href="#listing-12-15">12-15 목록</a>: 우리가 원하는 기능에 대해 <code>search</code> 함수의 실패하는 테스트 작성</figcaption>
 </figure>
-<p>이 테스트는 문자열 <code>"duct"</code>를 검색합니다. 우리가 찾고 있는 텍스트는 세 줄이며, 그 중 하나만 <code>"duct"</code>를 포함합니다 (개방된 이중 따옴표 이후의 백슬래시는 러스트에게 이 문자열 리터럴의 내용의 시작 부분에 줄바꿈 문자를 넣지 말 것을 지시합니다). 우리는 <code>search</code> 함수에서 반환된 값이 우리가 예상하는 줄만 포함한다고 주장합니다.</p>
-<p>이 테스트를 실행하면 현재 실패합니다. <code>unimplemented!</code> "not implemented"라는 메시지와 함께 매크로 패닉. TDD 원칙에 따라 함수를 정의하여 함수를 호출 할 때 테스트를 패닉하지 않도록 충분한 코드를 추가하는 작은 단계를 취할 것입니다. <code>search</code> 함수는 항상 빈 벡터를 반환합니다. Listing 12-16과 같습니다. 그런 다음 빈 벡터가 라인을 포함하는 벡터와 일치하지 않기 때문에 테스트를 컴파일하고 실패해야 합니다. <code>"safe, fast, productive."</code>.</p>
+<p>이 테스트는 <code>"duct"</code> 문자열을 검색합니다. 검색 대상 텍스트는 3줄이며, 그중 1줄만 <code>"duct"</code>을 포함합니다(열린 이중 따옴표 뒤에 있는 백슬래시는 Rust에게 이 문자열 리터럴 내용의 시작 부분에 줄바꿈 문자를 넣지 말라고 지시합니다). <code>search</code> 함수에서 반환된 값이 우리가 예상하는 줄만 포함한다고 주장합니다.</p>
+<p>이 테스트를 실행하면 현재 실패합니다. <code>unimplemented!</code> 매크로가 "not implemented"라는 메시지와 함께 패닉하기 때문입니다. TDD 원칙에 따라, <code>search</code> 함수를 항상 빈 벡터를 반환하도록 정의하여 함수 호출 시 테스트가 패닉하지 않도록 충분한 코드를 추가하는 작은 단계를 취합니다. 12-16 목록에 이 코드가 나와 있습니다. 그러면 빈 벡터가 <code>"safe, fast, productive."</code> 줄을 포함하는 벡터와 일치하지 않기 때문에 테스트는 컴파일은 되지만 실패해야 합니다.</p>
 <figure class="listing" id="listing-12-16">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
@@ -225,13 +224,12 @@ Pick three.";
 </span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-12-16">목록 12-16</a> : <code>search</code> 함수를 충분히 정의하여 호출하면 당황하지 않습니다.</figcaption>
+<figcaption><a href="#listing-12-16">12-16 목록</a>: 호출 시 패닉하지 않도록 <code>search</code> 함수를 최소한으로 정의</figcaption>
 </figure>
 <p>이제 왜 우리가 명백한 평생을 정의해야하는지 논의 해 봅시다. <code>'a</code> 상기 서명하는 단계는, In the signature, <code>search</code> [중고] 그 시절을 활용하라 <code>contents</code> 인수 및 반환 값입니다. <a href="ch10-03-lifetime-syntax.html">제 10 장</a> 무시  lifetime 매개 변수는 반환 값의 수명과 연결된 인수 수명을 지정합니다. 이 경우 반환 된 벡터에는 인수의 슬라이스를 참조하는 문자열 조각이 포함되어야 함을 나타냅니다.
 <code>contents</code> (논란이 아닌 경우) <code>query</code>).</p>
-<p>다시 말해, 러스트는 러스트에 의해 반환된 데이터를 말합니다. <code>search</code> 이 함수는 데이터가 전달되는 동안 <code>search</code> 에서의 기능
-<code>contents</code> 인수. 이것은 중요합니다! 참조 된 데이터 <em>에 의해</em> 참조가 유효하려면 슬라이스가 유효해야 합니다; 컴파일러가 우리가 문자열 슬라이스를 만들고 있다고 가정하면 <code>query</code> 보다는 <code>contents</code>즉, 보안 검사를 잘못 수행 할 것입니다.</p>
-<p>우리가 평생 주석을 잊어 버리고이 함수를 컴파일하려고하면, 우리는이 오류를 얻을 것이다 :</p>
+<p>다시 말해, search 함수에 contents 인수로 전달된 데이터가 존재하는 동안 search 함수가 반환하는 데이터도 존재한다고 Rust에 알려주는 것입니다. 이 점은 매우 중요합니다! 슬라이스가 참조하는 데이터가 유효해야 참조도 유효합니다. 컴파일러가 contents 대신 query에 대한 문자열 슬라이스를 만드는 것으로 오해하면, 안전성 검사를 올바르게 수행하지 못합니다. <code>search</code> <code>search</code> <code>contents</code> <em> </em> <code>query</code> <code>contents</code></p>
+<p>라이프타임 주석을 생략하고 이 함수를 컴파일하려고 하면 다음과 같은 오류가 발생합니다:</p>
 <pre><code class="language-console">$ cargo build
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
 error[E0106]: missing lifetime specifier
@@ -249,20 +247,20 @@ help: consider introducing a named lifetime parameter
 For more information about this error, try `rustc --explain E0106`.
 error: could not compile `minigrep` (lib) due to 1 previous error
 </code></pre>
-<p>러스트는 출력에 필요한 두 매개 변수 중 어느 것을 알 수 없으므로 명시 적으로 알려야합니다. 도움말 텍스트는 모든 매개 변수와 출력 유형에 대해 동일한 평생 매개 변수를 지정할 것을 제안합니다. 잘못된 것입니다! <code>contents</code>는 모든 텍스트를 포함하는 매개 변수이며 일치하는 텍스트의 일부를 반환하려는 것이므로 <code>contents</code>는 평생 동안 연결해야하는 유일한 매개 변수입니다.</p>
-<p>다른 프로그래밍 언어에서는 서명에서 값을 반환하기 위해 인수를 연결할 필요가 없지만이 연습은 시간이 지남에 따라 더 쉬워집니다. 이 예제를 10 장의 <a href="ch10-03-lifetime-syntax.html#validating-references-with-lifetimes">“평생 참고할 만한 것 들”</a> 섹션의 예제와 비교할 수 있습니다.</p>
-<h3 id="writing-code-to-pass-the-test"><a class="header" href="#writing-code-to-pass-the-test">테스트를 통과하기 위한 코드 작성</a></h3>
+<p>Rust는 출력에 두 매개변수 중 어느 것이 필요한지 알 수 없으므로 명시적으로 알려주어야 합니다. 도움말 텍스트는 모든 매개변수와 반환 타입에 동일한 라이프타임 매개변수를 지정할 것을 제안하지만, 이는 잘못된 것입니다! <code>contents</code>는 모든 텍스트를 포함하는 매개변수이며, 해당 텍스트 중 일치하는 부분을 반환하려고 하므로 <code>contents</code>는 라이프타임 문법을 사용하여 반환 값과 연결해야 하는 유일한 매개변수입니다.</p>
+<p>다른 프로그래밍 언어에서는 서명에서 인수를 반환 값과 연결할 필요가 없지만, 시간이 지나면 이 관행이 더 쉬워질 것입니다. 이 예제를 10장의 <a href="ch10-03-lifetime-syntax.html#validating-references-with-lifetimes">“라이프타임으로 참조 검증하기”</a> 섹션의 예제와 비교해 보기를 권합니다.</p>
+<h3 id="writing-code-to-pass-the-test"><a class="header" href="#writing-code-to-pass-the-test">테스트를 통과하는 코드 작성하기</a></h3>
 <p>현재 테스트가 실패하는 이유는 항상 빈 벡터를 반환하기 때문입니다. 이를 수정하고 <code>search</code>를 구현하려면 프로그램은 다음 단계를 따라야 합니다.</p>
 <ol>
-<li>내용의 각 줄을 반복합니다.</li>
-<li>줄에 쿼리 문자열이 포함되어 있는지 확인합니다.</li>
-<li>만약 그렇다면, 우리가 반환하는 값의 목록에 추가하세요.</li>
-<li>만약 그렇지 않다면, 아무것도 하지 마세요.</li>
-<li>일치하는 결과 목록을 반환합니다.Return the list of results that match.</li>
+<li>contents의 각 줄을 반복합니다.</li>
+<li>해당 줄에 쿼리 문자열이 포함되어 있는지 확인합니다.</li>
+<li>그렇다면 반환할 값 목록에 추가합니다.</li>
+<li>그렇지 않다면 아무것도 하지 않습니다.</li>
+<li>일치하는 결과 목록을 반환합니다.</li>
 </ol>
-<p>각 단계를 통해 작동 하자, 라인을 통해 반복 시작.</p>
-<h4 id="iterating-through-lines-with-the-lines-method"><a class="header" href="#iterating-through-lines-with-the-lines-method">상기 라인들은 The lines with <code>lines</code> 메서드</a></h4>
-<p>러스트는 Listing 12-17과 같이 편리하게 <code>lines</code>라는 이름의 문자열을 line-by-line 반복 처리하는데 도움이 됩니다. 이것은 아직 컴파일되지 않습니다.</p>
+<p>라인을 반복하는 것부터 시작하여 각 단계를 차례대로 살펴보겠습니다.</p>
+<h4 id="iterating-through-lines-with-the-lines-method"><a class="header" href="#iterating-through-lines-with-the-lines-method"><code>lines</code> 메서드로 줄을 반복하기</a></h4>
+<p>Rust에는 문자열을 라인별로 반복 처리하는 데 도움이 되는 <code>lines</code>라는 메서드가 있습니다. 이 메서드는 Listing 12-17과 같이 동작합니다. 참고로 이 코드는 아직 컴파일되지 않습니다.</p>
 <figure class="listing" id="listing-12-17">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust ignore does_not_compile">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
@@ -286,11 +284,11 @@ error: could not compile `minigrep` (lib) due to 1 previous error
 </span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-12-17">목록 12-17</a>: <code>contents</code>에 있는 각 선을 통해서 반복</figcaption>
+<figcaption><a href="#listing-12-17">Listing 12-17</a>: <code>contents</code>의 각 라인을 반복하기</figcaption>
 </figure>
 <p><code>lines</code> 메서드는 반복자를 반환합니다. <a href="ch13-02-iterators.html">제 13 장</a>에서 반복자에 대해 자세히 설명하겠습니다. 그러나 <a href="ch03-05-control-flow.html#looping-through-a-collection-with-for">목록 3-5</a>에서 반복자를 사용하는이 방법을 보았다는 것을 기억하십시오. 여기서 <code>for</code> 루프를 반복기와 함께 사용하여 컬렉션의 각 항목에 대한 코드를 실행합니다.</p>
-<h4 id="searching-each-line-for-the-query"><a class="header" href="#searching-each-line-for-the-query">쿼리에 대한 각 줄 검색</a></h4>
-<p>다음으로 현재 줄에 쿼리 문자열이 포함되어 있는지 확인합니다. 다행히도 문자열에는 <code>contains</code>라는 유용한 메서드가 있습니다! 목록 12-18에 표시된 것처럼 <code>contains</code> 함수에서 <code>search</code> 메소드에 대한 호출을 추가하십시오. 아직 컴파일되지 않습니다.</p>
+<h4 id="searching-each-line-for-the-query"><a class="header" href="#searching-each-line-for-the-query">각 줄에서 쿼리 검색</a></h4>
+<p>다음으로, 현재 줄에 쿼리 문자열이 포함되어 있는지 확인합니다. 다행히도 문자열에는 이 작업을 수행하는 데 유용한 <code>contains</code> 메서드가 있습니다! Listing 12-18에 표시된 것처럼 <code>contains</code> 함수에 <code>search</code> 메서드 호출을 추가하세요. 아직 이 코드는 컴파일되지 않습니다.</p>
 <figure class="listing" id="listing-12-18">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust ignore does_not_compile">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
@@ -316,11 +314,11 @@ error: could not compile `minigrep` (lib) due to 1 previous error
 </span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-12-18">목록 12-18</a>: 줄에 <code>query</code> 문자열이 포함되어 있는지 확인하기 위한 기능 추가</figcaption>
+<figcaption><a href="#listing-12-18">Listing 12-18</a>: 줄에 <code>query</code> 문자열이 포함되어 있는지 확인하는 기능 추가</figcaption>
 </figure>
-<p>현재 우리는 기능을 구축하고 있습니다. 코드를 컴파일하려면 함수 서명에서 표시된대로 본문에서 값을 반환해야합니다.</p>
+<p>현재 우리는 기능을 구축하고 있습니다. 코드를 컴파일하려면, 함수 서명에서 명시했듯이 함수 본문에서 값을 반환해야 합니다.</p>
 <h4 id="storing-matching-lines"><a class="header" href="#storing-matching-lines">일치하는 줄 저장</a></h4>
-<p>이 함수를 완료하려면, 반환하고자 하는 일치하는 라인을 저장하는 방법이 필요합니다. 이를 위해, 우리는 <code>for</code> 루프 전에 가변 벡터를 만들고 <code>push</code> 메소드를 호출하여 <code>line</code>를 벡터에 저장합니다. <code>for</code> 루프 후에, Listing 12-19와 같이 벡터를 반환합니다.</p>
+<p>이 함수를 완성하려면, 반환하고자 하는 일치하는 줄을 저장하는 방법이 필요합니다. 이를 위해 <code>for</code> 루프 전에 가변 벡터를 만들고, <code>push</code> 메서드를 호출하여 <code>line</code>를 벡터에 저장합니다. <code>for</code> 루프가 끝난 후, Listing 12-19에 표시된 것처럼 벡터를 반환합니다.</p>
 <figure class="listing" id="listing-12-19">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust ignore">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
@@ -350,9 +348,9 @@ error: could not compile `minigrep` (lib) due to 1 previous error
 </span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-12-19">목록 12-19</a> : 우리가 그들을 반환 할 수 있도록 일치하는 라인을 저장</figcaption>
+<figcaption><a href="#listing-12-19">Listing 12-19</a>: 반환할 수 있도록 일치하는 줄 저장</figcaption>
 </figure>
-<p>이제 <code>search</code> 함수는 <code>query</code>가 포함된 라인만 반환해야 하며, 테스트가 통과되어야 합니다. 테스트를 실행해 봅시다.</p>
+<p>이제 <code>search</code> 함수는 <code>query</code>가 포함된 줄만 반환해야 하며, 테스트가 통과해야 합니다. 테스트를 실행해 보겠습니다.</p>
 <pre><code class="language-console">$ cargo test
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 1.22s
@@ -376,16 +374,16 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 </code></pre>
-<p>테스트가 통과 했으므로 효과가 있음을 알 수 있습니다!</p>
-<p>이 시점에서 동일한 기능을 유지하기 위해 테스트 통과를 유지하면서 검색 기능의 구현을 리팩토링 할 수있는 기회를 고려할 수 있습니다. 검색 기능의 코드가 나쁘지는 않지만 반복기의 유용한 기능을 활용하지 않습니다. <a href="ch13-02-iterators.html">제 13 장</a>에서이 예제로 돌아가서 반복기를 자세히 살펴보고 개선 방법을 살펴 보겠습니다.</p>
-<p>이제 전체 프로그램이 작동해야합니다! 먼저 Emily Dickinson시에서 정확히 한 줄을 반환해야하는 단어로 시작합시다. 개구리.</p>
+<p>테스트가 통과했으므로 정상적으로 작동한다는 것을 알 수 있습니다!</p>
+<p>이 시점에서는 테스트가 계속 통과하도록 유지하면서 검색 함수 구현을 리팩토링할 기회를 고려해 볼 수 있습니다. 검색 함수의 코드는 나쁘지 않지만 반복자(iterator)의 유용한 기능을 활용하지 못하고 있습니다. <a href="ch13-02-iterators.html">13장</a>에서는 반복자를 자세히 다루며 이 예제를 다시 살펴보고 개선 방법을 알아봅니다.</p>
+<p>이제 전체 프로그램이 정상적으로 작동해야 합니다! 먼저 Emily Dickinson의 시에서 정확히 한 줄을 반환해야 하는 단어인 frog로 시도해 보겠습니다.</p>
 <pre><code class="language-console">$ cargo run -- frog poem.txt
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
      Running `target/debug/minigrep frog poem.txt`
 How public, like a frog
 </code></pre>
-<p>멋지다! 이제 신체와 같은 여러 줄에 맞는 단어를 사용해보자.</p>
+<p>훌륭합니다! 이제 여러 줄에 일치하는 단어, 예를 들어 body를 시도해 보겠습니다.</p>
 <pre><code class="language-console">$ cargo run -- body poem.txt
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
@@ -394,14 +392,14 @@ I'm nobody! Who are you?
 Are you nobody, too?
 How dreary to be somebody!
 </code></pre>
-<p>그리고 마지막으로, 우리는 시에서 아무데도없는 단어를 검색 할 때 우리가 어떤 라인을 얻을 수 있는지 확인하자, 이러한 monomorphization 등:</p>
+<p>마지막으로, 시 어디에도 없는 단어, 예를 들어 monomorphization을 검색했을 때 아무 줄도 반환되지 않는지 확인해 보겠습니다.</p>
 <pre><code class="language-console">$ cargo run -- monomorphization poem.txt
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
      Running `target/debug/minigrep monomorphization poem.txt`
 </code></pre>
-<p>훌륭합니다! 우리는 고전적인 도구의 우리 자신의 미니 버전을 구축하고 응용 프로그램을 구성하는 방법에 대해 많은 것을 배웠습니다. 우리는 또한 파일 입력 및 출력, 수명, 테스트 및 명령 줄 구문 분석에 대해 조금 배웠습니다.</p>
-<p>이 프로젝트를 마무리하기 위해 우리는 환경 변수로 작업하는 방법과 표준 오류로 인쇄하는 방법을 간략하게 설명 할 것이며, 둘 다 명령줄 프로그램을 작성할 때 유용합니다.</p>
+<p>훌륭합니다! 고전적인 도구의 미니 버전을 직접 만들어 보았으며 애플리케이션 구조화에 대해 많은 것을 배웠습니다. 또한 파일 입출력, 라이프타임, 테스트, 명령줄 파싱에 대해서도 조금씩 배웠습니다.</p>
+<p>이 프로젝트를 마무리하기 위해 환경 변수를 다루는 방법과 표준 오류로 출력하는 방법을 간략히 살펴보겠습니다. 이 두 가지는 모두 명령줄 프로그램을 작성할 때 유용합니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

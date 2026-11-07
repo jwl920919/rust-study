@@ -164,14 +164,14 @@
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="treating-smart-pointers-like-regular-references-with-the-deref-trait"></a>
 <a id="treating-smart-pointers-like-regular-references-with-deref"></a></p>
-<h2 id="treating-smart-pointers-like-regular-references"><a class="header" href="#treating-smart-pointers-like-regular-references">스마트 포인터를 정규 참조처럼 취급하기</a></h2>
-<p><code>Deref</code> 특성을 구현하면 역참조 연산자 <code>*</code>의 동작을 사용자 정의할 수 있습니다(곱셈 또는 글로브 연산자와 혼동하지 마십시오). <code>Deref</code>를 구현하여 스마트 포인터를 일반 참조로 처리할 수 있으므로 참조에서 작동하는 코드를 작성하고 스마트 포인터로도 해당 코드를 사용할 수 있습니다.</p>
-<p>먼저 역참조 연산자가 일반 참조와 어떻게 작동하는지 살펴 보겠습니다. 그런 다음 <code>Box&lt;T&gt;</code>와 같은 사용자 정의 유형을 정의하고 역참조 연산자가 새로 정의 된 유형의 참조처럼 작동하지 않는 이유를 살펴 보겠습니다. <code>Deref</code> 트레잇을 구현하면 스마트 포인터가 참조와 유사한 방식으로 작동 할 수 있습니다. 그런 다음 러스트에서 참조를 참조하거나 참조를 참조 할 수 있습니다.</p>
+<h2 id="treating-smart-pointers-like-regular-references"><a class="header" href="#treating-smart-pointers-like-regular-references">스마트 포인터를 일반 참조처럼 취급하기</a></h2>
+<p><code>Deref</code> 트레이트를 구현하면 역참조 연산자 <code>*</code>의 동작을 사용자 정의할 수 있습니다(곱셈 또는 글로브 연산자와 혼동하지 마십시오). <code>Deref</code>를 구현하여 스마트 포인터를 일반 참조처럼 처리할 수 있으므로, 참조를 대상으로 작성한 코드를 스마트 포인터에서도 사용할 수 있습니다.</p>
+<p>먼저 역참조 연산자가 일반 참조와 어떻게 작동하는지 살펴보겠습니다. 그런 다음 <code>Box&lt;T&gt;</code>와 유사하게 동작하는 사용자 정의 타입을 정의하고, 역참조 연산자가 새로 정의한 타입에서 참조처럼 작동하지 않는 이유를 살펴보겠습니다. <code>Deref</code> 트레이트를 구현하면 스마트 포인터가 참조와 유사한 방식으로 작동할 수 있게 됩니다. 마지막으로 Rust의 deref coercion 기능과 이 기능이 참조와 스마트 포인터를 함께 사용할 수 있게 하는 방식을 살펴보겠습니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="following-the-pointer-to-the-value-with-the-dereference-operator"></a>
 <a id="following-the-pointer-to-the-value"></a></p>
-<h3 id="following-the-reference-to-the-value"><a class="header" href="#following-the-reference-to-the-value">값에 대한 참조 reference to the value</a></h3>
-<p>정규 참조는 포인터의 한 유형이며, 포인터를 생각하는 한 가지 방법은 다른 곳에 저장된 값에 대한 화살표와 같습니다. Listing 15-6에서, 우리는 <code>i32</code> 값에 대한 참조를 생성하고 그 값에 대한 참조를 따르기 위해 역참조 연산자를 사용합니다.</p>
+<h3 id="following-the-reference-to-the-value"><a class="header" href="#following-the-reference-to-the-value">값에 대한 참조를 따라가기</a></h3>
+<p>일반 참조는 포인터의 한 종류이며, 포인터를 다른 곳에 저장된 값으로 향하는 화살표라고 생각할 수 있습니다. Listing 15-6에서는 <code>i32</code> 값에 대한 참조를 생성한 후, 역참조 연산자를 사용하여 해당 참조를 따라 값에 접근합니다.</p>
 <figure class="listing" id="listing-15-6">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">fn main() {
@@ -181,11 +181,10 @@
     assert_eq!(5, x);
     assert_eq!(5, *y);
 }</code></pre>
-<figcaption><a href="#listing-15-6">상장 15-6</a>: 역참조 연산자를 사용하여 <code>i32</code> 값 참조를 따릅니다.</figcaption>
+<figcaption><a href="#listing-15-6">Listing 15-6</a>: 역참조 연산자를 사용하여 <code>i32</code> 값에 대한 참조를 따라가기</figcaption>
 </figure>
-<p>변수 <code>x</code> 유지하다 a <code>i32</code> 값 <code>5</code>. 우리는 설정 <code>y</code> 에 대한 참조입니다.A reference to
-<code>x</code>. 우리는 그것을 주장해서 좋습니다 <code>x</code> 그것은 평등하다. <code>5</code>. 그러나, 우리가 값에 대한 주장을하려는 경우 <code>y</code>, 우리는 사용해야합니다. <code>*y</code> to follow the reference to the value it’s pointing to (따라서 그것이 가리키는 값에 대한 참조를 따르도록) <em>역참조</em>컴파일러가 실제 값을 비교할 수 있도록 ). 일단 우리가 역참조 <code>y</code>정수 값에 접근할 수 있습니다. <code>y</code> 우리가 비교할 수 있다는 것을 지적하고 있습니다. <code>5</code>.</p>
-<p>대신 <code>assert_eq!(5, y);</code>를 작성하려고하면 다음과 같은 컴파일 오류가 발생합니다.</p>
+<p>변수 <code>x</code>는 <code>i32</code> 값 <code>5</code>을(를) 보유하고 있습니다. <code>y</code>을(를) <code>x</code>에 대한 참조로 설정합니다. <code>x</code>이(가) <code>5</code>과(와) 같다고 단언할 수 있습니다. 그러나 <code>y</code>의 값에 대해 단언하려면, <code>*y</code>을(를) 사용하여 해당 값이 가리키는 값으로의 참조를 따라가야 합니다(이를 <em>디리퍼런스</em>라고 합니다). 이렇게 하면 컴파일러가 실제 값을 비교할 수 있습니다. <code>y</code>을(를) 디리퍼런스하면, <code>y</code>이(가) 가리키는 정수 값에 접근할 수 있으며, 이 값을 <code>5</code>과(와) 비교할 수 있습니다.</p>
+<p>대신 <code>assert_eq!(5, y);</code>를 작성하려고 하면 다음과 같은 컴파일 오류가 발생합니다.</p>
 <pre><code class="language-console">$ cargo run
    Compiling deref-example v0.1.0 (file:///projects/deref-example)
 error[E0277]: can't compare `{integer}` with `&amp;{integer}`
@@ -209,9 +208,9 @@ error[E0277]: can't compare `{integer}` with `&amp;{integer}`
 For more information about this error, try `rustc --explain E0277`.
 error: could not compile `deref-example` (bin "deref-example") due to 1 previous error
 </code></pre>
-<p>숫자와 참조를 숫자와 비교하는 것은 형식이 다르기 때문에 허용되지 않습니다. 역참조 연산자를 사용하여 가리키고 있는 값에 대한 참조를 따라야 합니다.</p>
-<h3 id="using-boxt-like-a-reference"><a class="header" href="#using-boxt-like-a-reference">사용 <code>Box&lt;T&gt;</code> 참고 문헌처럼</a></h3>
-<p>Listing 15-6의 코드를 다시 작성하여 참조 대신 <code>Box&lt;T&gt;</code>를 사용할 수 있습니다; Listing 15-6의 참조에 사용된 역참조 연산자와 같은 방식으로 Listing 15-7 함수의 <code>Box&lt;T&gt;</code>에 사용된 역참조 연산자입니다.</p>
+<p>숫자와 숫자에 대한 참조는 서로 다른 타입이므로 비교할 수 없습니다. 따라서 역참조(dereference) 연산자를 사용하여 참조가 가리키는 값으로 이동해야 합니다.</p>
+<h3 id="using-boxt-like-a-reference"><a class="header" href="#using-boxt-like-a-reference">참조처럼 <code>Box&lt;T&gt;</code>를 사용하는 방법</a></h3>
+<p>Listing 15-6의 코드를 다시 작성하여 참조 대신 <code>Box&lt;T&gt;</code>를 사용할 수 있습니다. Listing 15-7에서 <code>Box&lt;T&gt;</code>에 사용된 역참조 연산자는 Listing 15-6에서 참조에 사용된 역참조 연산자와 동일한 방식으로 동작합니다.</p>
 <figure class="listing" id="listing-15-7">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">fn main() {
@@ -221,17 +220,15 @@ error: could not compile `deref-example` (bin "deref-example") due to 1 previous
     assert_eq!(5, x);
     assert_eq!(5, *y);
 }</code></pre>
-<figcaption><a href="#listing-15-7">등록 15-7</a>: <code>Box&lt;i32&gt;</code>에서 역참조 연산자 사용하기</figcaption>
+<figcaption><a href="#listing-15-7">Listing 15-7</a>: <code>Box&lt;i32&gt;</code>에 역참조 연산자 사용하기</figcaption>
 </figure>
-<p>Listing 15-7과 Listing 15-6의 가장 큰 차이점은 여기에 우리가 설정했다는 것입니다.
-<code>y</code> 복사된 값을 가리키는 상자의 인스턴스가 되기 위해 <code>x</code> 상기 값을 나타내는 단계는, Wherein the value for the <code>x</code>. 마지막 어설션에서, 우리는 역참조 연산자를 사용하여 우리가 할 때와 같은 방식으로 상자의 포인터를 따라갈 수 있습니다. <code>y</code> 다음, 우리는 특별한 것에 대해 탐구 할 것입니다. <code>Box&lt;T&gt;</code>
-이를 통해 우리는 우리 자신의 상자 유형을 정의함으로써 역참조 연산자를 사용할 수 있습니다.</p>
-<h3 id="defining-our-own-smart-pointer"><a class="header" href="#defining-our-own-smart-pointer">우리 자신의 스마트 포인터 정의</a></h3>
-<p>표준 라이브러리에서 제공하는 <code>Box&lt;T&gt;</code> 유형과 유사한 래퍼 유형을 구축하여 스마트 포인터 유형이 기본적으로 참조와 다르게 동작하는 방법을 경험해 보겠습니다. 그런 다음 역참조 연산자를 사용하는 기능을 추가하는 방법을 살펴보겠습니다.</p>
+<p>Listing 15-7과 Listing 15-6의 가장 큰 차이점은, 여기서 <code>y</code>가 x의 값을 참조하는 참조가 아니라 x의 복사된 값을 가리키는 박스 인스턴스로 설정된다는 점입니다. 마지막 어서션에서는 <code>x</code>이 참조였을 때와 동일한 방식으로 역참조 연산자를 사용하여 박스의 포인터를 따라갈 수 있습니다. 다음으로, <code>x</code>가 특별한 이유를 살펴보고, 이를 통해 역참조 연산자를 사용할 수 있는 원리를 이해하기 위해 우리만의 박스 타입을 정의해 보겠습니다. <code>y</code> <code>Box&lt;T&gt;</code></p>
+<h3 id="defining-our-own-smart-pointer"><a class="header" href="#defining-our-own-smart-pointer">스마트 포인터 직접 정의하기</a></h3>
+<p>표준 라이브러리가 제공하는 <code>Box&lt;T&gt;</code> 타입과 유사한 래퍼 타입을 만들어, 스마트 포인터 타입이 기본적으로 참조와 어떻게 다른지 경험해 보겠습니다. 그런 다음 역참조 연산자를 사용할 수 있는 기능을 추가하는 방법을 살펴보겠습니다.</p>
 <section aria-role="note" class="note">
-<p>참고 : 우리가 구축하려고하는 <code>MyBox&lt;T&gt;</code> 유형과 실제 <code>Box&lt;T&gt;</code> 사이에는 큰 차이가 있습니다. 우리의 버전은 데이터를 힙에 저장하지 않습니다. 이 예제는 <code>Deref</code>에 초점을 맞추고 있으므로 데이터가 실제로 저장된 위치는 포인터와 같은 동작보다 덜 중요합니다.</p>
+<p>참고: 곧 만들 <code>MyBox&lt;T&gt;</code> 타입과 실제 <code>Box&lt;T&gt;</code> 사이에는 큰 차이가 하나 있습니다. 우리가 만들 버전은 데이터를 힙(heap)에 저장하지 않습니다. 이 예제는 <code>Deref</code>에 초점을 맞추고 있으므로, 데이터가 실제로 어디에 저장되는지는 포인터와 유사한 동작보다 덜 중요합니다.</p>
 </section>
-<p><code>Box&lt;T&gt;</code> 타입은 궁극적으로 하나의 요소를 가진 튜플 구조체로 정의되므로, Listing 15-8은 <code>MyBox&lt;T&gt;</code> 타입을 같은 방식으로 정의합니다. 또한 <code>new</code> 함수를 <code>new</code>에 정의된 <code>Box&lt;T&gt;</code> 함수와 일치하도록 정의할 것입니다.</p>
+<p><code>Box&lt;T&gt;</code> 타입은 궁극적으로 하나의 요소를 가진 튜플 구조체로 정의되므로, Listing 15-8에서는 <code>MyBox&lt;T&gt;</code> 타입을 동일한 방식으로 정의합니다. 또한 <code>new</code>에 정의된 <code>new</code> 함수와 대응하는 <code>Box&lt;T&gt;</code> 함수도 정의합니다.</p>
 <figure class="listing" id="listing-15-8">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">struct MyBox&lt;T&gt;(T);
@@ -243,9 +240,9 @@ impl&lt;T&gt; MyBox&lt;T&gt; {
 }
 <span class="boring">
 </span><span class="boring">fn main() {}</span></code></pre>
-<figcaption><a href="#listing-15-8">상장 15-8</a>: <code>MyBox&lt;T&gt;</code> 유형 정의</figcaption>
+<figcaption><a href="#listing-15-8">Listing 15-8</a>: <code>MyBox&lt;T&gt;</code> 타입 정의</figcaption>
 </figure>
-<p>이름있는 구조체를 정의합니다. <code>MyBox</code> 제네릭 매개 변수를 선언합니다. <code>T</code> 왜냐하면 우리는 우리의 타입이 어떤 타입의 값이라도 가지기를 원하기 때문입니다. <code>MyBox</code> type은 type의 한 요소를 가진 튜플 구조체입니다. <code>T</code>. 그 <code>MyBox::new</code> 기능은 유형의 1개의 모수를 가지고 갑니다 <code>T</code> 반환값 a <code>MyBox</code> 전달된 값을 가지는 인스턴스입니다.</p>
+<p><code>MyBox</code>이라는 이름의 구조체를 정의하고, 어떤 타입의 값이든 저장할 수 있도록 제네릭 매개변수 <code>T</code>을 선언합니다. <code>MyBox</code> 타입은 <code>T</code> 타입의 요소를 하나 가진 튜플 구조체입니다. <code>MyBox::new</code> 함수는 <code>T</code> 타입의 매개변수를 하나 받아, 전달된 값을 포함하는 <code>MyBox</code> 인스턴스를 반환합니다.</p>
 <p>를 추가해 보자. <code>main</code> Listing 15-7에서 Listing 15-8의 함수를 사용하여 변경합니다. <code>MyBox&lt;T&gt;</code> 우리가 정의한 타입 대신에 <code>Box&lt;T&gt;</code>Listing 15-9의 코드는 컴파일되지 않습니다, 왜냐하면 러스트는 역참조하는 방법을 모르기 때문입니다 <code>MyBox</code>.</p>
 <figure class="listing" id="listing-15-9">
 <span class="file-name">Filename: src/main.rs</span>
@@ -264,9 +261,9 @@ impl&lt;T&gt; MyBox&lt;T&gt; {
     assert_eq!(5, x);
     assert_eq!(5, *y);
 }</code></pre>
-<figcaption><a href="#listing-15-9">상장 15-9</a>: 사용하려는 시도 <code>MyBox&lt;T&gt;</code> 같은 방법으로 우리는 참조를 사용 하 고 <code>Box&lt;T&gt;</code></figcaption>
+<figcaption><a href="#listing-15-9">Listing 15-9</a>: 참조와 <code>MyBox&lt;T&gt;</code>를 사용했던 것과 동일한 방식으로 <code>Box&lt;T&gt;</code>를 사용하려는 시도</figcaption>
 </figure>
-<p>다음은 결과 컴파일 오류입니다.</p>
+<p>다음은 컴파일 결과로 발생하는 오류입니다.</p>
 <pre><code class="language-console">$ cargo run
    Compiling deref-example v0.1.0 (file:///projects/deref-example)
 error[E0614]: type `MyBox&lt;{integer}&gt;` cannot be dereferenced
@@ -278,7 +275,7 @@ error[E0614]: type `MyBox&lt;{integer}&gt;` cannot be dereferenced
 For more information about this error, try `rustc --explain E0614`.
 error: could not compile `deref-example` (bin "deref-example") due to 1 previous error
 </code></pre>
-<p>우리의 <code>MyBox&lt;T&gt;</code> 유형은 우리가 우리의 유형에 그 능력을 구현하지 않았기 때문에 역참조 될 수 없습니다. <code>*</code> 연산자로 역참조를 가능하게하기 위해 <code>Deref</code> 트레잇을 구현합니다.</p>
+<p>우리가 <code>MyBox&lt;T&gt;</code> 타입에 해당 기능을 구현하지 않았기 때문에 역참조할 수 없습니다. <code>*</code> 연산자를 사용하여 역참조할 수 있도록 하려면 <code>Deref</code> 트레이트를 구현해야 합니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="treating-a-type-like-a-reference-by-implementing-the-deref-trait"></a></p>
 <h3 id="implementing-the-deref-trait"><a class="header" href="#implementing-the-deref-trait">상기 구현 The implementing <code>Deref</code> 트레이트는</a></h3>
@@ -310,30 +307,24 @@ impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
 </span><span class="boring">    assert_eq!(5, x);
 </span><span class="boring">    assert_eq!(5, *y);
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-15-10">목록 15-10</a>: <code>Deref</code>에서 <code>MyBox&lt;T&gt;</code> 구현하기</figcaption>
+<figcaption><a href="#listing-15-10">Listing 15-10</a>: <code>Deref</code>에 <code>MyBox&lt;T&gt;</code> 구현하기</figcaption>
 </figure>
-<p><code>type Target = T;</code> 구문은 사용할 <code>Deref</code> 특성에 대한 관련 유형을 정의합니다. 관련 유형은 일반 매개 변수를 선언하는 약간 다른 방법이지만 지금은 걱정할 필요가 없습니다. 20 장에서 더 자세히 다룰 것입니다.</p>
-<p>우리는 그리스도의 몸을 채웁니다 <code>deref</code> 모델명 with <code>&amp;self.0</code> 그래서 <code>deref</code>
-우리가 접근하고자 하는 값에 대한 참조를 반환한다. <code>*</code> 상기로부터 Recall from <a href="ch05-01-defining-structs.html#creating-different-types-with-tuple-structs">“다양 한 종류 의 튜플 구조체 를 만들어 내는 일”</a>
-무시  chapter 5 그것은 <code>.0</code> 튜플 구조체의 첫 번째 값에 액세스합니다. <code>main</code> Listing 15-9에서 호출하는 함수 <code>*</code> 에 관하여 <code>MyBox&lt;T&gt;</code> 이제 값이 컴파일되고 assertion이 통과됩니다!</p>
-<p><code>Deref</code> 특성이 없으면 컴파일러는 <code>&amp;</code> 참조만 역참조할 수 있습니다. <code>deref</code> 메서드는 컴파일러에게 <code>Deref</code>를 구현하는 모든 유형의 값을 가져와 역참조 방법을 알고 있는 참조를 얻기 위해 <code>deref</code> 메서드를 호출할 수 있는 기능을 제공합니다.</p>
-<p>Listing 15-9에서 <code>*y</code>를 입력했을 때, 러스트는 실제로 이 코드를 실행했습니다:</p>
+<p><code>type Target = T;</code> 구문은 <code>Deref</code> 트레잇이 사용할 연관 타입을 정의합니다. 연관 타입은 일반 매개변수를 선언하는 또 다른 방식이지만, 지금은 걱정하지 않아도 됩니다. 20장에서 더 자세히 다룰 것입니다.</p>
+<p><code>deref</code> 메서드의 본문을 <code>&amp;self.0</code>으로 채우면, <code>deref</code>은(는) <code>*</code> 연산자로 접근하려는 값에 대한 참조를 반환합니다. 5장의 <a href="ch05-01-defining-structs.html#creating-different-types-with-tuple-structs">“튜플 구조체를 사용하여 다른 타입 만들기”</a><!--
+ignore -->에서 <code>.0</code>은(는) 튜플 구조체의 첫 번째 값에 접근한다고 배웠습니다. 나열 15-9의 <code>main</code> 함수는 <code>MyBox&lt;T&gt;</code> 값에 대해 <code>*</code>을(를) 호출하는데, 이제 컴파일이 되고 단언이 통과합니다!</p>
+<p><code>Deref</code> 트레잇이 없으면 컴파일러는 <code>&amp;</code> 참조만 역참조할 수 있습니다. <code>deref</code> 메소드는 컴파일러가 <code>Deref</code>를 구현하는 어떤 타입의 값이든 가져와서 <code>deref</code> 메소드를 호출하고, 역참조할 수 있는 참조를 얻을 수 있게 해줍니다.</p>
+<p>Listing 15-9에서 <code>*y</code>를 입력했을 때, Rust는 실제로 다음 코드를 실행합니다:</p>
 <pre><code class="language-rust ignore">*(y.deref())</code></pre>
-<p>러스트는 <code>*</code> 연산자를 <code>deref</code> 메소드에 대한 호출과 일반 역참조로 대체하여 <code>deref</code> 메소드를 호출할 필요가 있는지 여부를 생각할 필요가 없도록 합니다. 이 러스트 기능을 사용하면 일반 참조가 있는지 또는 <code>Deref</code>를 구현하는 유형이 있는지와 동일하게 기능을 하는 코드를 작성할 수 있습니다.</p>
-<p>상기 이유는 The reason the <code>deref</code> 메서드는 값에 대한 참조를 반환하고 괄호 바깥의 일반 역참조를 반환합니다. <code>*(y.deref())</code> 여전히 필요하며 소유권 시스템과 관련이 있습니다. <code>deref</code> method는 값에 대한 참조 대신 직접 값을 반환하며, 그 값은 밖으로 이동됩니다.
-<code>self</code>. 우리는 내부 가치의 소유권을 원하지 않습니다. <code>MyBox&lt;T&gt;</code> 이 경우 또는 대부분의 경우 역참조 연산자를 사용합니다.</p>
-<p>유의할 점 <code>*</code> 상기 호출은 상기 호출로 대체되는 Replacement with a call to the <code>deref</code> 상기 호출하는 단계는, Wherein a call to the <code>*</code> 연산자는 한 번만, 우리가 사용할 때마다 <code>*</code> 우리의 코드에서. 의 대체 때문에 <code>*</code> 연산자는 무한히 반복되지 않습니다, 우리는 유형의 데이터로 끝납니다. <code>i32</code>상기 대응하는 단계는, Wherein the matching the <code>5</code> 에서 <code>assert_eq!</code> 목록 15-9.</p>
+<p>Rust는 <code>*</code> 연산자를 <code>deref</code> 메소드 호출과 일반 역참조로 대체하여, <code>deref</code> 메소드를 호출해야 하는지 여부를 생각하지 않아도 됩니다. 이 Rust 기능 덕분에 일반 참조든 <code>Deref</code>를 구현하는 타입이든, 동일하게 동작하는 코드를 작성할 수 있습니다.</p>
+<p><code>deref</code> 메서드가 값에 대한 참조를 반환하고, <code>*(y.deref())</code>의 괄호 바깥의 일반 디리퍼런스가 여전히 필요한 이유는 소유권 시스템과 관련이 있습니다. <code>deref</code> 메서드가 값에 대한 참조 대신 값을 직접 반환했다면, 그 값은 <code>self</code>에서 이동되어 나갔을 것입니다. 이 경우와 디리퍼런스 연산자를 사용하는 대부분의 경우, 우리는 <code>MyBox&lt;T&gt;</code> 내부의 내장 값에 대한 소유권을 가져오기를 원하지 않습니다.</p>
+<p>코드에서 <code>*</code>을(를) 사용할 때마다, <code>*</code> 연산자는 <code>deref</code> 메서드 호출로 대체되고, 그 다음 <code>*</code> 연산자 호출로 한 번만 대체됩니다. <code>*</code> 연산자의 대체가 무한히 재귀되지 않으므로, 나열 15-9의 <code>assert_eq!</code>에 있는 <code>5</code>과(와) 일치하는 <code>i32</code> 타입의 데이터가 생성됩니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="implicit-deref-coercions-with-functions-and-methods"></a>
 <a id="using-deref-coercions-in-functions-and-methods"></a></p>
-<h3 id="using-deref-coercion-in-functions-and-methods"><a class="header" href="#using-deref-coercion-in-functions-and-methods">함수와 방법에서 Deref Coercion 사용하기</a></h3>
-<p><em>Deref 강제</em> 를 구현하는 형식에 대한 참조를 변환합니다.Converts a reference to a type that implements the <code>Deref</code>
-트레잇을 다른 타입에 대한 참조로 변환할 수 있습니다. 예를 들어, deref coercion은
-<code>&amp;String</code> 오시는 길 <code>&amp;str</code> 왜냐하면 <code>String</code> 를 구현한다. <code>Deref</code> 반환할 값입니다.The value to return <code>&amp;str</code>. Deref coercion은 함수와 메소드에 대한 인수에 대해 러스트가 수행하는 편의이며, <code>Deref</code>
-트레잇. 함수나 메소드 정의에서 파라미터 타입과 일치하지 않는 함수나 메소드에 인수로서 특정 타입의 값에 대한 참조를 전달할 때 자동으로 발생합니다. <code>deref</code>
-메소드는 우리가 제공한 타입을 파라미터가 필요로 하는 타입으로 변환합니다.</p>
-<p>Deref coercion이 러스트에 추가되어 프로그래머가 함수와 메서드 호출을 작성할 때 <code>&amp;</code> 및 <code>*</code>를 사용하여 많은 명시적 참조 및 역참조를 추가할 필요가 없습니다. 또한, deref coercion 기능을 통해 참조 또는 스마트 포인터에 대해 더 많은 코드를 작성할 수 있습니다.</p>
-<p>deref coercion이 동작하는 것을 보려면, Listing 15-8에서 정의한 <code>MyBox&lt;T&gt;</code> 타입과 Listing 15-10에서 추가된 <code>Deref</code>의 구현을 사용합시다. Listing 15-11은 문자열 슬라이스 파라미터를 가진 함수의 정의를 보여줍니다.</p>
+<h3 id="using-deref-coercion-in-functions-and-methods"><a class="header" href="#using-deref-coercion-in-functions-and-methods">함수와 메서드에서 Deref 강제 변환 사용하기</a></h3>
+<p>Deref 강제 변환은 <em>Deref</em> 트레잇을 구현하는 타입에 대한 참조를 다른 타입에 대한 참조로 변환합니다. 예를 들어, String은 Deref 트레잇을 구현하여 <code>Deref</code>&amp;str<code>&amp;String</code>을 반환하므로, Deref 강제 변환은 <code>&amp;str</code>&amp;String<code>String</code>을 <code>Deref</code>&amp;str<code>&amp;str</code>으로 변환할 수 있습니다. Deref 강제 변환은 Rust가 함수와 메소드의 인구에 대해 수행하는 편의 기능이며, Deref 트레잇을 구현하는 타입에서만 작동합니다. 함수나 메소드 정의의 파라미터 타입과 일치하지 않는 특정 타입의 값에 대한 참조를 함수나 메소드의 인수로 전달할 때 자동으로 발생합니다. <code>Deref</code>deref<code>deref</code> 메소드에 대한 호출 연쇄가 우리가 제공한 타입을 파라미터가 필요로 하는 타입으로 변환합니다.</p>
+<p>Deref coercion은 Rust에 추가된 기능으로, 프로그래머가 함수와 메서드 호출을 작성할 때 <code>&amp;</code> 및 <code>*</code>를 사용해 명시적인 참조와 역참조를 많이 추가할 필요가 없도록 합니다. 또한 deref coercion을 사용하면 참조나 스마트 포인터 모두에서 동작하는 코드를 더 쉽게 작성할 수 있습니다.</p>
+<p>deref coercion이 실제로 동작하는 모습을 보려면, Listing 15-8에서 정의한 <code>MyBox&lt;T&gt;</code> 타입과 Listing 15-10에서 추가한 <code>Deref</code>의 구현을 사용하겠습니다. Listing 15-11은 문자열 슬라이스 파라미터를 받는 함수의 정의를 보여 줍니다.</p>
 <figure class="listing" id="listing-15-11">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">fn hello(name: &amp;str) {
@@ -341,11 +332,9 @@ impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
 }
 <span class="boring">
 </span><span class="boring">fn main() {}</span></code></pre>
-<figcaption><a href="#listing-15-11">상장 15-11</a> : <code>hello</code> 유형의 <code>name</code> 매개 변수가있는 <code>&amp;str</code> 기능</figcaption>
+<figcaption><a href="#listing-15-11">예제 15-11</a>: <code>hello</code> 유형의 <code>name</code> 매개변수를 가진 <code>&amp;str</code> 함수</figcaption>
 </figure>
-<p>우리는 전화 할 수 있습니다 <code>hello</code> 함수는 인수로서 문자열 슬라이스를 가지고 있습니다.
-<code>hello("Rust");</code>예를 들어, Deref coercion은 호출을 가능하게 한다. <code>hello</code>
-타입의 값에 대한 참조와 함께 <code>MyBox&lt;String&gt;</code>Listing 15-12에 나와 있는 것과 같습니다.</p>
+<p>인수로 문자열 슬라이스를 전달하여 <code>hello</code> 함수를 호출할 수 있습니다. 예를 들어, <code>hello("Rust");</code>처럼요. Deref 강제 변환 덕분에 <code>hello</code> 타입의 값에 대한 참조를 인수로 전달하여 <code>MyBox&lt;String&gt;</code> 함수를 호출할 수 있게 되며, 이는 Listing 15-12에 나와 있습니다.</p>
 <figure class="listing" id="listing-15-12">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">use std::ops::Deref;
@@ -374,12 +363,10 @@ impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
     let m = MyBox::new(String::from("Rust"));
     hello(&amp;m);
 }</code></pre>
-<figcaption><a href="#listing-15-12">상장 15-12</a>: 전화 <code>hello</code> 에 대한 참조와 함께 <code>MyBox&lt;String&gt;</code> deref 강제 때문에 작동하는 가치,</figcaption>
+<figcaption><a href="#listing-15-12">예제 15-12</a>: deref 강제 변환 덕분에 작동하는, <code>hello</code>에 대한 참조를 인자로 전달하여 <code>MyBox&lt;String&gt;</code>을 호출하는 예제</figcaption>
 </figure>
-<p>여기 우리가 부르는 거 야 <code>hello</code> 인자를 가진 함수 <code>&amp;m</code>상기 참조하는 단계는, Wherein a reference, <code>MyBox&lt;String&gt;</code> 값. 우리가 구현했기 때문에 <code>Deref</code> 트레잇 켜짐 <code>MyBox&lt;T&gt;</code> Listing 15-10에서, 러스트는 바뀔 수 있습니다 <code>&amp;MyBox&lt;String&gt;</code> 다음으로 <code>&amp;String</code>
-전화 걸기 <code>deref</code>표준 라이브러리는 다음과 같은 구현을 제공합니다. <code>Deref</code>
-온 <code>String</code> 이 함수는 문자열 슬라이스를 반환하고, 이것은 API 문서에 있습니다. <code>Deref</code>. 러스트 호출 <code>deref</code> 다시 돌리다 turn the <code>&amp;String</code> 다음으로 <code>&amp;str</code>상기 대응하는 단계는, Wherein the matching the <code>hello</code> 함수의 정의.</p>
-<p>만약 러스트가 deref coercion을 구현하지 않았다면, 우리는 Listing 15-12의 코드 대신 Listing 15-13의 코드를 작성해야 할 것입니다. <code>hello</code> 타입의 값으로 <code>&amp;MyBox&lt;String&gt;</code>.</p>
+<p>여기서는 <code>hello</code> 함수를 <code>&amp;m</code> 인수로 호출합니다. 이 값은 <code>MyBox&lt;String&gt;</code> 값을 참조합니다. 예제 15-10에서 <code>MyBox&lt;T&gt;</code>에 <code>Deref</code> 트레이트를 구현했으므로, Rust는 <code>deref</code>을 호출해 <code>&amp;MyBox&lt;String&gt;</code>를 <code>&amp;String</code>로 변환할 수 있습니다. 표준 라이브러리는 <code>Deref</code> 트레이트를 <code>String</code>에 구현해 문자열 슬라이스를 반환합니다. 자세한 내용은 <code>Deref</code> API 문서에서 확인할 수 있습니다. Rust는 다시 <code>deref</code>을 호출해 <code>&amp;String</code>를 <code>&amp;str</code>로 변환합니다. 이렇게 하면 <code>hello</code> 함수가 요구하는 타입과 일치합니다.</p>
+<p>Rust가 deref coercion을 구현하지 않았다면, Listing 15-12의 코드 대신 Listing 15-13의 코드를 작성해야 했을 것입니다. <code>hello</code> 타입의 값으로 <code>&amp;MyBox&lt;String&gt;</code>.</p>
 <figure class="listing" id="listing-15-13">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">use std::ops::Deref;
@@ -408,23 +395,22 @@ impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
     let m = MyBox::new(String::from("Rust"));
     hello(&amp;(*m)[..]);
 }</code></pre>
-<figcaption><a href="#listing-15-13">상장 15-13</a>: 러스트에 강제성이 없다면 우리가 작성해야 할 코드</figcaption>
+<figcaption><a href="#listing-15-13">예제 15-13</a>: Rust에 디리프 강제 변환(deref coercion)이 없다면 작성해야 할 코드</figcaption>
 </figure>
-<p>이름 * <code>(*m)</code> 상기 역참조하는 The dereference <code>MyBox&lt;String&gt;</code> 으로 A <code>String</code>. 다음, the <code>&amp;</code> 그리고
-<code>[..]</code> 의 문자열 조각을 가져 가라. <code>String</code> 이는 전체 문자열과 동일하며 다음과 같은 서명과 같습니다. <code>hello</code>. def가 없는 이 코드는 읽기, 쓰기, 이해하기가 더 어렵습니다. Deref는 러스트가 우리를 위해 이러한 변환을 자동으로 처리할 수 있게 해줍니다.</p>
-<p><code>Deref</code> 트레잇이 관련된 타입에 대해 정의되면, 러스트는 타입을 분석하고 <code>Deref::deref</code>를 매개 변수의 타입에 맞는 레퍼런스를 얻기 위해 필요한 만큼 사용할 것입니다. <code>Deref::deref</code>가 삽입되어야 하는 횟수는 컴파일 시간에 해결되므로, 역지연을 이용하기 위한 런타임 페널티는 없습니다!</p>
+<p><code>(*m)</code>은 <code>MyBox&lt;String&gt;</code>을 <code>String</code>으로 역참조합니다. 그런 다음, <code>&amp;</code>과 <code>[..]</code>는 <code>String</code> 전체와 동일한 문자열 슬라이스를 가져와서 <code>hello</code>의 시그니처에 맞게 합니다. 이러한 모든 기호가 포함된 이 코드는 역참조 강제 변환이 없다면 읽기, 쓰기, 이해하기 모두 더 어렵습니다. 역참조 강제 변환은 Rust가 이러한 변환을 자동으로 처리할 수 있게 해줍니다.</p>
+<p><code>Deref</code> 트레이트가 관련 타입에 대해 정의되어 있으면, Rust는 타입을 분석하여 매개변수의 타입과 일치하는 참조를 얻기 위해 필요한 만큼 <code>Deref::deref</code>을 호출합니다. <code>Deref::deref</code>가 삽입되어야 하는 횟수는 컴파일 시간에 결정되므로, 디리프 강제 변환을 활용하는 데 런타임 페널티가 발생하지 않습니다!</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="how-deref-coercion-interacts-with-mutability"></a></p>
-<h3 id="handling-deref-coercion-with-mutable-references"><a class="header" href="#handling-deref-coercion-with-mutable-references">가변 참조를 이용한 강제력 처리</a></h3>
-<p><code>Deref</code> 트레잇을 사용하여 불변 참조에서 <code>*</code> 연산자를 재정의하는 것과 마찬가지로 <code>DerefMut</code> 트레잇을 사용하여 가변 참조에서 <code>*</code> 연산자를 재정의할 수 있습니다.</p>
-<p>러스트는 세 가지 경우에 타입과 트레잇 구현을 찾을 때 강제성을 감소시킵니다:</p>
+<h3 id="handling-deref-coercion-with-mutable-references"><a class="header" href="#handling-deref-coercion-with-mutable-references">가변 참조를 사용한 Deref 강제 변환 처리</a></h3>
+<p>불변 참조에서 <code>Deref</code> 연산자를 재정의하는 데 <code>*</code> 트레잇을 사용하는 것과 마찬가지로, 가변 참조에서 <code>DerefMut</code> 연산자를 재정의하는 데는 <code>*</code> 트레잇을 사용할 수 있습니다.</p>
+<p>Rust는 다음 세 가지 경우에 타입과 트레이트 구현을 발견하면 deref 강제 변환을 수행합니다:</p>
 <ol>
-<li><code>&amp;T</code>에서 <code>&amp;U</code>에 <code>T: Deref&lt;Target=U&gt;</code> 때</li>
-<li><code>&amp;mut T</code>에서 <code>&amp;mut U</code>에 <code>T: DerefMut&lt;Target=U&gt;</code> 때</li>
-<li><code>&amp;mut T</code>에서 <code>&amp;U</code>에 <code>T: Deref&lt;Target=U&gt;</code> 때</li>
+<li><code>&amp;T</code>에서 <code>&amp;U</code>으로, <code>T: Deref&lt;Target=U&gt;</code>를 만족할 때</li>
+<li><code>&amp;mut T</code>에서 <code>&amp;mut U</code>으로, <code>T: DerefMut&lt;Target=U&gt;</code>를 만족할 때</li>
+<li><code>&amp;mut T</code>에서 <code>&amp;U</code>으로, <code>T: Deref&lt;Target=U&gt;</code>를 만족할 때</li>
 </ol>
-<p>첫 번째 두 경우는 두 번째 경우는 가변성을 구현한다는 점을 제외하고는 동일합니다. 첫 번째 경우는 <code>&amp;T</code>와 <code>T</code>가 <code>Deref</code>를 일부 유형 <code>U</code>에 구현하면 <code>&amp;U</code>를 투명하게 얻을 수 있습니다. 두 번째 경우는 동일한 역참조 강제가 발생할 수 있음을 나타냅니다.</p>
-<p>세 번째 경우는 더 까다롭습니다: 러스트는 불변의 참조를 강제할 것입니다. 그러나 그 반대는 불가능합니다: 불변 참조는 가변 참조를 강제할 수 없습니다. 차입 규칙 때문에, 가변 참조는 그 데이터에 대한 유일한 참조여야 합니다(그렇지 않으면 프로그램이 컴파일되지 않습니다). 불변 참조를 불변의 참조로 변환하는 것은 불변의 참조로 간주될 수 없습니다.</p>
+<p>첫 번째 두 경우는 두 번째가 가변성을 구현한다는 점을 제외하면 동일합니다. 첫 번째 경우는 <code>&amp;T</code>이 있고, <code>T</code>이 어떤 유형인 <code>Deref</code>에 대해 <code>U</code> 트레이트를 구현한다면, <code>&amp;U</code>를 투명하게 얻을 수 있다고 설명합니다. 두 번째 경우는 가변 참조에 대해서도 동일한 역참조 강제 변환이 일어난다고 설명합니다.</p>
+<p>세 번째 경우는 더 까다롭습니다. Rust는 가변 참조를 불변 참조로 강제 변환하기도 합니다. 하지만 그 반대는 불가능합니다. 불변 참조는 절대 가변 참조로 강제 변환되지 않습니다. 빌림 규칙에 따라, 가변 참조를 가지고 있다면 그 가변 참조는 해당 데이터에 대한 유일한 참조여야 합니다(그렇지 않으면 프로그램이 컴파일되지 않습니다). 가변 참조 하나를 불변 참조 하나로 변환하는 것은 빌림 규칙을 위반하지 않습니다. 반면, 불변 참조를 가변 참조로 변환하려면 원래의 불변 참조가 해당 데이터에 대한 유일한 불변 참조여야 하지만, 빌림 규칙은 이를 보장하지 않습니다. 따라서 Rust는 불변 참조를 가변 참조로 변환하는 것이 가능하다고 가정할 수 없습니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

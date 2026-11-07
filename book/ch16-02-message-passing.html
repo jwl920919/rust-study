@@ -163,13 +163,13 @@
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="using-message-passing-to-transfer-data-between-threads"></a></p>
-<h2 id="transfer-data-between-threads-with-message-passing"><a class="header" href="#transfer-data-between-threads-with-message-passing">메시지 전달을 통해 스레드 간에 데이터 전송</a></h2>
+<h2 id="transfer-data-between-threads-with-message-passing"><a class="header" href="#transfer-data-between-threads-with-message-passing">메시지 전달을 통해 스레드 간에 데이터를 전송합니다.</a></h2>
 <p>안전한 동시성을 보장하기위한 한 가지 인기있는 접근 방식은 데이터가있는 스레드 또는 액터가 서로 메시지를 전송하여 통신하는 메시지 전달입니다. <a href="https://golang.org/doc/effective_go.html#concurrency">Go 언어 문서를</a>의 슬로건에 대한 아이디어는 다음과 같습니다. "메모리를 공유하여 통신하지 마십시오. 대신 의사 소통을 통해 메모리를 공유하십시오."</p>
-<p>러스트의 표준 라이브러리는 메시지 전송 동시성을 달성하기 위해 채널의 구현을 제공합니다. 채널은 하나의 스레드에서 다른 스레드로 데이터를 전송하는 일반적인 프로그래밍 개념입니다.</p>
-<p>프로그래밍에서 채널은 물줄기 또는 강과 같은 방향성 채널과 같다고 상상할 수 있습니다. 고무 오리 같은 것을 강에 넣으면 수로의 끝까지 아래로 여행합니다.</p>
-<p>‘채널’에는 두 개 의 반쪽 즉 ‘트랜스미터’와 ‘리시버’가 있다. ‘트랜스미터’의 반쪽 은 ‘고무 오리’를 강 에 넣는 상류 위치 이며, ‘리시버’의 반쪽 은 ‘고무 오리’가 하류 로 끝나는 곳 이다. 당신 의 ‘코드’의 한 부분 은 당신 이 보내려는 자료 를 가지고 ‘트랜스미터’에 있는 방법 을 호출 하고, 또 다른 부분 은 도착 하는 메시지 의 수신 끝 을 검사 한다.</p>
-<p>여기서는 값을 생성하고 채널로 보낼 수 있는 하나의 스레드와 값을 수신하고 인쇄할 다른 스레드가 있는 프로그램으로 작업합니다. 채널을 사용하여 스레드 간에 간단한 값을 전송하여 기능을 설명합니다. 이 기술에 익숙해지면 채팅 시스템 또는 여러 스레드가 계산의 일부를 수행하고 집계된 스레드 결과를 보내는 시스템과 같이 서로 통신해야 하는 스레드에 채널을 사용할 수 있습니다.</p>
-<p>먼저, Listing 16-6에서, 우리는 채널을 만들 것이지만 그것으로는 아무 것도 하지 않을 것입니다. 이것은 아직 컴파일되지 않을 것입니다. 왜냐하면 러스트는 우리가 채널을 통해 보내고자 하는 값의 타입을 알 수 없기 때문입니다.</p>
+<p>메시지 전송 기반의 동시성을 구현하기 위해 Rust의 표준 라이브러리는 채널의 구현을 제공합니다. 채널은 하나의 스레드에서 다른 스레드로 데이터를 전송하는 일반적인 프로그래밍 개념입니다.</p>
+<p>프로그래밍에서 채널을 물줄기나 강과 같은 방향성 있는 물길에 비유할 수 있습니다. 강에 고무 오리 같은 물체를 넣으면, 그것은 수로의 끝까지 하류로 흘러가게 됩니다.</p>
+<p>채널에는 송신기(transmitter)와 수신기(receiver)라는 두 부분이 있습니다. 송신기는 고무 오리를 강에 넣는 상류 위치를, 수신기는 고무 오리가 하류에서 도착하는 위치를 나타냅니다. 코드의 한 부분은 전송하려는 데이터를 가지고 송신기의 메서드를 호출하고, 다른 부분은 수신 측에 도착한 메시지를 확인합니다. 송신기 또는 수신기 중 하나가 드롭(drop)되면 채널은 닫힌(closed) 것으로 간주됩니다.</p>
+<p>여기서는 값을 생성하여 채널을 통해 보내는 스레드 하나와, 값을 수신하여 출력하는 다른 스레드가 있는 프로그램을 만들어 보겠습니다. 이 기능을 설명하기 위해 채널을 사용하여 스레드 간에 간단한 값을 전송합니다. 이 기법에 익숙해지면 채팅 시스템이나 여러 스레드가 계산의 일부를 수행한 후 그 결과를 하나의 스레드로 보내어 집계하는 시스템처럼, 서로 통신해야 하는 어떤 스레드에도 채널을 사용할 수 있습니다.</p>
+<p>먼저, Listing 16-6에서 채널을 생성하지만 아직 아무 작업도 수행하지 않습니다. Rust가 채널을 통해 전송하려는 값의 타입을 알 수 없기 때문에 이 코드는 아직 컴파일되지 않습니다.</p>
 <figure class="listing" id="listing-16-6">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore does_not_compile">use std::sync::mpsc;
@@ -177,13 +177,11 @@
 fn main() {
     let (tx, rx) = mpsc::channel();
 }</code></pre>
-<figcaption><a href="#listing-16-6">리스트 16-6</a>: 채널을 만들고 <code>tx</code> 및 <code>rx</code>에 두 반쪽을 할당</figcaption>
+<figcaption><a href="#listing-16-6">Listing 16-6</a>: 채널을 생성하고 <code>tx</code> 및 <code>rx</code>에 두 부분을 할당</figcaption>
 </figure>
-<p>우리는 <code>mpsc::channel</code> 함수를 사용하여 새로운 채널을 만듭니다. <code>mpsc</code>는 다중 생산자, 단일 소비자를 의미합니다. 간단히 말해서, 러스트의 표준 라이브러리가 채널을 구현하는 방식은 채널이 값을 생성하는 여러 송신 종료를 가질 수 있지만 이러한 값을 소비하는 수신 종료는 하나만 가질 수 있음을 의미합니다. 하나의 큰 강으로 함께 흐르는 여러 스트림을 상상해보십시오. 모든 스트림을 아래로 보내면 결국 하나의 프로듀서가 추가됩니다.</p>
-<p>이름 * <code>mpsc::channel</code> 함수는 튜플을 반환하며, 첫 번째 요소는 전송 끝, 두 번째 요소는 수신 끝, 수신자입니다. 약어 <code>tx</code> 그리고 <code>rx</code> 전통적으로 많은 분야에서 사용됩니다. <em>전송기</em> 그리고 <em>받는 사람</em>, 각각, 그래서 우리는 각 끝을 나타 내기 위해 변수의 이름을 지정합니다. 우리는 <code>let</code> 튜플을 destructures 패턴과 문; 우리는에서 패턴의 사용을 논의 할 것이다
-<code>let</code> 제 19 장에서 진술과 구조 조정. 지금은 알고 사용
-<code>let</code> 이런 식으로 진술은 튜플의 조각을 추출하는 편리한 방법입니다 <code>mpsc::channel</code>.</p>
-<p>Transmitting end를 스폰된 쓰레드로 옮기고 하나의 문자열을 보내서 스폰된 쓰레드가 메인 쓰레드와 통신하도록 합시다. Listing 16-7과 같이 말이죠. 이것은 마치 상류에 있는 강에 고무 오리를 넣거나 한 쓰레드에서 다른 쓰레드로 채팅 메시지를 보내는 것과 같습니다.</p>
+<p><code>mpsc::channel</code> 함수를 사용하여 새로운 채널을 만듭니다. <code>mpsc</code>은 multiple producer, single consumer(다중 생산자, 단일 소비자)의 약자입니다. 간단히 말해, Rust 표준 라이브러리가 채널을 구현하는 방식은 채널이 값을 생성하는 여러 송신 단을 가질 수 있지만, 이러한 값을 소비하는 수신 단은 하나만 가질 수 있음을 의미합니다. 여러 개의 물줄기가 합쳐져 하나의 큰 강을 이루는 모습을 상상해 보세요. 어떤 물줄기로 보내든 결국 모든 물은 하나의 강으로 모입니다. 지금은 단일 생산자로 시작하지만, 이 예제가 정상적으로 작동하도록 만든 후에는 여러 생산자를 추가하겠습니다.</p>
+<p><code>mpsc::channel</code> 함수는 튜플을 반환하며, 첫 번째 요소는 송신 단말인 송신기(transmitter)이고 두 번째 요소는 수신 단말인 수신기(receiver)입니다. <code>tx</code>과 <code>rx</code>라는 약어는 전통적으로 많은 분야에서 각각 <em>송신기</em>와 <em>수신기</em>를 나타내는 데 사용되므로, 각 단말을 나타내기 위해 변수를 이렇게 이름 붙입니다. 여기서는 튜플을 구조 분해하는 패턴을 가진 <code>let</code> 문을 사용합니다. <code>let</code> 문에서의 패턴 사용과 구조 분해에 대해서는 19장에서 다룹니다. 지금은 <code>let</code> 문을 이렇게 사용하는 것이 <code>mpsc::channel</code>이 반환하는 튜플의 조각을 추출하는 편리한 방법임을 알아두면 됩니다.</p>
+<p>Listing 16-7에서 보듯이, 송신 단을 생성된 스레드로 이동시키고 하나의 문자열을 보내어 생성된 스레드가 메인 스레드와 통신하도록 해 보겠습니다. 이는 마치 강 상류에 고무 오리를 넣거나 한 스레드에서 다른 스레드로 채팅 메시지를 보내는 것과 같습니다.</p>
 <figure class="listing" id="listing-16-7">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">use std::sync::mpsc;
@@ -197,11 +195,11 @@ fn main() {
         tx.send(val).unwrap();
     });
 }</code></pre>
-<figcaption><a href="#listing-16-7">리스트 16-7</a>: <code>tx</code>를 스폰된 스레드로 이동하고 <code>"hi"</code> 보내기</figcaption>
+<figcaption><a href="#listing-16-7">리스트 16-7</a>: <code>tx</code>를 생성된 스레드로 이동하고 <code>"hi"</code> 전송하기</figcaption>
 </figure>
-<p>다시 말하지만, <code>thread::spawn</code>를 사용하여 새 스레드를 만든 다음 <code>move</code>를 사용하여 <code>tx</code>를 클로저로 이동하여 생성 된 스레드가 <code>tx</code>를 소유하도록합니다. 생성 된 스레드는 채널을 통해 메시지를 보낼 수 있도록 송신기를 소유해야합니다.</p>
-<p>송신기에는 전송하려는 값을 갖는 <code>send</code> 메소드가 있습니다. <code>send</code> 메소드는 <code>Result&lt;T, E&gt;</code> 유형을 반환하므로 수신기가 이미 삭제되어 값을 보낼 곳이 없으면 전송 작업이 오류를 반환합니다. 이 예에서는 오류가 발생하면 <code>unwrap</code>를 패닉으로 호출합니다. 그러나 오류가 발생하면 제대로 검토하십시오.</p>
-<p>Listing 16-8에서, 우리는 메인 스레드의 수신자로부터 값을 얻을 것입니다. 이것은 강 끝에 있는 물에서 고무 오리를 찾거나 채팅 메시지를 받는 것과 같습니다.</p>
+<p>다시 한 번, <code>thread::spawn</code>를 사용하여 새 스레드를 생성한 다음 <code>move</code>를 사용하여 <code>tx</code>를 클로저로 이동시킵니다. 이렇게 하면 생성된 스레드가 <code>tx</code>의 소유권을 갖게 됩니다. 생성된 스레드는 채널을 통해 메시지를 전송할 수 있도록 송신기의 소유권을 가져야 합니다.</p>
+<p>송신기에는 전송하려는 값을 인수로 받는 <code>send</code> 메소드가 있습니다. <code>send</code> 메소드는 <code>Result&lt;T, E&gt;</code> 유형을 반환하므로, 수신기가 이미 드롭되어 값을 보낼 곳이 없으면 전송 작업이 오류를 반환합니다. 이 예제에서는 오류가 발생하면 <code>unwrap</code>을 호출하여 패닉을 일으킵니다. 하지만 실제 애플리케이션에서는 오류를 적절히 처리해야 합니다. 9장으로 돌아가서 적절한 오류 처리 전략을 검토해 보세요.</p>
+<p>Listing 16-8에서는 메인 스레드에서 수신기를 통해 값을 가져옵니다. 이는 마치 강 끝의 물에서 고무 오리를 건져 올리거나 채팅 메시지를 받는 것과 같습니다.</p>
 <figure class="listing" id="listing-16-8">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">use std::sync::mpsc;
@@ -218,24 +216,22 @@ fn main() {
     let received = rx.recv().unwrap();
     println!("Got: {received}");
 }</code></pre>
-<figcaption><a href="#listing-16-8">상장 16-8</a>: 기본 스레드에서 <code>"hi"</code> 값을 수신하고 인쇄</figcaption>
+<figcaption><a href="#listing-16-8">예제 16-8</a>: 메인 스레드에서 <code>"hi"</code> 값을 수신하고 출력</figcaption>
 </figure>
 <p>리시버에는 두 가지 유용한 방법이 있습니다. <code>recv</code> 그리고 <code>try_recv</code>. 우리는 사용하고 <code>recv</code>짧게 for <em>수신</em>, 메인 스레드의 실행을 차단하고 값이 채널 아래로 전송 될 때까지 기다립니다. 값이 전송되면, <code>recv</code> 를 반환한다. <code>Result&lt;T, E&gt;</code>. 전송기가 닫힐 때, <code>recv</code> 더 이상 값이 오지 않을 것이라는 신호를 보내기 위해 오류를 반환합니다.</p>
-<p>이름 * <code>try_recv</code> 메서드는 블록하지 않지만 대신 a를 반환합니다. <code>Result&lt;T, E&gt;</code>
-즉시: an <code>Ok</code> 메시지를 가지고 있는 값 중 하나가 사용 가능하고 <code>Err</code>
-이번에는 메시지가 없는 경우의 값입니다. <code>try_recv</code> 이 스레드가 메시지를 기다리는 동안 수행 할 다른 작업이있는 경우 유용합니다. <code>try_recv</code> 자주 사용할 수 있는 경우 메시지를 처리하고 다시 확인할 때까지 잠시 동안 다른 작업을 수행합니다.</p>
-<p>우리는이 예제에서 <code>recv</code>를 사용 하 여 간단 하 게; 우리는 메시지를 기다리는 것 이외의 메인 스레드에 대 한 다른 작업이 없습니다, 그래서 메인 스레드를 차단 하는 것이 적절 합니다.</p>
-<p>Listing 16-8에서 코드를 실행하면, 메인 스레드에서 출력된 값을 볼 수 있습니다:</p>
+<p><code>try_recv</code> 메서드는 차단하지 않고, 대신 즉시 <code>Result&lt;T, E&gt;</code>을 반환합니다. 메시지가 하나라도 사용 가능하면 그 메시지를 담은 <code>Ok</code> 값이, 이번에는 메시지가 없으면 <code>Err</code> 값이 반환됩니다. 이 스레드가 메시지를 기다리는 동안 다른 작업을 수행해야 하는 경우 <code>try_recv</code>를 사용하는 것이 유용합니다. 주기적으로 <code>try_recv</code>를 호출하는 루프를 작성하여, 메시지가 사용 가능하면 메시지를 처리하고 그렇지 않으면 잠시 다른 작업을 수행한 후 다시 확인하는 방식으로 사용할 수 있습니다.</p>
+<p>이 예제에서는 간단함을 위해 <code>recv</code>를 사용했습니다. 메인 스레드가 메시지를 기다리는 것 외에는 다른 작업을 수행할 필요가 없으므로, 메인 스레드를 차단하는 것이 적절합니다.</p>
+<p>Listing 16-8의 코드를 실행하면 메인 스레드에서 출력된 값을 볼 수 있습니다:</p>
 <!-- Not extracting output because changes to this output aren't significant;
 the changes are likely to be due to the threads running differently rather than
 changes in the compiler -->
 <pre><code class="language-text">Got: hi
 </code></pre>
-<p>완벽해!</p>
+<p>완벽합니다!</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="channels-and-ownership-transference"></a></p>
 <h3 id="transferring-ownership-through-channels"><a class="header" href="#transferring-ownership-through-channels">채널을 통한 소유권 이전</a></h3>
-<p>소유권 규칙은 안전하고 동시적인 코드를 작성하는 데 도움이 되기 때문에 메시지 전송에 중요한 역할을 합니다. 동시 프로그래밍에서 오류를 방지하는 것은 러스트 프로그램 전체에서 소유권에 대해 생각하는 이점입니다. 문제를 방지하기 위해 채널과 소유권이 함께 작동하는 방법을 보여주기 위해 실험을 해 보겠습니다. 채널 아래로 보내면 생성된 스레드에서 <code>val</code> 값을 사용하려고 할 것입니다. Listing 16-9에서 이 코드를 컴파일하는 것이 허용되는 이유를 확인해 보세요.</p>
+<p>소유권 규칙은 안전하고 동시적인 코드를 작성하는 데 도움이 되기 때문에 메시지 전송에 중요한 역할을 합니다. Rust 프로그램 전체에서 소유권을 고려하는 것이 동시 프로그래밍에서 오류를 방지하는 데 유리합니다. 채널과 소유권이 어떻게 함께 작동하여 문제를 방지하는지 보여주는 실험을 해 보겠습니다. 값을 채널로 보낸 후 생성된 스레드에서 <code>val</code> 값을 사용하려고 해 보겠습니다. Listing 16-9의 코드를 컴파일하여 이 코드가 허용되지 않는 이유를 확인해 보세요.</p>
 <figure class="listing" id="listing-16-9">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore does_not_compile">use std::sync::mpsc;
@@ -253,9 +249,9 @@ fn main() {
     let received = rx.recv().unwrap();
     println!("Got: {received}");
 }</code></pre>
-<figcaption><a href="#listing-16-9">목록 16-9</a>: 채널 아래로 보낸 후 <code>val</code> 사용 시도</figcaption>
+<figcaption><a href="#listing-16-9">Listing 16-9</a>: 값을 채널을 통해 전송한 후 <code>val</code>를 사용하려는 시도</figcaption>
 </figure>
-<p>여기, 우리는 인쇄하려고 <code>val</code> 우리가 그것을 통해 채널을 아래로 보낸 후 <code>tx.send</code>. 이것을 허용하는 것은 좋지 않은 생각입니다: 일단 값이 다른 스레드로 전송되면, 그 스레드는 그 값을 다시 사용하기 전에 수정하거나 삭제할 수 있습니다. 잠재적으로, 다른 스레드의 수정은 일치하지 않거나 존재하지 않는 데이터로 인해 오류나 예상치 못한 결과를 초래할 수 있습니다. 그러나, Listing 16-9에서 코드를 컴파일하려고 하면 러스트는 우리에게 오류를 줍니다:</p>
+<p>여기서 우리는 <code>val</code>을 채널을 통해 <code>tx.send</code>로 전송한 후 출력하려고 합니다. 이렇게 허용하는 것은 좋지 않은 아이디어입니다. 일단 값이 다른 스레드로 전송되면, 해당 스레드는 우리가 값을 다시 사용하기 전에 값을 수정하거나 삭제할 수 있습니다. 잠재적으로 다른 스레드의 수정은 데이터가 일치하지 않거나 존재하지 않아 오류나 예상치 못한 결과를 초래할 수 있습니다. 그러나 Listing 16-9의 코드를 컴파일하려고 하면 Rust는 오류를 반환합니다:</p>
 <pre><code class="language-console">$ cargo run
    Compiling message-passing v0.1.0 (file:///projects/message-passing)
 error[E0382]: borrow of moved value: `val`
@@ -271,12 +267,12 @@ error[E0382]: borrow of moved value: `val`
 For more information about this error, try `rustc --explain E0382`.
 error: could not compile `message-passing` (bin "message-passing") due to 1 previous error
 </code></pre>
-<p>동시성 실수로 인해 컴파일 타임 오류가 발생했습니다. <code>send</code> 함수는 매개 변수의 소유권을 취하고 값이 이동되면 수신기가 소유권을 갖습니다. 이렇게하면 전송 후 실수로 값을 다시 사용하지 못하게됩니다. 소유권 시스템은 모든 것이 괜찮은지 확인합니다.</p>
+<p>이 동시성 실수로 인해 컴파일 타임 오류가 발생했습니다. <code>send</code> 함수는 매개변수의 소유권을 가져가고, 값이 이동되면 수신기가 소유권을 갖게 됩니다. 이를 통해 전송 후 실수로 값을 다시 사용하는 것을 방지하며, 소유권 시스템이 모든 것이 정상인지 확인합니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="sending-multiple-values-and-seeing-the-receiver-waiting"></a></p>
-<h3 id="sending-multiple-values"><a class="header" href="#sending-multiple-values">다중 값 전송</a></h3>
-<p>Listing 16-8의 코드는 컴파일되고 실행되었지만, 두 개의 분리된 스레드가 채널을 통해 서로 이야기하고 있다는 것을 명확하게 보여주지는 못했습니다.</p>
-<p>Listing 16-10에서, 우리는 Listing 16-8의 코드가 동시에 실행되고 있음을 증명하는 몇 가지 수정을 했습니다: 스폰된 스레드는 이제 여러 개의 메시지를 보내고 각 메시지 사이에 잠시 멈춥니다.</p>
+<h3 id="sending-multiple-values"><a class="header" href="#sending-multiple-values">여러 값 전송</a></h3>
+<p>Listing 16-8의 코드는 컴파일되고 실행되었지만, 두 개의 독립적인 스레드가 채널을 통해 서로 통신하고 있다는 것을 명확하게 보여주지는 못했습니다.</p>
+<p>Listing 16-10에서는 Listing 16-8의 코드가 동시적으로 실행되고 있음을 증명하기 위해 몇 가지 수정을 했습니다. 생성된 스레드는 이제 여러 메시지를 보내고 각 메시지 사이에 1초 동안 대기합니다.</p>
 <figure class="listing" id="listing-16-10">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust noplayground">use std::sync::mpsc;
@@ -304,11 +300,11 @@ fn main() {
         println!("Got: {received}");
     }
 }</code></pre>
-<figcaption><a href="#listing-16-10">리스트 16-10</a>: 여러 메시지를 전송하고 각 메시지 사이에 일시 중지</figcaption>
+<figcaption><a href="#listing-16-10">Listing 16-10</a>: 여러 메시지 전송 및 각 메시지 사이 대기</figcaption>
 </figure>
-<p>이번에는 생성 된 스레드에 기본 스레드로 보내고 싶은 문자열 벡터가 있습니다. 우리는 그것들을 반복하고, 개별적으로 보내고, <code>thread::sleep</code> 함수를 1 초의 <code>Duration</code> 값으로 호출하여 각각을 일시 중지합니다.</p>
-<p>메인 스레드에서는 더 이상 <code>recv</code> 함수를 명시 적으로 호출하지 않습니다. 대신 <code>rx</code>를 반복기로 처리합니다. 수신 된 각 값에 대해 인쇄하고 있습니다. 채널이 닫히면 반복이 끝납니다.</p>
-<p>Listing 16-10에서 코드를 실행할 때, 각 줄 사이에 1초의 일시정지가 있는 다음 출력을 볼 수 있습니다:</p>
+<p>이번에는 생성된 스레드에 메인 스레드로 보내고 싶은 문자열 벡터가 있습니다. 우리는 이들을 반복하며 각각 개별적으로 전송하고, <code>thread::sleep</code> 함수를 1초의 <code>Duration</code> 값으로 호출하여 각 전송 사이에 대기합니다.</p>
+<p>메인 스레드에서는 더 이상 <code>recv</code> 함수를 명시적으로 호출하지 않습니다. 대신 <code>rx</code>을 반복자로 취급합니다. 수신된 각 값을 출력하며, 채널이 닫히면 반복이 종료됩니다.</p>
+<p>Listing 16-10의 코드를 실행하면 각 줄 사이에 1초의 지연이 있는 다음과 같은 출력을 볼 수 있습니다:</p>
 <!-- Not extracting output because changes to this output aren't significant;
 the changes are likely to be due to the threads running differently rather than
 changes in the compiler -->
@@ -317,10 +313,10 @@ Got: from
 Got: the
 Got: thread
 </code></pre>
-<p>주 스레드에서 <code>for</code> 루프에서 일시 중지하거나 지연하는 코드가 없기 때문에 주 스레드가 생성 된 스레드에서 값을 받기를 기다리고 있음을 알 수 있습니다.</p>
+<p>주 스레드의 <code>for</code> 루프에 일시 중지하거나 지연하는 코드가 없으므로, 주 스레드가 생성된 스레드에서 값을 수신하기를 기다리고 있음을 알 수 있습니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="creating-multiple-producers-by-cloning-the-transmitter"></a></p>
-<h3 id="creating-multiple-producers"><a class="header" href="#creating-multiple-producers">여러 제작자 만들기</a></h3>
+<h3 id="creating-multiple-producers"><a class="header" href="#creating-multiple-producers">여러 생산자 만들기</a></h3>
 <p>앞서 우리가 언급한 <code>mpsc</code> 상기 약어는 The acronym <em>다수 생산자, 단 하나 소비자</em>. 하자 넣어 <code>mpsc</code> Listing 16-10의 코드를 사용하고 확장하여 모두 같은 수신기에 값을 보내는 여러 스레드를 만듭니다. Listing 16-11과 같이 송신기를 복제하면 됩니다.</p>
 <figure class="listing" id="listing-16-11">
 <span class="file-name">Filename: src/main.rs</span>
@@ -368,10 +364,10 @@ Got: thread
 
     // --snip--
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-16-11">목록 16-11</a>: 여러 생산자로부터 여러 메시지 보내기</figcaption>
+<figcaption><a href="#listing-16-11">Listing 16-11</a>: 여러 생산자로부터 여러 메시지 보내기</figcaption>
 </figure>
-<p>이번에는 첫 번째 생성 된 스레드를 만들기 전에 송신기에서 <code>clone</code>를 호출합니다. 이렇게하면 첫 번째 생성 된 스레드로 전달할 수있는 새로운 송신기가 제공됩니다. 원래 송신기를 두 번째 생성 된 스레드로 전달합니다. 이렇게하면 두 개의 스레드가 제공되고 각각 하나의 수신기에 다른 메시지를 보냅니다.</p>
-<p>코드를 실행할 때, 출력은 다음과 같이 보일 것입니다:</p>
+<p>이번에는 첫 번째 스레드를 생성하기 전에 송신기에서 <code>clone</code>를 호출합니다. 이렇게 하면 첫 번째 생성된 스레드에 전달할 수 있는 새로운 송신기가 생성됩니다. 원래 송신기는 두 번째 생성된 스레드에 전달합니다. 이렇게 하면 두 개의 스레드가 각각 다른 메시지를 동일한 수신기로 보내게 됩니다.</p>
+<p>코드를 실행하면 출력은 다음과 유사한 형태가 됩니다:</p>
 <!-- Not extracting output because changes to this output aren't significant;
 the changes are likely to be due to the threads running differently rather than
 changes in the compiler -->
@@ -384,8 +380,8 @@ Got: the
 Got: thread
 Got: you
 </code></pre>
-<p>시스템에 따라 다른 순서로 값을 볼 수 있습니다. 이것이 동시성을 흥미롭게 만드는 이유입니다. <code>thread::sleep</code>를 실험하여 다른 스레드에서 다양한 값을 제공하면 각 실행은보다 비결정적이며 매번 다른 출력을 생성합니다.</p>
-<p>이제 채널이 어떻게 작동하는지 살펴 보았으므로 다른 동시성 방법을 살펴 보겠습니다.</p>
+<p>시스템에 따라 값의 순서가 다르게 나타날 수 있습니다. 이것이 동시성을 흥미롭고 동시에 어렵게 만드는 이유입니다. <code>thread::sleep</code>을 실험하여 서로 다른 스레드에 다양한 값을 지정해 보면, 실행할 때마다 비결정론적으로 더 다양한 출력이 생성되는 것을 확인할 수 있습니다.</p>
+<p>이제 채널이 어떻게 작동하는지 살펴 보았으므로, 다른 동시성 방법을 살펴 보겠습니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

@@ -161,67 +161,53 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h2 id="appendix-c-derivable-traits"><a class="header" href="#appendix-c-derivable-traits">부록 C: 파생 가능한 특성</a></h2>
-<p>이 책의 여러 곳에서 struct 또는 enum 정의에 적용할 수 있는 <code>derive</code> 특성에 대해 논의했습니다. <code>derive</code> 특성은 <code>derive</code> 구문에 주석을 달은 형식에 대한 자체 기본 구현으로 특성을 구현하는 코드를 생성합니다.</p>
-<p>이 부록에서는 <code>derive</code>와 함께 사용할 수 있는 표준 라이브러리의 모든 특성에 대한 참조를 제공합니다. 각 섹션은 다음을 다룹니다.</p>
+<h2 id="appendix-c-derivable-traits"><a class="header" href="#appendix-c-derivable-traits">부록 C: 파생 가능한 트레이트</a></h2>
+<p>이 책의 여러 곳에서 struct 또는 enum 정의에 적용할 수 있는 <code>derive</code> 속성에 대해 설명했습니다. <code>derive</code> 속성은 <code>derive</code> 구문을 사용하여 주석을 달은 타입에 대해, 해당 트레이트의 기본 구현으로 코드를 생성합니다.</p>
+<p>이 부록에서는 <code>derive</code>와 함께 사용할 수 있는 표준 라이브러리의 모든 트레이트에 대한 참고 자료를 제공합니다. 각 섹션은 다음 내용을 다룹니다.</p>
 <ul>
-<li>이 특성을 유도하는 연산자 및 메서드를 사용하면</li>
-<li><code>derive</code>가 제공하는 특성의 구현은 무엇입니까?</li>
-<li>트레잇을 구현하는 것이 타입에 대한 의미</li>
-<li>당신이 허용되거나 허용되지 않는 조건은 특성을 구현합니다.</li>
-<li>특성이 필요한 작업의 예</li>
+<li>이 트레이트를 파생하면 사용할 수 있게 되는 연산자와 메서드</li>
+<li><code>derive</code>가 제공하는 트레이트 구현이 수행하는 작업</li>
+<li>트레이트를 구현하는 것이 타입에 대해 의미하는 바</li>
+<li>트레이트 구현이 허용되거나 허용되지 않는 조건</li>
+<li>트레이트가 필요한 작업의 예</li>
 </ul>
-<p><code>derive</code> 속성에서 제공하는 것과 다른 동작을 원한다면, <a href="../std/index.html">표준 라이브러리 문서</a>에서 각 트레잇을 참조하여 수동으로 구현하는 방법에 대해 자세히 알아보십시오.</p>
-<p>여기에 나열된 특성은 <code>derive</code>를 사용하여 형식에 구현할 수있는 표준 라이브러리에 의해 정의 된 유일한 특성입니다. 표준 라이브러리에 정의 된 다른 특성에는 합리적인 기본 동작이 없으므로 수행하려는 작업에 맞는 방식으로 구현해야합니다.</p>
-<p>파생될 수 없는 특성의 예는 다음과 같습니다. <code>Display</code>, 이는 최종 사용자를 위한 서식을 처리합니다. 항상 최종 사용자에게 유형을 표시하는 적절한 방법을 고려해야 합니다. 최종 사용자는 어떤 유형의 부분을 볼 수 있어야 합니까? 어떤 부분이 관련성이 있을까요? 어떤 형식의 데이터가 가장 관련성이 있을까요? 러스트 컴파일러는 이러한 통찰력을 가지고 있지 않으므로 적절한 기본 동작을 제공할 수 없습니다.</p>
-<p>이 부록에서 제공되는 파생 형질 목록은 포괄적이지 않습니다. 라이브러리는 자신의 형질을 위해 <code>derive</code>를 구현하여 <code>derive</code>를 진정으로 사용할 수있는 형질 목록을 만들 수 있습니다. <code>derive</code>를 구현하는 것은 20 장의 <a href="ch20-05-macros.html#custom-derive-macros">“관습 <code>derive</code>
-매크로”</a> 섹션에서 다루는 절차 매크로를 사용하는 것입니다.</p>
-<h3 id="debug-for-programmer-output"><a class="header" href="#debug-for-programmer-output"><code>Debug</code> 프로그래머 산출을 위해</a></h3>
-<p><code>Debug</code> 트레잇은 포맷 스트링에서 디버그 포맷팅을 가능하게 하며, <code>:?</code> 위치 지정자 내에 <code>{}</code>를 추가하여 나타냅니다.</p>
-<p><code>Debug</code> 특성을 사용하면 디버깅 목적으로 유형의 인스턴스를 인쇄 할 수 있으므로 유형을 사용하는 다른 프로그래머는 프로그램의 실행 중 특정 시점에서 인스턴스를 검사 할 수 있습니다.</p>
-<p>예를 들어 <code>Debug</code> 특성은 <code>assert_eq!</code> 매크로를 사용할 때 필요합니다. 이 매크로는 동등성 주장이 실패하면 인수로 주어진 인스턴스의 값을 인쇄하여 프로그래머가 왜 두 인스턴스가 동일하지 않은지 알 수 있도록 합니다.</p>
-<h3 id="partialeq-and-eq-for-equality-comparisons"><a class="header" href="#partialeq-and-eq-for-equality-comparisons"><code>PartialEq</code> 그리고 <code>Eq</code> 평등 비교를 위한</a></h3>
-<p><code>PartialEq</code> 트레잇을 사용하면 타입 인스턴스를 비교하여 동등성을 확인하고 <code>==</code> 및 <code>!=</code> 연산자를 사용할 수 있습니다.</p>
-<p><code>PartialEq</code>를 파생하면 <code>eq</code> 메서드를 구현합니다. <code>PartialEq</code>가 구조체에서 파생되는 경우, 모든 필드가 동일하고 모든 필드가 동일하지 않은 경우 인스턴스가 동일하지 않은 경우에만 두 인스턴스가 동일합니다. 열거형에서 파생되는 경우 각 변형은 자신과 동일하며 다른 변형과 동일하지 않습니다.</p>
-<p>예를 들어 <code>PartialEq</code> 특성은 <code>assert_eq!</code> 매크로를 사용하여 평등한 유형의 두 인스턴스를 비교할 수 있어야 합니다.</p>
-<p>이름 * <code>Eq</code> 트레잇에는 메서드가 없습니다. 그 목적은 주석이 달린 형식의 모든 값에 대해 값이 자신과 동일하다는 신호를 보내는 것입니다. <code>Eq</code> 트레잇은 또한 구현되는 타입에만 적용될 수 있다. <code>PartialEq</code>그러나 모든 사람들이 그것을 사용하는 것은 아닙니다. <code>PartialEq</code> 실행할 수 있음 <code>Eq</code>. 이것의 한 예는 부동 소수점 숫자 유형입니다. 부동 소수점 숫자의 구현은 숫자가 아닌 두 인스턴스 (<code>NaN</code>) 값은 서로 동일하지 않습니다.</p>
-<p><code>Eq</code>가 필요한 경우의 예는 <code>HashMap&lt;K, V&gt;</code>의 키에 대해 <code>HashMap&lt;K, V&gt;</code>가 두 키가 동일한지 여부를 알 수 있도록 하는 것입니다.</p>
-<h3 id="partialord-and-ord-for-ordering-comparisons"><a class="header" href="#partialord-and-ord-for-ordering-comparisons"><code>PartialOrd</code> 그리고 <code>Ord</code> 주문 비교를 위해</a></h3>
-<p>이름 * <code>PartialOrd</code> 트레잇을 사용하면 정렬 목적으로 유형의 인스턴스를 비교할 수 있습니다. <code>PartialOrd</code> 와 함께 사용될 수 있다. <code>&lt;</code>, <code>&gt;</code>,
-<code>&lt;=</code>, 그리고 <code>&gt;=</code> 연산자만 적용할 수 있습니다. <code>PartialOrd</code> 또한 구현되는 타입에 대한 트레잇 <code>PartialEq</code>.</p>
-<p>파생 <code>PartialOrd</code> 를 구현한다. <code>partial_cmp</code> 를 반환하는 메서드입니다.The method returns an
-<code>Option&lt;Ordering&gt;</code> 그것이 될 것이다. <code>None</code> 주어진 값이 순서를 생성하지 않을 때. 순서를 생성하지 않는 값의 예는 해당 유형의 대부분의 값을 비교할 수 있지만 <code>NaN</code> 부동 소수점 값입니다. 호출 <code>partial_cmp</code> 어떤 부동 소수점 번호와 <code>NaN</code>
-부동 소수점 값이 반환됩니다. <code>None</code>.</p>
-<p>구조체에서 파생된 경우 <code>PartialOrd</code>는 각 필드의 값을 구조체 정의에 나타나는 순서로 비교하여 두 인스턴스를 비교합니다. 열거형에서 파생된 경우 열거형 정의에서 이전에 선언된 열거형의 변형은 나중에 나열된 변형보다 적은 것으로 간주됩니다.</p>
-<p>이름 * <code>PartialOrd</code> 예를 들면, 예를 들면, For example, <code>gen_range</code> 상기 방법 From the <code>rand</code> 범위 표현식으로 지정된 범위에서 임의의 값을 생성하는 크레이트입니다.</p>
-<p>이름 * <code>Ord</code> 특성은 주석이 달린 유형의 어떤 2개의 가치든지를 위해, 유효한 순서가 존재할 것이라는 점을 당신이 아는 것을 허용합니다. <code>Ord</code> 트레잇은 The <code>cmp</code> 를 반환하는 메서드입니다.The method returns an <code>Ordering</code> 대신 an <code>Option&lt;Ordering&gt;</code> 유효한 순서는 항상 가능하기 때문에. 당신은 단지 적용 할 수 있습니다 <code>Ord</code> 또한 구현되는 타입에 대한 트레잇 <code>PartialOrd</code> 그리고 <code>Eq</code> (그리고 <code>Eq</code> 필수 <code>PartialEq</code>). 구조체와 enums에 파생될 때, <code>cmp</code> 상기 유도된 구현은 The derived implementation is <code>partial_cmp</code> 함께 하는 <code>PartialOrd</code>.</p>
-<p><code>Ord</code>가 필요한 경우의 예는 값의 정렬 순서에 따라 데이터를 저장하는 데이터 구조인 <code>BTreeSet&lt;T&gt;</code>에 값을 저장하는 경우입니다.</p>
-<h3 id="clone-and-copy-for-duplicating-values"><a class="header" href="#clone-and-copy-for-duplicating-values"><code>Clone</code> 그리고 <code>Copy</code> 값들을 중복시키기 위한</a></h3>
-<p><code>Clone</code> 특성을 사용하면 값의 깊은 복사본을 명시적으로 만들 수 있으며 복제 프로세스에는 임의의 코드 실행 및 힙 데이터 복사가 포함될 수 있습니다. <a href="ch04-01-what-is-ownership.html#variables-and-data-interacting-with-clone">"Clone과 상호 작용하는 변수 및 데이터"</a>에 대한 자세한 내용은 4장의 <code>Clone</code> 섹션을 참조하십시오.</p>
-<p>파생 <code>Clone</code> 를 구현한다. <code>clone</code> 메서드는 전체 형식에 대해 구현될 때 호출합니다. <code>clone</code> type의 각 부분에. 즉, type의 모든 필드 또는 값도 구현해야 합니다. <code>Clone</code> 파생하다: derived <code>Clone</code>.</p>
-<p>의 예는 언제 <code>Clone</code> 상기 호출하는 단계는, Wherein the calling the <code>to_vec</code> 슬라이스의 메소드입니다. 슬라이스는 포함된 타입 인스턴스를 소유하지 않지만, 벡터는 <code>to_vec</code> 자기만의 개성이 있어야 하고, 그래서 <code>to_vec</code> 통화
-<code>clone</code> 각 항목에. 따라서, 슬라이스에 저장된 유형을 구현해야 <code>Clone</code>.</p>
-<p><code>Copy</code> 트레잇을 사용하면 스택에 저장된 비트만 복사하여 값을 복제할 수 있습니다. 임의의 코드가 필요하지 않습니다. <a href="ch04-01-what-is-ownership.html#stack-only-data-copy">“스택 전용 데이터: 복사”</a>에 대한 자세한 내용은 4장의 <code>Copy</code> 섹션을 참조하십시오.</p>
-<p><code>Copy</code> 특성은 프로그래머가 이러한 메서드를 오버로드하고 임의의 코드가 실행되지 않는다는 가정을 위반하는 것을 방지하는 방법을 정의하지 않습니다. 그렇게하면 모든 프로그래머는 값을 복사하는 것이 매우 빠르다고 가정 할 수 있습니다.</p>
-<p>당신은 derived 수 있습니다 <code>Copy</code> 모든 부품을 사용하는 모든 유형의 <code>Copy</code>. 구현되는 유형 <code>Copy</code> 또한 실행해야 합니다. <code>Clone</code> 를 구현하는 타입 A Type that Implements
-<code>Copy</code> 의 사소한 구현을 가지고 <code>Clone</code> 다음과 같은 작업을 수행합니다.
-<code>Copy</code>.</p>
-<p><code>Copy</code> 트레잇은 거의 필요하지 않습니다; <code>Copy</code>를 구현하는 타입은 최적화가 가능하므로, <code>clone</code>를 호출할 필요가 없습니다.</p>
-<p><code>Copy</code>를 사용하면 <code>Clone</code>로도 수행 할 수 있지만 코드가 느려지거나 장소에서 <code>clone</code>를 사용해야합니다.</p>
-<h3 id="hash-for-mapping-a-value-to-a-value-of-fixed-size"><a class="header" href="#hash-for-mapping-a-value-to-a-value-of-fixed-size"><code>Hash</code> 고정 크기의 값에 값을 매핑하려면</a></h3>
-<p>이름 * <code>Hash</code> 트레잇을 사용하면 임의의 크기의 인스턴스를 받아 해시 함수를 사용하여 고정 크기의 값으로 매핑할 수 있습니다.
-<code>Hash</code> 를 구현한다. <code>hash</code> 방법. 파생된 구현의 <code>hash</code>
-메서드는 호출의 결과를 결합합니다. <code>hash</code> 모든 필드 또는 값도 구현해야 한다는 의미입니다.All means all fields or values must also implement. <code>Hash</code> 파생하다: derived <code>Hash</code>.</p>
-<p><code>Hash</code>가 필요한 경우의 예는 <code>HashMap&lt;K, V&gt;</code>에 키를 저장하여 데이터를 효율적으로 저장하는 것입니다.</p>
+<p><code>derive</code> 속성이 제공하는 동작과 다른 동작을 원한다면, <a href="../std/index.html">표준 라이브러리 문서</a>에서 각 트레이트를 수동으로 구현하는 방법에 대한 자세한 내용을 확인하십시오.</p>
+<p>여기에 나열된 트레이트는 <code>derive</code>를 사용하여 사용자 정의 타입에 구현할 수 있는 표준 라이브러리에서 정의된 유일한 트레이트입니다. 표준 라이브러리에 정의된 다른 트레이트에는 합리적인 기본 동작이 없으므로, 사용자가 달성하려는 목적에 맞게 직접 구현해야 합니다.</p>
+<p>파생(derive)할 수 없는 트레이트의 예로 <code>Display</code>가 있습니다. 이 트레이트는 최종 사용자를 위한 서식을 처리합니다. 최종 사용자에게 타입을 표시하는 적절한 방법을 항상 고려해야 합니다. 최종 사용자에게 타입의 어떤 부분을 보여줄 수 있을까요? 어떤 부분이 관련이 있을까요? 어떤 형식의 데이터가 가장 유용할까요? Rust 컴파일러에는 이러한 통찰력이 없으므로, 적절한 기본 동작을 제공할 수 없습니다.</p>
+<p>이 부록에 제시된 파생 가능한 트레이트 목록은 완전하지 않습니다. 라이브러리는 자체 트레이트에 대해 <code>derive</code>를 구현할 수 있으므로, <code>derive</code>을 사용할 수 있는 트레이트 목록은 실제로 무한정 확장 가능합니다. <code>derive</code> 구현에는 절차적 매크로가 사용되며, 이는 20장의 <a href="ch20-05-macros.html#custom-derive-macros">“커스텀 <code>derive</code> 매크로”</a> 섹션에서 다룹니다.</p>
+<h3 id="debug-for-programmer-output"><a class="header" href="#debug-for-programmer-output"><code>Debug</code>: 프로그래머 출력을 위한</a></h3>
+<p><code>Debug</code> 트레이트는 포맷 문자열에서 디버그 포맷팅을 가능하게 합니다. <code>:?</code> 자리표시자 안에 <code>{}</code>를 추가하여 이를 지정합니다.</p>
+<p><code>Debug</code> 트레이트를 사용하면 디버깅 목적으로 타입의 인스턴스를 출력할 수 있습니다. 이를 통해 사용자와 해당 타입을 사용하는 다른 프로그래머가 프로그램 실행 중 특정 시점의 인스턴스를 검사할 수 있습니다.</p>
+<p>예를 들어, <code>Debug</code> 특성은 <code>assert_eq!</code> 매크로를 사용할 때 필요합니다. 이 매크로는 동등성 검증이 실패하면 인수로 전달된 인스턴스의 값을 출력하여, 프로그래머가 두 인스턴스가 왜 같지 않은지 확인할 수 있도록 합니다.</p>
+<h3 id="partialeq-and-eq-for-equality-comparisons"><a class="header" href="#partialeq-and-eq-for-equality-comparisons"><code>PartialEq</code>과 <code>Eq</code>을 통한 동등성 비교</a></h3>
+<p><code>PartialEq</code> 트레잇을 구현하면 타입의 인스턴스를 비교하여 동등성을 확인할 수 있으며, <code>==</code> 및 <code>!=</code> 연산자를 사용할 수 있습니다.</p>
+<p><code>PartialEq</code>를 파생하면 <code>eq</code> 메서드가 구현됩니다. 구조체에 <code>PartialEq</code>를 파생한 경우, 모든 필드가 동일한 경우에만 두 인스턴스가 동일하며, 하나라도 필드가 다르면 동일하지 않습니다. 열거형에 파생한 경우, 각 변형은 자신과만 동일하며 다른 변형과는 동일하지 않습니다.</p>
+<p>예를 들어, <code>PartialEq</code> 매크로는 두 인스턴스가 동등한지 비교할 수 있어야 하므로 <code>assert_eq!</code> 트레이트가 필요합니다.</p>
+<p><code>Eq</code> 트레이트에는 메서드가 없습니다. 이 트레이트의 목적은 주석된 타입의 모든 값에 대해, 해당 값이 자기 자신과 같다는 것을 나타내는 것입니다. <code>Eq</code> 트레이트는 <code>PartialEq</code>를 구현하는 타입에만 적용할 수 있지만, <code>PartialEq</code>를 구현하는 모든 타입이 <code>Eq</code>를 구현할 수 있는 것은 아닙니다. 그 예로 부동소수점 숫자 타입이 있습니다. 부동소수점 숫자의 구현에서는 숫자가 아닌 값(not-a-number, <code>NaN</code>)의 두 인스턴스가 서로 같지 않다고 정의합니다.</p>
+<p><code>Eq</code>이 필요한 경우의 예로, <code>HashMap&lt;K, V&gt;</code>의 키에서 <code>HashMap&lt;K, V&gt;</code>가 두 키가 동일한지 판별할 수 있도록 하는 것이 있습니다.</p>
+<h3 id="partialord-and-ord-for-ordering-comparisons"><a class="header" href="#partialord-and-ord-for-ordering-comparisons"><code>PartialOrd</code>과 <code>Ord</code>을 통한 순서 비교</a></h3>
+<p><code>PartialOrd</code> 트레이트를 사용하면 정렬 목적으로 타입의 인스턴스를 비교할 수 있습니다. <code>PartialOrd</code>를 구현하는 타입은 <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code> 연산자와 함께 사용할 수 있습니다. <code>PartialOrd</code> 트레이트는 <code>PartialEq</code>를 구현하는 타입에만 적용할 수 있습니다.</p>
+<p>파생 <code>PartialOrd</code>는 <code>partial_cmp</code> 메서드를 구현합니다. 이 메서드는 <code>Option&lt;Ordering&gt;</code>를 반환하며, 주어진 값의 순서를 정할 수 없으면 <code>None</code>이 됩니다. 대부분의 값을 비교할 수 있는 타입에서도 순서를 정할 수 없는 값이 있을 수 있습니다. 부동 소수점 값인 <code>NaN</code>가 그 예입니다. 부동 소수점 수와 <code>NaN</code>를 <code>partial_cmp</code>로 비교하면 <code>None</code>이 반환됩니다.</p>
+<p>구조체에 파생된 경우, <code>PartialOrd</code>는 구조체 정의에서 필드가 나타나는 순서대로 각 필드의 값을 비교하여 두 인스턴스를 비교합니다. 열거형에 파생된 경우, 열거형 정의에서 앞에 선언된 변형은 뒤에 나열된 변형보다 작다고 간주됩니다.</p>
+<p><code>PartialOrd</code> 트레이트는 예를 들어, <code>gen_range</code> 메서드에서 필요합니다. 이 메서드는 <code>rand</code> 크레이트에 포함되어 있으며, 범위 표현식으로 지정된 범위에서 임의의 값을 생성합니다.</p>
+<p><code>Ord</code> 트레이트는 주석된 타입의 임의의 두 값에 대해 유효한 순서가 존재한다는 것을 보장합니다. <code>Ord</code> 트레이트는 <code>cmp</code> 메서드를 구현하며, 유효한 순서가 항상 가능하기 때문에 <code>Option&lt;Ordering&gt;</code> 대신 <code>Ordering</code>를 반환합니다. <code>Ord</code> 트레이트는 <code>PartialOrd</code>과 <code>Eq</code>(그리고 <code>Eq</code>은 <code>PartialEq</code>를 요구합니다)를 구현하는 타입에만 적용할 수 있습니다. 구조체와 열거형에서 파생될 때, <code>cmp</code>은 <code>partial_cmp</code>의 파생 구현이 <code>PartialOrd</code>와 함께 동작하는 방식과 동일하게 동작합니다.</p>
+<p><code>Ord</code>이 필요한 경우의 예로, 값의 정렬 순서에 따라 데이터를 저장하는 데이터 구조인 <code>BTreeSet&lt;T&gt;</code>에 값을 저장하는 경우가 있습니다.</p>
+<h3 id="clone-and-copy-for-duplicating-values"><a class="header" href="#clone-and-copy-for-duplicating-values"><code>Clone</code>과 <code>Copy</code>를 사용하여 값을 복제하기</a></h3>
+<p><code>Clone</code> 트레이트를 사용하면 값의 깊은 복사를 명시적으로 생성할 수 있습니다. 이 복제 과정에서는 임의의 코드가 실행되고 힙 데이터가 복사될 수 있습니다. <a href="ch04-01-what-is-ownership.html#variables-and-data-interacting-with-clone">"Clone과 상호 작용하는 변수 및 데이터"</a> 섹션에서 <code>Clone</code>에 대한 자세한 내용을 확인할 수 있습니다.</p>
+<p><code>Clone</code>을(를) 파생하면 <code>clone</code> 메서드가 구현됩니다. 이 메서드는 해당 형식 전체에 대해 구현될 때, 형식의 각 부분에 대해 <code>clone</code>을(를) 호출합니다. 따라서 <code>Clone</code>을(를) 파생하려면, 해당 형식의 모든 필드나 값도 <code>Clone</code>을(를) 구현해야 합니다.</p>
+<p><code>Clone</code>이 필요한 예시로, 슬라이스에서 <code>to_vec</code> 메서드를 호출하는 경우가 있습니다. 슬라이스는 포함하는 타입 인스턴스를 소유하지 않지만, <code>to_vec</code>에서 반환되는 벡터는 자신의 인스턴스를 소유해야 하므로, <code>to_vec</code>은 각 항목에 대해 <code>clone</code>을 호출합니다. 따라서 슬라이스에 저장된 타입은 <code>Clone</code>을 구현해야 합니다.</p>
+<p><code>Copy</code> 트레잇을 사용하면 스택에 저장된 비트만 복사하여 값을 복제할 수 있으며, 임의의 코드가 필요하지 않습니다. <a href="ch04-01-what-is-ownership.html#stack-only-data-copy">스택에만 저장되는 데이터: Copy</a> 섹션에서 <code>Copy</code>에 대한 자세한 내용을 확인할 수 있습니다.</p>
+<p><code>Copy</code> 특성은 프로그래머가 메서드를 오버로드하여 임의의 코드가 실행되지 않는다는 가정을 위반하는 것을 방지하기 위해 어떤 메서드도 정의하지 않습니다. 이를 통해 모든 프로그래머는 값을 복사하는 작업이 매우 빠르다고 가정할 수 있습니다.</p>
+<p>모든 구성 요소가 <code>Copy</code>을(를) 구현하는 타입이라면, <code>Copy</code>을(를) derive할 수 있습니다. <code>Copy</code>을(를) 구현하는 타입은 <code>Clone</code>도 반드시 구현해야 합니다. <code>Copy</code>을(를) 구현하는 타입은 <code>Clone</code>의 단순한 구현을 가지며, 이는 <code>Copy</code>과(와) 동일한 작업을 수행하기 때문입니다.</p>
+<p><code>Copy</code> 트레잇은 거의 필요하지 않습니다. <code>Copy</code>를 구현하는 타입은 최적화가 가능하므로, <code>clone</code>를 호출할 필요가 없으며 코드가 더 간결해집니다.</p>
+<p><code>Copy</code>로 할 수 있는 모든 작업은 <code>Clone</code>로도 수행할 수 있지만, 코드가 느려지거나 특정 위치에서 <code>clone</code>를 사용해야 할 수 있습니다.</p>
+<h3 id="hash-for-mapping-a-value-to-a-value-of-fixed-size"><a class="header" href="#hash-for-mapping-a-value-to-a-value-of-fixed-size"><code>Hash</code> 고정 크기의 값으로 값을 매핑하는 해시</a></h3>
+<p><code>Hash</code> 트레잇을 사용하면 임의의 크기를 가진 타입의 인스턴스를 받아, 해시 함수를 사용해 고정된 크기의 값으로 매핑할 수 있습니다. <code>Hash</code>을 파생하면 <code>hash</code> 메서드가 구현됩니다. 파생된 <code>hash</code> 메서드 구현은 타입의 각 부분(모든 필드 또는 값)에 대해 <code>hash</code>를 호출한 결과를 결합합니다. 따라서 <code>Hash</code>를 파생하려면 모든 필드 또는 값도 <code>Hash</code>을 구현해야 합니다.</p>
+<p><code>Hash</code>이 필요한 경우의 예로, <code>HashMap&lt;K, V&gt;</code>에 키를 저장하여 데이터를 효율적으로 관리하는 것이 있습니다.</p>
 <h3 id="default-for-default-values"><a class="header" href="#default-for-default-values"><code>Default</code> 기본값에 대해</a></h3>
-<p>이름 * <code>Default</code> 트레잇을 사용하면 형식에 대한 기본값을 만들 수 있습니다.
-<code>Default</code> 를 구현한다. <code>default</code> 함수의 파생된 구현
-<code>default</code> 상기 호출하는 단계는, Calling the <code>default</code> type의 각 부분에 대한 함수, 즉 type의 모든 필드 또는 값도 구현해야 함 <code>Default</code> 파생하다: derived <code>Default</code>.</p>
-<p><code>Default::default</code> 함수는 일반적으로 5장의 <a href="ch05-01-defining-structs.html#creating-instances-from-other-instances-with-struct-update-syntax">“Struct Update Syntax를 사용하여 다른 인스턴스에서 인스턴스 만들기”</a> 섹션에 설명된 구조체 업데이트 구문과 함께 사용됩니다. 구조체의 일부 필드를 사용자 정의한 다음 <code>..Default::default()</code>를 사용하여 나머지 필드에 대한 기본값을 설정하고 사용할 수 있습니다.</p>
-<p>이름 * <code>Default</code> 메서드를 사용할 때 특성이 필요합니다. <code>unwrap_or_default</code> 온
-<code>Option&lt;T&gt;</code> 예를 들어 다음과 같습니다. <code>Option&lt;T&gt;</code> 있습니다. <code>None</code>상기 방법은 The method
-<code>unwrap_or_default</code> 결과를 반환할 것입니다. <code>Default::default</code> 형식에 대 한
-<code>T</code> 에 저장됨 <code>Option&lt;T&gt;</code>.</p>
+<p><code>Default</code> 트레이트는 타입에 대해 기본 값을 생성할 수 있게 합니다. <code>Default</code>을 파생하면 <code>default</code> 함수를 구현합니다. <code>default</code> 함수의 파생 구현은 타입의 각 부분에 대해 <code>default</code> 함수를 호출하므로, <code>Default</code>을 파생하려면 타입의 모든 필드나 값도 <code>Default</code>를 구현해야 합니다.</p>
+<p><code>Default::default</code> 함수는 5장의 <a href="ch05-01-defining-structs.html#creating-instances-from-other-instances-with-struct-update-syntax">“구조체 업데이트 구문을 사용하여 다른 인스턴스에서 인스턴스 만들기”</a> 섹션에서 설명된 구조체 업데이트 구문과 함께 자주 사용됩니다. 구조체의 일부 필드를 사용자 지정하고 <code>..Default::default()</code>를 사용하여 나머지 필드에 기본값을 설정하고 사용할 수 있습니다.</p>
+<p>예를 들어, <code>Default</code> 인스턴스에서 <code>unwrap_or_default</code> 메서드를 사용할 때 <code>Option&lt;T&gt;</code> 트레이트가 필요합니다. <code>Option&lt;T&gt;</code>가 <code>None</code>인 경우, <code>unwrap_or_default</code> 메서드는 <code>Default::default</code>에 저장된 <code>T</code> 타입의 <code>Option&lt;T&gt;</code> 결과를 반환합니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

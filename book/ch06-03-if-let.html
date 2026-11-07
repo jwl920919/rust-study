@@ -161,10 +161,8 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h2 id="concise-control-flow-with-if-let-and-letelse"><a class="header" href="#concise-control-flow-with-if-let-and-letelse">Concise 컨트롤 플로우 <code>if let</code> 그리고 <code>let...else</code></a></h2>
-<p>이름 * <code>if let</code> 구문을 결합할 수 있습니다. <code>if</code> 그리고 <code>let</code> 나머지를 무시하면서 하나의 패턴과 일치하는 값을 처리하는 덜 장황한 방법으로. Listing 6-6의 프로그램이 <code>Option&lt;u8&gt;</code> 에서 값 In the
-<code>config_max</code> variable 하지만 오직 코드를 실행하기를 원할 때만 <code>Some</code>
-변형.</p>
+<h2 id="concise-control-flow-with-if-let-and-letelse"><a class="header" href="#concise-control-flow-with-if-let-and-letelse">if let과 let...else를 활용한 간결한 제어 흐름<code>if let</code> <code>let...else</code></a></h2>
+<p><code>if let</code> 구문은 <code>if</code>과 <code>let</code>을 결합하여, 하나의 패턴에 일치하는 값만 처리하고 나머지는 무시하는 방식을 덜 번거롭게 표현할 수 있게 해줍니다. Listing 6-6의 프로그램은 <code>config_max</code> 변수에 있는 <code>Option&lt;u8&gt;</code> 값에 대해 매칭을 수행하지만, 값이 <code>Some</code> 변형(variant)일 때만 코드를 실행하기를 원합니다.</p>
 <figure class="listing" id="listing-6-6">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    let config_max = Some(3u8);
@@ -173,21 +171,19 @@
         _ =&gt; (),
     }
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-6-6">목록 6-6</a>: A <code>match</code> 즉, 값이 저장될 때만 코드를 실행하는 것에 관심이 있습니다. <code>Some</code></figcaption>
+<figcaption><a href="#listing-6-6">Listing 6-6</a>: 값이 Some일 때만 코드를 실행하는 매칭<code>match</code> <code>Some</code></figcaption>
 </figure>
-<p>상기 값은 The value is <code>Some</code>그리고 우리는 그 값을 출력한다. <code>Some</code> 변수에 값을 바인딩하여 variant <code>max</code> 패턴에서. 우리는 아무것도하고 싶지 않아 <code>None</code> 가치. 만족시키기 위하여 <code>match</code> 표현식, 우리는 추가해야합니다. <code>_ =&gt; ()</code> 단지 하나의 변형을 처리 한 후, 이는 추가 성가신 보일러 플레이트 코드입니다.</p>
-<p>대신, 우리는 <code>if let</code>를 사용하여 이것을 더 짧게 작성할 수 있습니다. 다음 코드는 Listing 6-6의 <code>match</code>와 동일하게 동작합니다:</p>
+<p>값이 <code>Some</code>인 경우, 패턴에서 값을 변수 <code>max</code>에 바인딩하여 <code>Some</code> 변형의 값을 출력합니다. <code>None</code> 값에 대해서는 아무것도 수행하지 않습니다. <code>match</code> 표현식을 만족시키기 위해, 변형 하나만 처리한 후 <code>_ =&gt; ()</code>을 추가해야 하는데, 이는 추가해야 하는 귀찮은 보일러플레이트 코드입니다.</p>
+<p>대신, <code>if let</code>을(를) 사용하면 더 간결하게 작성할 수 있습니다. 다음 코드는 Listing 6-6의 <code>match</code>과(와) 동일한 동작을 합니다:</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
 </span>    let config_max = Some(3u8);
     if let Some(max) = config_max {
         println!("The maximum is configured to be {max}");
     }
 <span class="boring">}</span></code></pre>
-<p>구문 <code>if let</code> 패턴과 표현식을 동등한 기호로 구분합니다. 그것은 a와 같은 방식으로 작동합니다. <code>match</code>상기 표현식은 Wherein the expression
-<code>match</code> 그리고 본은 그것의 첫번째 팔입니다. 이 경우에, 본은 입니다
-<code>Some(max)</code>그리고, The <code>max</code> 내부 값에 바인딩Binds to the value inside the <code>Some</code>. 우리는 그 때 사용할 수 있습니다 <code>max</code> 본문에서의 In the body of <code>if let</code> 우리가 사용했던 것과 같은 방법으로 블록을 <code>max</code> 상기 대응하는 단계는 Wherein the corresponding <code>match</code> 팔. 의 코드 <code>if let</code> 블록은 값이 패턴과 일치하는 경우에만 실행됩니다.</p>
+<p><code>if let</code> 구문은 등호로 구분된 패턴과 표현식을 취합니다. 이는 <code>match</code>과 동일한 방식으로 작동하며, 표현식이 <code>match</code>에 전달되고 패턴이 그 첫 번째 arm이 됩니다. 이 경우, 패턴은 <code>Some(max)</code>이며, <code>max</code>은 <code>Some</code> 내부의 값에 바인딩됩니다. 그러면 <code>if let</code> 블록의 본문에서 <code>max</code>을, 해당 <code>match</code> arm에서 <code>max</code>을 사용했던 것과 동일한 방식으로 사용할 수 있습니다. <code>if let</code> 블록의 코드는 값이 패턴과 일치할 때만 실행됩니다.</p>
 <p><code>if let</code>를 사용하면 입력 횟수가 적고 들여 쓰기가 적으며 보일러 플레이트 코드가 줄어 듭니다. 그러나 <code>match</code>는 철저한 검사를 통해 어떤 경우에도 처리하는 것을 잊지 않도록합니다. <code>match</code>와 <code>if let</code> 중에서 선택하는 것은 특정 상황에서 무엇을하고 있는지, 그리고 간결성을 잃는 것이 적절한 배출구인지 여부에 달려 있습니다.</p>
-<p>즉, <code>if let</code>를 <code>match</code>의 문법 설탕으로 생각할 수 있으며, 값이 하나의 패턴과 일치하고 다른 모든 값을 무시할 때 코드를 실행합니다.</p>
+<p>즉, <code>if let</code>는 값이 특정 패턴과 일치할 때만 코드를 실행하고 나머지 모든 값을 무시하는 <code>match</code>의 문법 설탕으로 생각할 수 있습니다.</p>
 <p>를 포함할 수 있다. <code>else</code> 으로 <code>if let</code>. 코드 블록과 함께
 <code>else</code> 이것은 다음과 같은 코드 블록과 같습니다. <code>_</code> 의 경우 In the
 <code>match</code> 이 표현식은 다음과 같습니다. <code>if let</code> 그리고 <code>else</code>. 상기
@@ -216,7 +212,7 @@
         _ =&gt; count += 1,
     }
 <span class="boring">}</span></code></pre>
-<p>또는 다음과 같이 <code>if let</code> 및 <code>else</code> 식을 사용할 수 있습니다.</p>
+<p>또는 다음과 같이 <code>if let</code> 및 <code>else</code> 식을 사용할 수도 있습니다.</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#[derive(Debug)]
 </span><span class="boring">enum UsState {
 </span><span class="boring">    Alabama,
@@ -240,8 +236,8 @@
         count += 1;
     }
 <span class="boring">}</span></code></pre>
-<h2 id="staying-on-the-happy-path-with-letelse"><a class="header" href="#staying-on-the-happy-path-with-letelse">‘행복한 길’로 가는 길 <code>let...else</code></a></h2>
-<p>일반적인 패턴은 값이 존재할 때 몇 가지 계산을 수행하고 그렇지 않으면 기본값을 반환하는 것입니다. <code>UsState</code> 값을 가진 동전의 예를 계속 사용하면 분기의 상태가 얼마나 오래되었는지에 따라 재미있는 것을 말하고 싶다면 <code>UsState</code>에 방법을 도입하여 상태의 나이를 확인할 수 있습니다.</p>
+<h2 id="staying-on-the-happy-path-with-letelse"><a class="header" href="#staying-on-the-happy-path-with-letelse">let...else를 사용해 '행복한 경로'를 유지하기 <code>let...else</code></a></h2>
+<p>일반적인 패턴은 값이 존재할 때 특정 계산을 수행하고, 그렇지 않으면 기본값을 반환하는 것입니다. <code>UsState</code> 값을 가진 동전의 예시를 계속 이어가 보겠습니다. 동전의 상태가 얼마나 오래되었는지에 따라 재미있는 말을 하고 싶다면, <code>UsState</code>에 메서드를 추가하여 상태의 연식을 확인할 수 있습니다.</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#[derive(Debug)] // so we can inspect the state in a minute
 </span><span class="boring">enum UsState {
 </span><span class="boring">    Alabama,
@@ -283,7 +279,7 @@
 </span><span class="boring">        println!("{desc}");
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<p>그런 다음 <code>if let</code>를 사용하여 코인의 유형에 일치시킬 수 있으며, Listing 6-7에서와 같이 조건체 내에서 <code>state</code> 변수를 도입할 수 있습니다.</p>
+<p>그런 다음, Listing 6-7에서와 같이 <code>if let</code>을 사용하여 코인의 유형을 매칭하고, 조건문 본문 내에서 <code>state</code> 변수를 도입할 수 있습니다.</p>
 <figure class="listing" id="listing-6-7">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#[derive(Debug)] // so we can inspect the state in a minute
 </span><span class="boring">enum UsState {
@@ -326,7 +322,7 @@
 </span><span class="boring">        println!("{desc}");
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-6-7">목록 6-7</a>: <code>if let</code> 내부에 중첩된 조건을 사용하여 1900년에 상태가 존재했는지 확인</figcaption>
+<figcaption><a href="#listing-6-7">목록 6-7</a>: <code>if let</code> 내부에 중첩된 조건문을 사용하여 1900년에 해당 상태가 존재했는지 확인</figcaption>
 </figure>
 <p>그것은 그 일을 해내지만, 그것은 그 일을 <code>if let</code> 문, 그리고 수행 할 작업이 더 복잡한 경우, 그것은 최상위 분기가 관련 정확히 어떻게 따라하기 어려울 수 있습니다. 우리는 또한 표현 중 하나를 생산하는 값을 생산한다는 사실을 활용할 수
 <code>state</code> 에서 <code>if let</code> 또는 Listing 6-8에서와 같이 일찍 반환할 수도 있습니다. (a와 비슷한 것을 할 수 있습니다. <code>match</code>또한.)</p>
@@ -374,13 +370,11 @@
 </span><span class="boring">        println!("{desc}");
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-6-8">리스팅 6-8</a>: <code>if let</code>를 사용하여 값을 생성하거나 일찍 반환</figcaption>
+<figcaption><a href="#listing-6-8">리스팅 6-8</a>: <code>if let</code>을(를) 사용해 값을 생성하거나 조기 반환하기</figcaption>
 </figure>
-<p><code>if let</code>의 한 분기는 값을 생성하고 다른 분기는 함수에서 완전히 반환합니다.</p>
-<p>이 공통 패턴을 더 잘 표현하기 위해, 러스트는 <code>let...else</code>. 그
-<code>let...else</code> 문법은 왼쪽에 패턴이 있고 오른쪽에는 표현식이 있습니다. <code>if let</code>그러나 그것은 가지고 있지 않다. <code>if</code> 브랜드, ONLY
-<code>else</code> branch. 패턴이 일치하면 외부 스코프의 패턴에서 값을 바인딩합니다. 패턴이 일치하는 경우 <em>하지 않음</em> 일치, 프로그램은으로 흐를 것이다 <code>else</code> 팔, 기능에서 반환 해야 합니다.</p>
-<p>Listing 6-9에서는 Listing 6-8이 어떻게 사용되는지 볼 수 있습니다. <code>let...else</code> in place of ~을 위한 <code>if let</code>.</p>
+<p>이 방식은 나름대로 따라가기에 다소 번거롭습니다. <code>if let</code>의 한 분기는 값을 생성하고, 다른 분기는 함수에서 완전히 반환합니다.</p>
+<p>이러한 일반적인 패턴을 더 자연스럽게 표현하기 위해 Rust에는 <code>let...else</code>이 있습니다. <code>let...else</code> 문법은 왼쪽에 패턴, 오른쪽에 표현식을 가지며 <code>if let</code>와 매우 유사하지만, <code>if</code> 분기는 없고 <code>else</code> 분기만 있습니다. 패턴이 일치하면 해당 패턴의 값을 외부 스코프에 바인딩합니다. 패턴이 일치하지 않으면 <em></em> 프로그램은 <code>else</code>으로 흐름이 이동하며, 여기서 반드시 함수를 반환해야 합니다.</p>
+<p>Listing 6-9에서는 <code>let...else</code>을 <code>if let</code> 대신 사용할 때 Listing 6-8이 어떻게 보이는지 확인할 수 있습니다.</p>
 <figure class="listing" id="listing-6-9">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#[derive(Debug)] // so we can inspect the state in a minute
 </span><span class="boring">enum UsState {
@@ -423,14 +417,14 @@
 </span><span class="boring">        println!("{desc}");
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-6-9">목록 6-9</a>: <code>let...else</code>를 사용하여 함수를 통한 흐름을 명확히 합니다.</figcaption>
+<figcaption><a href="#listing-6-9">Listing 6-9</a>: <code>let...else</code>를 사용하여 함수 내 흐름을 명확히 하기</figcaption>
 </figure>
-<p><code>if let</code>와 같이 두 지점에 대해 크게 다른 제어 흐름을 가지지 않고 이러한 방식으로 기능의 본체에서 "행복한 경로"에 머물러 있음을 유의하십시오.</p>
-<p><code>match</code>를 사용하여 표현하기에는 너무 장황한 로직을 가진 프로그램이 있는 경우, <code>if let</code>와 <code>let...else</code>가 여러분의 러스트 툴박스에도 있다는 것을 기억하세요.</p>
+<p>이 방식은 함수 본문에서 '해피 패스(happy path)'를 유지하며, <code>if let</code>처럼 두 분기에 대해 크게 다른 제어 흐름을 가지지 않습니다.</p>
+<p>프로그램에 <code>match</code>를 사용하여 표현하기에는 너무 장황한 로직이 있는 경우, <code>if let</code>와 <code>let...else</code>도 Rust 도구함에 포함되어 있다는 점을 기억하세요.</p>
 <h2 id="summary"><a class="header" href="#summary">요약</a></h2>
-<p>이제 열거 된 값 중 하나가 될 수있는 사용자 정의 형식을 만드는 데 enums를 사용하는 방법을 살펴 보았습니다. 표준 라이브러리의 <code>Option&lt;T&gt;</code> 유형이 형식 시스템을 사용하여 오류를 방지하는 데 어떻게 도움이되는지 보여주었습니다. enum 값이 내부에 데이터가 있으면 <code>match</code> 또는 <code>if let</code>를 사용하여 많은 경우에 따라 해당 값을 추출하고 사용할 수 있습니다.</p>
-<p>러스트 프로그램은 이제 structs와 enums를 사용하여 도메인의 개념을 표현할 수 있습니다. API에 사용할 사용자 정의 타입을 생성하면 타입 안전성을 보장합니다: 컴파일러는 여러분의 함수가 각 함수가 기대하는 타입의 값만을 얻도록 할 것입니다.</p>
-<p>사용자에게 사용하기 쉽고 사용자가 필요로 하는 것만 정확히 노출시키는 잘 구성된 API를 제공하기 위해, 이제 러스트의 모듈로 넘어갑시다.</p>
+<p>이제 열거형 값 중 하나가 될 수 있는 사용자 정의 타입을 만드는 데 열거형(enum)을 사용하는 방법을 살펴보았습니다. 표준 라이브러리의 <code>Option&lt;T&gt;</code> 타입이 타입 시스템을 통해 오류를 방지하는 데 어떻게 도움이 되는지 확인했습니다. 열거형 값에 데이터가 포함된 경우, 처리해야 하는 케이스 수에 따라 <code>match</code> 또는 <code>if let</code>를 사용하여 해당 값을 추출하고 사용할 수 있습니다.</p>
+<p>Rust 프로그램은 이제 struct와 enum을 사용하여 도메인의 개념을 표현할 수 있습니다. API에 사용할 사용자 정의 타입을 만들면 타입 안전성이 보장됩니다. 컴파일러가 각 함수가 기대하는 타입의 값만 전달되도록 확인해 주기 때문입니다.</p>
+<p>사용자가 쉽게 사용할 수 있고, 사용자가 필요로 하는 것만 정확히 노출하는 잘 조직화된 API를 제공하기 위해, 이제 Rust의 모듈을 살펴보겠습니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

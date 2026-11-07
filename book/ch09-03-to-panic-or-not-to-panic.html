@@ -161,16 +161,13 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h2 id="to-panic-or-not-to-panic"><a class="header" href="#to-panic-or-not-to-panic">오시는 길 <code>panic!</code> 하지 않을 것 <code>panic!</code></a></h2>
-<p>그래서, 당신이 전화해야 할 때를 어떻게 결정합니까? <code>panic!</code> 너희가 돌아올 때
-<code>Result</code>? 코드 패닉 때, 복구 할 수있는 방법이 없습니다. 당신은 호출 할 수 <code>panic!</code>
-어떤 오류 상황에 대 한, 복구 또는 하지 가능 한 방법이 있는지 여부, 하지만 당신은 상황이 호출 코드를 대신 하 여 복구할 수 없는 결정을 내리고 있어. 때 반환 하도록 선택 <code>Result</code> value, 호출 코드 옵션을 제공합니다. 호출 코드는 상황에 적합한 방식으로 복구하려고 시도하거나 선택할 수 있습니다. <code>Err</code>
-이 경우 값은 복구할 수 없으므로 호출할 수 있습니다. <code>panic!</code> 복구할 수 없는 오류를 복구할 수 없는 오류로 변환합니다. <code>Result</code> 실패할 수 있는 함수를 정의할 때 좋은 기본 선택입니다.</p>
-<p>예제, 프로토 타입 코드 및 테스트와 같은 상황에서 <code>Result</code>를 반환하는 대신 패닉 코드를 작성하는 것이 더 적절합니다. 컴파일러가 실패가 불가능하다고 말할 수없는 상황을 논의 한 다음, 인간으로는 할 수 있습니다. 이 장에서는 라이브러리 코드에서 패닉 여부를 결정하는 방법에 대한 몇 가지 일반적인 지침으로 결론을 내릴 것입니다.</p>
-<h3 id="examples-prototype-code-and-tests"><a class="header" href="#examples-prototype-code-and-tests">예제, 프로토 타입 코드 및 테스트</a></h3>
-<p>몇 가지 개념을 설명하기 위해 예제를 작성할 때 강력한 오류 처리 코드를 포함하여 예제를 덜 명확하게 만들 수 있습니다. 예에서 <code>unwrap</code>와 같은 메서드에 대한 호출은 응용 프로그램이 오류를 처리하도록 하는 방식의 자리 표시자로 의미되며 나머지 코드가 수행하는 작업에 따라 다를 수 있습니다.</p>
-<p>마찬가지로 <code>unwrap</code> 및 <code>expect</code> 메서드는 프로토 타이핑을 할 때 매우 유용하며 오류 처리 방법을 아직 결정할 준비가되지 않았습니다. 프로그램을보다 견고하게 만들 준비가되었을 때 코드에 명확한 마커를 남깁니다.</p>
-<p>테스트에서 메소드 호출이 실패하면 테스트에서 기능이 아니더라도 전체 테스트가 실패하기를 원할 것입니다. <code>panic!</code>는 테스트가 실패로 표시되는 방법이므로 <code>unwrap</code> 또는 <code>expect</code>를 호출하면 정확히 발생합니다.</p>
+<h2 id="to-panic-or-not-to-panic"><a class="header" href="#to-panic-or-not-to-panic">panic!을 할 것인가, 말 것인가 <code>panic!</code><code>panic!</code></a></h2>
+<p>그렇다면, 언제 <code>panic!</code>를 호출하고 언제 <code>Result</code>을 반환해야 하는지 어떻게 결정해야 할까요? 코드가 패닉하면 복구할 방법이 없습니다. 복구 가능한 방법이 있든 없든 모든 오류 상황에서 <code>panic!</code>를 호출할 수 있지만, 그렇게 하면 호출 측 코드를 대신해 해당 상황이 복구 불가능하다고 결정하는 셈이 됩니다. <code>Result</code> 값을 반환하도록 선택하면 호출 측 코드에 선택지를 제공합니다. 호출 측 코드는 자신의 상황에 적합한 방식으로 복구를 시도하거나, 이 경우의 <code>Err</code> 값은 복구 불가능하다고 판단하여 <code>panic!</code>를 호출함으로써 복구 가능한 오류를 복구 불가능한 오류로 전환할 수 있습니다. 따라서 실패할 수 있는 함수를 정의할 때 <code>Result</code>을 반환하는 것이 좋은 기본 선택입니다.</p>
+<p>예제, 프로토타입 코드, 테스트와 같은 상황에서는 <code>Result</code>를 반환하는 대신 panic!을 발생시키는 코드를 작성하는 것이 더 적절합니다. 왜 그런지 살펴본 후, 컴파일러는 실패가 불가능하다고 판단할 수 없지만 사람이라면 판단할 수 있는 상황에 대해 논의하겠습니다. 이 장은 라이브러리 코드에서 panic!을 사용할지 여부를 결정하는 일반적인 지침으로 마무리됩니다.</p>
+<h3 id="examples-prototype-code-and-tests"><a class="header" href="#examples-prototype-code-and-tests">예제, 프로토타입 코드, 테스트</a></h3>
+<p>어떤 개념을 설명하기 위해 예제를 작성할 때, 견고한 오류 처리 코드까지 포함하면 예제가 명확하지 않게 될 수 있습니다. 예제에서는 <code>unwrap</code>처럼 panic!을 발생시킬 수 있는 메서드 호출은, 나머지 코드가 수행하는 작업에 따라 달라질 수 있는 애플리케이션의 오류 처리 방식을 대신하는 자리 표시자로 이해됩니다.</p>
+<p>마찬가지로, 프로토타입을 작성하고 아직 오류 처리 방식을 결정할 준비가 되지 않은 상태에서는 <code>unwrap</code> 및 <code>expect</code> 메서드가 매우 유용합니다. 이 메서드들은 프로그램을 더 견고하게 만들 준비가 되었을 때 코드에 명확한 마커를 남겨줍니다.</p>
+<p>테스트에서 메서드 호출이 실패하면, 해당 메서드가 테스트 대상 기능이 아니더라도 전체 테스트가 실패해야 합니다. <code>panic!</code>는 테스트가 실패로 표시되는 방법이므로, <code>unwrap</code> 또는 <code>expect</code>를 호출하는 것이 정확히 필요한 동작입니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="cases-in-which-you-have-more-information-than-the-compiler"></a></p>
 <h3 id="when-you-have-more-information-than-the-compiler"><a class="header" href="#when-you-have-more-information-than-the-compiler">컴파일러보다 더 많은 정보가 있을 때</a></h3>
@@ -185,23 +182,22 @@
 <p>우리는 창조하고 있습니다 <code>IpAddr</code> 하드코딩된 문자열을 파싱하여 인스턴스를 만들 수 있습니다. <code>127.0.0.1</code> 유효한 IP 주소이므로 사용할 수 있습니다. <code>expect</code>
 여기. 그러나 하드 코딩 된 유효한 문자열을 갖는 것은 반환 유형을 변경하지 않습니다. <code>parse</code> 방법: 우리는 아직도 a를 얻는다 <code>Result</code> 값, 그리고 컴파일러는 여전히 우리를 처리 할 것입니다. <code>Result</code> 마치 The <code>Err</code> variant는 컴파일러가이 문자열이 항상 유효한 IP 주소임을 알만큼 똑똑하지 않기 때문에 가능합니다. IP 주소 문자열이 프로그램에 하드 코딩되지 않고 사용자로부터 온 경우 <em>했다</em> 실패의 가능성을 가지고, 우리는 확실히 처리 할 것 <code>Result</code> 대신 더 강력한 방법으로. 이 IP 주소가 하드 코딩되어 있다는 가정을 언급하면 변경하라는 메시지가 표시됩니다 <code>expect</code> 나중에 다른 소스에서 IP 주소를 가져와야 할 경우 더 나은 오류 처리 코드.</p>
 <h3 id="guidelines-for-error-handling"><a class="header" href="#guidelines-for-error-handling">오류 처리 지침</a></h3>
-<p>코드가 나쁜 상태로 끝날 수 있을 때 코드 패닉을 갖는 것이 좋습니다. 이러한 맥락에서, 나쁜 상태는 잘못된 값, 모순된 값 또는 누락된 값이 코드에 전달될 때와 같이 일부 가정, 보장, 계약 또는 불변이 깨진 경우와 다음 중 하나 이상이 있는 경우입니다.</p>
+<p>코드가 잘못된 상태에 빠질 가능성이 있을 때 panic을 발생시키는 것이 좋습니다. 이 맥락에서 잘못된 상태란 잘못된 값, 모순된 값, 또는 누락된 값이 코드로 전달되는 등 어떤 가정, 보장, 계약, 또는 불변 조건이 깨진 경우를 의미하며, 다음 중 하나 이상의 조건이 추가적으로 충족되는 경우를 포함합니다:</p>
 <ul>
-<li>나쁜 상태는 사용자가 잘못된 형식으로 데이터를 입력하는 것과 같이 때때로 발생할 수있는 것과는 달리 예기치 않은 것입니다.</li>
-<li>이 시점 이후의 코드는 모든 단계에서 문제를 확인하기보다는이 나쁜 상태에 있지 않은 것에 의존해야합니다.</li>
-<li>이 정보를 사용하는 유형으로 인코딩 할 수있는 좋은 방법은 없습니다. 우리는 18 장의 <a href="ch18-03-oo-design-patterns.html#encoding-states-and-behavior-as-types">“유형 으로 상태 와 행동 을 암호화 함”</a>에서 의미하는 것의 예를 통해 작업 할 것입니다.</li>
+<li>잘못된 상태는 사용자가 잘못된 형식으로 데이터를 입력하는 것처럼 때때로 발생할 수 있는 상황과는 달리, 예기치 않게 발생하는 상황을 의미합니다.</li>
+<li>이 시점 이후의 코드는 모든 단계에서 문제를 확인하는 대신, 현재 잘못된 상태에 있지 않다는 전제에 의존해야 합니다.</li>
+<li>이 정보를 사용하는 타입으로 인코딩하는 좋은 방법은 없습니다. 18장의 <a href="ch18-03-oo-design-patterns.html#encoding-states-and-behavior-as-types">“유형으로 상태와 행동을 인코딩하기”</a> 섹션에서 이 의미를 설명하는 예제를 다룹니다.</li>
 </ul>
-<p>만약 누군가가 여러분의 코드를 호출하고 의미가 없는 값을 전달한다면, 라이브러리의 사용자가 그 경우에 무엇을 하고 싶은지 결정할 수 있도록 오류를 반환하는 것이 가장 좋습니다. 그러나, 계속하는 것이 안전하지 않거나 해로울 수 있는 경우, 최선의 선택은 호출하는 것입니다. <code>panic!</code> 라이브러리를 사용하는 사람에게 코드의 버그를 경고하여 개발 중에 해결할 수 있습니다. 비슷하게, <code>panic!</code> 당신이 당신의 통제 밖에있는 외부 코드를 호출하고 당신이 고칠 방법이없는 잘못된 상태를 반환하는 경우에 종종 적절합니다.</p>
-<p>그러나 실패가 예상되면 <code>Result</code>를 반환하는 것이 <code>panic!</code> 호출을 만드는 것보다 더 적절합니다. 예를 들어, 파서가 형식이 잘못된 데이터로 제공되거나 HTTP 요청이 속도 제한에 도달했음을 나타내는 상태를 반환하는 경우가 있습니다. 이러한 경우, <code>Result</code>를 반환하면 호출 코드가 처리 방법을 결정해야 할 것으로 예상되는 가능성이 있음을 나타냅니다.</p>
-<p>코드가 유효하지 않은 값을 사용하여 호출하는 경우 사용자를 위험에 빠뜨릴 수있는 작업을 수행 할 때 코드는 값이 먼저 유효하고 값이 유효하지 않은 경우 패닉이 있는지 확인해야합니다. 이는 주로 안전상의 이유로 발생합니다. 유효하지 않은 데이터를 작동하려고하면 코드가 취약점에 노출 될 수 있습니다. 이것은 표준 라이브러리가 외부 메모리 액세스를 시도하는 경우 <code>panic!</code>를 호출 할 때 특정 코드 손상이 발생합니다.</p>
+<p>누군가가 여러분의 코드를 호출하면서 의미가 없는 값을 전달하는 경우, 라이브러리를 사용하는 사람이 해당 상황에서 어떻게 처리할지 결정할 수 있도록 오류를 반환하는 것이 가장 좋습니다. 그러나 계속 진행하는 것이 안전하지 않거나 해로울 수 있는 경우, 최선의 선택은 <code>panic!</code>을 호출하여 라이브러리를 사용하는 사람에게 코드에 버그가 있음을 알리는 것입니다. 이렇게 하면 개발 단계에서 버그를 수정할 수 있습니다. 마찬가지로, 여러분의 통제를 벗어난 외부 코드를 호출했는데 잘못된 상태를 반환하여 여러분이 수정할 방법이 없는 경우에도 <code>panic!</code>을 사용하는 것이 종종 적절합니다.</p>
+<p>그러나 실패가 예상되는 상황에서는 <code>Result</code>를 반환하는 것이 <code>panic!</code> 호출을 사용하는 것보다 적절합니다. 예를 들어 파서가 형식이 잘못된 데이터를 받거나, HTTP 요청이 속도 제한에 도달했음을 나타내는 상태 코드를 반환하는 경우가 이에 해당합니다. 이러한 경우 <code>Result</code>를 반환하면 실패가 예상 가능한 상황임을 나타내며, 호출 측 코드가 이를 어떻게 처리할지 결정해야 함을 의미합니다.</p>
+<p>코드가 유효하지 않은 값으로 호출될 경우 사용자에게 위험을 초래할 수 있는 작업을 수행한다면, 코드는 먼저 값이 유효한지 확인하고 유효하지 않은 경우 패닉(panic)을 발생시켜야 합니다. 이는 주로 안전상의 이유입니다. 유효하지 않은 데이터로 작업을 시도하면 코드가 취약점에 노출될 수 있기 때문입니다. 표준 라이브러리가 범위를 벗어난 메모리 접근을 시도할 때 <code>panic!</code>를 호출하는 주된 이유도 이것입니다. 현재 데이터 구조에 속하지 않는 메모리에 접근하려는 시도는 일반적인 보안 문제이기 때문입니다. 함수에는 종종 계약(contract)이 있습니다. 즉, 입력이 특정 요구 사항을 충족할 때만 동작이 보장됩니다. 계약이 위반되면 패닉을 발생시키는 것이 합리적입니다. 계약 위반은 항상 호출 측의 버그를 의미하며, 호출 측 코드가 명시적으로 처리해야 할 종류의 오류가 아니기 때문입니다. 실제로 호출 측 코드가 이를 복구할 합리적인 방법은 없으며, 호출 측 프로그래머가 코드를 수정해야 합니다. 특히 위반 시 패닉이 발생하는 함수의 계약은 해당 함수의 API 문서에 설명되어 있어야 합니다.</p>
 <p>하지만, 모든 함수에서 많은 에러 체크를 하는 것은 거침없고 짜증나는 일입니다. 다행스럽게도, 러스트의 타입 시스템(컴파일러에 의해 수행되는 타입 체크)을 사용하여 많은 수의 체크를 할 수 있습니다. 만약 여러분의 함수가 파라미터로서 특정한 타입을 가지고 있다면, 여러분은 컴파일러가 여러분이 유효한 값을 가지고 있다는 것을 이미 확인했다는 것을 알고 코드의 로직을 진행할 수 있습니다. 예를 들어, 만약 여러분이 타입이 있다면 <code>Option</code>당신의 프로그램이 기대되는 것은 <em>뭔가</em> 보다는 <em>없음</em>. 당신의 코드는 다음 두 경우를 처리 할 필요가 없습니다 <code>Some</code> 그리고 <code>None</code> variants: 확실히 값을 가지는 하나의 케이스만 가질 것입니다. 함수에 아무것도 전달하지 않으려는 코드는 컴파일되지 않으므로 함수는 런타임에 해당 케이스를 확인할 필요가 없습니다. 또 다른 예는 서명되지 않은 정수형을 사용하는 것입니다.
 <code>u32</code>즉, 매개 변수가 절대 음수가 아님을 보장합니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="creating-custom-types-for-validation"></a></p>
-<h3 id="custom-types-for-validation"><a class="header" href="#custom-types-for-validation">검증을 위한 사용자 정의 형식</a></h3>
-<p>러스트의 타입 시스템을 사용하여 한 단계 더 나아가 유효한 값을 가지고 검증을 위한 사용자 지정 타입을 만드는 것을 살펴봅시다. 2장에서 우리의 코드가 사용자에게 1과 100 사이의 숫자를 추측하도록 요청했던 추측 게임을 상기해 봅시다. 우리는 사용자의 추측이 그 숫자 사이에 있다는 것을 확인한 적이 없습니다. 우리는 단지 그 추측이 긍정적이라는 것을 확인했을 뿐입니다. 이 경우, 그 결과는 "값이 잘못되었습니다."</p>
-<p>이 작업을 수행하는 한 가지 방법은 다음과 같이 추측을 분석하는 것입니다. <code>i32</code> 대신 a
-<code>u32</code> 잠재적으로 음수를 허용하고 범위에있는 숫자에 대한 검사를 추가하려면 다음과 같이 :</p>
+<h3 id="custom-types-for-validation"><a class="header" href="#custom-types-for-validation">검증을 위한 사용자 정의 타입</a></h3>
+<p>Rust의 타입 시스템을 활용하여 유효한 값을 보장하는 개념을 한 단계 더 발전시켜, 검증을 위한 사용자 정의 타입을 만드는 방법을 살펴보겠습니다. 2장의 숫자 추측 게임을 떠올려 보세요. 당시 코드는 사용자가 1부터 100 사이의 숫자를 추측하도록 요청했습니다. 우리는 사용자가 추측한 숫자가 그 범위 내에 있는지 확인하지 않고 바로 비밀 숫자와 비교했습니다. 단지 추측한 값이 양수인지 확인했을 뿐입니다. 이 경우 결과는 치명적이지 않았습니다. '너무 높음' 또는 '너무 낮음'이라는 출력은 여전히 정확했기 때문입니다. 하지만 사용자가 범위를 벗어난 숫자를 추측하는 경우와, 예를 들어 문자를 입력하는 경우를 구분하여 다른 동작을 수행하고 사용자에게 유효한 추측을 유도하는 것은 유용한 개선 사항이 될 것입니다.</p>
+<p>이 작업을 수행하는 한 가지 방법은 추측 값을 <code>i32</code> 대신 <code>u32</code>로 파싱하여 잠재적으로 음수를 허용한 후, 다음과 같이 숫자가 범위 내에 있는지 검사하는 것입니다:</p>
 <figure class="listing">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore"><span class="boring">use std::cmp::Ordering;
@@ -247,10 +243,9 @@
 </span>    }
 <span class="boring">}</span></code></pre>
 </figure>
-<p>이름 * <code>if</code> expression은 값이 범위 밖에 있는지 확인하고, 사용자에게 문제에 대해 알리고, 호출합니다. <code>continue</code> 루프의 다음 반복을 시작하고 또 다른 추측을 요청합니다. <code>if</code> 표현, 우리는 사이의 비교를 진행할 수 있습니다 <code>guess</code> 알고 있는 비밀 번호 <code>guess</code> 1에서 100 사이입니다.</p>
-<p>그러나 이것은 이상적인 해결책이 아닙니다 : 프로그램이 1과 100 사이의 값에서만 작동하고이 요구 사항을 가진 많은 함수를 가지고 있다면 모든 함수에서 이와 같은 수표를 갖는 것은 지루할 것입니다 (그리고 성능에 영향을 미칠 수 있습니다).</p>
-<p>대신, 우리는 전용 모듈에 새로운 타입을 만들고 타입의 인스턴스를 만들기 위해 함수에 유효성 검사를 넣을 수 있습니다. 모든 곳에서 유효성 검사를 반복하는 대신 말입니다. 그런 식으로, 함수가 그들의 서명에서 새로운 타입을 사용하고 자신있게 그들이 받는 값들을 사용하는 것이 안전합니다. Listing 9-13은 a를 정의하는 한 가지 방법을 보여줍니다. <code>Guess</code> 인스턴스만 만드는 형식입니다.Type that only create an instance.
-<code>Guess</code> 만약 <code>new</code> 함수는 1에서 100 사이의 값을 받습니다.</p>
+<p><code>if</code> 식은 값이 범위 밖인지 확인하고, 사용자에게 문제를 알린 후 <code>continue</code>를 호출하여 루프의 다음 반복을 시작하고 다시 추측을 요청합니다. <code>if</code> 식 이후에는 <code>guess</code>가 1과 100 사이임을 알 수 있으므로, <code>guess</code>와 비밀 숫자 사이의 비교를 진행할 수 있습니다.</p>
+<p>그러나 이는 이상적인 해결책이 아닙니다. 프로그램이 1과 100 사이의 값으로만 동작하는 것이 절대적으로 중요하고, 이러한 요구 사항을 가진 함수가 많다면 모든 함수에 이와 같은 검사를 포함하는 것은 번거로울 것입니다(또는 성능에 영향을 미칠 수 있습니다).</p>
+<p>대신 전용 모듈에 새로운 타입을 만들고, 해당 타입의 인스턴스를 생성하는 함수에 유효성 검사를 넣을 수 있습니다. 이렇게 하면 모든 곳에서 유효성 검사를 반복할 필요가 없습니다. 또한 함수가 서명에서 새로운 타입을 사용하고, 전달받은 값을 안심하고 사용할 수 있게 됩니다. Listing 9-13은 1에서 100 사이의 값만 전달받았을 때 <code>Guess</code> 인스턴스를 생성하도록 <code>Guess</code> 타입을 정의하는 한 가지 방법을 보여줍니다. <code>new</code></p>
 <figure class="listing" id="listing-9-13">
 <span class="file-name">Filename: src/guessing_game.rs</span>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
@@ -273,22 +268,15 @@ impl Guess {
     }
 }
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-9-13">상장 9-13</a>: 1 ~ 100 사이의 값만 계속 하는 <code>Guess</code> 형식</figcaption>
+<figcaption><a href="#listing-9-13">Listing 9-13</a>: 1에서 100 사이의 값만 허용하는 <code>Guess</code> 타입</figcaption>
 </figure>
-<p>src/guessing_game.rs의 이 코드는 여기에 표시되지 않은 src/lib.rs에 <code>mod guessing_game;</code> 모듈 선언을 추가하는 데 달려 있습니다. 이 새 모듈의 파일 내에서 <code>Guess</code>라는 이름의 구조체를 정의합니다. <code>value</code>라는 필드에 <code>i32</code>가 저장됩니다.</p>
-<p>그리고, 우리는 명명된 연관된 함수를 구현합니다 <code>new</code> 온 <code>Guess</code> 상기 인스턴스는, The instances, <code>Guess</code> 가치. <code>new</code> 함수는 이름이 지정된 하나의 매개 변수를 갖도록 정의됩니다. <code>value</code> 모든 제품 <code>i32</code> 그리고 return a <code>Guess</code>. 의 본문에있는 코드 <code>new</code> 기능 테스트 <code>value</code> 1과 100 사이인지 확인하십시오. 경우 <code>value</code> 이 테스트를 통과하지 않습니다, 우리는 <code>panic!</code> 호출 코드를 작성하는 프로그래머에게 그들이 수정해야 할 버그가 있다고 경고합니다. <code>Guess</code> 으로 A <code>value</code> 이 범위를 벗어나는 것은 계약을 위반하는 것입니다. <code>Guess::new</code> 에 의존하고 있습니다. 그 조건
-<code>Guess::new</code> panic은 public-faceing API documentation에서 논의되어야 할 수도 있다; 우리는 documentation conventions을 다룰 것이다. <code>panic!</code> 14장에서 작성한 API 문서의 내용입니다.
-<code>value</code> 테스트를 통과하면 새로운 것을 만듭니다. <code>Guess</code> 그와 함께 <code>value</code> 필드는 다음과 같이 설정합니다. <code>value</code> 매개 변수 및 반환 <code>Guess</code>.</p>
-<p>다음으로, 우리는 명명된 메서드를 구현합니다. <code>value</code> 그 빌린 <code>self</code>다른 매개 변수가 없고, 반환값 <code>i32</code>. 이런 종류의 방법을 때때로 a라고 부릅니다. <em>게터</em> 그것의 목적이 그것의 분야에서 몇몇 자료를 얻고기 그것을 돌려보내기 위한 것이기 때문에. 이 공중 방법은 필요하기 때문에 <code>value</code> 의 필드 <code>Guess</code>
-struct는 private입니다. 중요한 것은 <code>value</code> field 는 private 이 되어야 하고, 그 코드는 <code>Guess</code> struct를 설정할 수 없습니다. <code>value</code> 코드 아웃사이드 The code outside <code>guessing_game</code> 모듈 <em>필수</em> 를 사용하여 Using the <code>Guess::new</code> instance 를 만드는 함수 <code>Guess</code>따라서, a 에 대한 방법이 없다는 것을 보장한다.
-<code>Guess</code> 을 가질 것 A <code>value</code> 이것은 위의 조건들에 의해 확인되지 않았다.
-<code>Guess::new</code> 기능.</p>
-<p>매개 변수가 있거나 1과 100 사이의 숫자 만 반환하는 함수는 서명에서 다음과 같이 선언하거나 반환 할 수 있습니다. <code>Guess</code> 대신 an
-<code>i32</code> 그리고 자신의 몸에 추가 검사를 할 필요가 없습니다.</p>
+<p>src/guessing_game.rs의 이 코드는 여기에서 보여드리지 않은 src/lib.rs에 <code>mod guessing_game;</code> 모듈 선언을 추가하는 것에 의존합니다. 이 새로운 모듈의 파일 안에서는 <code>Guess</code>이라는 이름의 구조체를 정의합니다. 이 구조체에는 <code>value</code>라는 필드가 있으며, 이 필드에는 <code>i32</code> 타입의 값이 저장됩니다. 이 필드가 숫자를 저장하는 곳입니다.</p>
+<p>그다음, <code>new</code>에 <code>Guess</code>이라는 연관 함수를 구현하여 <code>Guess</code> 값을 생성합니다. <code>new</code> 함수는 <code>value</code>라는 이름의 <code>i32</code> 타입 매개변수 하나를 가지며 <code>Guess</code>을 반환하도록 정의됩니다. <code>new</code> 함수 본문에 있는 코드는 <code>value</code>가 1에서 100 사이인지 확인합니다. <code>value</code>이 이 테스트를 통과하지 못하면, <code>panic!</code>을 호출하여 호출 코드를 작성 중인 프로그래머에게 수정해야 할 버그가 있음을 알립니다. 이는 이 범위를 벗어난 값으로 <code>Guess</code>을 생성하면 <code>value</code>이 의존하는 계약이 위반되기 때문입니다. <code>Guess::new</code>이 <code>Guess::new</code>할 수 있는 조건은 공개 API 문서에서 논의되어야 하며, <code>panic!</code> 가능성이 있는 API 문서 작성 규칙은 14장에서 다룹니다. <code>value</code>이 테스트를 통과하면, <code>Guess</code> 필드를 <code>value</code> 매개변수로 설정한 새로운 <code>value</code>을 생성하여 <code>Guess</code>을 반환합니다.</p>
+<p>다음으로, <code>value</code>이라는 이름을 가진 메서드를 구현합니다. 이 메서드는 <code>self</code>을(를) 참조하고, 다른 매개변수는 없으며, <code>i32</code>을(를) 반환합니다. 이러한 종류의 메서드는 <em>getter</em>라고도 불리우며, 그 목적은 필드에서 데이터를 가져와 반환하는 것입니다. 이 공개 메서드가 필요한 이유는 <code>Guess</code> 구조체의 <code>value</code> 필드가 비공개이기 때문입니다. <code>value</code> 필드가 비공개인 것은 중요한데, <code>Guess</code> 구조체를 사용하는 코드가 <code>value</code>을(를) 직접 설정할 수 없도록 하기 위함입니다. <code>guessing_game</code> 모듈 외부의 코드 <em>반드시</em> <code>Guess::new</code> 함수를 사용하여 <code>Guess</code>의 인스턴스를 생성해야 하며, 이를 통해 <code>Guess::new</code> 함수의 조건으로 검사되지 않은 <code>value</code>을(를) 가진 <code>Guess</code>이 존재할 수 없음을 보장합니다.</p>
+<p>1부터 100 사이의 숫자만 매개 변수로 받거나 반환하는 함수라면, 서명에서 <code>Guess</code> 대신 <code>i32</code>을 사용한다고 선언할 수 있으며, 함수 본문에서 추가적인 검사를 수행할 필요가 없습니다.</p>
 <h2 id="summary"><a class="header" href="#summary">요약</a></h2>
-<p>러스트의 오류 처리 기능은 더 강력한 코드를 작성하는 데 도움이 되도록 설계되었습니다. <code>panic!</code> 매크로는 프로그램이 처리할 수 없는 상태에 있다는 신호를 보내고 유효하지 않거나 잘못된 값으로 진행하려고 시도하는 대신 프로세스를 중지하도록 지시할 수 있습니다. <code>Result</code> enum은 러스트의 타입 시스템을 사용하여 코드가 복구될 수 있는 방식으로 작업이 실패할 수 있음을 나타냅니다.
-<code>Result</code> 코드를 호출하는 코드에 잠재적 인 성공 또는 실패를 처리해야한다고 알려줍니다. 사용 <code>panic!</code> 그리고 <code>Result</code> 적절한 상황에서는 피할 수없는 문제에 직면하여 코드를보다 신뢰할 수있게 만듭니다.</p>
-<p>이제 표준 라이브러리가 <code>Option</code> 및 <code>Result</code> 열거형과 함께 제네릭을 사용하는 유용한 방법을 보았으므로 제네릭 작동 방식과 코드에서 사용하는 방법에 대해 설명합니다.</p>
+<p>Rust의 오류 처리 기능은 더 견고한 코드를 작성하는 데 도움이 되도록 설계되었습니다. <code>panic!</code> 매크로는 프로그램이 처리할 수 없는 상태에 있음을 알리며, 유효하지 않거나 잘못된 값으로 계속 진행하려는 대신 프로세스를 중지하도록 지시할 수 있습니다. <code>Result</code> enum은 Rust의 타입 시스템을 활용하여 코드가 복구할 수 있는 방식으로 작업이 실패할 수 있음을 나타냅니다. <code>Result</code>를 사용하면 자신의 코드를 호출하는 쪽에게 잠재적인 성공 또는 실패를 처리해야 함을 알릴 수 있습니다. 적절한 상황에서 <code>panic!</code>와 <code>Result</code>를 사용하면 피할 수 없는 문제에 직면했을 때에도 코드가 더 신뢰할 수 있게 됩니다.</p>
+<p>이제 표준 라이브러리가 <code>Option</code> 및 <code>Result</code> 열거형에 제네릭을 활용하는 유용한 방법을 살펴보았습니다. 이제 제네릭의 작동 원리와 코드에서 제네릭을 사용하는 방법에 대해 설명하겠습니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

@@ -161,27 +161,27 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h2 id="rct-the-reference-counted-smart-pointer"><a class="header" href="#rct-the-reference-counted-smart-pointer"><code>Rc&lt;T&gt;</code>참조 개수 스마트 포인터Reference-Counted Smart Pointer</a></h2>
-<p>대부분의 경우 소유권은 명확합니다. 어떤 변수가 특정 값을 소유하고 있는지 정확히 알 수 있습니다. 그러나 단일 값이 여러 소유자를 가질 수있는 경우가 있습니다. 예를 들어 그래프 데이터 구조에서 여러 가장자리가 동일한 노드를 가리킬 수 있으며 해당 노드는 해당 노드를 가리키는 모든 가장자리에 의해 개념적으로 소유됩니다. 노드에는 가장자리가 없으므로 소유자가없는 한 노드를 정리해서는 안됩니다.</p>
-<p>참조 카운트의 약자인 러스트 유형 <code>Rc&lt;T&gt;</code>를 사용하여 명시 적으로 여러 소유권을 활성화해야합니다. <code>Rc&lt;T&gt;</code> 유형은 값에 대한 참조 수를 추적하여 값이 아직 사용 중인지 여부를 결정합니다. 값에 대한 참조가 제로 인 경우 아무런 참조없이 값을 정리할 수 있습니다.</p>
-<p><code>Rc&lt;T&gt;</code>를 가족 방에서 TV로 상상해보십시오. 한 사람이 TV를 시청하기 위해 들어가면 TV를  ⁇ 니다. 다른 사람들은 방에 들어가서 TV를 볼 수 있습니다. 마지막 사람이 방을 나가면 더 이상 사용되지 않기 때문에 TV를 끕니다. 다른 사람들이 여전히 시청하는 동안 누군가가 TV를 끄면 나머지 TV 시청자의 소란이있을 것입니다!</p>
-<p><code>Rc&lt;T&gt;</code> 타입은 프로그램의 여러 부분에 대해 힙에 데이터를 할당하고자 할 때 사용하며, 컴파일 시에 어느 부분이 마지막에 데이터를 사용할지 결정할 수 없습니다. 만약 어떤 부분이 마지막으로 끝날지 알고 있다면, 우리는 그 부분을 데이터의 소유자로 만들 수 있습니다.</p>
-<p><code>Rc&lt;T&gt;</code>는 단일 스레드 시나리오에서만 사용할 수 있습니다. 16 장에서 동시성을 논의 할 때 다중 스레드 프로그램에서 참조 카운트를 수행하는 방법을 다룰 것입니다.</p>
+<h2 id="rct-the-reference-counted-smart-pointer"><a class="header" href="#rct-the-reference-counted-smart-pointer"><code>Rc&lt;T&gt;</code>참조 카운팅 스마트 포인터(Reference-Counted Smart Pointer)</a></h2>
+<p>대부분의 경우 소유권은 명확합니다. 어떤 변수가 특정 값을 소유하고 있는지 정확히 알 수 있습니다. 그러나 단일 값이 여러 소유자를 가질 수 있는 경우도 있습니다. 예를 들어 그래프 데이터 구조에서는 여러 간선이 동일한 노드를 가리킬 수 있으며, 이 노드는 개념적으로 해당 노드를 가리키는 모든 간선에 의해 소유됩니다. 노드를 가리키는 간선이 하나도 없으면 소유자가 없으므로, 이 경우에만 노드를 정리할 수 있습니다.</p>
+<p>참조 카운팅(reference counting)의 약자인 Rust 타입 <code>Rc&lt;T&gt;</code>을 사용하여 명시적으로 여러 소유권을 활성화해야 합니다. <code>Rc&lt;T&gt;</code> 타입은 값에 대한 참조 수를 추적하여 해당 값이 아직 사용 중인지 여부를 결정합니다. 값에 대한 참조가 0개라면, 어떤 참조도 무효화되지 않도록 값을 안전하게 정리할 수 있습니다.</p>
+<p><code>Rc&lt;T&gt;</code>를 가족 거실의 TV로 상상해 보겠습니다. 한 사람이 TV를 보러 들어오면 TV를 켭니다. 다른 사람들도 방에 들어와 TV를 볼 수 있습니다. 마지막 사람이 방을 나가는 순간, 더 이상 사용되지 않으므로 TV를 끕니다. 만약 다른 사람들이 아직 시청하고 있는데 누군가 TV를 끄면, 남은 시청자들이 큰 소란을 일으킬 것입니다!</p>
+<p>프로그램의 여러 부분이 읽기 위해 힙에 데이터를 할당하고 싶지만, 컴파일 시점에 어느 부분이 마지막으로 데이터를 사용하게 될지 결정할 수 없는 경우 <code>Rc&lt;T&gt;</code> 타입을 사용합니다. 만약 어느 부분이 마지막으로 사용하게 될지 알고 있다면, 그 부분을 데이터의 소유자로 지정하면 컴파일 시점에 적용되는 일반적인 소유권 규칙이 그대로 적용될 것입니다.</p>
+<p><code>Rc&lt;T&gt;</code>는 단일 스레드 시나리오에서만 사용할 수 있습니다. 16장에서 동시성을 다룰 때, 멀티스레드 프로그램에서 참조 카운팅을 수행하는 방법에 대해 설명하겠습니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="using-rct-to-share-data"></a></p>
 <h3 id="sharing-data"><a class="header" href="#sharing-data">데이터 공유</a></h3>
-<p>Listing 15-5의 cons list 예제로 돌아가 보겠습니다. <code>Box&lt;T&gt;</code>를 사용하여 정의했음을 상기하십시오. 이번에는 세 번째 목록의 소유권을 공유하는 두 개의 목록을 만들 것입니다. 개념적으로 이것은 그림 15-3과 비슷합니다.</p>
+<p>Listing 15-5의 cons 리스트 예제로 돌아가 보겠습니다. <code>Box&lt;T&gt;</code>를 사용하여 정의했음을 기억해 주세요. 이번에는 세 번째 리스트의 소유권을 공유하는 두 개의 리스트를 만들 것입니다. 개념적으로 이는 그림 15-3과 유사합니다.</p>
 <p><img alt="A linked list with the label 'a' pointing to three elements. The first element contains the integer 5 and points to the second element. Th
 e second element contains the integer 10 and points to the third element. The third element contains the value 'Nil' that signifies the end of the l
 ist; it does not point anywhere. A linked list with the label 'b' points to an element that contains the integer 3 and points to the first element o
 f list 'a'. A linked list with the label 'c' points to an element that contains the integer 4 and also points to the first element of list 'a' so th
 at the tails of lists 'b' and 'c' are both list 'a'." class="center" src="img/trpl15-03.svg"/></p>
-<p>그림 15-3: 두 목록, <code>b</code> 및 <code>c</code>, 세 번째 목록의 소유권 공유, <code>a</code></p>
+<p>그림 15-3: 두 목록인 <code>b</code>과 <code>c</code>이 세 번째 목록인 <code>a</code>의 소유권을 공유하는 모습</p>
 <p>우리는 목록을 만들 것입니다. <code>a</code> 포함하는 That contains <code>5</code> 그리고 나서 <code>10</code>. 그런 다음 두 개의 목록을 더 만들 것입니다. <code>b</code> 그것은으로 시작 <code>3</code> 그리고 <code>c</code> 그것은으로 시작 <code>4</code>. 둘 다 <code>b</code>
 그리고 <code>c</code> 리스트는 첫 번째 리스트로 계속됩니다. <code>a</code> 목록 포함 <code>5</code> 그리고
 <code>10</code>즉, 두 목록 모두 다음을 포함하는 첫 번째 목록을 공유합니다. <code>5</code> 그리고
 <code>10</code>.</p>
-<p><code>List</code> 와 <code>Box&lt;T&gt;</code> 의 우리의 정의를 사용하여 이 시나리오를 구현하려고 하는 것은, Listing 15-17에 나타난 것처럼, 작동하지 않을 것입니다.</p>
+<p><code>List</code>와 <code>Box&lt;T&gt;</code>를 사용한 List의 정의로 이 시나리오를 구현하려고 하면 Listing 15-17에 나와 있듯이 작동하지 않습니다.</p>
 <figure class="listing" id="listing-15-17">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore does_not_compile">enum List {
@@ -196,7 +196,7 @@ fn main() {
     let b = Cons(3, Box::new(a));
     let c = Cons(4, Box::new(a));
 }</code></pre>
-<figcaption><a href="#listing-15-17">목록 15-17</a>: 세 번째 목록의 소유권을 공유하려고하는 <code>Box&lt;T&gt;</code>를 사용하여 두 개의 목록을 가질 수 없음을 입증합니다.</figcaption>
+<figcaption><a href="#listing-15-17">목록 15-17</a>: <code>Box&lt;T&gt;</code>를 사용하여 세 번째 목록의 소유권을 공유하려는 두 개의 목록을 가질 수 없음을 보여 줍니다.</figcaption>
 </figure>
 <p>이 코드를 컴파일하면 다음과 같은 오류가 발생합니다.</p>
 <pre><code class="language-console">$ cargo run
@@ -223,12 +223,9 @@ note: if `List` implemented `Clone`, you could clone the value
 For more information about this error, try `rustc --explain E0382`.
 error: could not compile `cons-list` (bin "cons-list") due to 1 previous error
 </code></pre>
-<p>이름 * <code>Cons</code> 변형은 그들이 보유하고있는 데이터를 소유하기 때문에, 우리가 <code>b</code> 목록, <code>a</code>
-다음으로 이동됨 <code>b</code> 그리고 <code>b</code> 소유자 <code>a</code>. 그런 다음, 우리가 사용하려고 할 때 <code>a</code> 다시 창조할 때 <code>c</code>왜냐하면 우리는 허용되지 않습니다. <code>a</code> 움직였다.</p>
-<p>대신 <code>Cons</code>의 정의를 참조로 변경할 수 있지만, 평생 매개 변수를 지정해야 합니다. 수명 매개 변수를 지정하면 목록의 모든 요소가 적어도 전체 목록만큼 오래 살도록 지정하는 것입니다. 이는 Listing 15-17의 요소와 목록에 대한 경우이지만 모든 시나리오에 적용되는 것은 아닙니다.</p>
-<p>대신, 우리는 우리의 정의를 바꿀 것입니다. <code>List</code> 이용하기 <code>Rc&lt;T&gt;</code> in place of ~을 위한
-<code>Box&lt;T&gt;</code>Listing 15-18에 나와 있는 것처럼, 각각 <code>Cons</code> 변수는 이제 값과 값을 가질 것입니다. <code>Rc&lt;T&gt;</code> A를 가리키는 <code>List</code>. 우리가 창조 할 때 <code>b</code>대신 소유권을 행사할 수 있는 <code>a</code>우리는 clone 할 것이다. <code>Rc&lt;List&gt;</code> 그 <code>a</code> 1개에서 2개로 참조의 수를 증가시켜서 <code>a</code> 그리고 <code>b</code>
-그 데이터의 소유권을 공유 <code>Rc&lt;List&gt;</code>. 우리는 또한 복제합니다 <code>a</code> 창조할 때 <code>c</code>참조의 수를 2개에서 3개로 늘립니다. 호출할 때마다 <code>Rc::clone</code>상기 내부 데이터에 대한 참조 카운트 The reference count to the data within the <code>Rc&lt;List&gt;</code> 그것은 증가 할 것이고, 그것에 대한 제로 참조가 없다면 데이터는 정리되지 않을 것입니다.</p>
+<p><code>Cons</code> 변형은 자신이 보유하는 데이터를 소유합니다. 따라서 <code>b</code> 리스트를 생성할 때, <code>a</code>는 <code>b</code>로 이동되고 <code>b</code>가 <code>a</code>를 소유하게 됩니다. 그런 다음, <code>c</code>을 생성할 때 <code>a</code>을 다시 사용하려고 하면, <code>a</code>이 이미 이동되었기 때문에 허용되지 않습니다.</p>
+<p>대신 <code>Cons</code>의 정의를 참조로 변경할 수 있지만, 그러면 라이프타임 매개변수를 지정해야 합니다. 라이프타임 매개변수를 지정하면 리스트의 모든 요소가 최소한 리스트 전체와 동일한 수명 동안 존재하도록 명시하는 것입니다. 이는 Listing 15-17의 요소와 리스트에 해당하지만, 모든 시나리오에 적용되는 것은 아닙니다.</p>
+<p>대신, <code>List</code>을 <code>Rc&lt;T&gt;</code>로 대체하여 <code>Box&lt;T&gt;</code>의 정의를 변경하겠습니다. Listing 15-18에 나와 있듯이, 각 <code>Cons</code> 변형은 이제 값과 <code>Rc&lt;T&gt;</code>를 가질 것입니다. <code>List</code>을 가리키는 <code>b</code>를 생성할 때, <code>a</code>의 소유권을 가져오는 대신 <code>Rc&lt;List&gt;</code>이 가지고 있는 <code>a</code>을 복제(clone)합니다. 이를 통해 참조 수가 1개에서 2개로 증가하며, <code>a</code>과 <code>b</code>이 <code>Rc&lt;List&gt;</code> 내부 데이터의 소유권을 공유하게 됩니다. <code>a</code>을 생성할 때도 <code>c</code>을 복제하여 참조 수를 2개에서 3개로 늘립니다. <code>Rc::clone</code>을 호출할 때마다 <code>Rc&lt;List&gt;</code> 내부 데이터에 대한 참조 카운트가 증가하며, 참조가 0개가 될 때까지 데이터는 정리되지 않습니다.</p>
 <figure class="listing" id="listing-15-18">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">enum List {
@@ -244,19 +241,15 @@ fn main() {
     let b = Cons(3, Rc::clone(&amp;a));
     let c = Cons(4, Rc::clone(&amp;a));
 }</code></pre>
-<figcaption><a href="#listing-15-18">상장 15-18</a>의 정의 A definition <code>List</code>  ⁇  사용 <code>Rc&lt;T&gt;</code></figcaption>
+<figcaption><a href="#listing-15-18">Listing 15-18</a>: <code>List</code>을(를) 사용하는 List 정의 <code>Rc&lt;T&gt;</code></figcaption>
 </figure>
-<p>A를 추가해야 합니다. <code>use</code> 표준 Bring <code>Rc&lt;T&gt;</code> 이 프렐류드에 없기 때문에 범위로. 에서 <code>main</code>[중고] 우리는 목록을 만든다 <code>5</code> 그리고 <code>10</code> 그것을 새로운 것으로 만들어라 <code>Rc&lt;List&gt;</code> 에서 <code>a</code>. 그런 다음 우리가 창조 할 때 <code>b</code> 그리고 <code>c</code>우리는 Call The
-<code>Rc::clone</code> 기능 및 통행에 참고 <code>Rc&lt;List&gt;</code> 에서 <code>a</code> argument 입니다.</p>
-<p>전화할 수도 있었는데 <code>a.clone()</code> 보다는 <code>Rc::clone(&amp;a)</code>하지만, 러스트의 규칙은 <code>Rc::clone</code> 이 경우. 의 구현
-<code>Rc::clone</code> 대부분의 타입의 구현과 같은 모든 데이터의 깊은 복사본을 만들지 않는다. <code>clone</code> do. 호출에 <code>Rc::clone</code> 많은 시간이 걸리지 않는 기준 수를 증가시킵니다. 데이터의 깊은 사본은 많은 시간이 걸릴 수 있습니다. 사용하여 <code>Rc::clone</code> 레퍼런스 카운팅을 위해, 우리는 딥카피 종류의 클론과 레퍼런스 카운트를 증가시키는 클론의 종류를 시각적으로 구별할 수 있습니다. 코드에서 성능 문제를 찾을 때, 우리는 딥카피 클론만을 고려할 필요가 있으며 다음 호출을 무시할 수 있습니다.
-<code>Rc::clone</code>.</p>
+<p>Rc&lt;T&gt;는 prelude에 포함되어 있지 않으므로, 스코프에 포함시키기 위해 use 문장을 추가해야 합니다. main에서 5와 10을 포함하는 리스트를 생성하고 이를 a라는 새로운 Rc&lt;List&gt;에 저장합니다. 그런 다음 b와 c를 생성할 때 Rc::clone 함수를 호출하고, a에 있는 Rc&lt;List&gt;에 대한 참조를 인자로 전달합니다. <code>use</code><code>Rc&lt;T&gt;</code><code>main</code><code>5</code><code>10</code><code>Rc&lt;List&gt;</code><code>a</code><code>b</code><code>c</code><code>Rc::clone</code><code>Rc&lt;List&gt;</code><code>a</code></p>
+<p><code>Rc::clone(&amp;a)</code> 대신에 <code>a.clone()</code>을 호출할 수도 있었지만, Rust의 관례는 이 경우 <code>Rc::clone</code>을 사용하는 것입니다. <code>Rc::clone</code>의 구현은 대부분의 타입의 <code>clone</code> 구현처럼 모든 데이터의 깊은 복사를 수행하지 않습니다. <code>Rc::clone</code> 호출은 참조 카운트만 증가시키며, 이는 많은 시간을 소요하지 않습니다. 데이터의 깊은 복사는 많은 시간을 소요할 수 있습니다. 참조 카운팅을 위해 <code>Rc::clone</code>을 사용함으로써, 깊은 복사 유형의 클론과 참조 카운트를 증가시키는 유형의 클론을 시각적으로 구별할 수 있습니다. 코드에서 성능 문제를 찾을 때, 깊은 복사 클론만 고려하면 되고 <code>Rc::clone</code> 호출은 무시할 수 있습니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="cloning-an-rct-increases-the-reference-count"></a></p>
-<h3 id="cloning-to-increase-the-reference-count"><a class="header" href="#cloning-to-increase-the-reference-count">참조 수를 늘리기 위한 복제</a></h3>
-<p>Listing 15-18의 작업 예제를 변경하여 참조 카운트가 다음과 같은 참조를 생성하고 드롭할 때 변경되는 것을 볼 수 있습니다. <code>Rc&lt;List&gt;</code> 에서
-<code>a</code>.</p>
-<p>Listing 15-19에서는 <code>main</code>를 변경하여 <code>c</code> 목록 주위에 내부 스코프가 있도록 할 것입니다; 그러면 <code>c</code>가 스코프 밖으로 나갈 때 참조 카운트가 어떻게 변하는지 볼 수 있습니다.</p>
+<h3 id="cloning-to-increase-the-reference-count"><a class="header" href="#cloning-to-increase-the-reference-count">참조 횟수를 증가시키기 위한 클로닝</a></h3>
+<p>Listing 15-18의 예제를 수정하여, a에 있는 Rc&lt;List&gt;에 대한 참조를 생성하고 드롭할 때 참조 횟수가 어떻게 변하는지 확인할 수 있도록 하겠습니다. <code>Rc&lt;List&gt;</code><code>a</code></p>
+<p>Listing 15-19에서는 main을 수정하여 c 리스트 주위에 내부 스코프를 두도록 하겠습니다. 그러면 c가 스코프 밖으로 나갈 때 참조 횟수가 어떻게 변하는지 확인할 수 있습니다. <code>main</code><code>c</code><code>c</code></p>
 <figure class="listing" id="listing-15-19">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">enum List {
@@ -280,10 +273,10 @@ fn main() {
     }
     println!("count after c goes out of scope = {}", Rc::strong_count(&amp;a));
 }</code></pre>
-<figcaption><a href="#listing-15-19">목록 15-19</a>: 참조 수 인쇄</figcaption>
+<figcaption><a href="#listing-15-19">Listing 15-19</a>: 참조 횟수 출력</figcaption>
 </figure>
-<p>참조 카운트가 변경되는 프로그램의 각 지점에서 우리는 참조 카운트를 인쇄합니다. <code>Rc::strong_count</code> 이 함수의 이름은 다음과 같습니다. <code>strong_count</code> 보다는 <code>count</code> 왜냐하면 The <code>Rc&lt;T&gt;</code> 종류는 또한 A <code>weak_count</code>우리는 무엇을 보게 될 것입니다. <code>weak_count</code> 를 위해 사용됩니다 <a href="ch15-06-reference-cycles.html#preventing-reference-cycles-turning-an-rct-into-a-weakt">"참조주기 방지 <code>Weak&lt;T&gt;</code>”</a> 무시 .</p>
-<p>이 코드는 다음을 인쇄합니다.</p>
+<p>참조 횟수가 변경되는 프로그램의 각 지점에서, Rc::strong_count 함수를 호출하여 얻은 참조 횟수를 출력합니다. 이 함수의 이름이 count가 아닌 strong_count인 이유는, Rc&lt;T&gt; 타입에는 weak_count도 있기 때문입니다. weak_count의 용도는 “Weak&lt;T&gt;를 사용하여 참조 사이클 방지”에서 살펴보겠습니다. <code>Rc::strong_count</code><code>strong_count</code><code>count</code><code>Rc&lt;T&gt;</code><code>weak_count</code><code>weak_count</code><a href="ch15-06-reference-cycles.html#preventing-reference-cycles-turning-an-rct-into-a-weakt"><code>Weak&lt;T&gt;</code></a></p>
+<p>이 코드는 다음과 같이 출력합니다.</p>
 <pre><code class="language-console">$ cargo run
    Compiling cons-list v0.1.0 (file:///projects/cons-list)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.45s
@@ -293,10 +286,9 @@ count after creating b = 2
 count after creating c = 3
 count after c goes out of scope = 2
 </code></pre>
-<p>우리는 이것을 볼 수 있습니다. <code>Rc&lt;List&gt;</code> 에서 <code>a</code> 1의 초기 참조 카운트를 갖는다; 그리고 우리가 호출할 때마다 <code>clone</code>, 카운트가 1만큼 증가합니다. <code>c</code> 범위를 벗어나면 카운트가 1만큼 내려갑니다. 호출해야하는 것처럼 참조 카운트를 줄이기 위해 함수를 호출 할 필요가 없습니다. <code>Rc::clone</code> 참조 카운트를 증가시키기 위해: <code>Drop</code> 특성은 때 참조 카운트를 자동으로 감소 <code>Rc&lt;T&gt;</code> 값은 범위를 벗어납니다.</p>
-<p>이 예에서 볼 수 없는 것은 <code>b</code>와 <code>a</code>가 <code>main</code>의 끝에서 범위를 벗어나면 카운트가 0이고 <code>Rc&lt;List&gt;</code>가 완전히 정리된다는 것입니다. <code>Rc&lt;T&gt;</code>를 사용하면 단일 값이 여러 소유자를 가질 수 있으며 카운트는 값이 여전히 유효한 상태로 유지됩니다.</p>
-<p>Immutable References 불변의 기준 <code>Rc&lt;T&gt;</code> 읽기 전용으로 프로그램의 여러 부분 간에 데이터를 공유할 수 있습니다. <code>Rc&lt;T&gt;</code> 여러 개의 가변 참조를 사용할 수 있습니다. 4 장에서 논의 된 차용 규칙 중 하나를 위반 할 수 있습니다. 동일한 장소에 여러 개의 가변 차용으로 인해 데이터 인종과 불일치가 발생할 수 있습니다. 그러나 데이터를 변경할 수 있다는 것은 매우 유용합니다! 다음 섹션에서는 내부 가변성 패턴과 <code>RefCell&lt;T&gt;</code>
-당신이 함께 사용할 수있는 유형 <code>Rc&lt;T&gt;</code> 이 불변성 제한으로 작업합니다.</p>
+<p><code>Rc&lt;List&gt;</code>의 <code>a</code>은 초기 참조 카운트가 1임을 알 수 있습니다. <code>clone</code>을 호출할 때마다 카운트가 1씩 증가합니다. <code>c</code>이 스코프를 벗어나면 카운트가 1씩 감소합니다. <code>Rc::clone</code>을 호출하여 참조 카운트를 증가시키는 것처럼, 참조 카운트를 감소시키기 위해 함수를 호출할 필요가 없습니다. <code>Drop</code> 트레이트 구현은 <code>Rc&lt;T&gt;</code> 값이 스코프를 벗어나면 참조 카운트를 자동으로 감소시킵니다.</p>
+<p>이 예제에서 볼 수 없는 것은 <code>b</code>과 <code>a</code>이 <code>main</code>의 끝에서 스코프를 벗어나면 카운트가 0이 되고, <code>Rc&lt;List&gt;</code>이 완전히 정리된다는 점입니다. <code>Rc&lt;T&gt;</code>을 사용하면 하나의 값이 여러 소유자를 가질 수 있으며, 카운트는 소유자 중 하나라도 존재하는 한 값이 유효한 상태로 유지되도록 보장합니다.</p>
+<p>불변 참조를 통해 <code>Rc&lt;T&gt;</code>은 프로그램의 여러 부분 간에 데이터를 읽기 전용으로 공유할 수 있게 합니다. <code>Rc&lt;T&gt;</code>이 여러 개의 가변 참조도 허용했다면, 4장에서 논의한 빌림 규칙 중 하나를 위반했을 수 있습니다. 동일한 위치에 여러 개의 가변 빌림이 있으면 데이터 레이스와 불일치가 발생할 수 있기 때문입니다. 하지만 데이터를 변경할 수 있다는 것은 매우 유용합니다! 다음 섹션에서는 내부 가변성 패턴과, 이 불변성 제한을 극복하기 위해 <code>RefCell&lt;T&gt;</code>와 함께 사용할 수 있는 <code>Rc&lt;T&gt;</code> 타입에 대해 논의하겠습니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

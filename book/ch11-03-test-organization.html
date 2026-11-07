@@ -161,14 +161,14 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h2 id="test-organization"><a class="header" href="#test-organization">시험 기관</a></h2>
-<p>이 장의 시작 부분에서 언급했듯이, 테스트는 복잡한 분야이며, 서로 다른 사람들이 서로 다른 용어와 조직을 사용합니다. 러스트 커뮤니티는 두 가지 주요 범주의 측면에서 테스트에 대해 생각합니다. 단위 테스트와 통합 테스트. 단위 테스트는 작고 더 집중되어 있으며, 한 번에 하나의 모듈을 분리하여 테스트하고 개인 인터페이스를 테스트 할 수 있습니다. 통합 테스트는 전적으로 라이브러리 외부에 있으며 다른 외부 코드와 동일한 방식으로 코드를 사용합니다. 공용 인터페이스 만 사용하고 잠재적으로 여러 모듈을 테스트 할 수 있습니다.</p>
-<p>두 종류의 테스트를 작성 하는 것은 라이브러리의 조각이 개별적으로 그리고 함께 기대 하는 것을 수행 하 고 있는지 확인 하는 데 중요 합니다.</p>
+<h2 id="test-organization"><a class="header" href="#test-organization">테스트 구성</a></h2>
+<p>이 장의 도입부에서 언급했듯이, 테스트는 복잡한 분야이며 사람마다 사용하는 용어와 구성 방식이 다릅니다. Rust 커뮤니티는 테스트를 두 가지 주요 범주로 구분합니다. 단위 테스트와 통합 테스트입니다. 단위 테스트는 작고 집중도가 높아 한 번에 하나의 모듈을 격리하여 테스트하며, 비공개 인터페이스도 테스트할 수 있습니다. 통합 테스트는 라이브러리 외부에서 완전히 독립적으로 동작하며, 다른 외부 코드와 동일한 방식으로 코드를 사용합니다. 통합 테스트는 공개 인터페이스만 사용하며, 하나의 테스트에서 여러 모듈을 함께 검증할 수 있습니다.</p>
+<p>라이브러리의 각 부분이 개별적으로도, 함께 동작할 때도 기대한 대로 작동하는지 확인하려면 두 종류의 테스트를 모두 작성하는 것이 중요합니다.</p>
 <h3 id="unit-tests"><a class="header" href="#unit-tests">단위 테스트</a></h3>
-<p>단위 테스트의 목적은 코드의 나머지 부분과 격리된 각 코드 단위를 테스트하여 코드가 어디에 있고 예상대로 작동하지 않는지 신속하게 찾아내는 것입니다. 테스트하는 코드를 각 파일의 src 디렉토리에 단위 테스트를 넣습니다. 이 컨벤션은 각 파일에 <code>tests</code>라는 모듈을 만들어 테스트 기능을 포함하고 <code>cfg(test)</code>로 모듈에 주석을 달기 위한 것입니다.</p>
-<h4 id="the-tests-module-and-cfgtest"><a class="header" href="#the-tests-module-and-cfgtest">이름 * <code>tests</code> 모듈 및 <code>#[cfg(test)]</code></a></h4>
-<p>이름 * <code>#[cfg(test)]</code> 상기 주석은 Annotation on the <code>tests</code> module은 러스트에게 테스트 코드를 컴파일하고 실행할 때만 러스트에게 알려줍니다. <code>cargo test</code>당신이 달릴 때 <code>cargo build</code>. 테스트가 포함되어 있지 않기 때문에 라이브러리를 빌드하고 결과적으로 컴파일 된 아티팩트의 공간을 절약하려는 경우 컴파일 시간을 절약합니다. 통합 테스트가 다른 디렉토리에 있기 때문에 필요하지 않습니다. <code>#[cfg(test)]</code> 주석. 그러나 단위 테스트는 코드와 동일한 파일로 진행되므로 <code>#[cfg(test)]</code> 컴파일된 결과에 포함되지 않도록 지정해야 합니다.</p>
-<p>이 장의 첫 번째 섹션에서 새로운 <code>adder</code> 프로젝트를 생성했을 때 Cargo는 다음 코드를 생성했습니다.</p>
+<p>단위 테스트의 목적은 코드의 나머지 부분과 격리된 각 코드 단위를 테스트하여, 코드가 어디에서 기대한 대로 작동하고 어디에서 작동하지 않는지를 빠르게 파악하는 것입니다. 단위 테스트는 테스트 대상 코드와 같은 파일의 src 디렉터리에 작성합니다. 관례적으로 각 파일에 tests라는 이름의 모듈을 만들어 테스트 함수를 포함하고, 이 모듈에 <code>tests</code>를 붙여 <code>cfg(test)</code>를 지정합니다.</p>
+<h4 id="the-tests-module-and-cfgtest"><a class="header" href="#the-tests-module-and-cfgtest"><code>tests</code> 모듈과 <code>#[cfg(test)]</code></a></h4>
+<p>테스트 모듈에 붙인 <code>#[cfg(test)]</code> 주석은 Rust에게 <code>tests</code> 모듈의 테스트 코드를 <code>cargo test</code> 명령을 실행할 때만 컴파일하고 실행하라고 알려 줍니다. <code>cargo build</code> 명령을 실행할 때는 컴파일하지 않습니다. 이렇게 하면 라이브러리만 빌드할 때 컴파일 시간을 절약할 수 있고, 테스트 코드가 포함되지 않으므로 최종 컴파일 결과물인 아티팩트의 용량도 줄일 수 있습니다. 통합 테스트는 다른 디렉터리에 있으므로 <code>#[cfg(test)]</code> 주석이 필요하지 않습니다. 하지만 단위 테스트는 코드와 같은 파일에 있으므로 <code>#[cfg(test)]</code> 주석을 사용해 컴파일 결과에 포함되지 않도록 지정해야 합니다.</p>
+<p>이 장의 첫 번째 섹션에서 새로운 <code>adder</code> 프로젝트를 생성했을 때, Cargo가 이 코드를 생성해 주었습니다.</p>
 <p>파일명: src/lib.rs</p>
 <pre><code class="language-rust noplayground">pub fn add(left: u64, right: u64) -&gt; u64 {
     left + right
@@ -190,8 +190,8 @@ mod tests {
 <code>cfg</code> 속성, Cargo는 우리가 적극적으로 테스트를 실행하는 경우에만 테스트 코드를 컴파일합니다. <code>cargo test</code>. 이것은 주석이 달린 기능 이외에 이 단위 안에 있을지도 모른 어떤 조수 기능든지, 포함합니다 <code>#[test]</code>.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="testing-private-functions"></a></p>
-<h4 id="private-function-tests"><a class="header" href="#private-function-tests">개인 기능 테스트</a></h4>
-<p>테스트 커뮤니티 내에서 비공개 함수가 직접 테스트되어야 하는지에 대한 논쟁이 있습니다. 다른 언어들은 비공개 함수를 테스트하는 것을 어렵거나 불가능하게 만듭니다. 어떤 테스트 이데올로기를 고수하든, 러스트의 개인 정보 보호 규칙을 통해 비공개 함수를 테스트할 수 있습니다. 비공개 함수 <code>internal_adder</code>를 사용하여 Listing 11-12의 코드를 고려하십시오.</p>
+<h4 id="private-function-tests"><a class="header" href="#private-function-tests">비공개 함수 테스트</a></h4>
+<p>테스트 커뮤니티에서는 비공개 함수를 직접 테스트해야 하는지에 대해 논쟁이 있습니다. 다른 언어에서는 비공개 함수를 테스트하는 것이 어렵거나 불가능한 경우도 있습니다. 어떤 테스트 철학을 따르든, Rust의 프라이버시 규칙은 비공개 함수를 테스트할 수 있도록 허용합니다. Listing 11-12의 코드와 비공개 함수 <code>internal_adder</code>를 살펴보세요.</p>
 <figure class="listing" id="listing-11-12">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground">pub fn add_two(a: u64) -&gt; u64 {
@@ -212,15 +212,14 @@ mod tests {
         assert_eq!(result, 4);
     }
 }</code></pre>
-<figcaption><a href="#listing-11-12">리스팅 11-12</a>: 개인 기능 테스트</figcaption>
+<figcaption><a href="#listing-11-12">리스팅 11-12</a>: 비공개 함수 테스트</figcaption>
 </figure>
-<p>유의할 점 <code>internal_adder</code> 기능은 것과 같이 표를 하지 않습니다 <code>pub</code>. 테스트는 단지 러스트 코드이고, <code>tests</code> module은 또 다른 모듈입니다. 우리가 논의 한 것처럼
-<a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html">"모듈 트리에서 항목을 참조하는 경로"</a> 무시 , 자식 모듈의 항목은 조상 모듈의 항목을 사용할 수 있습니다. 이 테스트에서, 우리는에 속하는 모든 항목을 가지고 <code>tests</code> 범위로 단위의 부모 <code>use super::*</code>그리고 테스트가 호출할 수 있습니다.The test can call. <code>internal_adder</code>. 비공개 함수를 테스트해야 한다고 생각하지 않는다면, 러스트에는 그렇게 하도록 강요하는 것이 없습니다.</p>
+<p>내부 함수인 <code>internal_adder</code>가 <code>pub</code>로 표시되어 있지 않다는 점에 유의하세요. 테스트는 단순히 Rust 코드이며, <code>tests</code> 모듈은 또 다른 모듈일 뿐입니다. <a href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html">모듈 트리에서 항목을 가리키는 경로</a>에서 논의했듯이, 자식 모듈의 항목은 조상 모듈의 항목을 사용할 수 있습니다. 이 테스트에서는 <code>tests</code>를 사용하여 <code>use super::*</code>모듈의 부모에 속하는 모든 항목을 현재 범위로 가져오고, 이후 테스트에서 <code>internal_adder</code>를 호출할 수 있습니다. 비공개 함수를 테스트해야 한다고 생각하지 않는다면, Rust에는 그렇게 하도록 강요하는 규칙이 없습니다.</p>
 <h3 id="integration-tests"><a class="header" href="#integration-tests">통합 테스트</a></h3>
-<p>러스트에서는 통합 테스트가 라이브러리의 외부에 완전히 있습니다. 다른 코드와 마찬가지로 라이브러리를 사용합니다. 즉, 라이브러리의 공개 API의 일부인 함수만 호출할 수 있습니다. 그 목적은 라이브러리의 많은 부분이 제대로 작동하는지 테스트하는 것입니다. 통합될 때 올바르게 작동하는 코드 단위에 문제가 있을 수 있으므로 통합 코드의 테스트 커버리지도 중요합니다. 통합 테스트를 만들려면 먼저 테스트 디렉토리가 필요합니다.</p>
-<h4 id="the-tests-directory"><a class="header" href="#the-tests-directory">이름 * <em>시험</em> 전화번호부</a></h4>
-<p>우리는 프로젝트 디렉토리의 최상위 레벨, src 옆에 테스트 디렉토리를 만듭니다. Cargo는이 디렉토리에서 통합 테스트 파일을 찾습니다. 그런 다음 원하는만큼 테스트 파일을 만들 수 있으며 Cargo는 각 파일을 개별 상자로 컴파일합니다.</p>
-<p>통합 테스트를 만들어 봅시다. Listing 11-12의 코드를 src/lib.rs 파일에 그대로 두고, tests 디렉토리를 만들고, tests/integration_test.rs라는 이름의 새 파일을 생성해 봅시다. 디렉토리 구조는 다음과 같아야 합니다:</p>
+<p>Rust에서 통합 테스트는 라이브러리 외부에 완전히 존재합니다. 통합 테스트는 다른 코드와 동일한 방식으로 라이브러리를 사용하므로, 라이브러리의 공개 API에 포함된 함수만 호출할 수 있습니다. 통합 테스트의 목적은 라이브러리의 여러 부분이 함께 올바르게 작동하는지 확인하는 것입니다. 개별적으로 올바르게 작동하는 코드 단위도 통합될 때 문제가 발생할 수 있으므로, 통합된 코드의 테스트 커버리지도 중요합니다. 통합 테스트를 만들려면 먼저 tests 디렉토리가 필요합니다.</p>
+<h4 id="the-tests-directory"><a class="header" href="#the-tests-directory"><em>tests</em> 디렉터리</a></h4>
+<p>프로젝트 디렉토리의 최상위 레벨, src 옆에 tests 디렉토리를 만듭니다. Cargo는 이 디렉토리에서 통합 테스트 파일을 찾습니다. 원하는 만큼 테스트 파일을 만들 수 있으며, Cargo는 각 파일을 개별 크레이트로 컴파일합니다.</p>
+<p>통합 테스트를 만들어 보겠습니다. Listing 11-12의 코드가 src/lib.rs 파일에 있는 상태에서 tests 디렉토리를 만들고, tests/integration_test.rs라는 이름의 새 파일을 생성합니다. 디렉토리 구조는 다음과 같아야 합니다:</p>
 <pre><code class="language-text">adder
 ├── Cargo.lock
 ├── Cargo.toml
@@ -229,7 +228,7 @@ mod tests {
 └── tests
     └── integration_test.rs
 </code></pre>
-<p>Listing 11-13의 코드를 tests/integration_test.rs 파일에 입력하십시오.</p>
+<p>Listing 11-13의 코드를 tests/integration_test.rs 파일에 입력합니다.</p>
 <figure class="listing" id="listing-11-13">
 <span class="file-name">Filename: tests/integration_test.rs</span>
 <pre><code class="language-rust ignore">use adder::add_two;
@@ -239,10 +238,10 @@ fn it_adds_two() {
     let result = add_two(2);
     assert_eq!(result, 4);
 }</code></pre>
-<figcaption><a href="#listing-11-13">목록 11-13</a>: <code>adder</code> 크레이트에 있는 기능의 통합 시험</figcaption>
+<figcaption><a href="#listing-11-13">목록 11-13</a>: <code>adder</code> 크레이트의 함수에 대한 통합 테스트</figcaption>
 </figure>
-<p>tests 디렉토리의 각 파일은 별도의 크레이트이므로 라이브러리를 각 테스트 크레이트의 범위에 가져와야합니다. 이러한 이유로 <code>use adder::add_two;</code>를 코드 상단에 추가하여 단위 테스트에서 필요하지 않았습니다.</p>
-<p><code>#[cfg(test)]</code>로 tests/integration_test.rs의 코드에 주석을 달 필요가 없습니다. Cargo는 특별히 tests 디렉토리를 처리하고 <code>cargo test</code>를 실행할 때만 이 디렉토리에서 파일을 컴파일합니다. 지금 <code>cargo test</code>를 실행하십시오.</p>
+<p>tests 디렉토리의 각 파일은 별도의 크레이트이므로, 라이브러리를 각 테스트 크레이트의 스코프에 가져와야 합니다. 이 때문에 단위 테스트에서는 필요하지 않았던 <code>use adder::add_two;</code>를 코드 상단에 추가합니다.</p>
+<p>tests/integration_test.rs의 코드에 <code>#[cfg(test)]</code>를 붙일 필요가 없습니다. Cargo는 tests 디렉토리를 특별히 취급하여, <code>cargo test</code>를 실행할 때만 이 디렉토리의 파일을 컴파일합니다. 지금 <code>cargo test</code>를 실행해 보세요:</p>
 <pre><code class="language-console">$ cargo test
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 1.31s
@@ -267,11 +266,11 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 </code></pre>
-<p>출력의 세 섹션에는 단위 테스트, 통합 테스트 및 doc 테스트가 포함됩니다. 섹션의 테스트가 실패하면 다음 섹션이 실행되지 않습니다. 예를 들어, 단위 테스트가 실패하면 통합 및 doc 테스트에 대한 출력이 없습니다. 왜냐하면 모든 단위 테스트가 통과하는 경우에만 테스트가 실행되기 때문입니다.</p>
-<p>단위 테스트의 첫 번째 섹션은 우리가 보고 있는 것과 동일합니다: 각 단위 테스트에 대한 한 줄 (하나는 Listing 11-12에 추가된 <code>internal</code>라는 이름) 그리고 단위 테스트에 대한 요약 라인.</p>
-<p>통합 테스트 섹션은 <code>Running tests/integration_test.rs</code> 라인으로 시작합니다. 다음으로, 해당 통합 테스트의 각 테스트 기능에 대한 라인과 <code>Doc-tests adder</code> 섹션이 시작되기 직전에 통합 테스트 결과에 대한 요약 라인이 있습니다.</p>
-<p>각 통합 테스트 파일에는 자체 섹션이 있으므로 테스트 디렉토리에 더 많은 파일을 추가하면 더 많은 통합 테스트 섹션이 있습니다.</p>
-<p>테스트 함수의 이름을 <code>cargo test</code>의 인수로 지정하여 특정 통합 테스트 함수를 실행할 수 있습니다. 특정 통합 테스트 파일에서 모든 테스트를 실행하려면 <code>--test</code>의 <code>cargo test</code> 인수와 파일 이름을 사용합니다.</p>
+<p>출력의 세 섹션에는 단위 테스트, 통합 테스트, 문서 테스트가 포함됩니다. 한 섹션의 테스트가 실패하면 이후 섹션은 실행되지 않습니다. 예를 들어, 단위 테스트가 실패하면 통합 테스트와 문서 테스트의 출력이 없습니다. 이는 모든 단위 테스트가 통과해야만 해당 테스트들이 실행되기 때문입니다.</p>
+<p>단위 테스트 섹션의 첫 번째 부분은 지금까지 확인한 내용과 동일합니다. 각 단위 테스트에 한 줄씩 표시되며(예: Listing 11-12에서 추가한 <code>internal</code>), 마지막에 단위 테스트의 요약 줄이 표시됩니다.</p>
+<p>통합 테스트 섹션은 <code>Running tests/integration_test.rs</code> 줄로 시작합니다. 다음으로, 해당 통합 테스트 파일 내의 각 테스트 함수에 대한 줄이 표시되고, <code>Doc-tests adder</code> 섹션이 시작되기 직전에 통합 테스트 결과에 대한 요약 줄이 표시됩니다.</p>
+<p>각 통합 테스트 파일은 자체 섹션을 가지므로, tests 디렉토리에 파일을 더 추가하면 통합 테스트 섹션도 더 많이 표시됩니다.</p>
+<p>테스트 함수의 이름을 <code>cargo test</code>의 인수로 지정하여 특정 통합 테스트 함수만 실행할 수 있습니다. 특정 통합 테스트 파일의 모든 테스트를 실행하려면 <code>--test</code>의 <code>cargo test</code> 인수를 파일 이름과 함께 사용합니다.</p>
 <pre><code class="language-console">$ cargo test --test integration_test
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.64s
@@ -283,16 +282,15 @@ test it_adds_two ... ok
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 </code></pre>
-<p>이 명령은 tests/integration_test.rs 파일에서 테스트만 실행합니다.</p>
+<p>이 명령은 tests/integration_test.rs 파일에 있는 테스트만 실행합니다.</p>
 <h4 id="submodules-in-integration-tests"><a class="header" href="#submodules-in-integration-tests">통합 테스트의 하위 모듈</a></h4>
-<p>더 많은 통합 테스트를 추가하면 테스트 디렉토리에 더 많은 파일을 만들어 구성 할 수 있습니다. 예를 들어 테스트 기능을 테스트하는 기능으로 그룹화 할 수 있습니다. 앞에서 언급했듯이 테스트 디렉토리의 각 파일은 별도의 크레이트로 컴파일되어 최종 사용자가 크레이트를 사용하는 방식을보다 밀접하게 모방하기 위해 별도의 범위를 만드는 데 유용합니다. 그러나 이는 테스트 디렉토리의 파일이 동일한 동작을 공유하지 않는다는 것을 의미합니다.</p>
-<p>의 다양한 동작 The different action of <em>시험</em> 디렉토리 파일은 여러 통합 테스트 파일에서 사용할 수 있는 도우미 함수 집합이 있을 때 가장 눈에 띄며 다음 단계의 단계를 수행하려고 합니다. <a href="ch07-05-separating-modules-into-different-files.html">"모듈을 다른 파일로 분리"</a> 무시  7 장의 섹션은 공통 모듈로 추출합니다. 예를 들어, <em>테스트/common.rs</em>
-함수 이름을 지정하려면To set a function named <code>setup</code> 그 안에, 우리는 몇 가지 코드를 추가할 수 있습니다 <code>setup</code> 우리는 여러 테스트 파일에서 여러 테스트 함수를 호출 할:</p>
+<p>통합 테스트를 더 많이 추가하면 tests 디렉토리에 파일을 만들어 정리하는 것이 좋습니다. 예를 들어, 테스트하는 기능별로 테스트 함수를 그룹화할 수 있습니다. 앞서 언급했듯이, tests 디렉토리의 각 파일은 별도의 크레이트로 컴파일됩니다. 이는 최종 사용자가 크레이트를 사용하는 방식을 더 정확하게 모방하기 위해 별도의 스코프를 만드는 데 유용합니다. 하지만 이는 tests 디렉토리의 파일이 src 디렉토리의 파일과 동일한 동작을 공유하지 않음을 의미합니다. 7장에서 모듈과 파일로 코드를 분리하는 방법에 대해 배운 내용과 관련이 있습니다.</p>
+<p><em>tests</em> 디렉터리 파일의 동작이 다른 점은 여러 통합 테스트 파일에서 사용할 보조 함수 집합이 있을 때, 7장의 <a href="ch07-05-separating-modules-into-different-files.html">“모듈을 다른 파일로 분리하기”</a><!-- ignore --> 섹션의 단계를 따라 이를 공통 모듈로 추출하려고 할 때 가장 뚜렷하게 드러납니다. 예를 들어, <em>tests/common.rs</em>을 만들고 <code>setup</code>이라는 이름의 함수를 넣으면, 여러 테스트 파일의 여러 테스트 함수에서 호출하려는 코드를 <code>setup</code>에 추가할 수 있습니다:</p>
 <p>파일 이름: tests/common.rs</p>
 <pre><code class="language-rust noplayground">pub fn setup() {
     // setup code specific to your library's tests would go here
 }</code></pre>
-<p>테스트를 다시 실행하면 common.rs 파일에 대한 테스트 출력에서 새로운 섹션을 보게 될 것입니다.이 파일에는 테스트 함수가 포함되어 있지 않거나 <code>setup</code> 함수를 어디에서든지 호출하지 않았더라도:</p>
+<p>테스트를 다시 실행하면, 이 파일에 테스트 함수가 없고 <code>setup</code> 함수를 어디에서도 호출하지 않았음에도 common.rs 파일에 대한 새로운 섹션이 테스트 출력에 표시됩니다.</p>
 <pre><code class="language-console">$ cargo test
    Compiling adder v0.1.0 (file:///projects/adder)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.89s
@@ -323,7 +321,7 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 </code></pre>
-<p><code>common</code>를 테스트 결과에 표시하고 <code>running 0 tests</code>를 표시하는 것은 우리가 원했던 것이 아닙니다. 우리는 다른 통합 테스트 파일과 일부 코드를 공유하고 싶었습니다. 테스트 출력에 <code>common</code>가 나타나지 않도록하려면 tests / common.rs를 만드는 대신 tests / common / mod.rs를 만듭니다. 프로젝트 디렉토리는 이제 다음과 같습니다.</p>
+<p>테스트 결과에 <code>common</code>가 표시되고 <code>running 0 tests</code>이 표시되는 것은 우리가 원하지 않는 결과입니다. 우리는 다른 통합 테스트 파일과 일부 코드를 공유하고 싶었을 뿐입니다. 테스트 출력에 <code>common</code>가 나타나지 않도록 하려면 tests/common.rs를 만드는 대신 tests/common/mod.rs를 만듭니다. 이제 프로젝트 디렉토리는 다음과 같은 구조를 가집니다.</p>
 <pre><code class="language-text">├── Cargo.lock
 ├── Cargo.toml
 ├── src
@@ -333,7 +331,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
     │   └── mod.rs
     └── integration_test.rs
 </code></pre>
-<p>이것은 러스트가 7 장에서 <a href="ch07-05-separating-modules-into-different-files.html#alternate-file-paths">“대체 파일 경로”</a>에서 언급 한 것을 이해하는 오래된 명명 규칙입니다. 이 방법으로 파일의 이름을 지정하면 러스트는 <code>common</code> 모듈을 통합 테스트 파일로 취급하지 않습니다. <code>setup</code> 함수 코드를 tests/common/mod.rs로 이동하고 tests/common.rs 파일을 삭제하면 테스트 출력의 섹션이 더 이상 별도의 테스트 디렉토리에 표시되지 않습니다.</p>
+<p>이것은 7장에서 <a href="ch07-05-separating-modules-into-different-files.html#alternate-file-paths">“대체 파일 경로”</a>에서 언급한, Rust가 이해하는 오래된 명명 규칙입니다. 이렇게 파일을 이름 붙이면 Rust는 <code>common</code> 모듈을 통합 테스트 파일로 취급하지 않습니다. <code>setup</code> 함수 코드를 tests/common/mod.rs로 이동하고 tests/common.rs 파일을 삭제하면, 테스트 출력에 해당 섹션이 더 이상 표시되지 않습니다. tests 디렉토리의 하위 디렉토리에 있는 파일은 별도의 크레이트로 컴파일되지 않으며, 테스트 출력에 섹션이 생성되지도 않습니다.</p>
 <p>우리가 창조된 후 <em>테스트/공통/mod.rs</em>, 우리는 모듈로 통합 테스트 파일에서 사용할 수 있습니다. 다음은 호출의 예입니다 <code>setup</code>
 에서 기능 <code>it_adds_two</code> 시험에서 <em>테스트/통합_test.rs</em>:</p>
 <p>파일 이름: tests/integration_test.rs</p>
@@ -348,13 +346,13 @@ fn it_adds_two() {
     let result = add_two(2);
     assert_eq!(result, 4);
 }</code></pre>
-<p><code>mod common;</code> 선언은 Listing 7-21에서 설명한 모듈 선언과 동일합니다. 그런 다음 테스트 함수에서 <code>common::setup()</code> 함수를 호출할 수 있습니다.</p>
-<h4 id="integration-tests-for-binary-crates"><a class="header" href="#integration-tests-for-binary-crates">Binary Crate에 대한 통합 테스트</a></h4>
-<p>만약 우리의 프로젝트가 src/main.rs 파일만 포함하고 src/lib.rs 파일이 없는 바이너리 크레이트라면, 우리는 tests 디렉토리에 통합 테스트를 만들 수 없고 <code>use</code> 문으로 src/main.rs 파일에 정의된 함수를 범위 안에 가져올 수 없습니다. 오직 라이브러리 크레이트만이 다른 크레이트들이 사용할 수 있는 함수를 노출시킵니다. 바이너리 크레이트들은 그들 스스로 실행되도록 되어 있습니다.</p>
-<p>이것은 바이너리를 제공하는 러스트 프로젝트가 src/lib.rs 파일에 있는 논리를 호출하는 간단한 src/main.rs 파일을 가지고 있는 이유 중 하나입니다. 이 구조를 사용하여 통합 테스트는 <code>use</code>로 라이브러리 크레이트를 테스트하여 중요한 기능을 사용할 수 있도록 할 수 있습니다. 중요한 기능이 작동하면 src/main.rs 파일의 소량의 코드도 작동하며 소량의 코드도 테스트할 필요가 없습니다.</p>
+<p><code>mod common;</code> 선언은 Listing 7-21에서 보여준 모듈 선언과 동일합니다. 그런 다음 테스트 함수에서 <code>common::setup()</code> 함수를 호출할 수 있습니다.</p>
+<h4 id="integration-tests-for-binary-crates"><a class="header" href="#integration-tests-for-binary-crates">바이너리 크레이트에 대한 통합 테스트</a></h4>
+<p>프로젝트가 src/main.rs 파일만 포함하고 src/lib.rs 파일이 없는 바이너리 크레이트라면, tests 디렉토리에 통합 테스트를 만들 수 없고 <code>use</code> 문으로 src/main.rs 파일에 정의된 함수를 스코프에 가져올 수도 없습니다. 라이브러리 크레이트만이 다른 크레이트에서 사용할 수 있는 함수를 노출하며, 바이너리 크레이트는 단독으로 실행되도록 설계되어 있습니다.</p>
+<p>바이너리를 제공하는 Rust 프로젝트가 src/lib.rs 파일에 있는 로직을 호출하는 간단한 src/main.rs 파일 구조를 갖는 이유 중 하나가 바로 이것입니다. 이 구조를 사용하면 통합 테스트에서 <code>use</code>를 통해 라이브러리 크레이트의 핵심 기능을 스코프에 포함시켜 테스트할 수 있습니다. 핵심 기능이 정상적으로 작동한다면 src/main.rs 파일의 소량의 코드도 자연스럽게 작동하므로, 이 소량의 코드를 별도로 테스트할 필요가 없습니다.</p>
 <h2 id="summary"><a class="header" href="#summary">요약</a></h2>
-<p>러스트의 테스트 기능은 코드를 변경하더라도 예상대로 계속 작동하도록 하기 위해 코드가 어떻게 작동해야 하는지를 지정하는 방법을 제공합니다. 단위 테스트는 라이브러리의 다른 부분을 개별적으로 연습하고 개인 구현 세부 사항을 테스트 할 수 있습니다. 통합 테스트는 라이브러리의 많은 부분이 제대로 작동하는지 확인하고 라이브러리의 공개 API를 사용하여 외부 코드가 사용하는 것과 같은 방식으로 코드를 테스트합니다. 러스트의 유형 시스템과 소유권 규칙은 여전히 버그를 방지하는 데 도움이 되지만, 여전히 버그를 방지하는 데 도움이 됩니다.</p>
-<p>이 장과 이전 장에서 배운 지식을 결합하여 프로젝트에서 작업 해 봅시다!</p>
+<p>Rust의 테스트 기능은 코드가 어떻게 동작해야 하는지 명시하여, 코드를 변경하더라도 예상대로 계속 작동하는지 확인할 수 있는 방법을 제공합니다. 단위 테스트는 라이브러리의 각 부분을 독립적으로 실행하며 비공개 구현 세부 사항까지 테스트할 수 있습니다. 통합 테스트는 라이브러리의 여러 부분이 함께 올바르게 작동하는지 확인하며, 외부 코드가 사용하는 것과 동일한 방식으로 라이브러리의 공개 API를 통해 코드를 테스트합니다. Rust의 타입 시스템과 소유권 규칙이 일부 버그를 방지하는 데 도움이 되지만, 코드가 기대하는 대로 동작하는지와 관련된 논리 버그를 줄이기 위해 테스트는 여전히 중요합니다.</p>
+<p>이 장과 이전 장에서 배운 지식을 결합하여 프로젝트를 진행해 보겠습니다!</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

@@ -161,15 +161,15 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h2 id="packages-and-crates"><a class="header" href="#packages-and-crates">패키지 및 상자</a></h2>
-<p>우리가 다룰 모듈 시스템의 첫 번째 부분은 패키지와 크레이트입니다.</p>
+<h2 id="packages-and-crates"><a class="header" href="#packages-and-crates">패키지와 크레이트</a></h2>
+<p>모듈 시스템에서 다룰 첫 번째 주제는 패키지와 크레이트입니다.</p>
 <p>A <em>크레이트</em> 러스트 컴파일러가 한 번에 고려하는 최소한의 코드입니다. 실행하더라도 <code>rustc</code> 보다는 <code>cargo</code> 그리고 하나의 소스 코드 파일을 전달합니다 (우리가 다시 모든 방법을했던 것처럼). <a href="ch01-02-hello-world.html#rust-program-basics">"러스트 프로그램 기본 사항"</a> 무시
  1 장에서 컴파일러는 해당 파일을 크레이트로 간주합니다. Crates는 모듈을 포함 할 수 있으며 앞으로 나올 섹션에서 볼 수 있듯이 모듈이 크레이트로 컴파일되는 다른 파일에서 정의 될 수 있습니다.</p>
-<p>크레이트는 두 가지 형태 중 하나로 올 수 있습니다: 바이너리 크레이트 또는 라이브러리 크레이트. 바이너리 크레이트는 명령줄 프로그램이나 서버와 같이 실행할 수 있는 실행 파일로 컴파일할 수 있는 프로그램입니다. 실행 파일이 실행될 때 일어나는 일을 정의하는 <code>main</code>라는 함수가 있어야 합니다. 지금까지 우리가 만든 모든 크레이트는 바이너리 크레이트였습니다.</p>
+<p>크레이트는 바이너리 크레이트와 라이브러리 크레이트 두 가지 형태 중 하나입니다. 바이너리 크레이트는 명령줄 프로그램이나 서버처럼 실행 가능한 파일로 컴파일하여 실행할 수 있는 프로그램입니다. 실행 파일이 실행될 때 수행할 작업을 정의하는 <code>main</code> 함수가 있어야 합니다. 지금까지 만든 모든 크레이트는 바이너리 크레이트였습니다.</p>
 <p>라이브러리 크레이트에는 <code>main</code> 함수가 없으며 실행 파일로 컴파일되지 않습니다. 대신 여러 프로젝트와 공유 할 기능을 정의합니다. 예를 들어 <code>rand</code>에서 사용한 <a href="ch02-00-guessing-game-tutorial.html#generating-a-random-number">제 2 장</a> 크레이트는 임의의 숫자를 생성하는 기능을 제공합니다. 러스트aceans가 "crate"라고 말하는 대부분의 경우 라이브러리 크레이트를 의미하며 "crate"프로그래밍 개념을 사용합니다.</p>
-<p>크레이트 루트는 러스트 컴파일러가 시작하고 크레이트의 루트 모듈을 구성하는 소스 파일입니다(<a href="ch07-02-defining-modules-to-control-scope-and-privacy.html">“모듈로 제어 범위 및 개인 정보 보호”</a>에서 모듈을 자세히 설명하겠습니다).</p>
-<p>패키지는 일련의 기능을 제공하는 하나 이상의 크레이트 번들입니다. 패키지에는 해당 크레이트를 빌드하는 방법을 설명하는 Cargo.toml 파일이 포함되어 있습니다. Cargo는 실제로 코드를 빌드하는 데 사용한 명령줄 도구의 바이너리 크레이트를 포함하는 패키지입니다. Cargo 패키지에는 바이너리 크레이트가 의존하는 라이브러리 크레이트도 포함되어 있습니다. 다른 프로젝트는 Cargo 라이브러리 크레이트에 의존하여 Cargo 명령줄 도구가 사용하는 것과 동일한 논리를 사용할 수 있습니다.</p>
-<p>패키지는 원하는 만큼 많은 바이너리 크레이트를 포함할 수 있지만, 대부분의 경우 하나의 라이브러리 크레이트만 포함할 수 있습니다. 패키지는 라이브러리 또는 바이너리 크레이트에 상관없이 적어도 하나의 크레이트를 포함해야 합니다.</p>
+<p>크레이트 루트는 Rust 컴파일러가 컴파일의 시작점으로 사용하는 소스 파일이며, 이 파일은 크레이트의 루트 모듈을 구성합니다(<a href="ch07-02-defining-modules-to-control-scope-and-privacy.html">“모듈을 사용한 범위 및 프라이버시 제어”</a>에서 모듈에 대해 자세히 설명하겠습니다).</p>
+<p>패키지는 특정 기능 집합을 제공하는 하나 이상의 크레이트 묶음입니다. 패키지에는 해당 크레이트를 빌드하는 방법을 설명하는 Cargo.toml 파일이 포함됩니다. Cargo는 실제로 코드를 빌드하는 데 사용해 온 명령줄 도구의 바이너리 크레이트를 포함하는 패키지입니다. Cargo 패키지에는 바이너리 크레이트가 의존하는 라이브러리 크레이트도 포함됩니다. 다른 프로젝트는 Cargo 라이브러리 크레이트에 의존하여 Cargo 명령줄 도구가 사용하는 동일한 로직을 사용할 수 있습니다.</p>
+<p>패키지는 원하는 만큼 많은 바이너리 크레이트를 포함할 수 있지만, 라이브러리 크레이트는 최대 하나만 포함할 수 있습니다. 패키지는 라이브러리 크레이트든 바이너리 크레이트든 적어도 하나의 크레이트를 포함해야 합니다.</p>
 <p>패키지를 만들 때 어떤 일이 발생하는지 살펴 보겠습니다. 먼저 <code>cargo new my-project</code> 명령을 입력합니다.</p>
 <pre><code class="language-console">$ cargo new my-project
      Created binary (application) `my-project` package
@@ -179,8 +179,8 @@ src
 $ ls my-project/src
 main.rs
 </code></pre>
-<p>우리가 뛰고 나면 <code>cargo new my-project</code>, 우리는 사용 <code>ls</code> 화물이 만드는 것을 볼 수 있습니다. <em>my-프로젝트</em> 디렉토리가 있습니다. <em>카고.toml</em> 파일, 우리에게 패키지를 제공. 또한있다 <em>SRC에서</em> 포함하는 directory <em>메인.rs</em>. 열기 <em>카고.toml</em> 텍스트 편집기에서 언급이 없다는 점에 유의하십시오. <em>한국어 (ko)</em>. 화물은 대회를 따른다 <em>한국어 (ko)</em> 는 패키지와 같은 이름의 이진 크레이트의 크레이트 루트이다. 마찬가지로, Cargo는 패키지 디렉토리에 포함된 경우 <em>src/lib.rs 파일에서</em>패키지는 패키지와 같은 이름의 라이브러리 크레이트를 포함하고, The package contains a library crate with the same name as the package, <em>src/lib.rs 파일에서</em> 그것의 크레이트 루트는 입니다. 화물은 크레이트 루트 파일을에 통과합니다 <code>rustc</code> 라이브러리 또는 바이너리를 빌드합니다.Build the library or binary.</p>
-<p>여기서 src/main.rs 만 포함하는 패키지가 있습니다. 즉, <code>my-project</code>라는 바이너리 크레이트 만 포함합니다. 패키지에 src / main.rs 및 src / lib.rs가 포함 된 경우 패키지와 동일한 이름을 가진 바이너리와 라이브러리의 두 개의 크레이트가 있습니다. 패키지는 src / bin 디렉토리에 파일을 배치하여 여러 바이너리 크레이트를 가질 수 있습니다. 각 크레이트는 별도의 파일입니다.</p>
+<p><code>cargo new my-project</code> 명령을 실행한 후, <code>ls</code> 명령을 사용하여 Cargo가 생성한 내용을 확인해 보겠습니다. <em>my-project</em> 디렉토리에는 <em>Cargo.toml</em> 파일이 있어 패키지를 구성합니다. 또한 <em>src</em> 디렉토리에는 <em>main.rs</em> 파일이 포함되어 있습니다. 텍스트 편집기로 <em>Cargo.toml</em> 파일을 열어 보면, <em>src/main.rs</em>에 대한 언급이 없다는 점을 확인할 수 있습니다. Cargo는 <em>src/main.rs</em>가 패키지 이름과 동일한 이름의 바이너리 크레이트의 크레이트 루트임을 따르는 규약을 따릅니다. 마찬가지로, Cargo는 패키지 디렉토리에 <em>src/lib.rs</em> 파일이 포함된 경우, 해당 패키지가 패키지 이름과 동일한 이름의 라이브러리 크레이트를 포함하고 <em>src/lib.rs</em>가 그 크레이트 루트임을 알고 있습니다. Cargo는 크레이트 루트 파일을 <code>rustc</code>에 전달하여 라이브러리 또는 바이너리를 빌드합니다.</p>
+<p>여기서는 <code>my-project</code>라는 바이너리 크레이트만 포함하는 패키지를 다루고 있습니다. 즉, 이 패키지는 src/main.rs 파일만 포함합니다. 패키지에 src/main.rs와 src/lib.rs가 모두 포함된 경우, 바이너리 크레이트와 라이브러리 크레이트 두 개가 존재하며, 두 크레이트 모두 패키지 이름과 동일한 이름을 갖습니다. src/bin 디렉토리에 파일을 배치하면 패키지에 여러 바이너리 크레이트를 포함할 수 있으며, 각 파일은 별도의 바이너리 크레이트가 됩니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

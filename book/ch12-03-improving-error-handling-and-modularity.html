@@ -161,29 +161,29 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h2 id="refactoring-to-improve-modularity-and-error-handling"><a class="header" href="#refactoring-to-improve-modularity-and-error-handling">모듈화 및 오류 처리를 개선하기 위한 리팩토링</a></h2>
-<p>프로그램을 개선하기 위해 프로그램의 구조와 잠재적 오류를 처리하는 방법에 관한 네 가지 문제를 해결합니다. 첫째, <code>main</code> 함수는 이제 두 가지 작업을 수행합니다. 인수를 구문 분석하고 파일을 읽습니다. 프로그램이 성장함에 따라 <code>main</code> 함수가 처리하는 별도의 작업의 수가 증가합니다. 기능이 책임을 얻으면 각 기능을 추론하기가 더 어려워지고 변경하기가 더 어려워집니다.</p>
-<p>이 문제는 두 번째 문제와도 관련이 있습니다. <code>query</code> 및 <code>file_path</code>는 프로그램의 구성 변수이지만 <code>contents</code>와 같은 변수는 프로그램의 논리를 수행하는 데 사용됩니다. <code>main</code>가 길수록 더 많은 변수를 범위로 가져와야 할 것입니다. 범위가 많을수록 각 구성의 목적을 추적하는 것이 더 어려워집니다.</p>
-<p>세 번째 문제는 <code>expect</code>를 사용하여 파일을 읽을 때 오류 메시지를 인쇄했지만 오류 메시지는 <code>Should have been able to read the file</code>를 인쇄한다는 것입니다. 파일을 읽는 것은 여러 가지 방법으로 실패 할 수 있습니다. 예를 들어 파일이 누락되었거나 파일을 열 권한이 없을 수 있습니다. 현재 상황에 관계없이 모든 사용자에 대해 동일한 오류 메시지를 인쇄 할 수 있습니다.</p>
-<p>넷째, <code>expect</code>를 사용하여 오류를 처리하고, 사용자가 충분한 인수를 지정하지 않고 프로그램을 실행하면 러스트에서 <code>index out of bounds</code> 오류가 발생하여 문제를 명확하게 설명하지 못합니다. 모든 오류 처리 코드가 한 곳에 있어 향후 관리자들이 변경이 필요한 경우 코드를 참조할 수 있다면 가장 좋습니다.</p>
-<p>이 4가지 문제를 우리 프로젝트를 통해 해결하고자 한다.</p>
+<h2 id="refactoring-to-improve-modularity-and-error-handling"><a class="header" href="#refactoring-to-improve-modularity-and-error-handling">모듈화 및 오류 처리 개선하기 위한 리팩토링</a></h2>
+<p>프로그램을 개선하기 위해, 프로그램의 구조와 잠재적 오류 처리 방식과 관련된 네 가지 문제를 해결하겠습니다. 첫째, <code>main</code> 함수는 현재 두 가지 작업을 수행합니다. 인수를 파싱하고 파일을 읽는 것입니다. 프로그램이 커질수록 <code>main</code> 함수가 담당하는 개별 작업의 수도 늘어납니다. 함수가 담당하는 책임이 많아지면, 해당 함수를 이해하고, 테스트하며, 일부 기능을 깨뜨리지 않고 변경하는 것이 어려워집니다. 따라서 각 함수가 하나의 작업만 담당하도록 기능을 분리하는 것이 가장 좋습니다.</p>
+<p>이 문제는 두 번째 문제와도 관련이 있습니다. <code>query</code>와 <code>file_path</code>는 프로그램의 설정 변수이지만, <code>contents</code>와 같은 변수는 프로그램의 로직을 수행하는 데 사용됩니다. <code>main</code> 함수가 길어질수록 스코프에 포함해야 하는 변수의 수도 많아집니다. 스코프에 있는 변수가 많을수록 각 변수의 목적을 추적하기가 어려워집니다. 설정 변수를 하나의 구조체로 묶어두면 그 목적을 명확히 할 수 있습니다.</p>
+<p>세 번째 문제는, 파일 읽기 실패 시 오류 메시지를 출력하기 위해 <code>expect</code>를 사용했지만, 출력되는 오류 메시지는 단순히 <code>Should have been able to read the file</code>일 뿐이라는 점입니다. 파일 읽기는 여러 가지 이유로 실패할 수 있습니다. 예를 들어 파일이 존재하지 않거나, 파일을 열 권한이 없을 수 있습니다. 현재는 어떤 상황이든 동일한 오류 메시지만 출력하므로, 사용자에게 유용한 정보를 제공하지 못합니다.</p>
+<p>넷째, <code>expect</code>를 사용하여 오류를 처리합니다. 사용자가 충분한 인수를 지정하지 않고 프로그램을 실행하면 Rust에서 <code>index out of bounds</code> 오류가 발생하며, 이 오류 메시지는 문제를 명확하게 설명하지 못합니다. 오류 처리 코드가 모두 한 곳에 모여 있으면 향후 유지보수 담당자가 오류 처리 로직을 변경할 때 코드를 한 곳만 확인하면 되므로 가장 좋습니다. 또한 오류 처리 코드를 한 곳에 모으면 최종 사용자에게 의미 있는 메시지를 출력할 수 있도록 보장할 수 있습니다.</p>
+<p>프로젝트를 리팩토링하여 이 네 가지 문제를 해결해 보겠습니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="separation-of-concerns-for-binary-projects"></a></p>
-<h3 id="separating-concerns-in-binary-projects"><a class="header" href="#separating-concerns-in-binary-projects">이진 프로젝트에서 관심사를 분리</a></h3>
-<p>여러 작업을 <code>main</code> 함수에 할당하는 조직적인 문제는 많은 바이너리 프로젝트에 공통적입니다. 그 결과, 많은 러스트 프로그래머들은 <code>main</code> 함수가 커지기 시작할 때 바이너리 프로그램의 개별적인 관심사를 나누는 것이 유용하다는 것을 알게 됩니다. 이 프로세스는 다음과 같은 단계를 거칩니다:</p>
+<h3 id="separating-concerns-in-binary-projects"><a class="header" href="#separating-concerns-in-binary-projects">바이너리 프로젝트에서 관심사 분리하기</a></h3>
+<p>여러 작업을 <code>main</code> 함수에 할당하는 조직적 문제는 많은 바이너리 프로젝트에서 흔히 볼 수 있습니다. 그 결과, 많은 Rust 개발자들은 <code>main</code> 함수가 커지기 시작하면 바이너리 프로그램의 개별 관심사를 분리하는 것이 유용하다고 생각합니다. 이 과정은 다음과 같은 단계를 포함합니다.</p>
 <ul>
-<li>프로그램을 main.rs 파일과 lib.rs 파일로 나누고 프로그램의 로직을 lib.rs로 이동하십시오.</li>
-<li>명령줄 구문 분석 로직이 작은 경우 <code>main</code> 함수에 남아 있을 수 있습니다.</li>
-<li>명령줄 파싱 로직이 복잡해지기 시작하면 <code>main</code> 함수에서 다른 함수나 유형으로 추출합니다.</li>
+<li>프로그램을 main.rs 파일과 lib.rs 파일로 나누고, 프로그램 로직을 lib.rs로 이동하십시오.</li>
+<li>명령줄 파싱 로직이 작다면 <code>main</code> 함수에 그대로 두어도 됩니다.</li>
+<li>명령줄 파싱 로직이 복잡해지기 시작하면 <code>main</code> 함수에서 다른 함수나 타입으로 추출하십시오.</li>
 </ul>
-<p>이 과정 후에 <code>main</code> 기능에서 남아 있는 책임은 뒤에 오는 것으로 제한되어야 합니다:</p>
+<p>이 과정을 거친 후 <code>main</code> 함수에 남아 있는 책임은 다음으로 제한되어야 합니다:</p>
 <ul>
-<li>논리를 인자 값으로 파싱하는 명령줄 호출</li>
-<li>다른 설정 설정</li>
-<li>lib.rs에서 <code>run</code> 함수 호출하기</li>
-<li><code>run</code>가 오류를 반환하는 경우 오류 처리</li>
+<li>인자 값을 전달하여 명령줄 파싱 로직을 호출하는 것</li>
+<li>기타 설정을 구성하는 것</li>
+<li>lib.rs의 <code>run</code> 함수를 호출하는 것</li>
+<li><code>run</code>가 오류를 반환하는 경우 오류를 처리하는 것</li>
 </ul>
-<p>이 패턴은 관심사를 분리하는 것입니다. main.rs는 프로그램 실행을 처리하고 lib.rs는 작업의 모든 논리를 처리합니다. <code>main</code> 함수를 직접 테스트 할 수 없기 때문에이 구조를 사용하면 프로그램의 모든 논리를 <code>main</code> 함수에서 이동하여 테스트 할 수 있습니다. <code>main</code> 함수에 남아있는 코드는이 프로세스를 확인하여 충분히 작습니다.</p>
+<p>이 패턴은 관심사를 분리하는 것입니다. main.rs는 프로그램 실행을 담당하고, lib.rs는 해당 작업의 모든 로직을 담당합니다. <code>main</code> 함수를 직접 테스트할 수 없기 때문에, 이 구조를 사용하면 프로그램의 모든 로직을 <code>main</code> 함수에서 분리하여 테스트할 수 있습니다. <code>main</code> 함수에 남아 있는 코드는 읽어서 정확성을 확인할 수 있을 정도로 충분히 작습니다. 이제 이 과정을 따라 프로그램을 재구성해 보겠습니다.</p>
 <h4 id="extracting-the-argument-parser"><a class="header" href="#extracting-the-argument-parser">인수 파서 추출</a></h4>
 <p>인수 파싱을 위한 함수를 함수로 추출합니다.
 <code>main</code> will call. Listing 12-5는 다음과 같은 새로운 시작을 보여줍니다. <code>main</code> 새로운 함수를 호출하는 함수 <code>parse_config</code># 우리가 정의할 것 <em>한국어 (ko)</em>.</p>
@@ -216,14 +216,12 @@ fn parse_config(args: &amp;[String]) -&gt; (&amp;str, &amp;str) {
 }</code></pre>
 <figcaption><a href="#listing-12-5">리스트 12-5</a>: <code>parse_config</code>에서 <code>main</code> 함수 추출</figcaption>
 </figure>
-<p>우리는 여전히 명령줄 인수를 벡터로 수집하고 있지만, 인덱스 1의 인수 값을 변수에 할당하는 대신 <code>query</code> 변수에 대한 인덱스 2의 인수 값 <code>file_path</code> 내부 The <code>main</code>
-함수, 우리는 전체 벡터를 <code>parse_config</code> 기능.
-<code>parse_config</code> 그런 다음 함수는 어떤 인수가 어떤 변수에 들어가고 값을 다시 전달 하는지를 결정하는 논리를 보유합니다. <code>main</code>. 우리는 아직도 창조합니다 <code>query</code> 그리고 <code>file_path</code> 변수 in <code>main</code>,하지만 <code>main</code> 더 이상 명령 줄 인수와 변수가 대응하는 방법을 결정하는 책임이 없습니다.</p>
-<p>이 재작업은 우리의 작은 프로그램에 대한 과잉처럼 보일 수 있습니다, 하지만 우리는 작은에서 리팩토링하고, 증분 단계. 이 변경 한 후, 인수 구문 분석이 여전히 작동하는지 확인하기 위해 다시 프로그램을 실행. 자주 진행 상황을 확인하는 것이 좋다, 그들이 발생할 때 문제의 원인을 식별하는 데 도움이.</p>
+<p>여전히 명령줄 인수를 벡터로 수집하고 있지만, <code>query</code> 함수 내부에서 인덱스 1의 인수 값을 <code>file_path</code> 변수에, 인덱스 2의 인수 값을 <code>main</code> 변수에 할당하는 대신, 전체 벡터를 <code>parse_config</code> 함수에 전달합니다. <code>parse_config</code> 함수는 어떤 인수가 어떤 변수에 대응하는지를 결정하는 논리를 포함하며, 값을 다시 <code>main</code> 함수로 반환합니다. 여전히 <code>query</code> 함수에서 <code>file_path</code> 변수와 <code>main</code> 변수를 생성하지만, <code>main</code> 함수는 더 이상 명령줄 인수와 변수가 어떻게 대응하는지를 결정하는 책임을 지지 않습니다.</p>
+<p>이 재구성은 작은 프로그램에 대해 과잉처럼 보일 수 있지만, 우리는 작고 점진적인 단계로 리팩토링하고 있습니다. 이 변경 사항을 적용한 후, 인수 파싱이 여전히 정상 작동하는지 확인하기 위해 프로그램을 다시 실행해 보세요. 문제가 발생했을 때 원인을 파악하는 데 도움이 되도록 진행 상황을 자주 확인하는 것이 좋습니다.</p>
 <h4 id="grouping-configuration-values"><a class="header" href="#grouping-configuration-values">설정 값 그룹화</a></h4>
-<p><code>parse_config</code> 함수를 개선하기 위해 또 다른 작은 단계를 밟을 수 있습니다. 현재 튜플을 반환하고 있지만 튜플을 즉시 개별 부분으로 나눕니다. 이것은 아직 올바른 추상화가없는 신호입니다.</p>
-<p>개선의 여지가 있음을 보여주는 또 다른 지표는 <code>config</code>의 <code>parse_config</code> 부분입니다. 이는 우리가 반환하는 두 값이 관련이 있으며 둘 다 하나의 구성 값의 일부임을 의미합니다. 우리는 현재 두 값을 튜플로 그룹화하는 것 이외의 데이터 구조에서이 의미를 전달하지 않습니다. 대신 두 값을 하나의 구조체에 넣고 각 구조체에이 값을 더 쉽게 제공합니다.</p>
-<p>Listing 12-6은 <code>parse_config</code> 함수의 개선을 보여줍니다.</p>
+<p><code>parse_config</code> 함수를 한 단계 더 개선할 수 있습니다. 현재 이 함수는 튜플을 반환하지만, 반환된 튜플을 즉시 개별 요소로 분해하고 있습니다. 이는 아직 적절한 추상화를 찾지 못했음을 시사합니다.</p>
+<p>개선 여지가 있음을 보여주는 또 다른 지표는 <code>config</code> 함수의 <code>parse_config</code> 부분입니다. 이 부분은 반환하는 두 값이 서로 관련이 있으며, 둘 다 하나의 구성 값에 속한다는 의미를 내포합니다. 현재 우리는 두 값을 튜플로 묶는 것 외에는 데이터 구조를 통해 이러한 의미를 전달하지 못하고 있습니다. 대신 두 값을 하나의 구조체에 넣고, 각 구조체 필드에 의미 있는 이름을 부여하겠습니다. 이렇게 하면 이 코드를 유지보수할 후속 개발자가 서로 다른 값들이 어떻게 관련되어 있는지, 그리고 각 값의 목적을 이해하기 쉬워집니다.</p>
+<p>Listing 12-6은 <code>parse_config</code> 함수의 개선 사항을 보여줍니다.</p>
 <figure class="listing" id="listing-12-6">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust should_panic noplayground"><span class="boring">use std::env;
@@ -256,25 +254,23 @@ fn parse_config(args: &amp;[String]) -&gt; Config {
 
     Config { query, file_path }
 }</code></pre>
-<figcaption><a href="#listing-12-6">목록 12-6</a>: <code>parse_config</code>를 리팩토링하여 <code>Config</code> 구조체의 인스턴스를 반환</figcaption>
+<figcaption><a href="#listing-12-6">Listing 12-6</a>: <code>parse_config</code>를 리팩토링하여 <code>Config</code> 구조체의 인스턴스를 반환</figcaption>
 </figure>
 <p>이름있는 구조체를 추가했습니다 <code>Config</code> 필드 이름을 지정하도록 정의됨 <code>query</code> 그리고
 <code>file_path</code>. 의 서명 <code>parse_config</code> 이제 반환한다는 것을 나타냅니다.
 <code>Config</code> 가치. 몸에서의 <code>parse_config</code>, 우리가 참조를 반환하는 데 사용되는 문자열 슬라이스 <code>String</code> 값 입력 <code>args</code>이제 우리는 define <code>Config</code>
 소유하는 것을 Contain <code>String</code> 가치. <code>args</code> 변수 in <code>main</code> 는 인수 값의 소유자이며, 단지 <code>parse_config</code> 함수를 빌리면, 이는 러스트의 차입 규칙을 위반한다는 것을 의미합니다. <code>Config</code> 가치에 대한 소유권을 가지려고 노력했습니다. <code>args</code>.</p>
-<p><code>String</code> 데이터를 관리 할 수있는 방법은 여러 가지가 있습니다. 가장 쉬운 방법은 다소 비효율적 인 경로이지만 <code>clone</code> 메소드를 값에 호출하는 것입니다. 이렇게하면 <code>Config</code> 인스턴스에 대한 데이터의 전체 복사본이 생성되므로 문자열 데이터에 대한 참조를 저장하는 것보다 더 많은 시간과 메모리가 필요합니다. 그러나 데이터를 복제하면 코드가 매우 간단 해집니다.</p>
+<p><code>String</code> 데이터를 관리하는 방법은 여러 가지가 있습니다. 가장 쉬운 방법은 다소 비효율적이지만, 값에 <code>clone</code> 메소드를 호출하는 것입니다. 이렇게 하면 <code>Config</code> 인스턴스가 소유할 데이터의 전체 복사본이 생성되므로, 문자열 데이터에 대한 참조를 저장하는 것보다 더 많은 시간과 메모리가 필요합니다. 그러나 데이터를 복제하면 참조의 라이프타임을 관리할 필요가 없으므로 코드가 매우 단순해집니다. 이러한 상황에서 단순성을 얻기 위해 성능을 조금 희생하는 것은 가치 있는 트레이드오프입니다.</p>
 <section aria-role="note" class="note">
-<h3 id="the-trade-offs-of-using-clone"><a class="header" href="#the-trade-offs-of-using-clone">사용 의 장단점 <code>clone</code></a></h3>
+<h3 id="the-trade-offs-of-using-clone"><a class="header" href="#the-trade-offs-of-using-clone">clone 사용의 장단점 <code>clone</code></a></h3>
 <p>많은 러스트aceans가 사용하지 않는 경향이 있습니다. <code>clone</code> 런타임 비용 때문에 소유권 문제를 해결합니다.
 <a href="ch13-00-functional-features.html">제 13 장</a> 무시 , 이런 상황에서 좀 더 효율적인 메소드를 사용하는 방법을 배우게 될 것입니다. 하지만 지금은 몇 개의 문자열을 복사해서 진행을 계속하는 것이 좋습니다. 왜냐하면 이러한 복사본을 한 번만 만들고 파일 경로와 쿼리 문자열이 매우 작기 때문입니다. 첫 번째 패스에서 코드를 최적화하는 것보다 조금 비효율적 인 작업 프로그램을 사용하는 것이 좋습니다. 러스트에 더 많은 경험을 쌓을수록 가장 쉽게 시작할 수 있습니다. <code>clone</code>.</p>
 </section>
-<p>우리는 업데이트했습니다 <code>main</code> 상기 인스턴스는 The instance is <code>Config</code> 돌아 가기
-<code>parse_config</code> 이름이 지정된 변수로 <code>config</code>그리고 우리는 이전에 분리된 코드를 사용했던 코드를 업데이트했습니다. <code>query</code> 그리고 <code>file_path</code> 변수는 이제 필드들을 사용할 수 있도록 합니다. <code>Config</code> 대신 struct</p>
-<p>이제 우리의 코드는 <code>query</code>와 <code>file_path</code>가 관련되어 있으며 프로그램의 작동 방식을 구성하는 것이 목적임을보다 명확하게 전달합니다. 이러한 값을 사용하는 코드는 목적을 위해 명명 된 필드에서 <code>config</code> 인스턴스에서 찾을 수 있습니다.</p>
-<h4 id="creating-a-constructor-for-config"><a class="header" href="#creating-a-constructor-for-config">Creating a 생성자 <code>Config</code></a></h4>
-<p>지금까지 우리는 명령줄 인수를 구문 분석하는 논리를 추출했습니다. <code>main</code> 그리고 그것을 바탕으로 <code>parse_config</code> 기능. 이렇게 하는 것은 저희가 그것을 볼 것을 도왔습니다 <code>query</code> 그리고 <code>file_path</code> 가치는 관련되고, 그 관계는 우리의 부호에서 전달되어야 합니다. 우리는 그 때 a를 추가했습니다 <code>Config</code> 관련 목적의 이름을 지정하는 struct <code>query</code> 그리고 <code>file_path</code> 그리고 그 값들의 이름들을 다음과 같은 구조체 필드 이름들로 반환할 수 있습니다. <code>parse_config</code> 기능.</p>
-<p>그래서, 이제 그 목적의 <code>parse_config</code> 함수는 a를 만드는 것입니다. <code>Config</code>
-예를 들어, 우리는 변경할 수 있습니다. <code>parse_config</code> from a plain function to a function named 단순한 함수에서 명명된 함수로 <code>new</code> 그것은 그것과 연결되어 있습니다. <code>Config</code> struct. 이 변경은 코드를 더 관용적으로 만듭니다. 우리는 표준 라이브러리에서 타입의 인스턴스를 만들 수 있습니다. <code>String</code>#전화를 통해 <code>String::new</code>. 마찬가지로, 변경함으로써 <code>parse_config</code> 으로 A <code>new</code> 관련된 기능 <code>Config</code>Instance를 만들 수 있게 될 것입니다. <code>Config</code> 전화 걸기 <code>Config::new</code>. Listing 12-7은 우리가 해야 할 변화를 보여줍니다.</p>
+<p><code>main</code>을 업데이트하여, <code>Config</code>이 반환하는 <code>parse_config</code> 인스턴스를 <code>config</code>이라는 이름의 변수에 저장하도록 했습니다. 또한, 이전에 개별적인 <code>query</code>과 <code>file_path</code> 변수를 사용하던 코드를 수정하여, 이제 대신 <code>Config</code> 구조체의 필드를 사용하도록 했습니다.</p>
+<p>이제 코드는 <code>query</code>와 <code>file_path</code>이 서로 관련되어 있으며, 프로그램의 동작 방식을 설정하는 것이 목적임을 더 명확하게 전달합니다. 이러한 값을 사용하는 코드는 <code>config</code> 인스턴스에서 해당 목적에 맞게 이름이 붙은 필드를 통해 값을 찾을 수 있음을 알 수 있습니다.</p>
+<h4 id="creating-a-constructor-for-config"><a class="header" href="#creating-a-constructor-for-config">Config 생성자 만들기 <code>Config</code></a></h4>
+<p>지금까지 우리는 <code>main</code>에서 명령줄 인수를 파싱하는 로직을 추출하여 <code>parse_config</code> 함수에 배치했습니다. 이렇게 함으로써 <code>query</code>와 <code>file_path</code> 값이 서로 관련되어 있으며, 이러한 관계가 코드에 표현되어야 한다는 점을 확인할 수 있었습니다. 이후 우리는 <code>Config</code> 구조체를 추가하여 <code>query</code>와 <code>file_path</code>의 관련 목적을 명시하고, <code>parse_config</code> 함수에서 구조체 필드 이름으로 값의 이름을 반환할 수 있도록 했습니다.</p>
+<p>이제 <code>parse_config</code> 함수의 목적은 <code>Config</code> 인스턴스를 생성하는 것이므로, <code>parse_config</code>를 단순한 함수에서 <code>new</code> 구조체에 연관된 <code>Config</code> 함수로 변경할 수 있습니다. 이 변경은 코드를 더 관용적으로 만듭니다. 표준 라이브러리의 <code>String</code>와 같은 타입의 인스턴스는 <code>String::new</code>을 호출하여 생성할 수 있습니다. 마찬가지로, <code>parse_config</code>을 <code>new</code>에 연관된 <code>Config</code> 함수로 변경하면, <code>Config</code>을 호출하여 <code>Config::new</code> 인스턴스를 생성할 수 있게 됩니다. Listing 12-7은 이러한 변경 사항을 보여줍니다.</p>
 <figure class="listing" id="listing-12-7">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust should_panic noplayground"><span class="boring">use std::env;
@@ -311,12 +307,11 @@ fn parse_config(args: &amp;[String]) -&gt; Config {
         Config { query, file_path }
     }
 }</code></pre>
-<figcaption><a href="#listing-12-7">목록 12-7</a>: <code>parse_config</code>를 <code>Config::new</code>로 변경하기</figcaption>
+<figcaption><a href="#listing-12-7">예제 12-7</a>: <code>parse_config</code>을 <code>Config::new</code>로 변경하기</figcaption>
 </figure>
-<p>우리는 업데이트했습니다 <code>main</code> 우리가 전화 한 곳 <code>parse_config</code> #대신 전화
-<code>Config::new</code>. 우리는 이름을 변경했습니다 <code>parse_config</code> 오시는 길 <code>new</code> 그리고 그것을 내면으로 옮겼다. <code>impl</code> 블록은, which associates, <code>new</code> 기능 WITH <code>Config</code>. 이 코드를 다시 컴파일하여 작동하는지 확인하십시오.</p>
-<h3 id="fixing-the-error-handling"><a class="header" href="#fixing-the-error-handling">오류 처리 Error Handling</a></h3>
-<p>이제 우리는 오류 처리를 수정하는 작업을 할 것입니다. 인덱스 1 또는 인덱스 2에서 <code>args</code> 벡터의 값에 액세스하려고 하면 벡터에 항목이 3개 미만인 경우 프로그램이 패닉에 빠지게 됩니다. 인수 없이 프로그램을 실행해 보십시오. 다음과 같이 보일 것입니다.</p>
+<p><code>main</code>에서 <code>parse_config</code>을 호출하던 부분을 <code>Config::new</code>을 호출하도록 업데이트했습니다. <code>parse_config</code>의 이름을 <code>new</code>로 변경하고 <code>impl</code> 블록 안으로 이동시켜 <code>new</code> 함수를 <code>Config</code>에 연관시켰습니다. 코드가 정상적으로 동작하는지 확인하기 위해 다시 컴파일해 보세요.</p>
+<h3 id="fixing-the-error-handling"><a class="header" href="#fixing-the-error-handling">오류 처리 수정하기 </a></h3>
+<p>이제 오류 처리를 수정하겠습니다. <code>args</code> 벡터의 인덱스 1 또는 인덱스 2에 접근하려고 하면, 벡터에 항목이 3개 미만인 경우 프로그램이 패닉(panic)합니다. 인수를 하나도 전달하지 않고 프로그램을 실행해 보세요. 다음과 같은 결과가 표시됩니다.</p>
 <pre><code class="language-console">$ cargo run
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
@@ -326,9 +321,9 @@ thread 'main' (6023615) panicked at src/main.rs:27:21:
 index out of bounds: the len is 1 but the index is 1
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </code></pre>
-<p><code>index out of bounds: the len is 1 but the index is 1</code> 라인은 프로그래머를위한 오류 메시지입니다. 최종 사용자가 대신해야 할 일을 이해하는 데 도움이되지 않습니다. 지금 해결합시다.</p>
+<p><code>index out of bounds: the len is 1 but the index is 1</code> 라인은 프로그래머를 위한 오류 메시지입니다. 최종 사용자가 무엇을 해야 하는지 이해하는 데 도움이 되지 않습니다. 이제 이 문제를 해결해 보겠습니다.</p>
 <h4 id="improving-the-error-message"><a class="header" href="#improving-the-error-message">오류 메시지 개선</a></h4>
-<p>Listing 12-8에서, 우리는 인덱스 1과 인덱스 2에 접근하기 전에 슬라이스가 충분히 길다는 것을 확인할 <code>new</code> 함수에 체크를 추가합니다. 만약 슬라이스가 충분히 길지 않으면, 프로그램은 패닉을 일으켜 더 나은 에러 메시지를 표시합니다.</p>
+<p>Listing 12-8에서는 인덱스 1과 인덱스 2에 접근하기 전에 슬라이스가 충분히 긴지 확인하는 <code>new</code> 함수에 체크를 추가합니다. 슬라이스가 충분히 길지 않으면 프로그램은 패닉을 일으키며 더 나은 오류 메시지를 표시합니다.</p>
 <figure class="listing" id="listing-12-8">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
@@ -367,12 +362,12 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </span><span class="boring">        Config { query, file_path }
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-12-8">목록 12-8</a>: 인수의 수를 확인합니다.</figcaption>
+<figcaption><a href="#listing-12-8">Listing 12-8</a>: 인수의 수를 확인하는 코드</figcaption>
 </figure>
 <p>이 코드는 다음과 같습니다. <a href="ch09-03-to-panic-or-not-to-panic.html#creating-custom-types-for-validation">오시는 길 <code>Guess::new</code> Listing 9-13에서 작성한 함수</a> 무시 #우리가 부르는 곳 <code>panic!</code> 때
 <code>value</code> 인수는 유효한 값의 범위를 벗어났습니다. 여기서 값의 범위를 확인하는 대신 길이가 <code>args</code> 적어도
 <code>3</code> 나머지 함수는 이 조건이 충족되었다는 가정 하에 작동할 수 있습니다. <code>args</code> 3개 미만 품목이 있습니다, 이 조건은 일 것입니다 <code>true</code>그리고 우리는 그것을 부르는 <code>panic!</code> 매크로는 프로그램을 즉시 종료합니다.</p>
-<p><code>new</code>에서 이러한 여분의 몇 줄의 코드를 사용하여 인수없이 프로그램을 다시 실행하여 오류가 어떻게 보이는지 살펴 보겠습니다.</p>
+<p><code>new</code> 함수에 이러한 몇 줄의 코드를 추가했으니, 이제 인수를 하나도 전달하지 않고 프로그램을 다시 실행하여 오류가 어떻게 보이는지 살펴 보겠습니다.</p>
 <pre><code class="language-console">$ cargo run
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
@@ -382,15 +377,12 @@ thread 'main' (6023776) panicked at src/main.rs:26:13:
 not enough arguments
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </code></pre>
-<p>이 출력이 더 좋습니다: 우리는 이제 합리적인 오류 메시지를 가지고 있습니다. 그러나, 우리는 또한 사용자에게 주고 싶지 않은 외부 정보도 가지고 있습니다. 아마도 Listing 9-13에서 사용한 기법이 여기에 사용하기에 가장 좋은 방법은 아닙니다:
-<code>panic!</code> 사용 문제보다 프로그래밍 문제에 더 적합합니다.
-<a href="ch09-03-to-panic-or-not-to-panic.html#guidelines-for-error-handling">9장에서 논의된 대로</a> 무시 . 대신, 우리는 9 장에서 배운 다른 기술을 사용할 것입니다.<a href="ch09-02-recoverable-errors-with-result.html">반환 A
-<code>Result</code></a> 무시  이것은 성공 또는 오류를 나타냅니다.</p>
+<p>이 출력은 더 좋습니다. 이제 합리적인 오류 메시지를 가지고 있습니다. 그러나 사용자에게 제공하고 싶지 않은 불필요한 정보도 포함되어 있습니다. 아마도 Listing 9-13에서 사용한 기법이 여기에 사용하기에 가장 좋은 방법은 아닐 것입니다. 9장에서 논의했듯이, <code>panic!</code>panic!<a href="ch09-03-to-panic-or-not-to-panic.html#guidelines-for-error-handling"> 호출은 사용 문제보다 프로그래밍 문제에 더 적합합니다. </a>대신, 9장에서 배운 다른 기법을 사용할 것입니다.<a href="ch09-02-recoverable-errors-with-result.html"><code>Result</code>Result</a>를 반환하여 성공 또는 오류를 나타내는 것입니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="returning-a-result-from-new-instead-of-calling-panic"></a></p>
-<h4 id="returning-a-result-instead-of-calling-panic"><a class="header" href="#returning-a-result-instead-of-calling-panic">반환 A <code>Result</code> 전화하는 대신 <code>panic!</code></a></h4>
-<p>대신 a 를 반환할 수 있습니다. <code>Result</code> 다음을 포함하는 값The value that include a <code>Config</code> 예를 들어 성공적인 경우와 오류 사례에서 문제를 설명합니다. 우리는 또한 함수 이름을 변경할 것입니다. <code>new</code> 오시는 길 <code>build</code> 많은 프로그래머들이 기대하기 때문에 <code>new</code> 결코 실패하지 않는 기능. 때 <code>Config::build</code> 커뮤니케이션 to <code>main</code>우리는 사용할 수 있습니다. <code>Result</code> 문제가 있음을 알리는 유형입니다. 그런 다음 변경할 수 있습니다. <code>main</code> 변환하다 convert <code>Err</code> 에 대한 주변 텍스트없이 우리의 사용자에 대한보다 실용적인 오류로 변형 <code>thread 'main'</code> 그리고 <code>RUST_BACKTRACE</code> 상기 호출은 The call to <code>panic!</code> 원인.</p>
-<p>Listing 12-9는 우리가 지금 <code>Config::build</code>를 호출하고 있는 함수의 반환값과 <code>Result</code>를 반환하는 데 필요한 함수의 본문을 보여줍니다. 이것은 우리가 <code>main</code>를 업데이트할 때까지 컴파일되지 않을 것이라는 점을 유의하세요.</p>
+<h4 id="returning-a-result-instead-of-calling-panic"><a class="header" href="#returning-a-result-instead-of-calling-panic"><code>Result</code>Result<code>panic!</code>를 반환하는 것</a></h4>
+<p>대신 성공한 경우 <code>Config</code> 인스턴스를 포함하고, 오류인 경우 문제를 설명하는 <code>Result</code> 값을 반환할 수 있습니다. 또한 많은 프로그래머가 <code>new</code> 함수가 실패하지 않는다고 기대하기 때문에 함수 이름을 <code>new</code>에서 <code>build</code>로 변경합니다. <code>Config::build</code>가 <code>main</code>와 통신할 때, <code>Result</code> 타입을 사용하여 문제가 발생했음을 알릴 수 있습니다. 그런 다음, <code>main</code>을 변경하여 <code>panic!</code> 호출로 인해 발생하는 <code>thread 'main'</code>와 <code>RUST_BACKTRACE</code>에 대한 주변 텍스트 없이, <code>Err</code> 변형을 사용자에게 더 실용적인 오류로 변환할 수 있습니다.</p>
+<p>Listing 12-9에서는 이제 <code>Config::build</code>라고 부르는 함수의 반환값과 <code>Result</code>을 반환하기 위해 함수 본문에 필요한 변경 사항을 보여줍니다. 다음 Listing에서 <code>main</code>를 업데이트하기 전까지는 컴파일이 되지 않는다는 점에 유의하세요.</p>
 <figure class="listing" id="listing-12-9">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
@@ -427,16 +419,15 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
         Ok(Config { query, file_path })
     }
 }</code></pre>
-<figcaption><a href="#listing-12-9">목록 12-9</a>: <code>Result</code>에서 <code>Config::build</code> 반환</figcaption>
+<figcaption><a href="#listing-12-9">Listing 12-9</a>: <code>Result</code>에서 <code>Config::build</code> 반환</figcaption>
 </figure>
-<p>우리의 <code>build</code> 함수는 a를 반환합니다. <code>Result</code> 으로 A <code>Config</code> instance in the success case and a string literal in the error case. 우리의 오류 값은 항상 문자열 리터럴이 될 것입니다. <code>'static</code> 평생.</p>
-<p>함수 본문에 두 가지 변경 사항이 있습니다. 사용자가 충분한 인수를 전달하지 않을 때 <code>panic!</code>를 호출하는 대신 <code>Err</code> 값을 반환하고 <code>Config</code> 반환 값을 <code>Ok</code>로 래핑합니다. 이러한 변경으로 인해 함수는 새로운 형식 서명을 준수합니다.</p>
-<p>돌아 가기 <code>Err</code> 값 FROM <code>Config::build</code> 허락하다 the <code>main</code> 처리하기 위한 기능 <code>Result</code> 상기 반환된 값은 Returned from the <code>build</code> 기능 및 오류 경우에 더 깨끗 하 게 프로세스를 종료 합니다.</p>
+<p>우리의 <code>build</code> 함수는 성공 시 <code>Result</code> 인스턴스를, 실패 시 문자열 리터럴을 포함하는 <code>Config</code> 을 반환합니다. 오류 값은 항상 'static 라이프타임을 가진 문자열 리터럴이 됩니다. <code>'static</code></p>
+<p>함수 본문에서 두 가지 변경 사항을 했습니다. 사용자가 충분한 인수를 전달하지 않을 때 <code>panic!</code>를 호출하는 대신 <code>Err</code> 값을 반환하고, <code>Config</code> 반환 값을 <code>Ok</code>로 감쌌습니다. 이러한 변경 사항은 함수가 새로운 타입 시그니처에 맞게 조정되도록 합니다.</p>
+<p><code>Err</code>에서 <code>Config::build</code> 값을 반환하면, <code>main</code> 함수가 <code>Result</code> 함수에서 반환된 <code>build</code> 값을 처리하고 오류인 경우 프로세스를 더 깔끔하게 종료할 수 있습니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="calling-confignew-and-handling-errors"></a></p>
-<h4 id="calling-configbuild-and-handling-errors"><a class="header" href="#calling-configbuild-and-handling-errors">전화 걸기 <code>Config::build</code> 오류 처리Handling error</a></h4>
-<p>오류 케이스를 처리하고 사용자 친화적 인 메시지를 인쇄하려면 업데이트해야합니다.
-<code>main</code> 처리하기 위하여 <code>Result</code> 의해 반환되는 <code>Config::build</code>Listing 12-10과 같이, 우리는 또한 0이 아닌 오류 코드를 가진 커맨드 라인 툴을 종료할 책임이 있습니다. <code>panic!</code> 0이 아닌 종료 상태는 프로그램이 오류 상태로 종료되었다는 우리의 프로그램을 호출한 프로세스에 신호를 보내는 관례입니다.</p>
+<h4 id="calling-configbuild-and-handling-errors"><a class="header" href="#calling-configbuild-and-handling-errors"><code>Config::build</code> 호출 및 오류 처리</a></h4>
+<p>오류 케이스를 처리하고 사용자 친화적인 메시지를 출력하려면 Listing 12-10에서 보인 것처럼 <code>main</code>가 반환하는 <code>Result</code>을 처리하도록 <code>Config::build</code>를 업데이트해야 합니다. 또한 <code>panic!</code>에서 0이 아닌 오류 코드로 커맨드 라인 도구를 종료하는 책임을 제거하고, 대신 직접 구현합니다. 0이 아닌 종료 상태는 우리 프로그램을 호출한 프로세스에게 프로그램이 오류 상태로 종료되었음을 알리는 관례입니다.</p>
 <figure class="listing" id="listing-12-10">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
@@ -479,28 +470,22 @@ fn main() {
 </span><span class="boring">        Ok(Config { query, file_path })
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-12-10">등록일 12-10</a>: <code>Config</code>를 빌드하는 데 실패할 경우 오류 코드로 종료</figcaption>
+<figcaption><a href="#listing-12-10">Listing 12-10</a>: <code>Config</code> 빌드 실패 시 오류 코드로 종료</figcaption>
 </figure>
-<p>이 목록에서는 아직 자세히 다루지 않은 방법을 사용했습니다.
-<code>unwrap_or_else</code>상기 정의하는 단계는, Wherein the defined is <code>Result&lt;T, E&gt;</code> 표준 라이브러리에 의해. <code>unwrap_or_else</code> 사용자 정의 할 수 있습니다, non-<code>panic!</code> 오류 처리. if <code>Result</code> 있습니다. <code>Ok</code> 이 메서드의 동작은 다음과 같습니다.This method's behavior is similar to <code>unwrap</code>내부 값을 반환합니다.Returns the inner value. <code>Ok</code> 감싸고 있습니다. 그러나 값이 <code>Err</code> 이 메서드는 클로저의 코드를 호출하며, 이는 우리가 정의하고 인수로 전달하는 익명 함수입니다. <code>unwrap_or_else</code>. 우리는 폐쇄를에서 더 상세히 커버할 것입니다 <a href="ch13-00-functional-features.html">제 13 장</a> 무시 . 지금은, 당신은 단지 그것을 알 필요가 <code>unwrap_or_else</code> will pass the value of ~의 내적 가치를 전달할 것이다 <code>Err</code>상기 정적 문자열은 The static string <code>"not enough arguments"</code>
-Listing 12-9에서, 인수의 클로저에 추가한 것 <code>err</code> 그것은 수직 관 사이에서 나타납니다. 마감에 있는 부호는 그 때 사용할 수 있습니다
-<code>err</code> 그것이 달릴 때의 가치.</p>
-<p>새로운 것을 추가했습니다. <code>use</code> 찾아오시는 길 <code>process</code> 표준 라이브러리에서 범위로. 오류 케이스에서 실행될 클로저의 코드는 단지 두 줄입니다: 우리는 <code>err</code> 값과 호출 <code>process::exit</code>. 그
-<code>process::exit</code> 기능은 프로그램을 즉각 멈추고 출구 상태 코드로 통과된 수를 돌려보낼 것이다. 이것은과 유사하다
-<code>panic!</code>Listing 12-8에서 사용한 -based 핸들링이지만, 더 이상 모든 추가 출력을 얻지는 못합니다. 한번 해봅시다:</p>
+<p>이 목록에서 아직 자세히 다루지 않은 메서드인 <code>unwrap_or_else</code>을 사용했습니다. 이 메서드는 표준 라이브러리에 의해 <code>Result&lt;T, E&gt;</code>에 정의되어 있습니다. <code>unwrap_or_else</code>을 사용하면 사용자 정의, 비<code>panic!</code> 오류 처리를 정의할 수 있습니다. <code>Result</code>가 <code>Ok</code> 값인 경우, 이 메서드의 동작은 <code>unwrap</code>과 유사합니다. <code>Ok</code>이 감싸고 있는 내부 값을 반환합니다. 그러나 값이 <code>Err</code> 값인 경우, 이 메서드는 클로저의 코드를 호출합니다. 클로저는 우리가 정의하고 <code>unwrap_or_else</code>의 인수로 전달하는 익명 함수입니다. 클로저에 대해 더 자세히 다루는 내용은 <a href="ch13-00-functional-features.html">13장</a><!-- ignore -->에서 확인하세요. 지금은 <code>unwrap_or_else</code>이 <code>Err</code>의 내부 값을 클로저에 전달한다는 것만 알면 됩니다. 이 경우 12-9 목록에서 추가한 정적 문자열 <code>"not enough arguments"</code>이며, 세로 파이프 사이에 나타나는 인수 <code>err</code>를 통해 전달됩니다. 그러면 클로저의 코드는 실행될 때 <code>err</code> 값을 사용할 수 있습니다.</p>
+<p>표준 라이브러리의 <code>use</code>을 스코프에 포함시키기 위해 새로운 <code>process</code> 문을 추가했습니다. 오류 발생 시 실행될 클로저의 코드는 단 두 줄입니다. <code>err</code> 값을 출력한 후 <code>process::exit</code>을 호출합니다. <code>process::exit</code> 함수는 프로그램을 즉시 중단하고 전달된 숫자를 종료 상태 코드로 반환합니다. 이는 <code>panic!</code>에 기반한 처리와 유사하지만, Listing 12-8에서 사용했던 경우와 달리 추가적인 출력이 발생하지 않습니다. 다음을 시도해 보겠습니다:</p>
 <pre><code class="language-console">$ cargo run
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
      Running `target/debug/minigrep`
 Problem parsing arguments: not enough arguments
 </code></pre>
-<p>좋습니다! 이 출력은 사용자에게 훨씬 친숙합니다.</p>
+<p>훌륭합니다! 이 출력은 사용자에게 훨씬 친근합니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="extracting-logic-from-the-main-function"></a></p>
-<h3 id="extracting-logic-from-main"><a class="header" href="#extracting-logic-from-main">로직을 추출하는 중 <code>main</code></a></h3>
-<p>이제 설정 파싱의 리팩토링을 끝냈으니, 프로그램의 로직을 살펴봅시다. <a href="#separation-of-concerns-for-binary-projects">“바이너리 프로젝트에서의 관심사 분리”</a> 무시 우리는 이름을 가진 함수를 추출할 것입니다. <code>run</code> 그것은 현재 모든 논리를 유지할 것입니다.
-<code>main</code> 설정 또는 처리 오류와 관련되지 않는 함수입니다. 우리가 완료되면, <code>main</code> 기능은 간결하고 검사에 의하여 검증하기 쉬울 것이고, 우리는 다른 모든 논리를 위한 시험을 쓸 수 있을 것입니다.</p>
-<p>Listing 12-11은 <code>run</code> 함수 추출의 작고 점진적인 개선을 보여줍니다.</p>
+<h3 id="extracting-logic-from-main"><a class="header" href="#extracting-logic-from-main">main 함수에서 로직 추출<code>main</code></a></h3>
+<p>이제 설정 파싱 리팩토링을 마쳤으니, 프로그램의 로직으로 넘어가 보겠습니다. <a href="#separation-of-concerns-for-binary-projects">"바이너리 프로젝트에서 관심사 분리"</a>에서 언급했듯이, <code>run</code>라는 이름의 함수를 추출할 것입니다. 이 함수는 현재 <code>main</code> 함수 내에 있는 설정 구성이나 오류 처리와 관련되지 않은 모든 로직을 포함합니다. 작업을 완료하면 <code>main</code> 함수는 간결해지고 검사만으로도 쉽게 검증할 수 있게 되며, 나머지 모든 로직에 대한 테스트를 작성할 수 있게 됩니다.</p>
+<p>Listing 12-11은 <code>run</code> 함수를 추출하여 로직을 분리하는 작은 점진적 개선 사항을 보여줍니다.</p>
 <figure class="listing" id="listing-12-11">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
@@ -549,14 +534,13 @@ fn run(config: Config) {
 </span><span class="boring">        Ok(Config { query, file_path })
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-12-11">등록일 12-11</a>: 나머지 프로그램 로직을 포함하는 <code>run</code> 함수 추출</figcaption>
+<figcaption><a href="#listing-12-11">Listing 12-11</a>: 나머지 프로그램 로직을 포함하는 <code>run</code> 함수 추출</figcaption>
 </figure>
-<p><code>run</code> 함수는 이제 파일을 읽는 것부터 <code>main</code>의 나머지 로직을 모두 포함합니다. <code>run</code> 함수는 <code>Config</code> 인스턴스를 인수로 사용합니다.</p>
+<p><code>run</code> 함수는 이제 파일을 읽는 것부터 <code>main</code>의 나머지 로직을 모두 포함합니다. <code>run</code> 함수는 <code>Config</code> 인스턴스를 인수로 받습니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="returning-errors-from-the-run-function"></a></p>
-<h4 id="returning-errors-from-run"><a class="header" href="#returning-errors-from-run">오류 반환FROM <code>run</code></a></h4>
-<p>나머지 프로그램 로직을 다음과 같이 분리합니다. <code>run</code> 기능, 우리는 우리가로 한 대로, 과실 취급을 개량해서 좋습니다 <code>Config::build</code> Listing 12-9에서. 호출하여 프로그램을 패닉에 빠뜨리는 대신 <code>expect</code>, 이 <code>run</code>
-함수는 a를 반환한다. <code>Result&lt;T, E&gt;</code> 무언가 잘못되었을 때. 이것은 우리가 오류를 다루는 논리를 더 통합하게 할 것입니다. <code>main</code> Listing 12-12는 서명과 본문에 필요한 변경 사항을 보여줍니다. <code>run</code>.</p>
+<h4 id="returning-errors-from-run"><a class="header" href="#returning-errors-from-run"><code>run</code>에서 오류 반환하기</a></h4>
+<p>나머지 프로그램 로직을 <code>run</code> 함수로 분리했으므로, Listing 12-9에서 <code>Config::build</code>에 적용했던 것처럼 오류 처리를 개선할 수 있습니다. <code>expect</code>를 호출하여 프로그램을 패닉에 빠뜨리는 대신, <code>run</code> 함수는 문제가 발생하면 <code>Result&lt;T, E&gt;</code>를 반환합니다. 이를 통해 오류 처리 로직을 사용자 친화적인 방식으로 <code>main</code>에 더 통합할 수 있습니다. Listing 12-12는 <code>run</code>의 시그니처와 본문에 필요한 변경 사항을 보여줍니다.</p>
 <figure class="listing" id="listing-12-12">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
@@ -606,20 +590,14 @@ fn run(config: Config) {
 </span><span class="boring">        Ok(Config { query, file_path })
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-12-12">등록일 12-12</a>: <code>run</code> 함수를 변경하여 <code>Result</code> 반환</figcaption>
+<figcaption><a href="#listing-12-12">Listing 12-12</a>: <code>run</code> 함수를 <code>Result</code> 반환하도록 변경</figcaption>
 </figure>
 <p>우리는 여기서 세 가지 중요한 변화를 만들었습니다. 첫째, 우리는 반환 유형을 변경했습니다. <code>run</code> 기능 2 <code>Result&lt;(), Box&lt;dyn Error&gt;&gt;</code>. 이 기능은 이전에 단위 유형을 돌려보냈다, <code>()</code>그리고 우리는 그 값을 다음과 같이 반환합니다.
 <code>Ok</code> 사례.</p>
-<p>에러 타입에 대해서, 우리는 트레잇 객체를 사용했습니다. <code>Box&lt;dyn Error&gt;</code> (그리고 우리는 가져왔다)
-<code>std::error::Error</code> 범위로 A <code>use</code> 맨 위 문). 우리는 안으로 특색 객체를 커버할 것이다 <a href="ch18-00-oop.html">창세기. Chapter 18</a> 무시 . 지금은, 그냥 알아
-<code>Box&lt;dyn Error&gt;</code> 즉, 함수는 다음을 구현하는 형식을 반환합니다.
-<code>Error</code> 트레잇, 하지만 우리는 어떤 특정 타입이 반환 값이 될 것인지 지정할 필요가 없습니다. 이것은 우리에게 다른 에러의 경우에 다른 타입일 수 있는 에러 값들을 반환하는 유연성을 제공합니다. <code>dyn</code> 키워드는 짧습니다
-<em>동적</em>.</p>
-<p>둘째로, 우리는 부름을 제거했습니다. <code>expect</code> 주의 은혜라 In favor of the <code>?</code> 연산자, 우리가 이야기 한 것처럼 <a href="ch09-02-recoverable-errors-with-result.html#a-shortcut-for-propagating-errors-the--operator">제 9 장</a> 무시 . 대신
-<code>panic!</code> 실수에 대하여, <code>?</code> 호출자가 처리할 현재 함수의 오류 값을 반환합니다.</p>
-<p>셋째, 그 <code>run</code> 이제 함수가 반환됩니다 <code>Ok</code> 성공 사례에 있는 가치. 우리는 선언했습니다 <code>run</code> 함수의 성공 유형은 다음과 같습니다. <code>()</code> in the signature, 이는 우리가 유닛 타입 값을 래핑해야 함을 의미합니다. <code>Ok</code> 값. 이
-<code>Ok(())</code> 구문은 처음에는 약간 이상하게 보일 수 있습니다. <code>()</code> 마치 이것이 우리가 전화하고 있다는 것을 나타내는 관용적인 방법인 것처럼 말입니다. <code>run</code> 단지 그것의 부작용을 위해; 그것은 우리가 필요로 하는 가치를 돌려보내지 않습니다.</p>
-<p>이 코드를 실행하면 컴파일되지만 경고가 표시됩니다.</p>
+<p>오류 타입으로 트레이트 객체인 <code>Box&lt;dyn Error&gt;</code>을 사용했습니다(그리고 상단의 <code>use</code> 문장으로 <code>std::error::Error</code>을 스코프에 가져왔습니다). 트레이트 객체에 대해 더 자세히 다루는 내용은 <a href="ch18-00-oop.html">18장</a><!-- ignore -->에서 확인하세요. 지금은 <code>Box&lt;dyn Error&gt;</code>이 함수가 <code>Error</code> 트레이트를 구현하는 타입을 반환하지만, 반환 값이 어떤 특정 타입인지 지정할 필요가 없다는 것만 알면 됩니다. 이를 통해 서로 다른 오류 상황에서 서로 다른 타입의 오류 값을 반환할 수 있는 유연성을 제공합니다. <code>dyn</code> 키워드는 <em>동적</em>의 줄임말입니다.</p>
+<p>둘째, <a href="ch09-02-recoverable-errors-with-result.html#a-shortcut-for-propagating-errors-the--operator">9장</a><!-- ignore -->에서 논의했듯이, <code>expect</code> 호출을 <code>?</code> 연산자로 대체했습니다. 오류에서 <code>panic!</code>하는 대신, <code>?</code>은 호출자가 처리하도록 현재 함수에서 오류 값을 반환합니다.</p>
+<p>셋째, <code>run</code> 함수는 성공 케이스에서 <code>Ok</code> 값을 반환합니다. 시그니처에서 <code>run</code> 함수의 성공 타입을 <code>()</code>로 선언했으므로, 유닛 타입 값을 <code>Ok</code> 값으로 감싸야 합니다. 이 <code>Ok(())</code> 구문은 처음에는 다소 낯설 수 있습니다. 하지만 이렇게 <code>()</code>를 사용하는 것은 <code>run</code>을 부수 효과(side effect)만을 위해 호출한다는 것을 나타내는 관용적인 방식입니다. 즉, 우리가 필요로 하는 값을 반환하지 않는다는 뜻입니다.</p>
+<p>이 코드를 실행하면 컴파일은 되지만 경고가 표시됩니다.</p>
 <pre><code class="language-console">$ cargo run -- the poem.txt
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
 warning: unused `Result` that must be used
@@ -652,9 +630,9 @@ To tell your name the livelong day
 To an admiring bog!
 
 </code></pre>
-<p>러스트는 우리 코드가 <code>Result</code> 값과 <code>Result</code> 값을 무시했다는 것을 알려줍니다. 하지만 에러가 났는지 아닌지는 확인하지 않고 있습니다. 컴파일러는 우리가 여기에 오류 처리 코드를 가지고 있다는 것을 상기시켜줍니다! 이제 그 문제를 바로 잡아봅시다.</p>
-<h4 id="handling-errors-returned-from-run-in-main"><a class="header" href="#handling-errors-returned-from-run-in-main">반환된 오류 처리 <code>run</code> 에서 <code>main</code></a></h4>
-<p>오류를 확인하고 Listing 12-10에서 <code>Config::build</code>와 함께 사용했던 것과 비슷한 기술을 사용하여 처리하지만 약간의 차이가 있습니다:</p>
+<p>Rust는 코드가 <code>Result</code> 값을 무시했으며, 이 <code>Result</code> 값이 오류가 발생했음을 나타낼 수 있다고 알려줍니다. 하지만 우리는 오류가 발생했는지 확인하지 않고 있습니다. 컴파일러는 우리가 여기에 오류 처리 코드를 포함할 의도였을 것이라고 상기시켜 줍니다! 이제 그 문제를 바로잡아 보겠습니다.</p>
+<h4 id="handling-errors-returned-from-run-in-main"><a class="header" href="#handling-errors-returned-from-run-in-main">run에서 반환된 오류를 main에서 처리하기<code>run</code><code>main</code></a></h4>
+<p>오류를 확인하고 처리하는 방법은 Listing 12-10에서 <code>Config::build</code>에 사용했던 것과 유사하지만, 약간의 차이가 있습니다:</p>
 <p>파일 이름: src/main.rs</p>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
 </span><span class="boring">use std::error::Error;
@@ -705,15 +683,12 @@ To an admiring bog!
 </span><span class="boring">        Ok(Config { query, file_path })
 </span><span class="boring">    }
 </span><span class="boring">}</span></code></pre>
-<p>우리는 사용 <code>if let</code> 보다는 <code>unwrap_or_else</code> 확인  ⁇  <code>run</code> 반환값
-<code>Err</code> 가치와 전화 <code>process::exit(1)</code> 만약 그렇다면. <code>run</code> 함수는 우리가 원하는 값을 반환하지 않습니다. <code>unwrap</code> 상기와 같은 방식으로 In the same way that
-<code>Config::build</code> 반환값 The <code>Config</code> 예를 들어. <code>run</code> 반환 <code>()</code> 성공 사례에서, 우리는 단지 오류를 감지하는 것에만 신경을 쓰므로, 우리는 필요하지 않습니다.
-<code>unwrap_or_else</code> unwrapped 값만 반환할 수 있습니다. <code>()</code>.</p>
+<p><code>if let</code> 대신 <code>unwrap_or_else</code>을 사용하여 <code>run</code>가 <code>Err</code> 값을 반환하는지 확인하고, 해당 값이 <code>process::exit(1)</code>인 경우 <code>run</code>을 호출합니다. <code>unwrap</code> 함수는 <code>Config::build</code>이 <code>Config</code> 인스턴스를 반환하는 것과 같은 방식으로, 우리가 언래핑(unwrap)을 원하는 값을 반환하지 않습니다. <code>run</code>은 성공 시 <code>()</code>을 반환하므로, 우리는 오류 감지에만 관심이 있을 뿐 <code>unwrap_or_else</code>을 통해 언래핑된 값(<code>()</code>)을 반환할 필요가 없습니다.</p>
 <p><code>if let</code>와 <code>unwrap_or_else</code> 함수의 본문은 두 경우 모두 동일합니다.</p>
-<h3 id="splitting-code-into-a-library-crate"><a class="header" href="#splitting-code-into-a-library-crate">라이브러리 상자로 코드 분할Spliting Code into a Library Crate</a></h3>
+<h3 id="splitting-code-into-a-library-crate"><a class="header" href="#splitting-code-into-a-library-crate">코드를 라이브러리 크레이트로 분리하기</a></h3>
 <p>우리의 <code>minigrep</code> 프로젝트는 지금까지 좋아 보입니다! 이제 src / main.rs 파일을 분할하고 일부 코드를 src / lib.rs 파일에 넣습니다. 그렇게하면 코드를 테스트하고 src / main.rs 파일을 가질 수 있습니다.</p>
-<p>src/main.rs 대신 src/lib.rs에서 텍스트 검색을 담당하는 코드를 정의해 보겠습니다. 그러면 우리(또는 <code>minigrep</code> 라이브러리를 사용하는 다른 사람)는 <code>minigrep</code> 바이너리보다 더 많은 컨텍스트에서 검색 함수를 호출할 수 있습니다.</p>
-<p>먼저, Listing 12-13과 같이 src/lib.rs에서 <code>search</code> 함수 서명을 정의하고, <code>unimplemented!</code> 매크로를 호출하는 바디를 정의하겠습니다. 구현을 작성할 때 서명을 더 자세히 설명하겠습니다.</p>
+<p>src/main.rs 대신 src/lib.rs에서 텍스트 검색을 담당하는 코드를 정의해 보겠습니다. 이렇게 하면 우리(또는 <code>minigrep</code> 라이브러리를 사용하는 다른 사용자)는 <code>minigrep</code> 바이너리보다 더 다양한 컨텍스트에서 검색 함수를 호출할 수 있습니다.</p>
+<p>먼저 Listing 12-13과 같이 src/lib.rs에 <code>search</code> 함수 서명을 정의하고, <code>unimplemented!</code> 매크로를 호출하는 함수 본문(body)을 작성하겠습니다. 구현을 채울 때 서명을 더 자세히 설명하겠습니다.</p>
 <figure class="listing" id="listing-12-13">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust ignore does_not_compile">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
@@ -721,8 +696,8 @@ To an admiring bog!
 }</code></pre>
 <figcaption><a href="#listing-12-13">목록 12-13</a>: src/lib.rs에서 <code>search</code> 함수 정의</figcaption>
 </figure>
-<p>우리는 기능 정의에서 <code>pub</code> 키워드를 사용하여 <code>search</code>를 라이브러리 크레이트의 공개 API의 일부로 지정했습니다. 이제 바이너리 크레이트에서 사용할 수있는 라이브러리 크레이트를 테스트 할 수 있습니다!</p>
-<p>이제 src/lib.rs에 정의된 코드를 src/main.rs에 있는 바이너리 크레이트의 범위로 가져와서 Listing 12-14와 같이 호출해야 합니다.</p>
+<p>함수 정의에 <code>pub</code> 키워드를 붙여 <code>search</code>을 라이브러리 크레이트의 공개 API 일부로 지정했습니다. 이제 바이너리 크레이트에서 사용할 수 있고 테스트할 수 있는 라이브러리 크레이트를 갖추게 되었습니다!</p>
+<p>이제 src/lib.rs에 정의된 코드를 src/main.rs에 있는 바이너리 크레이트의 스코프(scope)로 가져와서 Listing 12-14와 같이 호출해야 합니다.</p>
 <figure class="listing" id="listing-12-14">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore"><span class="boring">use std::env;
@@ -780,12 +755,10 @@ fn main() {
 }</code></pre>
 <figcaption><a href="#listing-12-14">목록 12-14</a>: src/main.rs에서 <code>minigrep</code> 라이브러리 크레이트의 <code>search</code> 기능 사용</figcaption>
 </figure>
-<p>우리는 추가 a <code>use minigrep::search</code> 찾아오시는 길 <code>search</code> 라이브러리 크레이트에서 바이너리 크레이트의 범위로의 함수. 그런 다음, <code>run</code> 함수는, 파일의 내용을 출력하는 대신, <code>search</code>
-기능 및 통행 <code>config.query</code> 가치 및 <code>contents</code> 논쟁으로. 다음,
-<code>run</code> Will 사용 A <code>for</code> 반환된 각 줄을 출력하는 루프 <code>search</code> 그 쿼리를 일치. 이 또한 제거 할 수있는 좋은 시간이다 <code>println!</code> 에 있는 호출 <code>main</code> 쿼리와 파일 경로를 표시하여 프로그램이 검색 결과 만 인쇄하도록하는 기능 (오류가 발생하지 않는 경우).</p>
-<p>검색 함수는 모든 결과를 인쇄가 일어나기 전에 반환하는 벡터로 수집합니다. 이 구현은 큰 파일을 검색 할 때 결과가 발견되지 않기 때문에 결과를 표시하는 데 느릴 수 있습니다. 우리는 13 장에서 반복자를 사용하여이 문제를 해결할 수있는 방법을 논의 할 것입니다.</p>
-<p>휴! 그건 많은 일이었지만, 우리는 앞으로 성공을 위해 스스로를 설정했습니다. 이제 오류를 처리하는 것이 훨씬 쉽고 코드를보다 모듈화 시켰습니다. 거의 모든 작업은 src / lib.rs에서 수행 될 것입니다.</p>
-<p>오래된 코드로는 어려웠을 것이지만 새로운 코드로는 쉬운 일을함으로써이 새로 발견 된 모듈성을 이용합시다 : 우리는 몇 가지 테스트를 작성할 것입니다!</p>
+<p><code>use minigrep::search</code>을 추가하여 라이브러리 크레이트의 <code>search</code> 함수를 바이너리 크레이트의 스코프에 가져옵니다. 그런 다음, <code>run</code> 함수에서 파일의 내용을 출력하는 대신, <code>search</code> 함수를 호출하고 <code>config.query</code> 값과 <code>contents</code>를 인자로 전달합니다. 이후 <code>run</code>는 <code>for</code> 루프를 사용하여 <code>search</code>에서 반환된 쿼리에 일치하는 각 줄을 출력합니다. 이 시점에서 오류가 발생하지 않는 경우 프로그램이 검색 결과만 출력하도록, <code>println!</code> 함수에 있는 쿼리와 파일 경로를 표시하던 <code>main</code> 호출도 제거하는 것이 좋습니다.</p>
+<p>검색 함수는 출력이 일어나기 전에 모든 결과를 반환할 벡터에 수집합니다. 이 구현 방식은 큰 파일을 검색할 때 결과를 찾은 즉시 출력하지 않기 때문에 결과를 표시하는 데 느릴 수 있습니다. 13장에서 반복자를 사용하여 이 문제를 해결하는 가능한 방법에 대해 논의하겠습니다.</p>
+<p>휴! 많은 작업을 했지만, 이를 통해 앞으로의 성공을 위한 기반을 마련했습니다. 이제 오류를 처리하는 것이 훨씬 쉬워졌고, 코드를 더 모듈화했습니다. 이제부터 거의 모든 작업은 src/lib.rs에서 수행됩니다.</p>
+<p>이 newfound 모듈리티의 이점을 활용합시다. 이전 코드로는 어려웠겠지만 새로운 코드에서는 쉬운 작업을 수행할 것입니다. 바로 테스트를 작성하는 것입니다!</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

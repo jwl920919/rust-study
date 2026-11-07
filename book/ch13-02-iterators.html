@@ -161,9 +161,9 @@
                 </script>
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
-<h2 id="processing-a-series-of-items-with-iterators"><a class="header" href="#processing-a-series-of-items-with-iterators">반복기가 포함된 일련의 항목 처리</a></h2>
-<p>이터레이터 패턴을 사용하면 일련의 항목에서 몇 가지 작업을 차례로 수행 할 수 있습니다. 이터레이터는 각 항목을 반복하고 시퀀스가 언제 완료되었는지 결정하는 논리를 담당합니다. 이터레이터를 사용하면 해당 논리를 직접 다시 구현할 필요가 없습니다.</p>
-<p>상기 이터레이터는 The iterators are <em>인기 있는</em>즉, 반복자를 사용하는 메서드를 호출하기 전까지는 아무런 효과가 없습니다. 예를 들어, Listing 13-10의 코드는 벡터의 항목에 대해 반복자를 만듭니다. <code>v1</code> 상기 호출하는 단계는, Calling the <code>iter</code> 에 정의 된 방법 <code>Vec&lt;T&gt;</code>. 이 코드는 그 자체로는 아무 쓸모가 없습니다.</p>
+<h2 id="processing-a-series-of-items-with-iterators"><a class="header" href="#processing-a-series-of-items-with-iterators">반복자를 사용하여 일련의 항목 처리하기</a></h2>
+<p>반복자 패턴을 사용하면 일련의 항목에 대해 차례로 특정 작업을 수행할 수 있습니다. 반복자는 각 항목을 순회하는 로직과 시퀀스가 언제 종료되었는지 판단하는 로직을 담당합니다. 반복자를 사용하면 이러한 로직을 직접 구현할 필요가 없습니다.</p>
+<p>Rust에서 반복자(iterator)는 지연 평가(lazy) 방식입니다. 즉, 반복자를 소비하는 메서드를 호출하기 전까지는 아무런 효과가 없습니다. 예를 들어, Listing 13-10의 코드는 <em>에 정의된 </em> 메서드를 호출하여 벡터 v1의 항목들에 대한 반복자를 생성합니다. 이 코드만으로는 아무런 유용한 작업을 수행하지 않습니다. <code>v1</code> <code>iter</code> <code>Vec&lt;T&gt;</code></p>
 <figure class="listing" id="listing-13-10">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
@@ -171,10 +171,10 @@
 
     let v1_iter = v1.iter();
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-13-10">목록 13-10</a>: 반복기 만들기</figcaption>
+<figcaption><a href="#listing-13-10">Listing 13-10</a>: 반복자 생성</figcaption>
 </figure>
-<p>이터레이터는 <code>v1_iter</code> 변수에 저장됩니다. 일단 이터레이터를 생성하면 다양한 방법으로 사용할 수 있습니다. Listing 3-5에서, 우리는 각각의 아이템에 대한 코드를 실행하기 위해 <code>for</code> 루프를 사용하여 배열을 반복했습니다. 후드 아래에서, 이것은 암시적으로 생성되어 이터레이터를 소비했지만, 지금까지 정확히 어떻게 작동하는지에 대해 알아보았습니다.</p>
-<p>Listing 13-11의 예에서, 우리는 반복자의 생성과 <code>for</code> 루프의 반복자의 사용을 분리합니다. <code>for</code> 루프가 <code>v1_iter</code>에서 반복자를 사용하여 호출될 때, 반복자의 각 요소는 각 값을 출력하는 반복자의 한 반복에서 사용됩니다.</p>
+<p>반복자는 <code>v1_iter</code> 변수에 저장됩니다. 반복자를 생성한 후에는 다양한 방식으로 사용할 수 있습니다. Listing 3-5에서는 <code>for</code> 루프를 사용하여 배열을 순회하며 각 항목에 대해 코드를 실행했습니다. 내부적으로 이 과정은 반복자를 암시적으로 생성하고 소비했지만, 지금까지는 그 정확한 작동 방식을 자세히 다루지 않았습니다.</p>
+<p>Listing 13-11의 예제에서는 반복자 생성과 <code>for</code> 루프에서의 반복자 사용을 분리했습니다. <code>for</code> 루프가 <code>v1_iter</code>의 반복자를 사용하여 실행될 때, 반복자의 각 요소는 루프의 한 번의 반복에서 사용되어 각 값을 출력합니다.</p>
 <figure class="listing" id="listing-13-11">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
@@ -186,12 +186,12 @@
         println!("Got: {val}");
     }
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-13-11">목록 13-11</a>: <code>for</code> 루프에서 이터레이터 사용하기</figcaption>
+<figcaption><a href="#listing-13-11">Listing 13-11</a>: <code>for</code> 루프에서 반복자 사용하기</figcaption>
 </figure>
-<p>표준 라이브러리에 의해 제공되는 반복자가 없는 언어에서는, 이 동일한 기능을 인덱스 0에서 변수를 시작하고, 그 변수를 사용하여 값을 얻기 위해 벡터로 인덱싱하고, 벡터의 총 항목 수에 도달할 때까지 루프에서 변수 값을 증가시킴으로써 작성할 가능성이 높습니다.</p>
-<p>Iterator는 모든 논리를 처리하여 잠재적으로 엉망이 될 수있는 반복적 인 코드를 줄입니다. Iterator는 벡터와 같이 색인 할 수있는 데이터 구조뿐만 아니라 다양한 종류의 시퀀스로 동일한 논리를 사용할 수있는 유연성을 제공합니다. 반복자가 어떻게하는지 살펴 보겠습니다.</p>
-<h3 id="the-iterator-trait-and-the-next-method"><a class="header" href="#the-iterator-trait-and-the-next-method">이름 * <code>Iterator</code> 특징 및 장점 <code>next</code> 메서드</a></h3>
-<p>모든 반복자는 표준 라이브러리에 정의된 <code>Iterator</code>라는 트레잇을 구현합니다. 트레잇의 정의는 다음과 같습니다:</p>
+<p>표준 라이브러리가 반복자를 제공하지 않는 언어에서는, 변수를 인덱스 0으로 초기화하고 해당 변수를 사용하여 벡터에서 값을 가져오며, 벡터의 총 항목 수에 도달할 때까지 루프 내에서 변수 값을 증가시키는 방식으로 동일한 기능을 구현했을 것입니다.</p>
+<p>반복자는 이러한 모든 로직을 처리하므로, 실수할 수 있는 반복적인 코드를 줄일 수 있습니다. 반복자는 벡터처럼 인덱스로 접근할 수 있는 데이터 구조뿐만 아니라, 다양한 종류의 시퀀스에 동일한 로직을 적용할 수 있는 유연성을 제공합니다. 반복자가 어떻게 그렇게 하는지 살펴봅시다.</p>
+<h3 id="the-iterator-trait-and-the-next-method"><a class="header" href="#the-iterator-trait-and-the-next-method"><code>Iterator</code> 트레이트와 <code>next</code> 메서드</a></h3>
+<p>모든 반복자는 표준 라이브러리에 정의된 <code>Iterator</code> 트레이트를 구현합니다. 이 트레이트의 정의는 다음과 같습니다:</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>pub trait Iterator {
@@ -202,10 +202,9 @@
     // methods with default implementations elided
 }
 <span class="boring">}</span></code></pre>
-<p>이 정의는 몇 가지 새로운 문법을 사용한다는 것을 주목하라: <code>type Item</code> 그리고 <code>Self::Item</code>, 이 트레잇으로 연관된 타입을 정의하고 있습니다. 우리는 20장에서 연관된 타입에 대해 자세히 이야기 할 것입니다. 지금, 여러분이 알아야 할 것은 이 코드가 <code>Iterator</code> 특성은 또한 당신이 정의 할 것을 필요로 <code>Item</code> 유형, 그리고 이것 <code>Item</code> 반환 형식은 다음과 같습니다.The return type is used in the return type. <code>next</code>
-방법. 즉, 상기 <code>Item</code> type은 iterator에서 반환되는 형식입니다.</p>
-<p><code>Iterator</code> 트레잇은 구현자가 하나의 메소드를 정의할 것을 요구한다: <code>next</code> 메소드는 한번에 반복자의 한 항목을 반환하고, <code>Some</code>로 래핑하고, 반복이 끝나면 <code>None</code>를 반환한다.</p>
-<p>반복자에서 <code>next</code> 메서드를 직접 호출할 수 있습니다; Listing 13-12는 벡터에서 생성된 반복자에서 <code>next</code>로의 반복 호출에서 어떤 값이 반환되는지 보여줍니다.</p>
+<p>이 정의에는 <code>type Item</code>와 <code>Self::Item</code>이라는 새로운 문법이 사용되었음을 주목하세요. 이 문법은 해당 트레이트에 연관 타입을 정의합니다. 연관 타입에 대해서는 20장에서 자세히 다룹니다. 지금은 이 코드가 <code>Iterator</code> 트레이트를 구현하려면 <code>Item</code> 타입도 정의해야 하며, 이 <code>Item</code> 타입이 <code>next</code> 메서드의 반환 타입에서 사용된다는 것만 알면 됩니다. 즉, <code>Item</code> 타입은 반복자에서 반환되는 타입입니다.</p>
+<p><code>Iterator</code> 트레이트는 구현자가 하나의 메서드, 즉 <code>next</code> 메서드를 정의하도록 요구합니다. 이 메서드는 한 번에 반복자의 항목 하나를 <code>Some</code>로 감싸서 반환하고, 반복이 끝나면 <code>None</code>을 반환합니다.</p>
+<p>반복자에서 <code>next</code> 메서드를 직접 호출할 수 있습니다. Listing 13-12는 벡터에서 생성된 반복자에서 <code>next</code>을 반복 호출할 때 어떤 값이 반환되는지 보여줍니다.</p>
 <figure class="listing" id="listing-13-12">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground"><span class="boring">#[cfg(test)]
@@ -222,16 +221,14 @@
         assert_eq!(v1_iter.next(), None);
     }
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-13-12">목록 13-12</a>: 반복기에서 <code>next</code> 메서드 호출</figcaption>
+<figcaption><a href="#listing-13-12">Listing 13-12</a>: 반복자에서 <code>next</code> 메서드 호출</figcaption>
 </figure>
-<p>우리가 만들 필요가 있음을 주목하십시오. <code>v1_iter</code> 태그 보관물: Calling the <code>next</code> 이터레이터의 메서드는 이터레이터가 시퀀스의 위치를 추적하는 데 사용하는 내부 상태를 변경합니다. 즉, 이 코드 <em>소비</em>, 또는 반복자를 사용합니다. 각 호출은 <code>next</code> 반복자에서 항목을 먹습니다. 우리는 만들 필요가 없었습니다. <code>v1_iter</code> a 를 사용할 때의 변화 <code>for</code> 루프가 소유권을 가지고 있기 때문에 <code>v1_iter</code> 무대 뒤에서 변형시킬 수 있도록 하였으며</p>
+<p><code>v1_iter</code>을(를) 가변으로 만들어야 했다는 점에 유의하세요. 반복자에서 <code>next</code> 메서드를 호출하면 반복자가 시퀀스에서 현재 위치를 추적하는 데 사용하는 내부 상태가 변경됩니다. 다시 말해, 이 코드는 <em>반복자를 소비</em>하거나 소모합니다. <code>next</code>을(를) 호출할 때마다 반복자에서 항목 하나가 소모됩니다. <code>for</code> 루프를 사용할 때 <code>v1_iter</code>을(를) 가변으로 만들 필요가 없었던 이유는, 루프가 <code>v1_iter</code>의 소유권을 가져가서 백그라운드에서 가변으로 만들기 때문입니다.</p>
 <p>또한 우리가 호출에서 얻는 값에 유의하십시오. <code>next</code> 벡터의 값에 대한 불변의 참조입니다. <code>iter</code> immutable 참조를 통해 반복자를 생성합니다. 소유권을 갖는 반복자를 생성하려면 <code>v1</code> 그리고 소유된 값을 반환하고, 호출할 수 있습니다. <code>into_iter</code> 대신
 <code>iter</code>. 비슷하게, 만약 우리가 가변 참조를 반복하고 싶다면,
 <code>iter_mut</code> 대신 <code>iter</code>.</p>
-<h3 id="methods-that-consume-the-iterator"><a class="header" href="#methods-that-consume-the-iterator">Iterator를 사용하는 방법</a></h3>
-<p>이름 * <code>Iterator</code> 트레잇은 표준 라이브러리에서 제공하는 기본 구현을 가진 여러 다른 메소드를 가지고 있습니다. 다음을 위해 표준 라이브러리 API 문서를 보면 이러한 메소드에 대해 알 수 있습니다. <code>Iterator</code>
-트레잇. 이러한 방법 중 일부는 <code>next</code> 메서드를 정의합니다.This is why you're implemented. <code>next</code> 상기 구현하는 단계는 Wherein implementing the
-<code>Iterator</code> 특성.</p>
+<h3 id="methods-that-consume-the-iterator"><a class="header" href="#methods-that-consume-the-iterator">반복자를 소비하는 메서드</a></h3>
+<p><code>Iterator</code> 트레이트에는 표준 라이브러리가 기본 구현을 제공하는 여러 가지 다른 메서드가 있습니다. <code>Iterator</code> 트레이트에 대한 표준 라이브러리 API 문서를 참고하면 이러한 메서드에 대해 알 수 있습니다. 이 메서드 중 일부는 정의에서 <code>next</code> 메서드를 호출하므로, <code>Iterator</code> 트레이트를 구현할 때 <code>next</code> 메서드를 구현해야 합니다.</p>
 <p>호출하는 메서드Name <code>next</code> 호출된 <em>사용 어댑터</em> 호출하는 것은 반복자를 사용하기 때문입니다. 한 가지 예는 <code>sum</code> 이터레이터의 소유권을 가지고 반복 호출을 통해 아이템을 반복하는 method <code>next</code>, 따라서 반복자를 소비합니다. 반복하는 동안, 각 항목을 실행 중인 총계에 추가하고 반복이 완료될 때 총계를 반환합니다. Listing 13-13은 다음과 같은 사용을 보여주는 테스트를 가지고 있습니다. <code>sum</code> 방법.</p>
 <figure class="listing" id="listing-13-13">
 <span class="file-name">Filename: src/lib.rs</span>
@@ -248,12 +245,12 @@
         assert_eq!(total, 6);
     }
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-13-13">목록 13-13</a>: 반복기의 모든 항목의 합계를 얻기 위해 <code>sum</code> 메서드를 호출</figcaption>
+<figcaption><a href="#listing-13-13">목록 13-13</a>: 반복자의 모든 항목 합계를 구하기 위해 <code>sum</code> 메서드 호출</figcaption>
 </figure>
 <p>우리는 사용할 수 없습니다. <code>v1_iter</code> 전화 통화 후 <code>sum</code>왜냐하면 <code>sum</code> 우리가 호출하는 이터레이터의 소유권을 가집니다.</p>
-<h3 id="methods-that-produce-other-iterators"><a class="header" href="#methods-that-produce-other-iterators">다른 반복자를 생성하는 방법</a></h3>
-<p>이터레이터 어댑터는 이터레이터를 사용하지 않는 <code>Iterator</code> 특성에 정의된 메서드입니다. 대신 원래 이터레이터의 일부 측면을 변경하여 다른 이터레이터를 생성합니다.</p>
-<p>Listing 13-14는 반복자 어댑터 메서드 <code>map</code>를 호출하는 예제를 보여줍니다. <code>map</code> 메서드는 수정된 항목을 생성하는 새 반복자를 반환합니다. 여기서 클로저는 벡터의 각 항목이 1씩 증가하는 새 반복자를 생성합니다.</p>
+<h3 id="methods-that-produce-other-iterators"><a class="header" href="#methods-that-produce-other-iterators">다른 반복자를 생성하는 메서드</a></h3>
+<p>이터레이터 어댑터는 <code>Iterator</code> 트레이트에 정의된 메서드로, 이터레이터를 소모하지 않습니다. 대신 원래 이터레이터의 일부 특성을 변경하여 새로운 이터레이터를 생성합니다.</p>
+<p>Listing 13-14는 반복자 어댑터 메서드인 <code>map</code>을 호출하는 예제를 보여줍니다. <code>map</code> 메서드는 각 항목을 순회하면서 클로저를 호출하고, 수정된 항목을 생성하는 새 반복자를 반환합니다. 여기서 클로저는 벡터의 각 항목을 1씩 증가시킨 새 반복자를 생성합니다.</p>
 <figure class="listing" id="listing-13-14">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust not_desired_behavior edition2024"><span class="boring">fn main() {
@@ -261,9 +258,9 @@
 
     v1.iter().map(|x| x + 1);
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-13-14">목록 13-14</a>: 새 반복자를 만들려면 반복기 어댑터 <code>map</code> 호출</figcaption>
+<figcaption><a href="#listing-13-14">Listing 13-14</a>: 반복자 어댑터 <code>map</code>를 호출하여 새 반복자 생성</figcaption>
 </figure>
-<p>그러나, 이 코드는 경고를 생성합니다:</p>
+<p>그러나 이 코드는 경고를 출력합니다:</p>
 <pre><code class="language-console">$ cargo run
    Compiling iterators v0.1.0 (file:///projects/iterators)
 warning: unused `Map` that must be used
@@ -283,9 +280,9 @@ warning: `iterators` (bin "iterators") generated 1 warning
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.47s
      Running `target/debug/iterators`
 </code></pre>
-<p>Listing 13-14의 코드는 아무것도 하지 않습니다; 우리가 지정한 클로저는 결코 호출되지 않습니다. 경고는 그 이유를 상기시켜줍니다: 반복자 어댑터는 게으르며, 우리는 여기서 반복자를 소비해야 합니다.</p>
-<p>이 경고를 수정하고 반복자를 사용하려면 <code>collect</code> 우리가 함께 사용한 방법 <code>env::args</code> Listing 12-1에서. 이 메서드는 반복자를 사용하고 그 결과 값을 컬렉션 데이터 형식으로 수집합니다.</p>
-<p>Listing 13-15에서, <code>map</code>에 대한 호출에서 벡터로 반환된 반복자에 대한 반복 결과를 수집합니다. 이 벡터는 원래 벡터의 각 항목을 1씩 증가시킵니다.</p>
+<p>Listing 13-14의 코드는 아무것도 수행하지 않습니다. 우리가 지정한 클로저는 결코 호출되지 않습니다. 경고는 그 이유를 알려 줍니다. 반복자 어댑터는 게으르며(lazy), 여기서 반복자를 소비(consume)해야 합니다.</p>
+<p>이 경고를 해결하고 반복자를 소비하려면, Listing 12-1에서 <code>collect</code>과 함께 사용한 <code>env::args</code> 메서드를 사용합니다. 이 메서드는 반복자를 소비하고 결과 값을 컬렉션 데이터 타입으로 수집합니다.</p>
+<p>Listing 13-15에서는 <code>map</code> 호출에서 반환된 반복자를 순회한 결과를 벡터로 수집합니다. 이 벡터에는 원래 벡터의 각 항목이 1씩 증가한 값이 포함됩니다.</p>
 <figure class="listing" id="listing-13-15">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
@@ -295,17 +292,16 @@ warning: `iterators` (bin "iterators") generated 1 warning
 
     assert_eq!(v2, vec![2, 3, 4]);
 <span class="boring">}</span></code></pre>
-<figcaption><a href="#listing-13-15">목록 13-15</a>: <code>map</code> 메서드를 호출하여 새 이터레이터를 생성한 다음 <code>collect</code> 메서드를 호출하여 새 이터레이터를 사용하고 벡터를 만듭니다.</figcaption>
+<figcaption><a href="#listing-13-15">Listing 13-15</a>: <code>map</code> 메서드를 호출하여 새 반복자를 생성한 후, <code>collect</code> 메서드를 호출하여 새 반복자를 소비하고 벡터 생성</figcaption>
 </figure>
-<p><code>map</code>가 종료되기 때문에 각 항목에서 수행하려는 작업을 지정할 수 있습니다. 이것은 <code>Iterator</code> 특성이 제공하는 반복 동작을 재사용하는 동안 클로저가 어떻게 어떤 동작을 사용자 정의 할 수 있는지 보여주는 좋은 예입니다.</p>
-<p>여러 호출을 반복자 어댑터에 연결하여 복잡한 작업을 읽을 수 있는 방식으로 수행할 수 있습니다. 그러나 모든 반복자는 게으르기 때문에, 반복자 어댑터에 대한 호출 결과를 얻기 위해 소모하는 어댑터 방법 중 하나를 호출해야 합니다.</p>
+<p><code>map</code>은 클로저를 인수로 받으므로, 각 항목에 대해 수행하려는 작업을 자유롭게 지정할 수 있습니다. 이는 클로저가 <code>Iterator</code> 트레이트가 제공하는 반복 동작을 재사용하면서 특정 동작을 사용자 정의할 수 있게 해주는 훌륭한 예입니다.</p>
+<p>반복자 어댑터 호출을 여러 개 연결하여 복잡한 작업을 가독성 있게 수행할 수 있습니다. 하지만 모든 반복자는 지연 평가(lazy)를 수행하므로, 반복자 어댑터 호출의 결과를 얻으려면 소모(consuming)하는 어댑터 메서드 중 하나를 호출해야 합니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="using-closures-that-capture-their-environment"></a></p>
-<h3 id="closures-that-capture-their-environment"><a class="header" href="#closures-that-capture-their-environment">그 들 의 환경 을 사로잡는 폐쇄</a></h3>
-<p>많은 iterator 어댑터는 인수로 클로저를 취하고, 일반적으로 iterator 어댑터에 대한 인수로 지정하는 클로저는 환경을 캡처하는 클로저가 될 것입니다.</p>
-<p>이 예제에서는 다음을 사용합니다.For this example, we will use the <code>filter</code> 클로저가 필요한 메소드입니다. 클로저는 반복자로부터 아이템을 가져와서 a를 반환합니다. <code>bool</code>. 클로저가 반환하는 경우 <code>true</code>이 값은 다음과 같이 생성된 반복자에 포함됩니다.The value will be included in the iterator produced by
-<code>filter</code>. 클로저가 반환하는 경우 <code>false</code>값은 포함되지 않습니다.The value will not be included.</p>
-<p>Listing 13-16에서, 우리는 <code>filter</code>를 환경으로부터 <code>shoe_size</code> 변수를 캡처하는 클로저와 함께 사용하여 <code>Shoe</code> 구조체 인스턴스들의 집합을 반복합니다. 지정된 크기인 신발만 반환할 것입니다.</p>
+<h3 id="closures-that-capture-their-environment"><a class="header" href="#closures-that-capture-their-environment">환경을 캡처하는 클로저</a></h3>
+<p>많은 반복자 어댑터는 인수로 클로저를 받습니다. 일반적으로 반복자 어댑터의 인수로 지정하는 클로저는 환경을 캡처하는 클로저가 됩니다.</p>
+<p>이 예제에서는 클로저를 인수로 받는 <code>filter</code> 메서드를 사용합니다. 클로저는 반복자에서 항목을 받아 <code>bool</code>를 반환합니다. 클로저가 <code>true</code>를 반환하면, 그 값은 <code>filter</code>이 생성한 반복자에 포함됩니다. 클로저가 <code>false</code>를 반환하면, 그 값은 포함되지 않습니다.</p>
+<p>Listing 13-16에서는 <code>filter</code> 메서드를 <code>shoe_size</code> 변수를 환경에서 캡처하는 클로저와 함께 사용하여 <code>Shoe</code> 구조체 인스턴스들의 컬렉션을 반복합니다. 이 메서드는 지정된 크기의 신발만 반환합니다.</p>
 <figure class="listing" id="listing-13-16">
 <span class="file-name">Filename: src/lib.rs</span>
 <pre><code class="language-rust noplayground">#[derive(PartialEq, Debug)]
@@ -356,12 +352,12 @@ mod tests {
         );
     }
 }</code></pre>
-<figcaption><a href="#listing-13-16">목록 13-16</a>: <code>filter</code> 메서드를 <code>shoe_size</code>를 캡처하는 클로저와 함께 사용</figcaption>
+<figcaption><a href="#listing-13-16">Listing 13-16</a>: <code>filter</code> 메서드를 <code>shoe_size</code>를 캡처하는 클로저와 함께 사용</figcaption>
 </figure>
-<p><code>shoes_in_size</code> 함수는 신발의 벡터와 신발 크기를 매개 변수로 소유합니다. 지정된 크기의 신발 만 포함하는 벡터를 반환합니다.</p>
-<p><code>shoes_in_size</code>의 본체에서 <code>into_iter</code>를 호출하여 벡터의 소유권을 갖는 이터레이터를 생성합니다. 그런 다음 <code>filter</code>를 호출하여 해당 이터레이터를 클로저가 <code>true</code>를 반환하는 요소만 포함하는 새 이터레이터로 조정합니다.</p>
-<p>폐쇄는 환경에서 <code>shoe_size</code> 매개 변수를 캡처하고 각 신발의 크기와 값을 비교하여 지정된 크기의 신발 만 유지합니다. 마지막으로 <code>collect</code>를 호출하면 적응 형 반복기가 반환 한 값이 함수가 반환 한 벡터로 수집됩니다.</p>
-<p>이 테스트는 우리가 <code>shoes_in_size</code>를 호출 할 때, 우리는 우리가 지정한 값과 같은 크기를 가진 신발 만 다시 얻을 수 있음을 보여줍니다.</p>
+<p><code>shoes_in_size</code> 함수는 신발 벡터와 신발 크기를 인수로 받아 소유권을 가져옵니다. 이 함수는 지정된 크기의 신발만 포함하는 벡터를 반환합니다.</p>
+<p><code>shoes_in_size</code> 함수 본문에서는 <code>into_iter</code>을 호출하여 벡터의 소유권을 가져오는 반복자를 생성합니다. 그런 다음 <code>filter</code>을 호출하여 해당 반복자를 클로저가 <code>true</code>를 반환하는 요소만 포함하는 새로운 반복자로 변환합니다.</p>
+<p>클로저는 환경에서 <code>shoe_size</code> 매개변수를 캡처하고, 각 신발의 크기와 값을 비교하여 지정된 크기의 신발만 유지합니다. 마지막으로 <code>collect</code>을 호출하면, 적응형 반복자가 반환한 값들이 함수가 반환하는 벡터로 수집됩니다.</p>
+<p>이 테스트는 <code>shoes_in_size</code>을 호출했을 때, 지정한 값과 같은 크기를 가진 신발만 반환됨을 보여줍니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

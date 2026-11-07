@@ -162,19 +162,18 @@
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
 <h2 id="using-boxt-to-point-to-data-on-the-heap"><a class="header" href="#using-boxt-to-point-to-data-on-the-heap">사용 <code>Box&lt;T&gt;</code> 힙에 있는 데이터를 가리키기 위해</a></h2>
-<p>가장 간단한 스마트 포인터는 <code>Box&lt;T&gt;</code>로 작성된 상자입니다. 상자는 스택이 아닌 힙에 데이터를 저장할 수 있습니다. 스택에 남아있는 것은 힙 데이터에 대한 포인터입니다. 스택과 힙의 차이점을 검토하려면 4 장을 참조하십시오.</p>
-<p>Boxes는 스택 대신 힙에 데이터를 저장하는 것 외에는 성능 오버 헤드가 없습니다. 그러나 그들은 많은 추가 기능을 가지고 있지 않습니다. 이러한 상황에서 가장 자주 사용할 수 있습니다.</p>
+<p>가장 직관적인 스마트 포인터는 박스(Box)입니다. 박스의 타입은 <code>Box&lt;T&gt;</code>로 표기합니다. 박스는 데이터를 스택이 아닌 힙에 저장할 수 있게 해줍니다. 스택에 남아 있는 것은 힙 데이터에 대한 포인터입니다. 스택과 힙의 차이에 대해 복습하려면 4장을 참조하세요.</p>
+<p>박스는 데이터를 스택 대신 힙에 저장한다는 점을 제외하면 성능 오버헤드가 없습니다. 하지만 박스는 추가적인 기능도 많지 않습니다. 박스는 주로 다음과 같은 상황에서 가장 자주 사용됩니다:</p>
 <ul>
-<li>컴파일 시간에 크기를 알 수 없는 유형이 있고 정확한 크기가 필요한 컨텍스트에서 해당 유형의 값을 사용하려는 경우</li>
-<li>많은 양의 데이터를 가지고 있고 소유권을 이전하고 싶지만 그렇게 할 때 데이터가 복사되지 않도록하십시오.</li>
-<li>값을 소유하고 싶을 때, 특정 유형이 아닌 특정 특성을 구현하는 유형만 신경써야 합니다.</li>
+<li>컴파일 시간에 크기를 알 수 없는 타입이 있고, 정확한 크기가 필요한 컨텍스트에서 해당 타입의 값을 사용하려는 경우</li>
+<li>대량의 데이터를 가지고 있고 소유권을 이전하되, 그 과정에서 데이터가 복사되지 않도록 보장하고 싶은 경우</li>
+<li>값을 소유하되, 특정 타입인지보다는 특정 트레이트를 구현하는 타입인지에만 관심이 있는 경우</li>
 </ul>
-<p>우리는 첫 번째 상황을 보여줄 것입니다. <a href="#enabling-recursive-types-with-boxes">“상자와 함께 재귀 유형을 사용”</a> 무시 . 두 번째 경우, 데이터가 스택에 복사되기 때문에 많은 양의 데이터의 소유권을 이전하는 데 오랜 시간이 걸릴 수 있습니다. 이 상황에서 성능을 향상시키기 위해 많은 양의 데이터를 힙에 저장할 수 있습니다. 그런 다음 참조하는 데이터가 힙의 한 곳에 머무르는 동안 소량의 포인터 데이터 만 스택에 복사됩니다. 세 번째 경우는 a로 알려져 있습니다
-<em>트레잇 객체</em>, 그리고 <a href="ch18-02-trait-objects.html#using-trait-objects-to-abstract-over-shared-behavior">"공유 된 행동을 추상화하기 위해 Trait 객체 사용"</a> 무시  제 18 장에서 그 주제에 전념한다. 그래서, 여기서 배운 것은 그 섹션에서 다시 적용 할 것입니다!</p>
+<p>첫 번째 상황을 <a href="#enabling-recursive-types-with-boxes">“박스로 재귀 타입 활성화하기”</a><!-- ignore -->에서 시연하겠습니다. 두 번째 경우에서는 대량의 데이터 소유권을 이전하는 데 시간이 오래 걸릴 수 있습니다. 이는 데이터가 스택 위에서 복사되기 때문입니다. 이 상황에서 성능을 개선하려면 대량의 데이터를 힙에 있는 박스에 저장할 수 있습니다. 그러면 스택 위에서 복사되는 것은 작은 크기의 포인터 데이터만 되고, 해당 포인터가 참조하는 데이터는 힙의 한 위치에 그대로 유지됩니다. 세 번째 경우는 <em>트레이트 객체</em>로 알려져 있으며, 18장의 <a href="ch18-02-trait-objects.html#using-trait-objects-to-abstract-over-shared-behavior">“공유된 동작을 추상화하기 위한 트레이트 객체 사용”</a><!-- ignore -->에서는 이 주제를 다룹니다. 따라서 여기서 배우는 내용은 해당 섹션에서 다시 적용하게 됩니다!</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="using-boxt-to-store-data-on-the-heap"></a></p>
-<h3 id="storing-data-on-the-heap"><a class="header" href="#storing-data-on-the-heap">힙에 데이터 저장</a></h3>
-<p><code>Box&lt;T&gt;</code>에 대한 힙 스토리지 사용 사례를 논의하기 전에 구문과 <code>Box&lt;T&gt;</code>에 저장된 값과 상호 작용하는 방법을 다루겠습니다.</p>
+<h3 id="storing-data-on-the-heap"><a class="header" href="#storing-data-on-the-heap">힙에 데이터 저장하기</a></h3>
+<p><code>Box&lt;T&gt;</code>의 힙 저장 사용 사례를 논의하기 전에, 구문과 <code>Box&lt;T&gt;</code>에 저장된 값에 접근하는 방법을 다루겠습니다.</p>
 <p>Listing 15-1은 박스를 사용하여 힙에 <code>i32</code> 값을 저장하는 방법을 보여줍니다.</p>
 <figure class="listing" id="listing-15-1">
 <span class="file-name">Filename: src/main.rs</span>
@@ -182,23 +181,23 @@
     let b = Box::new(5);
     println!("b = {b}");
 }</code></pre>
-<figcaption><a href="#listing-15-1">상장 15-1</a>: 상자를 사용하여 힙에 <code>i32</code> 값 저장</figcaption>
+<figcaption><a href="#listing-15-1">Listing 15-1</a>: 박스를 사용하여 힙에 <code>i32</code> 값 저장</figcaption>
 </figure>
-<p>변수를 정의합니다. <code>b</code> a 의 값을 가지려면 <code>Box</code> 상기 값은 The value <code>5</code>, 힙에 할당됩니다. 이 프로그램은 인쇄됩니다 <code>b = 5</code>; 이 경우, 이 데이터가 스택에 있다면 상자 안의 데이터에 비슷하게 접근할 수 있습니다. 어떤 소유 값과 마찬가지로, 상자가 범위를 벗어나면 다음과 같이 <code>b</code> ~의 끝에 <code>main</code>, 할당 해제됩니다. 할당 해제는 상자 (스택에 저장됨)와 그것이 가리키는 데이터 (힙에 저장됨) 모두에 대해 발생합니다.</p>
-<p>힙에 단일 값을 넣는 것은 매우 유용하지 않으므로 이러한 방식으로 상자를 자주 사용하지 않습니다. 기본적으로 저장되는 스택에 단일 <code>i32</code>와 같은 값을 갖는 것이 대부분의 상황에서 더 적합합니다. 상자를 사용하면 상자가 없으면 정의 할 수없는 유형을 정의 할 수있는 경우를 살펴 보겠습니다.</p>
-<h3 id="enabling-recursive-types-with-boxes"><a class="header" href="#enabling-recursive-types-with-boxes">Box에서 재귀 형식 활성화</a></h3>
-<p>재귀 타입의 값은 그 자체의 일부로서 같은 타입의 다른 값을 가질 수 있습니다. 재귀 타입은 러스트가 컴파일 시간에 타입이 차지하는 공간을 알아야 하기 때문에 문제를 제기합니다. 그러나 재귀 타입의 값의 중첩은 이론적으로 무한하게 계속될 수 있으므로, 러스트는 그 값이 얼마나 많은 공간이 필요한지 알 수 없습니다. 박스는 알려진 크기를 가지고 있기 때문에, 우리는 재귀 타입을 정의 박스에 삽입함으로써 활성화할 수 있습니다.</p>
-<p>재귀 형식의 예로 cons 목록을 살펴 보겠습니다. 이것은 함수형 프로그래밍 언어에서 흔히 볼 수있는 데이터 유형입니다. 우리가 정의 할 cons 목록 유형은 재귀를 제외하고는 간단합니다. 따라서 우리가 작업 할 예제의 개념은 재귀 유형과 관련된보다 복잡한 상황에 처할 때마다 유용 할 것입니다.</p>
+<p>변수 <code>b</code>을 힙에 할당된 값 <code>5</code>을 가리키는 <code>Box</code>의 값으로 정의합니다. 이 프로그램은 <code>b = 5</code>을 출력합니다. 이 경우, 이 데이터가 스택에 있었다면 접근하는 방식과 유사하게 박스 안의 데이터에 접근할 수 있습니다. 소유권이 있는 값과 마찬가지로, 박스가 스코프를 벗어나면, <code>main</code>의 끝에서 <code>b</code>가 스코프를 벗어나는 것처럼, 해제됩니다. 해제는 박스(스택에 저장됨)와 박스가 가리키는 데이터(힙에 저장됨) 모두에 대해 수행됩니다.</p>
+<p>힙에 단일 값만 저장하는 것은 유용하지 않으므로, 이러한 방식으로 박스를 단독으로 사용하는 경우는 드뭅니다. 기본적으로 스택에 저장되는 단일 <code>i32</code> 값과 같은 데이터를 사용하는 것이 대부분의 상황에서 더 적합합니다. 박스가 없으면 정의할 수 없는 타입을 정의할 수 있는 사례를 살펴보겠습니다.</p>
+<h3 id="enabling-recursive-types-with-boxes"><a class="header" href="#enabling-recursive-types-with-boxes">박스를 사용하여 재귀 타입 활성화</a></h3>
+<p>재귀 타입의 값은 그 자체의 일부로서 같은 타입의 다른 값을 가질 수 있습니다. 재귀 타입은 Rust가 컴파일 시간에 타입이 차지하는 크기를 알아야 하므로 문제를 일으킵니다. 재귀 타입의 값 중첩은 이론적으로 무한히 계속될 수 있으므로, Rust는 해당 값에 필요한 크기를 알 수 없습니다. 박스는 크기가 정해져 있으므로, 재귀 타입 정의에 박스를 삽입함으로써 재귀 타입을 사용할 수 있게 됩니다.</p>
+<p>재귀 타입의 예로 cons 리스트를 살펴보겠습니다. 이는 함수형 프로그래밍 언어에서 흔히 볼 수 있는 데이터 타입입니다. 우리가 정의할 cons 리스트 타입은 재귀를 제외하면 단순합니다. 따라서 이 예제의 개념은 재귀 타입이 포함된 더 복잡한 상황에 직면할 때마다 유용할 것입니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="more-information-about-the-cons-list"></a></p>
 <h4 id="understanding-the-cons-list"><a class="header" href="#understanding-the-cons-list">Cons List 이해하기</a></h4>
-<p>cons list는 Lisp 프로그래밍 언어와 그 방언에서 온 데이터 구조이며, 중첩 된 쌍으로 구성되며, 연결된 목록의 Lisp 버전입니다. 그 이름은 Lisp에서 <code>cons</code> 함수 (construct function의 줄임말)에서 유래하며, 두 개의 인수로 새 쌍을 구성합니다. <code>cons</code>를 값과 다른 쌍으로 구성된 쌍으로 호출하면 conscur 목록을 구성 할 수 있습니다.</p>
-<p>예를 들어, 다음은 각 쌍이 괄호로 된 <code>1, 2, 3</code> 목록이 포함된 cons 목록의 의사 코드 표현입니다.</p>
+<p>cons list는 Lisp 프로그래밍 언어와 그 방언에서 유래한 데이터 구조로, 중첩된 쌍으로 구성되며 Lisp 버전의 연결 목록(linked list)입니다. 이름은 Lisp에서 두 인수를 받아 새로운 쌍을 생성하는 <code>cons</code> 함수(construct function의 줄임말)에서 왔습니다. 값과 다른 쌍으로 이루어진 쌍에 대해 <code>cons</code>을 호출하면, 재귀적인 쌍으로 이루어진 cons list를 구성할 수 있습니다.</p>
+<p>예를 들어, 다음은 1, 2, 3으로 이루어진 <code>1, 2, 3</code> 목록을 포함하는 cons 목록의 의사 코드 표현입니다. 각 쌍은 괄호로 묶여 있습니다.</p>
 <pre><code class="language-text">(1, (2, (3, Nil)))
 </code></pre>
-<p>cons 목록의 각 항목에는 현재 항목의 값과 다음 항목의 두 가지 요소가 포함됩니다. 목록의 마지막 항목에는 다음 항목이없는 <code>Nil</code>라는 값 만 포함됩니다. cons 목록은 <code>cons</code> 함수를 재귀 적으로 호출하여 생성됩니다. 재귀의 기본 경우를 나타내는 정규 이름은 <code>Nil</code>입니다. 이 참고 사항 "이 유효하지 않습니다."</p>
-<p>cons 목록은 러스트에서 일반적으로 사용되는 데이터 구조가 아닙니다. 대부분의 경우 러스트에서 항목 목록이 있을 때 <code>Vec&lt;T&gt;</code>가 더 나은 선택입니다. 다른 더 복잡한 재귀 데이터 형식은 다양한 상황에서 유용하지만, 이 장의 cons 목록을 시작으로 많은 혼란 없이 재귀 데이터 유형을 정의하는 방법을 살펴볼 수 있습니다.</p>
-<p>Listing 15-2는 cons 리스트를 위한 열거형 정의를 포함하고 있습니다. 이 코드는 아직 컴파일되지 않습니다, 왜냐하면 <code>List</code> 타입은 알려진 크기를 가지고 있지 않기 때문입니다.</p>
+<p>cons 목록의 각 항목에는 현재 항목의 값과 다음 항목의 값이라는 두 가지 요소가 포함됩니다. 목록의 마지막 항목에는 다음 항목이 없으며, <code>Nil</code>라고 불리는 값만 포함됩니다. cons 목록은 <code>cons</code> 함수를 재귀적으로 호출하여 생성됩니다. 재귀의 기본 경우를 나타내는 표준 이름은 <code>Nil</code>입니다. 참고로, 이는 6장에서 논의된 'null' 또는 'nil' 개념과 동일하지 않으며, 후자는 유효하지 않거나 존재하지 않는 값을 의미합니다.</p>
+<p>cons 목록은 Rust에서 일반적으로 사용되는 데이터 구조가 아닙니다. Rust에서 항목 목록을 다룰 때는 대부분의 경우 <code>Vec&lt;T&gt;</code>를 사용하는 것이 더 나은 선택입니다. 더 복잡한 재귀 데이터 형식은 다양한 상황에서 유용하지만, 이 장에서는 cons 목록을 통해 박스가 재귀 데이터 형식을 정의하는 데 어떻게 사용되는지, 큰 방해 요소 없이 살펴볼 수 있습니다.</p>
+<p>Listing 15-2에는 cons 리스트를 위한 열거형(enum) 정의가 포함되어 있습니다. 이 코드는 아직 컴파일되지 않습니다. <code>List</code> 타입의 크기가 알려져 있지 않기 때문인데, 이 부분은 나중에 자세히 살펴보겠습니다.</p>
 <figure class="listing" id="listing-15-2">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore does_not_compile">enum List {
@@ -207,12 +206,12 @@
 }
 <span class="boring">
 </span><span class="boring">fn main() {}</span></code></pre>
-<figcaption><a href="#listing-15-2">리스팅 15-2</a>: <code>i32</code> 값의 cons 목록 데이터 구조를 나타내는 열거형을 정의하는 첫 번째 시도</figcaption>
+<figcaption><a href="#listing-15-2">리스팅 15-2</a>: <code>i32</code> 값의 cons 리스트 데이터 구조를 나타내는 열거형을 정의하는 첫 번째 시도</figcaption>
 </figure>
 <section aria-role="note" class="note">
-<p>참고: 이 예제의 목적을 위해 <code>i32</code> 값만 포함하는 cons 목록을 구현하고 있습니다. 10장에서 설명한 대로 제네릭을 사용하여 모든 유형의 값을 저장할 수 있는 cons 목록 유형을 정의할 수 있었습니다.</p>
+<p>참고: 이 예제의 목적을 위해 <code>i32</code> 값만 포함하는 cons 목록을 구현하고 있습니다. 10장에서 설명한 대로 제네릭을 사용하여 모든 유형의 값을 저장할 수 있는 cons 목록 유형을 정의할 수도 있었습니다.</p>
 </section>
-<p><code>List</code> 유형을 사용하여 <code>1, 2, 3</code> 목록을 저장하는 것은 Listing 15-3의 코드처럼 보일 것입니다.</p>
+<p><code>List</code> 유형을 사용해 <code>1, 2, 3</code> 목록을 저장하면 Listing 15-3의 코드와 같은 형태가 됩니다.</p>
 <figure class="listing" id="listing-15-3">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">enum List {
@@ -227,11 +226,10 @@ use crate::List::{Cons, Nil};
 fn main() {
     let list = Cons(1, Cons(2, Cons(3, Nil)));
 }</code></pre>
-<figcaption><a href="#listing-15-3">목록 15-3</a>: <code>List</code> 열거형을 사용하여 목록 <code>1, 2, 3</code> 저장하기</figcaption>
+<figcaption><a href="#listing-15-3">목록 15-3</a>: <code>List</code> 열거형을 사용하여 목록 <code>1, 2, 3</code>을 저장하기</figcaption>
 </figure>
-<p>첫 번째 <code>Cons</code> 가치 보유 <code>1</code> 그리고 다른 <code>List</code> 값. 이 <code>List</code> 가치는 또 다른 <code>Cons</code> 보유하는 가치 <code>2</code> 그리고 다른 <code>List</code> 값. 이 <code>List</code> 가치 1 more <code>Cons</code> 보유하는 가치 <code>3</code> 그리고 A <code>List</code> 가치, 그것은 결국
-<code>Nil</code>목록의 끝을 알리는 비재귀 변형입니다.The non-recursive variant that signs the end of the list.</p>
-<p>Listing 15-3에서 코드를 컴파일하려고 하면, Listing 15-4에서 에러가 나타납니다.</p>
+<p>첫 번째 <code>Cons</code> 값은 <code>1</code>과 또 다른 <code>List</code> 값을 포함합니다. 이 <code>List</code> 값은 <code>2</code>과 또 다른 <code>List</code> 값을 포함하는 또 다른 <code>Cons</code> 값입니다. 이 <code>List</code> 값은 <code>3</code>과 <code>List</code> 값을 포함하는 한 번 더 반복된 <code>Cons</code> 값이며, 이 값은 마침내 리스트의 끝을 나타내는 비재귀적 변형인 <code>Nil</code>입니다.</p>
+<p>Listing 15-3의 코드를 컴파일하려고 하면 Listing 15-4에 표시된 오류가 발생합니다.</p>
 <figure class="listing" id="listing-15-4">
 <pre><code class="language-console">$ cargo run
    Compiling cons-list v0.1.0 (file:///projects/cons-list)
@@ -251,11 +249,11 @@ help: insert some indirection (e.g., a `Box`, `Rc`, or `&amp;`) to break the cyc
 For more information about this error, try `rustc --explain E0072`.
 error: could not compile `cons-list` (bin "cons-list") due to 1 previous error
 </code></pre>
-<figcaption><a href="#listing-15-4">목록 15-4</a>: 재귀 열거형을 정의하려고 할 때 발생하는 오류</figcaption>
+<figcaption><a href="#listing-15-4">Listing 15-4</a>: 재귀 열거형을 정의하려고 할 때 발생하는 오류</figcaption>
 </figure>
-<p>에러는 이 타입이 "무한한 크기"를 가지고 있음을 보여줍니다. 그 이유는 우리가 재귀적인 변형을 가진 <code>List</code>를 정의했기 때문입니다: 그것은 그 자체의 또 다른 값을 직접 가지고 있습니다. 결과적으로, 러스트는 <code>List</code> 값을 저장하기 위해 얼마나 많은 공간이 필요한지 알아낼 수 없습니다. 우리가 왜 이 에러를 얻는지 분해해 봅시다. 먼저, 러스트가 얼마나 많은 공간을 필요로 하는지를 살펴볼 것입니다.</p>
-<h4 id="computing-the-size-of-a-non-recursive-type"><a class="header" href="#computing-the-size-of-a-non-recursive-type">non-recursive 타입의 크기 계산하기</a></h4>
-<p>6장에서 열거형 정의에 대해 논의했을 때 Listing 6-2에서 정의한 <code>Message</code> 열거형을 상기하십시오:</p>
+<p>에러 메시지는 이 타입이 “무한한 크기”를 가진다고 표시합니다. 그 이유는 <code>List</code>를 재귀적인 변형으로 정의했기 때문입니다. 이 변형은 자기 자신의 값을 직접 포함하고 있습니다. 그 결과, Rust는 <code>List</code> 값을 저장하는 데 필요한 공간의 크기를 계산할 수 없습니다. 왜 이런 에러가 발생하는지 단계별로 살펴보겠습니다. 먼저, Rust가 재귀가 아닌 타입의 값을 저장하는 데 필요한 공간 크기를 어떻게 결정하는지 살펴봅니다.</p>
+<h4 id="computing-the-size-of-a-non-recursive-type"><a class="header" href="#computing-the-size-of-a-non-recursive-type">비재귀 타입의 크기 계산하기</a></h4>
+<p>6장에서 열거형(enumeration) 정의를 다룰 때 Listing 6-2에서 정의한 <code>Message</code> 열거형을 기억해 보겠습니다:</p>
 <pre class="playground"><code class="language-rust edition2024">enum Message {
     Quit,
     Move { x: i32, y: i32 },
@@ -265,16 +263,13 @@ error: could not compile `cons-list` (bin "cons-list") due to 1 previous error
 <span class="boring">
 </span><span class="boring">fn main() {}</span></code></pre>
 <p>a에 할당할 공간의 양을 결정하려면 <code>Message</code> value, 러스트는 어떤 변형이 가장 많은 공간을 필요로 하는지를 보기 위해 각각의 변형을 살펴봅니다. 러스트는 <code>Message::Quit</code> 공간도 필요 없고, <code>Message::Move</code> 충분한 공간이 필요 2. <code>i32</code> 가치, 등등. 단지 1개의 이체가 이용되기 때문에, 최대 공간 a <code>Message</code> value 는 가장 큰 변형을 저장하기 위해 필요한 공간입니다.</p>
-<p>이것을 러스트가 얼마나 많은 공간을 재귀적인 타입으로 결정하려고 할 때 일어나는 것과 비교해보세요. <code>List</code> Listing 15-2 needs의 enum입니다. 컴파일러는 <code>Cons</code> variant 타입의 값을 가지는 변수 <code>i32</code> 타입 값 A value of type <code>List</code>. 그러므로 <code>Cons</code> 넓이만큼의 공간을 필요로 하며, <code>i32</code> a의 크기 더하기 <code>List</code>. 얼마나 많은 메모리를 알아내는 방법 <code>List</code>
-type needs, 컴파일러는 다음과 같이 변형을 본다. <code>Cons</code>
-변형. <code>Cons</code> variant는 type의 값을 가지고 있다. <code>i32</code> 타입 값 A value of type
-<code>List</code>도 15-1에 도시된 바와 같이, 이 과정은 무한히 계속된다.</p>
+<p>이것을 Listing 15-2의 <code>List</code> 열거형과 같은 재귀 타입에 필요한 공간 크기를 Rust가 결정하려고 할 때의 상황과 비교해 보세요. 컴파일러는 먼저 <code>Cons</code> 변형을 살펴봅니다. 이 변형은 <code>i32</code> 타입의 값과 <code>List</code> 타입의 값을 포함합니다. 따라서 <code>Cons</code>에는 <code>i32</code>의 크기加上 <code>List</code>의 크기에 해당하는 공간이 필요합니다. <code>List</code> 타입에 필요한 메모리 양을 파악하기 위해, 컴파일러는 <code>Cons</code> 변형부터 시작하여 변형들을 살펴봅니다. <code>Cons</code> 변형은 <code>i32</code> 타입의 값과 <code>List</code> 타입의 값을 포함하며, 이 과정은 Figure 15-1에 표시된 것처럼 무한히 계속됩니다.</p>
 <img alt="An infinite Cons list: a rectangle labeled 'Cons' split into two smaller rectangles. The first smaller rectangle holds the label 'i32', and the second smaller rectangle holds the label 'Cons' and a smaller version of the outer 'Cons' rectangle. The 'Cons' rectangles continue to hold smaller and smaller versions of themselves until the smallest comfortably sized rectangle holds an infinity symbol, indicating that this repetition goes on forever." class="center" src="img/trpl15-01.svg" style="width: 50%;"/>
-<p>그림 15-1: 무한 <code>List</code>로 구성된 무한 <code>Cons</code> 변형</p>
+<p>그림 15-1: 무한한 <code>List</code>로 구성된 무한한 <code>Cons</code> 변형</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="using-boxt-to-get-a-recursive-type-with-a-known-size"></a></p>
-<h4 id="getting-a-recursive-type-with-a-known-size"><a class="header" href="#getting-a-recursive-type-with-a-known-size">알려진 크기로 재귀 유형 가져오기Get a recursive type with a known size</a></h4>
-<p>러스트는 재귀적으로 정의된 타입에 대해 얼마나 많은 공간을 할당할지 알 수 없기 때문에, 컴파일러는 이 유용한 제안과 함께 오류를 제공합니다:</p>
+<h4 id="getting-a-recursive-type-with-a-known-size"><a class="header" href="#getting-a-recursive-type-with-a-known-size">크기가 알려진 재귀 타입 가져오기</a></h4>
+<p>Rust는 재귀적으로 정의된 타입에 대해 얼마나 많은 공간을 할당해야 할지 계산할 수 없으므로, 컴파일러는 다음과 같은 유용한 제안을 포함하여 오류를 보고합니다:</p>
 <!-- manual-regeneration
 after doing automatic regeneration, look at listings/ch15-smart-pointers/listing-15-03/output.txt and copy the relevant line
 -->
@@ -283,11 +278,11 @@ after doing automatic regeneration, look at listings/ch15-smart-pointers/listing
 2 |     Cons(i32, Box&lt;List&gt;),
   |               ++++    +
 </code></pre>
-<p>이 제안에서 간접은 값을 직접 저장하는 대신 값에 대한 포인터를 저장하여 값을 간접적으로 저장하도록 데이터 구조를 변경해야 함을 의미합니다.</p>
+<p>이 제안에서 간접 저장(indirection)이란 값을 직접 저장하는 대신, 값에 대한 포인터를 저장하여 값을 간접적으로 저장하도록 데이터 구조를 변경해야 함을 의미합니다.</p>
 <p>왜냐하면 A <code>Box&lt;T&gt;</code> 러스트는 항상 얼마나 많은 공간 a를 알고 <code>Box&lt;T&gt;</code>
 needs: 포인터의 크기는 가리키는 데이터의 양에 따라 변경되지 않습니다. 즉, <code>Box&lt;T&gt;</code> 내부 The <code>Cons</code> variant 다른 <code>List</code> 직접 가치. <code>Box&lt;T&gt;</code> 다음을 가리킬 것입니다. <code>List</code>
 그 값은 힙에 있을 것입니다. <code>Cons</code> variant. 개념적으로, 우리는 여전히 다른 리스트를 가지고 있는 리스트를 가지고 있지만, 이 구현은 이제 서로 내부가 아닌 서로 옆에 아이템을 놓는 것과 같습니다.</p>
-<p>Listing 15-2에서 <code>List</code> 열거형의 정의와 Listing 15-3에서 <code>List</code>의 사용법을 컴파일될 Listing 15-5의 코드로 변경할 수 있습니다.</p>
+<p>Listing 15-2의 <code>List</code> 열거형 정의와 Listing 15-3의 <code>List</code> 사용법을 Listing 15-5의 코드로 변경하면 컴파일됩니다.</p>
 <figure class="listing" id="listing-15-5">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">enum List {
@@ -300,14 +295,13 @@ use crate::List::{Cons, Nil};
 fn main() {
     let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
 }</code></pre>
-<figcaption><a href="#listing-15-5">목록 15-5</a>의 정의 The definition of <code>List</code>  ⁇  사용 <code>Box&lt;T&gt;</code> 알려진 크기를 갖기 위해</figcaption>
+<figcaption><a href="#listing-15-5">목록 15-5</a>: 알려진 크기를 갖기 위해 <code>List</code>를 사용하는 <code>Box&lt;T&gt;</code>의 정의</figcaption>
 </figure>
-<p>이름 * <code>Cons</code> variant는 a의 크기를 필요로 한다. <code>i32</code> 상자의 포인터 데이터를 저장할 공간입니다. <code>Nil</code> variant는 어떤 값도 저장하지 않으므로, 스택에 있는 variant보다 더 적은 공간을 필요로 한다. <code>Cons</code> 변형. 이제 우리는 <code>List</code> 값의 크기는 다음과 같습니다. <code>i32</code> 박스의 포인터 데이터의 크기를 더합니다. 박스를 사용함으로써, 우리는 무한하고 재귀적인 체인을 깨뜨렸기 때문에 컴파일러는 a를 저장하는 데 필요한 크기를 알아낼 수 있습니다. <code>List</code> 값. 그림 15-2는 무엇을 보여줍니다 <code>Cons</code>
-Variant는 지금과 같습니다.</p>
+<p><code>Cons</code> 변형에는 <code>i32</code>의 크기加上 박스의 포인터 데이터를 저장할 공간이 필요합니다. <code>Nil</code> 변형은 값을 저장하지 않으므로, <code>Cons</code> 변형보다 스택에서 더 적은 공간을 필요로 합니다. 이제 어떤 <code>List</code> 값이든 <code>i32</code>의 크기加上 박스의 포인터 데이터 크기를 차지한다는 것을 알 수 있습니다. 박스를 사용함으로써 무한한 재귀 체인을 끊었으므로, 컴파일러는 <code>List</code> 값을 저장하는 데 필요한 크기를 계산할 수 있습니다. Figure 15-2는 이제 <code>Cons</code> 변형이 어떻게 보이는지 보여줍니다.</p>
 <img alt="A rectangle labeled 'Cons' split into two smaller rectangles. The first smaller rectangle holds the label 'i32', and the second smaller rectangle holds the label 'Box' with one inner rectangle that contains the label 'usize', representing the finite size of the box's pointer." class="center" src="img/trpl15-02.svg"/>
-<p><span class="caption">그림 15-2: A <code>List</code> 그것은 무한히 크지 않습니다, 왜냐하면 <code>Cons</code> 보유 A <code>Box</code></span></p>
-<p>Boxes는 간접 및 힙 할당만 제공합니다. 다른 스마트 포인터 유형과 마찬가지로 다른 특별한 기능이 없습니다. 또한 이러한 특수 기능이 발생하는 성능 오버 헤드가 없으므로 간접 기능이 필요한 cons 목록과 같은 경우에 유용 할 수 있습니다. 18 장의 상자에 대한 더 많은 사용 사례를 살펴 보겠습니다.</p>
-<p><code>Box&lt;T&gt;</code> 유형은 <code>Deref</code> 트레잇을 구현하기 때문에 스마트 포인터입니다. <code>Box&lt;T&gt;</code> 값을 참조로 취급 할 수 있습니다. <code>Box&lt;T&gt;</code> 값이 범위를 벗어나면 상자가 가리키는 힙 데이터도 <code>Drop</code> 트레잇으로 인해 정리됩니다. 이 두 가지 트레잇을 더 자세히 설명하겠습니다.</p>
+<p><span class="caption">그림 15-2: <code>List</code>은 <code>Cons</code>가 <code>Box</code>을 보유하기 때문에 무한한 크기가 아닙니다.</span></p>
+<p>박스는 간접 참조와 힙 할당만 제공합니다. 이 장에서 다룰 다른 스마트 포인터 타입처럼 다른 특별한 기능을 가지고 있지 않습니다. 또한 이러한 특수 기능으로 인한 성능 오버헤드도 없으므로, 간접 참조가 필요한 유일한 기능인 cons 리스트와 같은 경우에 유용할 수 있습니다. 박스의 더 많은 사용 사례는 18장에서 다룹니다.</p>
+<p><code>Box&lt;T&gt;</code> 타입은 <code>Deref</code> 트레잇을 구현하기 때문에 스마트 포인터입니다. 이 트레잇은 <code>Box&lt;T&gt;</code> 값을 참조처럼 취급할 수 있게 합니다. <code>Box&lt;T&gt;</code> 값이 스코프를 벗어나면, 박스가 가리키는 힙 데이터도 <code>Drop</code> 트레잇 구현 덕분에 함께 정리됩니다. 이 두 트레잇은 이 장의 나머지 부분에서 다룰 다른 스마트 포인터 타입이 제공하는 기능에 더욱 중요할 것입니다. 이 두 트레잇을 더 자세히 살펴보겠습니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->

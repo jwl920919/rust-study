@@ -162,8 +162,8 @@
 <div class="content" id="mdbook-content">
 <main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
 <h2 id="functions"><a class="header" href="#functions">함수</a></h2>
-<p>함수는 러스트 코드에서 널리 사용됩니다. 언어에서 가장 중요한 함수 중 하나 인 <code>main</code> 함수는 많은 프로그램의 진입점입니다. 또한 <code>fn</code> 키워드를 보았으므로 새로운 기능을 선언 할 수 있습니다.</p>
-<p>러스트 코드는 모든 글자가 소문자이고 단어가 분리되어 있는 함수와 변수 이름에 대한 일반적인 스타일로 snake case를 사용합니다. 예제 함수 정의를 포함하는 프로그램은 다음과 같습니다:</p>
+<p>함수는 Rust 코드에서 널리 사용됩니다. 이미 이 언어에서 가장 중요한 함수 중 하나인 <code>main</code> 함수를 확인했습니다. 이 함수는 많은 프로그램의 진입점입니다. 또한 새로운 함수를 선언할 수 있게 해주는 <code>fn</code> 키워드도 확인했습니다.</p>
+<p>Rust 코드에서는 함수와 변수 이름에 대해 snake case를 관용적 스타일로 사용합니다. 이 스타일에서는 모든 글자가 소문자이며 밑줄(_)로 단어를 구분합니다. 예제 함수 정의를 포함하는 프로그램은 다음과 같습니다:</p>
 <p>파일 이름: src/main.rs</p>
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     println!("Hello, world!");
@@ -174,10 +174,10 @@
 fn another_function() {
     println!("Another function.");
 }</code></pre>
-<p>러스트에서 함수를 정의합니다. <code>fn</code>를 입력하고 함수 이름과 괄호를 입력합니다. 중괄호는 함수 본문이 시작되고 끝나는 위치를 컴파일러에게 알려줍니다.</p>
+<p>Rust에서 함수를 정의하려면 <code>fn</code> 뒤에 함수 이름과 괄호를 입력합니다. 중괄호는 함수 본문이 시작되고 끝나는 위치를 컴파일러에게 알려줍니다.</p>
 <p>우리가 정의한 함수를 호출할 수 있습니다. 이름 뒤에 괄호를 입력하면 됩니다. 왜냐하면 <code>another_function</code> 프로그램 내에서 정의되며, 내부에서 호출될 수 있습니다. <code>main</code> 함수. 우리가 정의한 것을 주목하라. <code>another_function</code>
 <em>이후</em> 오시는 길 <code>main</code> 소스 코드에서 함수를 정의할 수도 있습니다. 러스트는 여러분이 함수를 정의할 때 상관하지 않습니다. 단지 함수는 호출자가 볼 수 있는 범위의 어딘가에 정의되어 있을 뿐입니다.</p>
-<p>함수라는 이름의 새로운 바이너리 프로젝트를 시작하여 함수를 더 탐색해 봅시다. <code>another_function</code> 예제를 src/main.rs에 넣고 실행하십시오. 다음 출력을 볼 수 있습니다.</p>
+<p>함수를 더 자세히 살펴보기 위해 functions라는 이름의 새로운 바이너리 프로젝트를 시작해 봅시다. <code>another_function</code> 예제를 src/main.rs에 넣고 실행하십시오. 다음 출력을 볼 수 있습니다.</p>
 <pre><code class="language-console">$ cargo run
    Compiling functions v0.1.0 (file:///projects/functions)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
@@ -185,10 +185,10 @@ fn another_function() {
 Hello, world!
 Another function.
 </code></pre>
-<p><code>main</code> 함수에 나타나는 순서대로 행이 실행됩니다. 먼저 "Hello, world!"메시지가 인쇄되고 <code>another_function</code>가 호출되고 메시지가 인쇄됩니다.</p>
-<h3 id="parameters"><a class="header" href="#parameters">매개 변수</a></h3>
-<p>우리는 함수의 시그니처의 일부인 특별한 변수인 매개변수를 가지기 위해 함수를 정의할 수 있습니다. 함수에 매개변수가 있을 때, 그 매개변수에 대한 구체적인 값을 제공할 수 있습니다. 기술적으로, 구체적인 값은 인수라고 하지만, 일상적인 대화에서 사람들은 함수의 정의에 있는 변수나 함수를 호출할 때 전달되는 구체적인 값에 대해 단어 매개변수와 인수를 번갈아 사용하는 경향이 있습니다.</p>
-<p>이 버전의 <code>another_function</code>에서는 매개 변수를 추가합니다.</p>
+<p><code>main</code> 함수에 나타나는 순서대로 각 줄이 실행됩니다. 먼저 "Hello, world!" 메시지가 출력되고, <code>another_function</code>이 호출되어 그 메시지가 출력됩니다.</p>
+<h3 id="parameters"><a class="header" href="#parameters">매개변수</a></h3>
+<p>함수는 매개변수를 가질 수 있습니다. 매개변수는 함수 시그니처의 일부인 특별한 변수입니다. 함수에 매개변수가 있으면, 함수를 호출할 때 해당 매개변수에 구체적인 값을 전달할 수 있습니다. 기술적으로 구체적인 값은 인수(argument)라고 부르지만, 일상적인 대화에서는 함수 정의에 있는 변수나 함수 호출 시 전달되는 구체적인 값을 가리킬 때 매개변수와 인수를 혼용하는 경우가 많습니다.</p>
+<p>이 버전의 <code>another_function</code>에서는 매개변수를 추가합니다.</p>
 <p>파일 이름: src/main.rs</p>
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     another_function(5);
@@ -197,18 +197,16 @@ Another function.
 fn another_function(x: i32) {
     println!("The value of x is: {x}");
 }</code></pre>
-<p>이 프로그램을 실행 해보세요; 당신은 다음과 같은 출력을 얻을 것이다 :</p>
+<p>이 프로그램을 실행해 보세요. 다음과 같은 출력이 표시됩니다.</p>
 <pre><code class="language-console">$ cargo run
    Compiling functions v0.1.0 (file:///projects/functions)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.21s
      Running `target/debug/functions`
 The value of x is: 5
 </code></pre>
-<p>의 선언 The Declaration <code>another_function</code> 이름이 있는 매개 변수가 하나 있음 <code>x</code>. 의 종류
-<code>x</code> 으로 지정됩니다. <code>i32</code>. 우리가 통과 할 때 <code>5</code> 에 에 <code>another_function</code>, 이
-<code>println!</code> 매크로 풋 <code>5</code> 상기 중괄호는 The curly brackets <code>x</code> 문자열 형식입니다.The format string.</p>
-<p>함수 서명에서, 각 파라미터의 타입을 선언해야 합니다. 이것은 러스트의 디자인에서 의도적인 결정입니다: 함수 정의에서 타입 주석을 요구하는 것은 컴파일러가 여러분이 의미하는 타입을 알아내기 위해 코드의 다른 곳에서 사용할 필요가 거의 없다는 것을 의미합니다. 컴파일러는 또한 함수가 기대하는 타입을 안다면 더 유용한 에러 메시지를 줄 수 있습니다.</p>
-<p>여러 매개변수를 정의할 때, 다음과 같이 매개변수 선언을 쉼표로 구분합니다.</p>
+<p><code>another_function</code>의 선언에는 <code>x</code>이라는 이름의 매개변수가 하나 있습니다. <code>x</code>의 타입은 <code>i32</code>로 지정되어 있습니다. <code>5</code>에 <code>another_function</code>를 전달하면, <code>println!</code> 매크로는 형식 문자열에서 <code>5</code>가 있던 중괄호 위치에 <code>x</code>를 배치합니다.</p>
+<p>함수 시그니처에서는 각 매개변수의 타입을 선언해야 합니다. 이는 Rust 설계에서 의도적으로 내린 결정입니다. 함수 정의에서 타입 주석을 요구하면, 컴파일러가 코드의 다른 곳에서 타입을 추론하기 위해 사용자가 타입을 명시적으로 지정할 필요가 거의 없습니다. 또한 컴파일러가 함수가 기대하는 타입을 알면 더 유용한 에러 메시지를 제공할 수 있습니다.</p>
+<p>여러 매개변수를 정의할 때는 다음과 같이 쉼표로 구분합니다.</p>
 <p>파일 이름: src/main.rs</p>
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     print_labeled_measurement(5, 'h');
@@ -217,23 +215,23 @@ The value of x is: 5
 fn print_labeled_measurement(value: i32, unit_label: char) {
     println!("The measurement is: {value}{unit_label}");
 }</code></pre>
-<p>이 예제에서는 이름이 지정된 함수를 만듭니다.This example created a function named <code>print_labeled_measurement</code> 2개의 매개변수로. 첫번째 매개변수는 지명됩니다 <code>value</code> 그리고 is an <code>i32</code>. 두 번째 이름은 <code>unit_label</code> 및 유형입니다 <code>char</code>. 이 함수는 다음을 모두 포함하는 텍스트를 인쇄합니다. <code>value</code> 그리고 The <code>unit_label</code>.</p>
-<p>이 코드를 실행해 봅시다. 현재 프로젝트의 src/main.rs 파일에 있는 프로그램을 이전 예제로 바꾸고 <code>cargo run</code>를 사용하여 실행하세요:</p>
+<p>이 예제에서는 두 개의 매개변수를 가진 <code>print_labeled_measurement</code>라는 이름의 함수를 만듭니다. 첫 번째 매개변수는 <code>value</code>이며 타입은 <code>i32</code>입니다. 두 번째 매개변수는 <code>unit_label</code>이며 타입은 <code>char</code>입니다. 이 함수는 <code>value</code>와 <code>unit_label</code>를 모두 포함하는 텍스트를 출력합니다.</p>
+<p>이 코드를 실행해 보겠습니다. 현재 functions 프로젝트의 src/main.rs 파일에 있는 프로그램을 앞선 예제로 교체하고 <code>cargo run</code>을 사용하여 실행하세요:</p>
 <pre><code class="language-console">$ cargo run
    Compiling functions v0.1.0 (file:///projects/functions)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
      Running `target/debug/functions`
 The measurement is: 5h
 </code></pre>
-<p><code>5</code>를 <code>value</code>와 <code>'h'</code>를 <code>unit_label</code>의 값으로 함수를 호출했기 때문에 프로그램 출력에는 이러한 값이 포함되어 있습니다.</p>
-<h3 id="statements-and-expressions"><a class="header" href="#statements-and-expressions">문장과 표현</a></h3>
-<p>함수 본문들은 선택적으로 표현식으로 끝나는 일련의 문장들로 구성되어 있습니다. 지금까지 우리가 다루었던 함수들은 엔딩 표현식을 포함하지 않았지만, 여러분은 문장의 일부로 표현식을 보았습니다. 러스트는 표현식 기반 언어이기 때문에, 이것은 이해해야 할 중요한 구별입니다. 다른 언어들은 동일한 구별을 가지고 있지 않으므로, 어떤 문장과 표현식이 무엇인지, 그리고 그 차이점이 함수의 본문에 어떤 영향을 미치는지 살펴 보겠습니다.</p>
+<p><code>5</code>의 값으로 <code>value</code>, <code>'h'</code>의 값으로 <code>unit_label</code>를 사용하여 함수를 호출했기 때문에 프로그램 출력에는 해당 값들이 포함되어 있습니다.</p>
+<h3 id="statements-and-expressions"><a class="header" href="#statements-and-expressions">문장과 표현식</a></h3>
+<p>함수 본문은 일련의 문장으로 구성되며, 선택적으로 표현식으로 끝날 수 있습니다. 지금까지 살펴본 함수들은 끝부분에 표현식을 포함하지 않았지만, 문장의 일부로 표현식을 사용한 적은 있습니다. Rust는 표현식 기반 언어이므로, 이 차이를 이해하는 것이 중요합니다. 다른 언어에는 이러한 구분이 없으므로, 문장과 표현식이 무엇인지 그리고 그 차이가 함수 본문에 어떤 영향을 미치는지 살펴 보겠습니다.</p>
 <ul>
-<li>명령문은 몇 가지 작업을 수행하고 값을 반환하지 않는 명령입니다.</li>
-<li>표현식은 결과값으로 평가됩니다.</li>
+<li>문장은 특정 작업을 수행하지만 값을 반환하지 않는 지시문입니다.</li>
+<li>표현식은 결과 값으로 평가됩니다.</li>
 </ul>
-<p>몇 가지 예를 살펴보자.</p>
-<p>실제로 이미 구문과 표현식을 사용했습니다. 변수를 만들고 <code>let</code> 키워드로 값을 할당하는 것은 문입니다. Listing 3-1에서 <code>let y = 6;</code>는 문입니다.</p>
+<p>몇 가지 예를 살펴보겠습니다.</p>
+<p>실제로 이미 문(statement)과 표현식(expression)을 사용했습니다. 변수를 만들고 <code>let</code> 키워드로 값을 할당하는 것은 문입니다. Listing 3-1에서 <code>let y = 6;</code>는 문입니다.</p>
 <figure class="listing" id="listing-3-1">
 <span class="file-name">Filename: src/main.rs</span>
 <pre class="playground"><code class="language-rust edition2024">fn main() {
@@ -241,13 +239,13 @@ The measurement is: 5h
 }</code></pre>
 <figcaption><a href="#listing-3-1">리스팅 3-1</a>: 하나의 문을 포함하는 <code>main</code> 함수 선언</figcaption>
 </figure>
-<p>함수 정의도 구문입니다. 앞의 예제 전체는 구문 자체입니다. (곧 살펴보겠지만, 함수를 호출하는 것은 구문이 아닙니다.)</p>
-<p>문은 값을 반환하지 않습니다. 따라서 다음 코드가 시도하기 때문에 <code>let</code> 문을 다른 변수에 할당 할 수 없습니다. 오류가 발생합니다.</p>
+<p>함수 정의도 문입니다. 앞의 예제 전체는 그 자체로 하나의 문입니다. (곧 살펴보겠지만, 함수를 호출하는 것은 문이 아닙니다.)</p>
+<p>문은 값을 반환하지 않습니다. 따라서 다음 코드가 시도하듯 <code>let</code> 문을 다른 변수에 할당할 수 없습니다. 이렇게 하면 오류가 발생합니다:</p>
 <p>파일 이름: src/main.rs</p>
 <pre><code class="language-rust ignore does_not_compile">fn main() {
     let x = (let y = 6);
 }</code></pre>
-<p>이 프로그램을 실행하면 다음과 같은 오류가 발생합니다.When you run this program, the error you'll look like this:</p>
+<p>이 프로그램을 실행하면 다음과 같은 오류가 발생합니다:</p>
 <pre><code class="language-console">$ cargo run
    Compiling functions v0.1.0 (file:///projects/functions)
 error: expected expression, found `let` statement
@@ -274,10 +272,8 @@ help: remove these parentheses
 warning: `functions` (bin "functions") generated 1 warning
 error: could not compile `functions` (bin "functions") due to 1 previous error; 1 warning emitted
 </code></pre>
-<p>이름 * <code>let y = 6</code> statement는 값을 반환하지 않으므로, for가 아무것도 없습니다.
-<code>x</code> to bind to. 이것은 할당이 할당의 값을 반환하는 C 및 Ruby와 같은 다른 언어에서 발생하는 것과 다릅니다. 이러한 언어에서는 작성할 수 있습니다. <code>x = y = 6</code> 그리고 둘 다 가지고 <code>x</code> 그리고 <code>y</code> 값 있음
-<code>6</code>; 휴식시에는 그렇지 않습니다.</p>
-<p>표현식은 값을 평가하고 러스트에서 작성할 나머지 코드를 대부분 구성합니다. 다음과 같은 수학 연산을 고려하십시오. <code>5 + 6</code>값에 대해 계산하는 식입니다.An expression that evaluates to the value. <code>11</code>표현식은 구문의 일부가 될 수 있습니다: Listing 3-1에서, <code>6</code> 문의 내용 <code>let y = 6;</code> 값을 평가하는 표현식입니다.An expression that evaluates to the value. <code>6</code>. 함수를 호출하는 것은 표현식입니다. 매크로를 호출하는 것은 표현식입니다. 중괄호로 만든 새로운 스코프 블록은 표현식입니다.</p>
+<p><code>let y = 6</code> 문은 값을 반환하지 않으므로, <code>x</code>에 바인딩할 대상이 없습니다. 이는 C나 Ruby와 같은 다른 언어에서 발생하는 상황과 다릅니다. 이러한 언어에서는 할당이 할당된 값을 반환하므로, <code>x = y = 6</code>처럼 작성하여 <code>x</code>와 <code>y</code> 모두에 값 <code>6</code>를 할당할 수 있습니다. 그러나 Rust에서는 그렇지 않습니다.</p>
+<p>표현식은 값을 산출하며, Rust에서 작성하는 나머지 코드의 대부분을 차지합니다. 예를 들어 <code>5 + 6</code>과 같은 수학 연산은 <code>11</code>이라는 값으로 평가되는 표현식입니다. 표현식은 문(statement)의 일부가 될 수도 있습니다. Listing 3-1에서 <code>6</code> 문장의 <code>let y = 6;</code>은 <code>6</code>이라는 값으로 평가되는 표현식입니다. 함수 호출은 표현식입니다. 매크로 호출도 표현식입니다. 중괄호로 생성되는 새로운 스코프 블록도 표현식입니다.</p>
 <p>파일 이름: src/main.rs</p>
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let y = {
@@ -287,14 +283,14 @@ error: could not compile `functions` (bin "functions") due to 1 previous error; 
 
     println!("The value of y is: {y}");
 }</code></pre>
-<p>이 표현:</p>
+<p>이 표현식은</p>
 <pre><code class="language-rust ignore">{
     let x = 3;
     x + 1
 }</code></pre>
-<p>이 경우 <code>4</code>로 평가되는 블록입니다. 이 값은 <code>y</code> 문에 <code>let</code>로 바인드됩니다. <code>x + 1</code> 줄 끝에 세미콜론이 없고, 이는 지금까지 본 줄의 대부분과 다릅니다. 식에는 세미콜론 종료가 포함되지 않습니다. 함수를 추가하면 세미콜론을 반환하지 않습니다.</p>
+<p>이 경우 <code>4</code>로 평가되는 블록입니다. 이 값은 <code>y</code> 문에서 <code>let</code>에 바인딩됩니다. <code>x + 1</code> 줄 끝에 세미콜론이 없는데, 이는 지금까지 본 대부분의 줄과 다릅니다. 식은 세미콜론으로 끝나지 않습니다. 식 끝에 세미콜론을 추가하면 식이 문장이 되며, 이때는 값을 반환하지 않습니다. 다음으로 함수의 반환 값과 식을 살펴볼 때 이 점을 염두에 두세요.</p>
 <h3 id="functions-with-return-values"><a class="header" href="#functions-with-return-values">반환 값이 있는 함수</a></h3>
-<p>함수는 함수를 호출하는 코드에 값을 반환할 수 있습니다. 우리는 반환 값의 이름을 지정하지 않지만, 화살표 뒤에 그 타입을 선언해야 합니다 (<code>-&gt;</code>). 러스트에서, 함수의 반환 값은 함수의 본문 블록에 있는 최종 표현식의 값과 동의어입니다. <code>return</code> 키워드를 사용하여 함수에서 일찍 반환하고 값을 지정해야 하지만, 대부분의 함수는 암시적 값을 반환합니다.</p>
+<p>함수는 호출한 코드에 값을 반환할 수 있습니다. 반환 값에는 이름을 붙이지 않지만, 화살표(<code>-&gt;</code>) 뒤에 타입을 선언해야 합니다. Rust에서 함수의 반환 값은 함수 본문 블록의 마지막 표현식 값과 동일합니다. <code>return</code> 키워드를 사용해 값을 지정하고 함수에서 조기에 반환할 수 있지만, 대부분의 함수는 마지막 표현식을 암시적으로 반환합니다. 값을 반환하는 함수의 예시는 다음과 같습니다.</p>
 <p>파일 이름: src/main.rs</p>
 <pre class="playground"><code class="language-rust edition2024">fn five() -&gt; i32 {
     5
@@ -313,13 +309,13 @@ fn main() {
      Running `target/debug/functions`
 The value of x is: 5
 </code></pre>
-<p>이름 * <code>5</code> 에서 <code>five</code> 함수의 반환 값이기 때문에 반환 형식은 다음과 같습니다. <code>i32</code>. 좀 더 자세히 살펴 보겠습니다. 두 가지 중요한 비트가 있습니다. 첫째, 선 <code>let x = five();</code> 변수를 초기화하기 위해 함수의 반환 값을 사용하고 있음을 보여줍니다. 함수가 <code>five</code> 반환 A <code>5</code>이 줄은 다음과 같습니다.This line is the same as the following:</p>
+<p><code>five</code>의 <code>5</code>은 함수의 반환 값입니다. 그래서 반환 타입이 <code>i32</code>입니다. 이를 자세히 살펴보겠습니다. 중요한 부분이 두 가지 있습니다. 첫째, <code>let x = five();</code> 줄은 함수의 반환 값을 사용해 변수를 초기화하고 있음을 보여줍니다. 함수 <code>five</code>가 <code>5</code>를 반환하므로, 해당 줄은 다음과 같습니다:</p>
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>let x = 5;
 <span class="boring">}</span></code></pre>
-<p>둘째, <code>five</code> 함수에는 매개 변수가 없으며 반환 값의 유형을 정의하지만 함수의 몸체는 세미콜론이없는 외로운 <code>5</code>입니다.</p>
-<p>다른 예를 살펴보자:</p>
+<p>둘째, <code>five</code> 함수에는 매개변수가 없으며 반환 값의 타입을 정의합니다. 함수 본문은 값을 반환하려는 식이므로 세미콜론이 없는 <code>5</code>입니다.</p>
+<p>다른 예를 살펴보겠습니다.</p>
 <p>파일 이름: src/main.rs</p>
 <pre class="playground"><code class="language-rust edition2024">fn main() {
     let x = plus_one(5);
@@ -330,7 +326,7 @@ The value of x is: 5
 fn plus_one(x: i32) -&gt; i32 {
     x + 1
 }</code></pre>
-<p>이 코드를 실행하면 <code>The value of x is: 6</code>가 인쇄됩니다. 그러나 <code>x + 1</code>가 포함 된 줄의 끝에 세미콜론을 놓고 식에서 문으로 변경하면 어떻게됩니까?</p>
+<p>이 코드를 실행하면 <code>The value of x is: 6</code>이 출력됩니다. 그런데 <code>x + 1</code>이 포함된 줄의 끝에 세미콜론을 붙여 식을 문으로 변경하면 어떻게 될까요?</p>
 <p>파일 이름: src/main.rs</p>
 <pre><code class="language-rust ignore does_not_compile">fn main() {
     let x = plus_one(5);
@@ -341,7 +337,7 @@ fn plus_one(x: i32) -&gt; i32 {
 fn plus_one(x: i32) -&gt; i32 {
     x + 1;
 }</code></pre>
-<p>이 코드를 컴파일하면 다음과 같이 오류가 발생합니다.</p>
+<p>이 코드를 컴파일하면 다음과 같은 오류가 발생합니다.</p>
 <pre><code class="language-console">$ cargo run
    Compiling functions v0.1.0 (file:///projects/functions)
 error[E0308]: mismatched types
@@ -357,7 +353,7 @@ error[E0308]: mismatched types
 For more information about this error, try `rustc --explain E0308`.
 error: could not compile `functions` (bin "functions") due to 1 previous error
 </code></pre>
-<p>주 오류 메시지 인 <code>mismatched types</code>는이 코드의 핵심 문제를 보여줍니다. 함수 <code>plus_one</code>의 정의는 <code>i32</code>를 반환 할 것이라고 말하지만 문은 <code>()</code>로 표현되는 값으로 평가되지 않습니다. 단위 유형. 따라서 함수 정의와 모순되는 것은 아무것도 반환되지 않으므로 오류가 발생할 수 있습니다. 이 오류는 해결됩니다.</p>
+<p>주 오류 메시지인 <code>mismatched types</code>이 이 코드의 핵심 문제를 드러냅니다. 함수 <code>plus_one</code>의 정의는 <code>i32</code>를 반환한다고 명시하지만, 문(statement)은 값으로 평가되지 않습니다. 이는 단위 타입인 <code>()</code>로 표현됩니다. 따라서 아무것도 반환되지 않아 함수 정의와 모순이 발생하고, 이로 인해 오류가 발생합니다. 이 출력에서 Rust는 이 문제를 해결하는 데 도움이 될 수 있는 메시지를 제공합니다. 세미콜론을 제거하라고 제안하며, 이렇게 하면 오류가 수정됩니다.</p>
 </main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->
