@@ -1,0 +1,701 @@
+<!DOCTYPE HTML>
+
+<html class="light sidebar-visible" dir="ltr" lang="ko">
+<head>
+<!-- Book generated using mdBook -->
+<meta charset="utf-8"/>
+<title>Pattern Syntax - The Rust Programming Language</title>
+<!-- Custom HTML head -->
+<meta content="" name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<link href="favicon-de23e50b.svg" rel="icon"/>
+<link href="favicon-8114d1fc.png" rel="shortcut icon"/>
+<link href="css/variables-8adf115d.css" rel="stylesheet"/>
+<link href="css/general-e96d0476.css" rel="stylesheet"/>
+<link href="css/chrome-d279d366.css" rel="stylesheet"/>
+<link href="css/print-9e4910d8.css" media="print" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="fonts/fonts-9644e21d.css" rel="stylesheet"/>
+<!-- Highlight.js Stylesheets -->
+<link href="highlight-493f70e1.css" id="mdbook-highlight-css" rel="stylesheet"/>
+<link href="tomorrow-night-4c0ae647.css" id="mdbook-tomorrow-night-css" rel="stylesheet"/>
+<link href="ayu-highlight-3fdfc3ac.css" id="mdbook-ayu-highlight-css" rel="stylesheet"/>
+<!-- Custom theme stylesheets -->
+<link href="ferris-d33b75bf.css" rel="stylesheet"/>
+<link href="theme/2018-edition-4e126c62.css" rel="stylesheet"/>
+<link href="theme/semantic-notes-9b5766c0.css" rel="stylesheet"/>
+<link href="theme/listing-cab26221.css" rel="stylesheet"/>
+<!-- Provide site root and default themes to javascript -->
+<script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cc309c2.js";
+        </script>
+<!-- Start loading toc.js asap -->
+<script src="toc-0e4ce700.js"></script>
+<link href="rust-code-lab.css" rel="stylesheet"/><link href="notion-theme.css" rel="stylesheet"/></head>
+<body>
+<div id="mdbook-help-container">
+<div id="mdbook-help-popup">
+<h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+<div>
+<p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+<p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+<p>Press <kbd>?</kbd> to show this help</p>
+<p>Press <kbd>Esc</kbd> to hide this help</p>
+</div>
+</div>
+</div>
+<div id="mdbook-body-container">
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+<input class="hidden" id="mdbook-sidebar-toggle-anchor" type="checkbox"/>
+<!-- Hide / unhide sidebar before it is displayed -->
+<script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+<nav aria-label="Table of contents" class="sidebar" id="mdbook-sidebar">
+<!-- populated by js -->
+<mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+<noscript>
+<iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+</noscript>
+<div class="sidebar-resize-handle" id="mdbook-sidebar-resize-handle">
+<div class="sidebar-resize-indicator"></div>
+</div>
+</nav>
+<div class="page-wrapper" id="mdbook-page-wrapper">
+<div class="page">
+<div id="mdbook-menu-bar-hover-placeholder"></div>
+<div class="menu-bar sticky" id="mdbook-menu-bar">
+<div class="left-buttons">
+<label aria-controls="mdbook-sidebar" aria-label="Toggle Table of Contents" class="icon-button" for="mdbook-sidebar-toggle-anchor" id="mdbook-sidebar-toggle" title="Toggle Table of Contents">
+<span class="fa-svg"><svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"></path></svg></span>
+</label>
+<button aria-controls="mdbook-theme-list" aria-expanded="false" aria-haspopup="true" aria-label="Change theme" class="icon-button" id="mdbook-theme-toggle" title="Change theme" type="button">
+<span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"></path></svg></span>
+</button>
+<ul aria-label="Themes" class="theme-popup" id="mdbook-theme-list" role="menu">
+<li role="none"><button class="theme" id="mdbook-theme-default_theme" role="menuitem">Auto</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-light" role="menuitem">Light</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-rust" role="menuitem">Rust</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-coal" role="menuitem">Coal</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-navy" role="menuitem">Navy</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-ayu" role="menuitem">Ayu</button></li>
+</ul>
+<button aria-controls="mdbook-searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-label="Toggle Searchbar" class="icon-button" id="mdbook-search-toggle" title="Search (`/`)" type="button">
+<span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"></path></svg></span>
+</button>
+</div>
+<h1 class="menu-title">The Rust Programming Language</h1>
+<div class="right-buttons">
+<a aria-label="Print this book" href="print.html" title="Print this book">
+<span class="fa-svg" id="print-button"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"></path></svg></span>
+</a>
+<a aria-label="Git repository" href="https://github.com/rust-lang/book" title="Git repository">
+<span class="fa-svg"><svg viewbox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></span>
+</a>
+</div>
+</div>
+<div class="hidden" id="mdbook-search-wrapper">
+<form class="searchbar-outer" id="mdbook-searchbar-outer">
+<div class="search-wrapper">
+<input aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." type="search"/>
+<div class="spinner-wrapper">
+<span class="fa-svg" id="fa-spin"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"></path></svg></span>
+</div>
+</div>
+</form>
+<div class="searchresults-outer hidden" id="mdbook-searchresults-outer">
+<div class="searchresults-header" id="mdbook-searchresults-header"></div>
+<ul id="mdbook-searchresults">
+</ul>
+</div>
+</div>
+<!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+<script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+<div class="content" id="mdbook-content">
+<main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
+<h2 id="pattern-syntax"><a class="header" href="#pattern-syntax">패턴 문법</a></h2>
+<p>이 섹션에서는 패턴에서 유효한 모든 구문을 수집하고 각 구문을 사용하는 이유와시기를 논의합니다.</p>
+<h3 id="matching-literals"><a class="header" href="#matching-literals">리터럴 일치</a></h3>
+<p>6장에서 보듯이, 리터럴과 패턴을 직접 매치할 수 있습니다. 다음 코드는 몇 가지 예제를 제공합니다.</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    let x = 1;
+
+    match x {
+        1 =&gt; println!("one"),
+        2 =&gt; println!("two"),
+        3 =&gt; println!("three"),
+        _ =&gt; println!("anything"),
+    }
+<span class="boring">}</span></code></pre>
+<p>이 코드는 <code>one</code>를 인쇄합니다. <code>x</code>의 값이 <code>1</code>이기 때문입니다. 이 구문은 특정 구체적인 값을 얻는 경우 코드를 실행하려는 경우에 유용합니다.</p>
+<h3 id="matching-named-variables"><a class="header" href="#matching-named-variables">일치하는 이름있는 변수</a></h3>
+<p>이름있는 변수는 어떤 값과도 일치하는 반박 할 수없는 패턴이며,이 책에서 여러 번 사용했습니다. 그러나 named variables를 사용할 때 합병증이 있습니다. <code>match</code>, <code>if let</code>, 또는 <code>while let</code> expressions. 이러한 종류의 표현식들은 각각 새로운 스코프를 시작하기 때문에, 이 표현식들 안에서 패턴의 일부로 선언된 변수들은 모든 변수와 마찬가지로 구조체 밖에서 같은 이름을 가진 변수들을 그림자로 만듭니다. Listing 19-11에서, 우리는 named 변수를 선언합니다 <code>x</code> 상기 값은 The value <code>Some(5)</code> 변수 A variable <code>y</code> 상기 값은 The value
+<code>10</code>. 우리는 다음을 만듭니다. <code>match</code> 값에 대한 표현식 <code>x</code>. 일치 팔의 패턴을보고 <code>println!</code> 마지막에, 이 코드를 실행하거나 더 읽기 전에 어떤 코드가 인쇄될지 파악해 보십시오.</p>
+<figure class="listing" id="listing-19-11">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) =&gt; println!("Got 50"),
+        Some(y) =&gt; println!("Matched, y = {y}"),
+        _ =&gt; println!("Default case, x = {x:?}"),
+    }
+
+    println!("at the end: x = {x:?}, y = {y}");
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-19-11">목록 19-11</a>: A <code>match</code> 기존 변수를 그림자하는 새로운 변수를 도입하는 팔로 표현 <code>y</code></figcaption>
+</figure>
+<p><code>match</code> 표현식이 실행될 때 어떤 일이 일어나는지 살펴 보겠습니다. 첫 번째 일치 암의 패턴은 <code>x</code>의 정의 된 값과 일치하지 않으므로 코드는 계속됩니다.</p>
+<p>두 번째 매치 암의 패턴은 새로운 변수를 도입합니다. <code>y</code> 이것은 a 내부의 어떤 값과도 일치합니다. <code>Some</code> 가치. 우리는 새로운 범위 안에 있기 때문에 <code>match</code> 표현, 이것은 새로운 <code>y</code> Variable, 아니메 <code>y</code> 우리는 가치와 함께 처음에 선언 <code>10</code>. 이 새로운 <code>y</code> 바인딩은 a 내부의 모든 값과 일치합니다. <code>Some</code>그것이 우리가 가진 것입니다. <code>x</code>. 따라서,이 새로운 <code>y</code> 상기 내부값은 The inner value <code>Some</code> 에서 <code>x</code>. 그 가치는 <code>5</code>그래서 그 팔에 대한 표현식은 실행되고 인쇄됩니다. <code>Matched, y = 5</code>.</p>
+<p>있는 경우 <code>x</code> 있었다면 A <code>None</code> 값 대신 <code>Some(5)</code>, 처음 두 팔의 패턴이 일치하지 않았을 것이므로 값이 밑줄과 일치했을 것입니다. 우리는 <code>x</code> 밑줄 팔의 패턴에서 변수, 그래서 <code>x</code> 상기 외부는 The outer is <code>x</code> 그 그림자되지 않았습니다. 이 가상의 경우, <code>match</code> 인쇄할 <code>Default case, x = None</code>.</p>
+<p><code>match</code> 표현식이 완료되면 범위가 끝나고 내부 <code>y</code>의 범위도 끝납니다. 마지막 <code>println!</code>는 <code>at the end: x = Some(5), y = 10</code>를 생성합니다.</p>
+<p>를 만들려면 <code>match</code> 외부의 값을 비교하는 표현식 <code>x</code> 그리고
+<code>y</code>기존 변수를 그림자로 만드는 새로운 변수를 도입하는 대신, <code>y</code>
+변수, 우리는 대신 일치 가드를 사용해야합니다. 나중에에서 일치 가드에 대해 이야기 할 것입니다. <a href="#adding-conditionals-with-match-guards">“경기 경비대 와 조건 을 더하다”</a> 무시  섹션.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="multiple-patterns"></a></p>
+<h3 id="matching-multiple-patterns"><a class="header" href="#matching-multiple-patterns">다중 패턴 매칭</a></h3>
+<p><code>match</code> 표현식에서 패턴 또는 연산자 인 <code>|</code> 구문을 사용하여 여러 패턴을 일치시킬 수 있습니다. 예를 들어 다음 코드에서 <code>x</code>의 값을 일치 암과 일치시킵니다. 첫 번째 암에는 옵션이나 옵션이 있습니다. 즉, <code>x</code>의 값이 해당 암의 값 중 하나와 일치하는 경우 해당 암이 실행됩니다.</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    let x = 1;
+
+    match x {
+        1 | 2 =&gt; println!("one or two"),
+        3 =&gt; println!("three"),
+        _ =&gt; println!("anything"),
+    }
+<span class="boring">}</span></code></pre>
+<p>이 코드는 <code>one or two</code>를 인쇄합니다.</p>
+<h3 id="matching-ranges-of-values-with-"><a class="header" href="#matching-ranges-of-values-with-">값의 범위와 일치 <code>..=</code></a></h3>
+<p><code>..=</code> 구문을 사용하면 포괄적 인 범위의 값과 일치시킬 수 있습니다. 다음 코드에서 패턴이 주어진 범위 내의 값과 일치하면 해당 팔이 실행됩니다.</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    let x = 5;
+
+    match x {
+        1..=5 =&gt; println!("one through five"),
+        _ =&gt; println!("something else"),
+    }
+<span class="boring">}</span></code></pre>
+<p>있는 경우 <code>x</code> 있습니다. <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>, 또는 <code>5</code>, 첫 번째 암이 일치합니다. 이 구문은 다음을 사용하는 것보다 여러 일치 값에 더 편리합니다. <code>|</code> 같은 생각을 표현하는 연산자; 우리가 사용하는 경우 <code>|</code># 명시해야 할 사항 <code>1 | 2 | 3 | 4 | 5</code>범위를 지정하는 것은 훨씬 더 짧은데, 특히 1과 1,000 사이의 숫자를 일치시키고 싶다면 더욱 그렇습니다!</p>
+<p>컴파일러는 컴파일 시간에 범위가 비어있지 않은지 확인하고, 범위가 비어있는지 아닌지를 알 수 있는 유일한 타입이 <code>char</code>이고 숫자 값이기 때문에, 범위는 숫자 또는 <code>char</code> 값에서만 허용됩니다.</p>
+<p>다음은 <code>char</code> 값의 범위를 사용하는 예입니다.</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    let x = 'c';
+
+    match x {
+        'a'..='j' =&gt; println!("early ASCII letter"),
+        'k'..='z' =&gt; println!("late ASCII letter"),
+        _ =&gt; println!("something else"),
+    }
+<span class="boring">}</span></code></pre>
+<p>러스트는 <code>'c'</code>가 첫 번째 패턴의 범위 내에 있으며 <code>early ASCII letter</code>를 인쇄한다는 것을 알 수 있습니다.</p>
+<h3 id="destructuring-to-break-apart-values"><a class="header" href="#destructuring-to-break-apart-values">분리 된 가치관 을 깨뜨리는 일</a></h3>
+<p>우리는 또한 이러한 값의 다른 부분을 사용하기 위해 구조체, 열거형 및 튜플을 destructure하는 패턴을 사용할 수 있습니다. 각 값을 살펴 보겠습니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="destructuring-structs"></a></p>
+<h4 id="structs"><a class="header" href="#structs">구조체</a></h4>
+<p>Listing 19-12는 <code>Point</code> 구조체와 <code>x</code> 및 <code>y</code>의 두 필드를 보여 주며, <code>let</code> 문으로 패턴을 사용하여 분리할 수 있습니다.</p>
+<figure class="listing" id="listing-19-12">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    let Point { x: a, y: b } = p;
+    assert_eq!(0, a);
+    assert_eq!(7, b);
+}</code></pre>
+<figcaption><a href="#listing-19-12">목록 19-12</a>: 구조체의 필드를 별도의 변수로 탈구조화</figcaption>
+</figure>
+<p>이 코드는 변수를 만듭니다. <code>a</code> 그리고 <code>b</code> 상기 값들은 The values of the <code>x</code>
+그리고 <code>y</code> 필드 of the <code>p</code> struct. 이 예제는 패턴의 변수 이름이 struct의 필드 이름과 일치 할 필요가 없음을 보여줍니다. 그러나 변수 이름을 필드 이름과 일치시켜 어떤 변수가 어느 필드에서 왔는지 쉽게 기억할 수 있습니다. 이 때문에 일반적인 사용법과 쓰기 때문에 <code>let Point { x: x, y: y } = p;</code> 많은 중복을 포함하고 있습니다. 러스트는 struct 필드와 일치하는 패턴에 대한 약칭을 가지고 있습니다: struct 필드의 이름만 나열하면 되고, 패턴에서 생성된 변수는 같은 이름을 갖습니다. Listing 19-13은 Listing 19-12의 코드와 같은 방식으로 동작하지만, struct 필드에서 생성된 변수는 <code>let</code>
+패턴은 <code>x</code> 그리고 <code>y</code> 대신 <code>a</code> 그리고 <code>b</code>.</p>
+<figure class="listing" id="listing-19-13">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    let Point { x, y } = p;
+    assert_eq!(0, x);
+    assert_eq!(7, y);
+}</code></pre>
+<figcaption><a href="#listing-19-13">목록 19-13</a>: 구조체 필드를 사용하여 구조체 필드의 탈구조화</figcaption>
+</figure>
+<p>이 코드는 변수를 만듭니다. <code>x</code> 그리고 <code>y</code> 이 경기는 The <code>x</code> 그리고 <code>y</code> 필드 of the <code>p</code> 변수. 결과는 변수가 <code>x</code> 그리고 <code>y</code> 상기 값들은 The values from <code>p</code> 구조체.</p>
+<p>우리는 또한 모든 필드에 대한 변수를 만드는 대신 구조체 패턴의 일부로 리터럴 값으로 구조체를 만들 수 있습니다. 이렇게하면 다른 필드를 구조화하기 위해 변수를 만드는 동안 특정 값에 대한 일부 필드를 테스트 할 수 있습니다.</p>
+<p>Listing 19-14에서, 우리는 <code>match</code> 분리하는 표현 <code>Point</code> values into three cases: 세 가지 경우의 값 <code>x</code> axis (사실일 때)
+<code>y = 0</code>[찬스에 강한 영어] on the <code>y</code> 축 (<code>x = 0</code>또는, 어느 쪽도 아니 축선에.</p>
+<figure class="listing" id="listing-19-14">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">struct Point {
+</span><span class="boring">    x: i32,
+</span><span class="boring">    y: i32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    match p {
+        Point { x, y: 0 } =&gt; println!("On the x axis at {x}"),
+        Point { x: 0, y } =&gt; println!("On the y axis at {y}"),
+        Point { x, y } =&gt; {
+            println!("On neither axis: ({x}, {y})");
+        }
+    }
+}</code></pre>
+<figcaption><a href="#listing-19-14">목록 19-14</a>: 한 패턴의 리터럴 값의 구조 조정 및 매칭</figcaption>
+</figure>
+<p>첫 번째 arm은 <code>x</code> 축에 있는 모든 점과 일치합니다. <code>y</code> 필드가 리터럴 <code>0</code>와 일치하는 경우 일치하도록 지정합니다. 패턴은 여전히 이 arm의 코드에서 사용할 수 있는 <code>x</code> 변수를 생성합니다.</p>
+<p>마찬가지로, 두 번째 팔은 어떤 점과도 일치합니다. <code>y</code> 상기 특정하는 단계는, Specifying that the <code>x</code> field 값이 일치하는 경우 <code>0</code> 변수 만들기Create a variable <code>y</code> 상기 값은 The value of the <code>y</code> 필드. 세 번째 팔은 리터럴을 지정하지 않으므로 다른 팔과 일치합니다. <code>Point</code> 이 두 가지 변수에 대하여 <code>x</code> 그리고 <code>y</code> 필드.</p>
+<p>이 예에서, The example, <code>p</code> 두 번째 팔의 미덕을 일치 <code>x</code>
+포함 A <code>0</code>이 코드가 인쇄됩니다.This code will print <code>On the y axis at 7</code>.</p>
+<p><code>match</code> 표현식은 첫 번째 매칭 패턴을 발견하면 팔 검사를 중지하므로 <code>Point { x: 0, y: 0 }</code>가 <code>x</code> 축과 <code>y</code> 축에 있더라도이 코드는 <code>On the x axis at 0</code> 만 인쇄합니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="destructuring-enums"></a></p>
+<h4 id="enums"><a class="header" href="#enums">이넘스는</a></h4>
+<p>우리는 이 책에서 열거형을 destructured 했습니다 (예를 들어, 6장에서 Listing 6-5), 그러나 우리는 열거형을 destructure하는 패턴이 열거형 안에 저장된 데이터가 정의되는 방식에 해당한다고 아직 명시적으로 논의하지 않았습니다. 예를 들어, Listing 19-15에서, 우리는 Listing 6-2의 <code>Message</code> enum을 사용하고 각 destructure 값을 destructure할 패턴과 함께 <code>match</code>를 작성합니다.</p>
+<figure class="listing" id="listing-19-15">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+fn main() {
+    let msg = Message::ChangeColor(0, 160, 255);
+
+    match msg {
+        Message::Quit =&gt; {
+            println!("The Quit variant has no data to destructure.");
+        }
+        Message::Move { x, y } =&gt; {
+            println!("Move in the x direction {x} and in the y direction {y}");
+        }
+        Message::Write(text) =&gt; {
+            println!("Text message: {text}");
+        }
+        Message::ChangeColor(r, g, b) =&gt; {
+            println!("Change color to red {r}, green {g}, and blue {b}");
+        }
+    }
+}</code></pre>
+<figcaption><a href="#listing-19-15">목록 19-15</a>: 서로 다른 종류의 값을 갖는 이항 구조화</figcaption>
+</figure>
+<p>이 코드는 <code>Change color to red 0, green 160, and blue 255</code>를 인쇄합니다. <code>msg</code>의 값을 변경하여 다른 팔에서 실행되는 코드를보십시오.</p>
+<p><code>Message::Quit</code>와 같은 데이터가 없는 열거형 변형의 경우 값을 더 이상 구조화할 수 없습니다. 우리는 리터럴 <code>Message::Quit</code> 값에만 일치할 수 있으며 해당 패턴에는 변수가 없습니다.</p>
+<p><code>Message::Move</code>와 같은 struct-like enum variant의 경우 struct와 일치하도록 지정하는 패턴과 유사한 패턴을 사용할 수 있습니다. variant 이름 뒤에는 중괄호를 놓고 변수가 있는 필드를 나열하여 이 arm에 사용할 코드를 구분합니다. 여기서는 Listing 19-13에서 했던 것처럼 간단한 형태를 사용합니다.</p>
+<p>하나의 요소가 있는 튜플을 보유하고 있는 <code>Message::Write</code>와 세 개의 요소가 있는 튜플을 보유하고 있는 <code>Message::ChangeColor</code>와 같은 튜플 유사 이형의 경우 패턴은 튜플과 일치하도록 지정하는 패턴과 유사합니다. 패턴의 변수 수는 우리가 매칭하는 이형의 요소 수와 일치해야 합니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="destructuring-nested-structs-and-enums"></a></p>
+<h4 id="nested-structs-and-enums"><a class="header" href="#nested-structs-and-enums">중첩 구조체 및 열거형</a></h4>
+<p>지금까지 예제는 모두 구조체 또는 열거형과 한 단계 깊이 일치했지만 일치는 중첩된 항목에서도 작동 할 수 있습니다! 예를 들어, Listing 19-15의 코드를 리팩터링하여 <code>ChangeColor</code> 메시지의 RGB 및 HSV 색상을 지원할 수 있습니다.</p>
+<figure class="listing" id="listing-19-16">
+<pre class="playground"><code class="language-rust edition2024">enum Color {
+    Rgb(i32, i32, i32),
+    Hsv(i32, i32, i32),
+}
+
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(Color),
+}
+
+fn main() {
+    let msg = Message::ChangeColor(Color::Hsv(0, 160, 255));
+
+    match msg {
+        Message::ChangeColor(Color::Rgb(r, g, b)) =&gt; {
+            println!("Change color to red {r}, green {g}, and blue {b}");
+        }
+        Message::ChangeColor(Color::Hsv(h, s, v)) =&gt; {
+            println!("Change color to hue {h}, saturation {s}, value {v}");
+        }
+        _ =&gt; (),
+    }
+}</code></pre>
+<figcaption><a href="#listing-19-16">목록 19-16</a>: 중첩된 열거형에 매칭하기</figcaption>
+</figure>
+<p>상기 제 1 팔은 The first arm is <code>match</code> 표현식은 a와 일치합니다.
+<code>Message::ChangeColor</code> 다음을 포함하는 enum variant <code>Color::Rgb</code> 그 후, 그 패턴은 내부 3개에 결합한다. <code>i32</code> 가치. 두번째 팔의 본은 또한 a를 일치합니다 <code>Message::ChangeColor</code> enum 변형이지만 내부 enum이 일치합니다. <code>Color::Hsv</code> 대신. 이러한 복잡한 조건을 하나로 지정할 수 있습니다.
+<code>match</code> 비록 두 개의 enums가 관련되어 있지만.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="destructuring-structs-and-tuples"></a></p>
+<h4 id="structs-and-tuples"><a class="header" href="#structs-and-tuples">구조체와 튜플</a></h4>
+<p>우리는 훨씬 더 복잡한 방법으로 비구조화 패턴을 혼합, 일치 및 중첩 할 수 있습니다. 다음 예는 튜플 안에 구조체와 튜플을 중첩하고 모든 원시 값을 비구조화하는 복잡한 구조를 보여줍니다.</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span><span class="boring">    struct Point {
+</span><span class="boring">        x: i32,
+</span><span class="boring">        y: i32,
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    let ((feet, inches), Point { x, y }) = ((3, 10), Point { x: 3, y: -10 });
+<span class="boring">}</span></code></pre>
+<p>이 코드를 통해 우리는 복잡한 타입들을 그들의 컴포넌트 부분들로 분리할 수 있고, 그래서 우리가 관심 있는 값들을 따로따로 사용할 수 있습니다.</p>
+<p>패턴으로 구조 조정하는 것은 구조체의 각 필드의 값과 같은 값을 서로 분리하여 사용하는 편리한 방법입니다.</p>
+<h3 id="ignoring-values-in-a-pattern"><a class="header" href="#ignoring-values-in-a-pattern">패턴에서 값 무시하기</a></h3>
+<p>여러분은 때때로 a의 마지막 arm과 같은 패턴에서 값을 무시하는 것이 유용하다는 것을 보았습니다. <code>match</code>, 실제로 아무것도 하지 않고 남은 모든 가능한 값을 설명하는 캐치 올을 가져 오십시오. 패턴에서 전체 값이나 값의 일부를 무시하는 몇 가지 방법이 있습니다. <code>_</code>
+상기 사용하는 단계는, Wherein the useing the <code>_</code> 다른 패턴 내에서, 밑줄로 시작하는 이름을 사용하거나 <code>..</code> 값의 나머지 부분을 무시합니다. 이러한 각 패턴을 사용하는 방법과 이유를 살펴 보겠습니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="ignoring-an-entire-value-with-_"></a></p>
+<h4 id="an-entire-value-with-_"><a class="header" href="#an-entire-value-with-_">전체 가치와 <code>_</code></a></h4>
+<p>밑줄을 와일드카드 패턴으로 사용하여 어떤 값과도 일치하지만 값에 바인딩되지는 않습니다. 이것은 <code>match</code> 표현식의 마지막 암으로 특히 유용하지만, Listing 19-17과 같이 함수 파라미터를 포함한 모든 패턴에서 사용할 수도 있습니다.</p>
+<figure class="listing" id="listing-19-17">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">fn foo(_: i32, y: i32) {
+    println!("This code only uses the y parameter: {y}");
+}
+
+fn main() {
+    foo(3, 4);
+}</code></pre>
+<figcaption><a href="#listing-19-17">목록 19-17</a>: 함수 서명에서 <code>_</code> 사용</figcaption>
+</figure>
+<p>이 코드는 첫 번째 인수로 전달된 <code>3</code> 값을 완전히 무시하고 <code>This code only uses the y parameter: 4</code>를 인쇄합니다.</p>
+<p>대부분의 경우 특정 함수 매개 변수가 더 이상 필요하지 않으면 사용하지 않는 매개 변수를 포함하지 않도록 서명을 변경합니다. 예를 들어 특정 유형 서명이 필요하지만 구현의 함수 본문에 매개 변수가 필요하지 않은 경우 함수 매개 변수를 무시하는 것이 특히 유용 할 수 있습니다. 대신 이름을 사용하는 경우와 같이 사용되지 않는 함수 매개 변수에 대한 컴파일러 경고를받지 마십시오.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="ignoring-parts-of-a-value-with-a-nested-_"></a></p>
+<h4 id="parts-of-a-value-with-a-nested-_"><a class="header" href="#parts-of-a-value-with-a-nested-_">중첩된 값의 부분 <code>_</code></a></h4>
+<p>또한 <code>_</code>를 다른 패턴으로 사용하여 값의 일부만 무시할 수 있습니다. 예를 들어, 값의 일부만 테스트하려고 하지만 실행하려는 해당 코드의 다른 부분에는 사용하지 않을 때입니다. Listing 19-18은 설정의 값을 관리하는 책임이 있는 코드를 보여줍니다. 비즈니스 요구 사항은 사용자가 설정의 기존 사용자 지정을 덮어쓸 수는 없지만 설정을 해제하고 현재 설정의 값을 줄 수 있다는 것입니다.</p>
+<figure class="listing" id="listing-19-18">
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    let mut setting_value = Some(5);
+    let new_setting_value = Some(10);
+
+    match (setting_value, new_setting_value) {
+        (Some(_), Some(_)) =&gt; {
+            println!("Can't overwrite an existing customized value");
+        }
+        _ =&gt; {
+            setting_value = new_setting_value;
+        }
+    }
+
+    println!("setting is {setting_value:?}");
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-19-18">목록 19-18</a>: 일치하는 패턴 내에서 밑줄 사용하기 <code>Some</code> variant : 변수 안에 있는 값을 사용할 필요가 없을 때 <code>Some</code></figcaption>
+</figure>
+<p>이 코드는 인쇄할 것입니다 <code>Can't overwrite an existing customized value</code> 그리고 나서
+<code>setting is Some(5)</code>. 첫 번째 매치 암에서, 우리는 일치하거나 내부 값을 사용할 필요가 없습니다. <code>Some</code> 변이형이지만, 이 경우에 대해 테스트할 필요가 있습니다. <code>setting_value</code> 그리고 <code>new_setting_value</code> 있습니다. <code>Some</code> 이 경우 변경하지 않는 이유를 인쇄합니다. <code>setting_value</code>그리고 그것은 변하지 않습니다.</p>
+<p>모든 경우에 (if either) <code>setting_value</code> 또는 <code>new_setting_value</code> 있습니다. <code>None</code>(에 의해 표현되는) <code>_</code> 두번째 팔에 있는 본, 우리는 허용하고 싶습니다
+<code>new_setting_value</code> 되는 것 <code>setting_value</code>.</p>
+<p>우리는 또한 특정 값을 무시하기 위해 한 패턴 내의 여러 곳에서 밑줄을 사용할 수 있습니다. Listing 19-19는 다섯 개의 항목의 튜플에서 두 번째와 네 번째 값을 무시하는 예를 보여줍니다.</p>
+<figure class="listing" id="listing-19-19">
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, _, third, _, fifth) =&gt; {
+            println!("Some numbers: {first}, {third}, {fifth}");
+        }
+    }
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-19-19">목록 19-19</a>: 튜플의 여러 부분을 무시</figcaption>
+</figure>
+<p>이 코드는 <code>Some numbers: 2, 8, 32</code>를 인쇄하고 <code>4</code> 및 <code>16</code> 값은 무시됩니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="ignoring-an-unused-variable-by-starting-its-name-with-_"></a></p>
+<h4 id="an-unused-variable-by-starting-its-name-with-_"><a class="header" href="#an-unused-variable-by-starting-its-name-with-_">이름을 사용하여 시작하지 않은 변수An unused variable by starting its name <code>_</code></a></h4>
+<p>만약 여러분이 변수를 만들었지만 어디에도 사용하지 않는다면, 러스트는 보통 사용하지 않는 변수가 버그가 될 수 있기 때문에 경고를 보내게 됩니다. 하지만, 아직 사용하지 않는 변수를 만드는 것이 유용할 때가 있습니다. 예를 들어, 프로토타입을 만들거나 프로젝트를 시작할 때처럼 말이죠. 이런 상황에서는, 러스트에게 사용하지 않은 변수에 대해 경고하지 않도록 주의해야 합니다. Listing 19-20에서, 우리는 두 개의 변수를 컴파일해야 합니다.</p>
+<figure class="listing" id="listing-19-20">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let _x = 5;
+    let y = 10;
+}</code></pre>
+<figcaption><a href="#listing-19-20">목록 19-20</a>: 사용되지 않는 변수 경고를 피하기 위해 밑줄로 변수 이름 시작</figcaption>
+</figure>
+<p>여기서는 <code>y</code> 변수를 사용하지 않는 것에 대한 경고를 받지만 <code>_x</code>를 사용하지 않는 것에 대한 경고는 받지 않습니다.</p>
+<p><code>_</code>만 사용하는 것과 밑줄로 시작하는 이름에는 미묘한 차이가 있습니다. <code>_x</code> 구문은 여전히 변수에 값을 바인딩하는 반면 <code>_</code>는 전혀 바인딩하지 않습니다. 이 구별이 중요한 경우를 표시하려면 Listing 19-21에서 오류를 제공합니다.</p>
+<figure class="listing" id="listing-19-21">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s = Some(String::from("Hello!"));
+
+    if let Some(_s) = s {
+        println!("found a string");
+    }
+
+    println!("{s:?}");
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-19-21">목록 19-21</a>: 밑줄로 시작하는 사용되지 않은 변수는 여전히 값에 바인딩되어 값의 소유권을 가질 수 있습니다.</figcaption>
+</figure>
+<p><code>s</code> 값이 <code>_s</code>로 계속 이동되어 <code>s</code>를 다시 사용할 수 없기 때문에 오류가 발생합니다. 그러나 밑줄 자체를 사용하면 값에 바인딩되지 않습니다. <code>s</code>가 <code>_</code>로 이동되지 않기 때문에 Listing 19-22는 오류없이 컴파일됩니다.</p>
+<figure class="listing" id="listing-19-22">
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    let s = Some(String::from("Hello!"));
+
+    if let Some(_) = s {
+        println!("found a string");
+    }
+
+    println!("{s:?}");
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-19-22">목록 19-22</a>: 밑줄을 사용하면 값이 바인딩되지 않습니다.</figcaption>
+</figure>
+<p>이 코드는 <code>s</code>를 아무 것에도 바인딩하지 않기 때문에 잘 작동합니다.</p>
+<p><a id="ignoring-remaining-parts-of-a-value-with-"></a></p>
+<h4 id="remaining-parts-of-a-value-with-"><a class="header" href="#remaining-parts-of-a-value-with-">가치의 나머지 부분 <code>..</code></a></h4>
+<p>많은 부분을 가지고 있는 값들로, 우리는 <code>..</code> 구문은 특정 부분을 사용하고 나머지는 무시하여 각 무시된 값에 대한 밑줄을 나열할 필요가 없습니다. <code>..</code> pattern은 나머지 패턴에서 명시적으로 일치하지 않은 값의 어떤 부분도 무시합니다. Listing 19-23에서, 우리는
+<code>Point</code> 3차원 공간에서 좌표를 유지하는 구조체.
+<code>match</code> 표현, 우리는 단지에 작동 할 <code>x</code> 좌표를 지정하고 그 값들을 무시합니다. <code>y</code> 그리고 <code>z</code> 필드.</p>
+<figure class="listing" id="listing-19-23">
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    struct Point {
+        x: i32,
+        y: i32,
+        z: i32,
+    }
+
+    let origin = Point { x: 0, y: 0, z: 0 };
+
+    match origin {
+        Point { x, .. } =&gt; println!("x is {x}"),
+    }
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-19-23">목록 19-23</a>: a의 모든 필드를 무시 <code>Point</code> 단, <code>x</code> 를 사용하여 <code>..</code></figcaption>
+</figure>
+<p><code>x</code> 값을 나열 한 다음 <code>..</code> 패턴을 포함하십시오. 이것은 <code>y: _</code> 및 <code>z: _</code>를 나열하는 것보다 빠릅니다. 특히 하나 또는 두 개의 필드 만 관련된 상황에서 많은 필드가있는 구조체로 작업 할 때.</p>
+<p><code>..</code> 구문은 필요한 만큼의 값으로 확장됩니다. Listing 19-24는 <code>..</code>를 튜플과 함께 사용하는 방법을 보여줍니다.</p>
+<figure class="listing" id="listing-19-24">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, .., last) =&gt; {
+            println!("Some numbers: {first}, {last}");
+        }
+    }
+}</code></pre>
+<figcaption><a href="#listing-19-24">목록 19-24</a>: 튜플의 처음과 마지막 값만 일치시키고 다른 모든 값을 무시합니다.</figcaption>
+</figure>
+<p>이 코드에서 첫 번째와 마지막 값은 <code>first</code> 및 <code>last</code>와 일치합니다. <code>..</code>는 중간에 있는 모든 것과 일치하고 무시합니다.</p>
+<p>그러나 <code>..</code>를 사용하는 것은 모호하지 않아야 합니다. 어떤 값이 매칭을 위한 것인지, 어떤 값이 무시되어야 하는지 확실하지 않은 경우, 러스트는 오류를 줄 것입니다. Listing 19-25는 <code>..</code>를 애매하게 사용하는 예를 보여 주므로 컴파일되지 않습니다.</p>
+<figure class="listing" id="listing-19-25">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (.., second, ..) =&gt; {
+            println!("Some numbers: {second}")
+        },
+    }
+}</code></pre>
+<figcaption><a href="#listing-19-25">목록 19-25</a>: 모호한 방식으로 <code>..</code>를 사용하려는 시도</figcaption>
+</figure>
+<p>이 예제를 컴파일하면 다음 오류가 발생합니다.When we compile this example, we get this error:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+error: `..` can only be used once per tuple pattern
+ --&gt; src/main.rs:5:22
+  |
+5 |         (.., second, ..) =&gt; {
+  |          --          ^^ can only be used once per tuple pattern
+  |          |
+  |          previously used here
+
+error: could not compile `patterns` (bin "patterns") due to 1 previous error
+</code></pre>
+<p>러스트가 튜플에서 값을 일치시키기 전에 얼마나 많은 값을 무시해야 하는지를 결정하는 것은 불가능합니다. <code>second</code> 그리고 나서 얼마나 많은 값을 더 무시해야 하는지. 이 코드는 우리가 무시하기를 원한다는 것을 의미할 수 있습니다 <code>2</code>, 묶기
+<code>second</code> 오시는 길 <code>4</code>그리고 나서 무시한다. <code>8</code>, <code>16</code>, 그리고 <code>32</code>또는 우리가 무시하고 싶은 것.
+<code>2</code> 그리고 <code>4</code>, 묶기 <code>second</code> 오시는 길 <code>8</code>그리고 나서 무시한다. <code>16</code> 그리고 <code>32</code>; 등등. 변수 이름 <code>second</code> 러스트에게 특별한 의미가 있는 것은 아니므로, 사용중이기 때문에 컴파일러 오류가 발생합니다. <code>..</code> 이 같은 두 곳에서는 논란이 분분하다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="extra-conditionals-with-match-guards"></a></p>
+<h3 id="adding-conditionals-with-match-guards"><a class="header" href="#adding-conditionals-with-match-guards">매치 가드와 조건 추가</a></h3>
+<p>A <em>경기 가드</em> 추가 사항 <code>if</code> a의 패턴 후에 지정된 조건 <code>match</code> arm은 선택한 arm과 일치해야 합니다. 매치 가드는 패턴만으로 허용되는 것보다 더 복잡한 아이디어를 표현할 때 유용합니다. 하지만, arm은 다음과 같은 경우에만 사용할 수 있습니다. <code>match</code> 표현, NO <code>if let</code> 또는
+<code>while let</code> 표현들.</p>
+<p>The condition can use variables created in the pattern. Listing 19-26은 <code>match</code>를 보여줍니다. 첫 번째 arm은 <code>Some(x)</code> 패턴이 있고 <code>if x % 2 == 0</code>의 매치 가드가 있습니다 (숫자가 짝수인 경우 <code>true</code>가 됩니다).</p>
+<figure class="listing" id="listing-19-26">
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    let num = Some(4);
+
+    match num {
+        Some(x) if x % 2 == 0 =&gt; println!("The number {x} is even"),
+        Some(x) =&gt; println!("The number {x} is odd"),
+        None =&gt; (),
+    }
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-19-26">리스팅 19-26</a>: 패턴에 매치 가드 추가</figcaption>
+</figure>
+<p>이 예제에서는 <code>The number 4 is even</code>를 인쇄합니다. <code>num</code>를 첫 번째 팔의 패턴과 비교할 때 <code>Some(4)</code>가 <code>Some(x)</code>와 일치하기 때문에 일치합니다. 그런 다음, 매치 가드는 <code>x</code>를 2로 나누는 나머지 부분이 0과 같은지 여부를 확인합니다.</p>
+<p><code>num</code>가 대신 <code>Some(5)</code> 였다면, 첫 번째 암의 매치 가드는 <code>false</code> 였을 것입니다. 왜냐하면 5 나누기 2 는 0 이 아니기 때문입니다. 러스트는 두 번째 암으로 갑니다. 두 번째 암은 매치 가드가 없기 때문에 <code>Some</code> 변형과 일치합니다.</p>
+<p>패턴 내에서 <code>if x % 2 == 0</code> 조건을 표현할 방법이 없으므로 매치 가드는이 논리를 표현할 수있는 능력을 제공합니다. 이 추가 표현의 단점은 컴파일러가 매치 가드 표현이 관련되어있을 때 철저 함을 확인하려고하지 않는다는 것입니다.</p>
+<p>Listing 19-11을 논의할 때, 우리는 패턴 쉐도잉 문제를 해결하기 위해 매치 가드를 사용할 수 있다고 언급했습니다. <code>match</code> expression : 외부의 변수를 사용하는 대신 <code>match</code>. 이 새로운 변수는 외부 변수의 값에 대해 테스트할 수 없음을 의미합니다. Listing 19-27은 이 문제를 해결하기 위해 매치 가드를 사용하는 방법을 보여줍니다.</p>
+<figure class="listing" id="listing-19-27">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) =&gt; println!("Got 50"),
+        Some(n) if n == y =&gt; println!("Matched, n = {n}"),
+        _ =&gt; println!("Default case, x = {x:?}"),
+    }
+
+    println!("at the end: x = {x:?}, y = {y}");
+}</code></pre>
+<figcaption><a href="#listing-19-27">목록 19-27</a>: 매치 가드를 사용하여 외부 변수와의 같음을 테스트합니다.</figcaption>
+</figure>
+<p>이 코드는 이제 인쇄됩니다. <code>Default case, x = Some(5)</code>. 두 번째 매치 암의 패턴은 새로운 변수를 도입하지 않습니다. <code>y</code> 그것은 외부를 그늘지게 할 것입니다. <code>y</code>즉, 우리는 외부를 사용할 수 있습니다. <code>y</code> 일치 가드에서. 패턴을 다음과 같이 지정하는 대신 <code>Some(y)</code>[중고] 그 외의 것을 탐하다 <code>y</code>, 우리는 지정
+<code>Some(n)</code>. 이것은 새로운 변수를 만듭니다. <code>n</code> 그것은 아무것도 없는 것이 아니기 때문에 아무것도 없는 것이다. <code>n</code> 변수는 외부에 <code>match</code>.</p>
+<p>#경기 경비대 <code>if n == y</code> 패턴이 아니므로 새로운 변수를 도입하지 않습니다. 이 <code>y</code> <em>있습니다.</em> 외부 <code>y</code> 새로운 것 보다는 <code>y</code> 그림자를 드리우고, 우리는 외부와 같은 값을 가진 값을 찾을 수 있습니다. <code>y</code> 비교를 통해
+<code>n</code> 오시는 길 <code>y</code>.</p>
+<p>당신은 또한 사용할 수 있습니다 <em>또는</em> 운영자 <code>|</code> 여러 패턴을 지정하기 위한 match guard에서; match guard 조건은 모든 패턴에 적용될 것입니다. Listing 19-28은 사용하는 패턴을 결합할 때 우선 순위를 보여줍니다. <code>|</code> 매치 가드와 함께. 이 예의 중요한 부분은 <code>if y</code> 매치 가드 적용 대상 <code>4</code>, <code>5</code>, <em>그리고</em> <code>6</code>비록 그것이 보일지도 모르지만 <code>if y</code> 적용 대상 <code>6</code>.</p>
+<figure class="listing" id="listing-19-28">
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    let x = 4;
+    let y = false;
+
+    match x {
+        4 | 5 | 6 if y =&gt; println!("yes"),
+        _ =&gt; println!("no"),
+    }
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-19-28">목록 19-28</a>: 매치 가드와 여러 패턴 결합</figcaption>
+</figure>
+<p>일치 조건은 팔이 다음과 같은 경우에만 일치한다는 것을 나타냅니다. <code>x</code> 그것은 평등하다. <code>4</code>, <code>5</code>, 또는 <code>6</code> <em>그리고</em> 만약 <code>y</code> 있습니다. <code>true</code>. 이 코드가 실행되면 첫 번째 팔의 패턴이 일치합니다. <code>x</code> 있습니다. <code>4</code>#경기 경비대 <code>if y</code>
+있습니다. <code>false</code>, 그래서 첫 번째 팔이 선택되지 않습니다. 코드는 일치하는 두 번째 팔로 이동하고이 프로그램은 인쇄합니다. <code>no</code>. 그 이유는
+<code>if</code> 조건은 전체 패턴에 적용 <code>4 | 5 | 6</code>마지막 값이 아닌, <code>6</code>즉, 패턴과 관련하여 매치 가드의 우선 순위는 다음과 같이 동작합니다.</p>
+<pre><code class="language-text">(4 | 5 | 6) if y =&gt; ...
+</code></pre>
+<p>이것보다는 :</p>
+<pre><code class="language-text">4 | 5 | (6 if y) =&gt; ...
+</code></pre>
+<p>코드를 실행 한 후 우선 순위 동작이 분명합니다. 매치 가드가 <code>|</code> 연산자를 사용하여 지정된 값 목록의 최종 값에만 적용 된 경우 팔이 일치하고 프로그램이 <code>yes</code>를 인쇄 한 것입니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="-bindings"></a></p>
+<h3 id="using--bindings"><a class="header" href="#using--bindings">사용 <code>@</code> 바인딩</a></h3>
+<p>이름 * <em>위치</em> 운영자 <code>@</code> 패턴 일치에 대한 값을 테스트하는 동시에 값을 가지는 변수를 만들 수 있습니다. Listing 19-29에서, 우리는 <code>Message::Hello</code> <code>id</code> 범위 내에 있는 필드 <code>3..=7</code>우리는 또한 값을 변수에 바인딩하고 싶습니다. <code>id</code> 그래서 우리는 팔과 관련된 코드에서 그것을 사용할 수 있습니다.</p>
+<figure class="listing" id="listing-19-29">
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    enum Message {
+        Hello { id: i32 },
+    }
+
+    let msg = Message::Hello { id: 5 };
+
+    match msg {
+        Message::Hello { id: id @ 3..=7 } =&gt; {
+            println!("Found an id in range: {id}")
+        }
+        Message::Hello { id: 10..=12 } =&gt; {
+            println!("Found an id in another range")
+        }
+        Message::Hello { id } =&gt; println!("Found some other id: {id}"),
+    }
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-19-29">목록 19-29</a>: <code>@</code>를 사용하여 패턴의 값에 바인딩하는 동시에 테스트</figcaption>
+</figure>
+<p>이 예제에서는 <code>Found an id in range: 5</code>를 인쇄합니다. 범위 <code>id @</code> 앞에 <code>3..=7</code>를 지정하면 변수 <code>id</code>의 범위와 일치하는 값을 캡처하는 동시에 값이 범위 패턴과 일치하는지 테스트합니다.</p>
+<p>패턴에 지정된 범위만 있는 두 번째 arm에는 arm과 관련된 코드에 실제 값이 포함된 변수가 없습니다. <code>id</code> 필드. The <code>id</code> 필드의 값은 10, 11 또는 12 일 수 있지만 해당 패턴과 함께 제공되는 코드는 해당 패턴을 알지 못합니다. 패턴 코드는 해당 패턴의 값을 사용할 수 없습니다. <code>id</code> 왜냐하면 우리가 구하지 않았기 때문입니다.
+<code>id</code> 변수에 있는 값입니다.</p>
+<p>마지막 arm에서는 범위가 없는 변수를 지정했는데, arm의 코드에서 <code>id</code>라는 변수에서 사용할 수 있는 값을 가지고 있습니다. 그 이유는 struct field shorthand 구문을 사용했기 때문입니다. 하지만 처음 두 arm에서 했던 것처럼 이 arm의 <code>id</code> 필드의 값에 테스트를 적용하지 않았습니다. 모든 값은 이 패턴과 일치합니다.</p>
+<p><code>@</code>를 사용하면 값을 테스트하고 한 패턴 내의 변수에 저장할 수 있습니다.</p>
+<h2 id="summary"><a class="header" href="#summary">요약</a></h2>
+<p>러스트의 패턴은 서로 다른 종류의 데이터를 구별하는 데 매우 유용합니다. <code>match</code> 표현식에 사용될 때, 러스트는 여러분의 패턴이 가능한 모든 값을 다루거나 여러분의 프로그램이 컴파일되지 않도록 합니다. <code>let</code> 문과 함수 파라미터의 패턴은 이러한 구조를 더 유용하게 만들어, 값을 더 작은 부분으로 분해하고 이러한 부분을 변수에 할당합니다. 우리는 우리의 필요에 맞게 간단하거나 복잡한 패턴을 만들 수 있습니다.</p>
+<p>다음으로, 이 책의 마지막 장을 위해, 우리는 러스트의 다양한 특징들의 몇 가지 고급 측면들을 살펴볼 것입니다.</p>
+</main>
+<nav aria-label="Page navigation" class="nav-wrapper">
+<!-- Mobile navigation buttons -->
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="mobile-nav-chapters previous" href="ch19-02-refutability.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="mobile-nav-chapters next" href="ch20-00-advanced-features.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+<div style="clear: both"></div>
+</nav>
+</div>
+</div>
+<nav aria-label="Page navigation" class="nav-wide-wrapper">
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="nav-chapters previous" href="ch19-02-refutability.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="nav-chapters next" href="ch20-00-advanced-features.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+</nav>
+</div>
+<template id="fa-eye"><span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"></path></svg></span></template>
+<template id="fa-eye-slash"><span class="fa-svg"><svg viewbox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"></path></svg></span></template>
+<template id="fa-copy"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"></path></svg></span></template>
+<template id="fa-play"><span class="fa-svg"><svg viewbox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path></svg></span></template>
+<template id="fa-clock-rotate-left"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"></path></svg></span></template>
+<script>
+            window.playground_copyable = true;
+        </script>
+<script src="elasticlunr-ef4e11c1.min.js"></script>
+<script src="mark-09e88c2c.min.js"></script>
+<script src="searcher-09f2665d.js"></script>
+<script src="clipboard-1626706a.min.js"></script>
+<script src="highlight-abc7f01d.js"></script>
+<script src="book-609e4cb8.js"></script>
+<!-- Custom JS scripts -->
+<script src="ferris-2317480c.js"></script>
+</div>
+<script defer="" src="rust-code-lab.js"></script></body>
+</html>

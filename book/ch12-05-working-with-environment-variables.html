@@ -1,0 +1,586 @@
+<!DOCTYPE HTML>
+
+<html class="light sidebar-visible" dir="ltr" lang="ko">
+<head>
+<!-- Book generated using mdBook -->
+<meta charset="utf-8"/>
+<title>Working with Environment Variables - The Rust Programming Language</title>
+<!-- Custom HTML head -->
+<meta content="" name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<link href="favicon-de23e50b.svg" rel="icon"/>
+<link href="favicon-8114d1fc.png" rel="shortcut icon"/>
+<link href="css/variables-8adf115d.css" rel="stylesheet"/>
+<link href="css/general-e96d0476.css" rel="stylesheet"/>
+<link href="css/chrome-d279d366.css" rel="stylesheet"/>
+<link href="css/print-9e4910d8.css" media="print" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="fonts/fonts-9644e21d.css" rel="stylesheet"/>
+<!-- Highlight.js Stylesheets -->
+<link href="highlight-493f70e1.css" id="mdbook-highlight-css" rel="stylesheet"/>
+<link href="tomorrow-night-4c0ae647.css" id="mdbook-tomorrow-night-css" rel="stylesheet"/>
+<link href="ayu-highlight-3fdfc3ac.css" id="mdbook-ayu-highlight-css" rel="stylesheet"/>
+<!-- Custom theme stylesheets -->
+<link href="ferris-d33b75bf.css" rel="stylesheet"/>
+<link href="theme/2018-edition-4e126c62.css" rel="stylesheet"/>
+<link href="theme/semantic-notes-9b5766c0.css" rel="stylesheet"/>
+<link href="theme/listing-cab26221.css" rel="stylesheet"/>
+<!-- Provide site root and default themes to javascript -->
+<script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cc309c2.js";
+        </script>
+<!-- Start loading toc.js asap -->
+<script src="toc-0e4ce700.js"></script>
+<link href="rust-code-lab.css" rel="stylesheet"/><link href="notion-theme.css" rel="stylesheet"/></head>
+<body>
+<div id="mdbook-help-container">
+<div id="mdbook-help-popup">
+<h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+<div>
+<p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+<p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+<p>Press <kbd>?</kbd> to show this help</p>
+<p>Press <kbd>Esc</kbd> to hide this help</p>
+</div>
+</div>
+</div>
+<div id="mdbook-body-container">
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+<input class="hidden" id="mdbook-sidebar-toggle-anchor" type="checkbox"/>
+<!-- Hide / unhide sidebar before it is displayed -->
+<script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+<nav aria-label="Table of contents" class="sidebar" id="mdbook-sidebar">
+<!-- populated by js -->
+<mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+<noscript>
+<iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+</noscript>
+<div class="sidebar-resize-handle" id="mdbook-sidebar-resize-handle">
+<div class="sidebar-resize-indicator"></div>
+</div>
+</nav>
+<div class="page-wrapper" id="mdbook-page-wrapper">
+<div class="page">
+<div id="mdbook-menu-bar-hover-placeholder"></div>
+<div class="menu-bar sticky" id="mdbook-menu-bar">
+<div class="left-buttons">
+<label aria-controls="mdbook-sidebar" aria-label="Toggle Table of Contents" class="icon-button" for="mdbook-sidebar-toggle-anchor" id="mdbook-sidebar-toggle" title="Toggle Table of Contents">
+<span class="fa-svg"><svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"></path></svg></span>
+</label>
+<button aria-controls="mdbook-theme-list" aria-expanded="false" aria-haspopup="true" aria-label="Change theme" class="icon-button" id="mdbook-theme-toggle" title="Change theme" type="button">
+<span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"></path></svg></span>
+</button>
+<ul aria-label="Themes" class="theme-popup" id="mdbook-theme-list" role="menu">
+<li role="none"><button class="theme" id="mdbook-theme-default_theme" role="menuitem">Auto</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-light" role="menuitem">Light</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-rust" role="menuitem">Rust</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-coal" role="menuitem">Coal</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-navy" role="menuitem">Navy</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-ayu" role="menuitem">Ayu</button></li>
+</ul>
+<button aria-controls="mdbook-searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-label="Toggle Searchbar" class="icon-button" id="mdbook-search-toggle" title="Search (`/`)" type="button">
+<span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"></path></svg></span>
+</button>
+</div>
+<h1 class="menu-title">The Rust Programming Language</h1>
+<div class="right-buttons">
+<a aria-label="Print this book" href="print.html" title="Print this book">
+<span class="fa-svg" id="print-button"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"></path></svg></span>
+</a>
+<a aria-label="Git repository" href="https://github.com/rust-lang/book" title="Git repository">
+<span class="fa-svg"><svg viewbox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></span>
+</a>
+</div>
+</div>
+<div class="hidden" id="mdbook-search-wrapper">
+<form class="searchbar-outer" id="mdbook-searchbar-outer">
+<div class="search-wrapper">
+<input aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." type="search"/>
+<div class="spinner-wrapper">
+<span class="fa-svg" id="fa-spin"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"></path></svg></span>
+</div>
+</div>
+</form>
+<div class="searchresults-outer hidden" id="mdbook-searchresults-outer">
+<div class="searchresults-header" id="mdbook-searchresults-header"></div>
+<ul id="mdbook-searchresults">
+</ul>
+</div>
+</div>
+<!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+<script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+<div class="content" id="mdbook-content">
+<main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
+<h2 id="working-with-environment-variables"><a class="header" href="#working-with-environment-variables">환경 변수로 작업하기</a></h2>
+<p><code>minigrep</code> 바이너리는 사용자가 환경 변수를 통해 켤 수 있는 대소문자를 구분하지 않는 검색 옵션을 추가하여 개선될 것입니다. 우리는 이 기능을 명령행 옵션으로 만들 수 있으며 사용자가 적용할 때마다 입력하도록 요구할 수 있지만, 대신 환경 변수를 설정함으로써 사용자가 환경 변수를 한 번 설정하고 모든 검색이 해당 터미널 세션에서 대소문자를 구분하지 않도록 할 수 있습니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="writing-a-failing-test-for-the-case-insensitive-search-function"></a></p>
+<h3 id="writing-a-failing-test-for-case-insensitive-search"><a class="header" href="#writing-a-failing-test-for-case-insensitive-search">대소문자 구분 검색에 대한 실패 테스트 작성하기</a></h3>
+<p>먼저 새 항목을 추가합니다. <code>search_case_insensitive</code> 함수는 The <code>minigrep</code> 환경 변수가 값을 가질 때 호출 될 라이브러리. 우리는 TDD 프로세스를 계속 수행 할 것이므로 첫 번째 단계는 실패한 테스트를 다시 작성하는 것입니다. 우리는 새로운 테스트에 대한 새로운 테스트를 추가 할 것입니다. <code>search_case_insensitive</code> 기능 및 우리의 오래된 테스트에서 이름 바꾸기 <code>one_result</code> 오시는 길 <code>case_sensitive</code> 두 테스트의 차이점을 명확히 하기 위해, Listing 12-20에 나와 있는 것처럼.</p>
+<figure class="listing" id="listing-12-20">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn case_sensitive() {
+        let query = "duct";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.
+Duct tape.";
+
+        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+    }
+
+    #[test]
+    fn case_insensitive() {
+        let query = "rUsT";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.
+Trust me.";
+
+        assert_eq!(
+            vec!["Rust:", "Trust me."],
+            search_case_insensitive(query, contents)
+        );
+    }
+}</code></pre>
+<figcaption><a href="#listing-12-20">목록 12-20</a>: 추가하려고 하는 대소문자를 구분하지 않는 함수에 대한 새로운 실패 테스트 추가</figcaption>
+</figure>
+<p>참고: 이전 테스트의 편집을 완료했습니다. <code>contents</code> 또한. 우리는 텍스트와 함께 새로운 줄을 추가했습니다 <code>"Duct tape."</code> capital을 사용하여 <em>D</em> 쿼리와 일치하지 않아야 합니다.That should not match the query.
+<code>"duct"</code> 대소문자를 구분하는 방식으로 검색할 때. 이런 식으로 이전 테스트를 변경하면 이미 구현한 대소문자 구분 검색 기능을 우연히 깨지지 않도록 하는 데 도움이 됩니다. 이 테스트는 이제 통과해야 하며 대소문자 구분 검색에서 작업할 때 계속 통과해야 합니다.</p>
+<p>케이스에 대한 새로운 테스트 -<em>무신경한</em> 검색 사용 <code>"rUsT"</code> 그것의 질문으로. 에서 <code>search_case_insensitive</code> 우리가 추가하려고하는 기능, 쿼리 <code>"rUsT"</code>
+다음을 포함하는 줄과 일치해야 합니다. <code>"Rust:"</code> #자본주의 <em>R</em> 상기 라인은 The line <code>"Trust me."</code> 둘 다 쿼리와 다른 케이싱을 가지고 있지만. 이것은 우리의 실패한 테스트이며, 우리가 아직 정의하지 않았기 때문에 컴파일하지 못할 것입니다. <code>search_case_insensitive</code> 기능. 우리가를 위해 한 방법 같이 항상 빈 벡터를 돌려보내는 해골 실시를, 추가하게 자유롭게 느끼십시오 <code>search</code> Listing 12-16의 함수는 테스트 컴파일과 실패를 볼 수 있습니다.</p>
+<h3 id="implementing-the-search_case_insensitive-function"><a class="header" href="#implementing-the-search_case_insensitive-function">상기 구현 The implementing <code>search_case_insensitive</code> 기능</a></h3>
+<p>Listing 12-21에 표시된 <code>search_case_insensitive</code> 함수는 <code>search</code> 함수와 거의 동일합니다. 유일한 차이점은 <code>query</code>와 각 <code>line</code>를 소문자로 하여 입력 인수의 경우와 관계없이 해당 행에 쿼리가 포함되어 있는지 확인할 때 동일한 경우가 되도록 한다는 것입니다.</p>
+<figure class="listing" id="listing-12-21">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    let mut results = Vec::new();
+</span><span class="boring">
+</span><span class="boring">    for line in contents.lines() {
+</span><span class="boring">        if line.contains(query) {
+</span><span class="boring">            results.push(line);
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    results
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn search_case_insensitive&lt;'a&gt;(
+    query: &amp;str,
+    contents: &amp;'a str,
+) -&gt; Vec&lt;&amp;'a str&gt; {
+    let query = query.to_lowercase();
+    let mut results = Vec::new();
+
+    for line in contents.lines() {
+        if line.to_lowercase().contains(&amp;query) {
+            results.push(line);
+        }
+    }
+
+    results
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_sensitive() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Duct tape.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn case_insensitive() {
+</span><span class="boring">        let query = "rUsT";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.
+</span><span class="boring">Trust me.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(
+</span><span class="boring">            vec!["Rust:", "Trust me."],
+</span><span class="boring">            search_case_insensitive(query, contents)
+</span><span class="boring">        );
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-12-21">리스트 12-21</a>: <code>search_case_insensitive</code> 함수를 정의하여 쿼리와 줄을 비교하기 전에 소문자로 만듭니다.</figcaption>
+</figure>
+<p>첫째로, 우리는 <code>query</code> 문자열과 같은 이름의 새 변수에 저장하고 원본을 그림자 <code>query</code>. 전화 <code>to_lowercase</code> 상기 질의는 사용자의 질의가 존재하는지 여부에 상관없이 요구된다. <code>"rust"</code>, <code>"RUST"</code>,
+<code>"Rust"</code>, 또는 <code>"rUsT"</code>쿼리를 마치 쿼리인 것처럼 처리합니다.Treat the query as if it were. <code>"rust"</code> 그리고 사건에 민감하지 않습니다. 동안 <code>to_lowercase</code> 기본 유니코드를 처리 할 것입니다. 100 % 정확하지는 않습니다. 실제 응용 프로그램을 작성하는 경우 여기에서 좀 더 많은 작업을하고 싶지만이 섹션은 유니코드가 아닌 환경 변수에 관한 것이므로 여기에 남겨 둘 것입니다.</p>
+<p>그 참고 <code>query</code> 현재 A <code>String</code> 호출하기 때문에 스트링 슬라이스 대신
+<code>to_lowercase</code> 기존 데이터를 참조하지 않고 새 데이터를 만듭니다. <code>"rUsT"</code>예를 들어, 문자열 조각은 소문자를 포함하지 않습니다.For example, the string slice does not contain a lowercase.
+<code>u</code> 또는 <code>t</code> 우리가 사용하기 위해, 그래서 우리는 새로운 할당해야합니다. <code>String</code> 포함
+<code>"rust"</code>. 우리가 통과 할 때 <code>query</code> 상기 인수는 The argument is <code>contains</code> 이제, 우리는 앰퍼샌드를 추가할 필요가 있습니다. <code>contains</code> 끈 조각을 가지고 가기 위하여 정의된다.</p>
+<p>다음으로 <code>to_lowercase</code>를 각 <code>line</code>에 호출하여 모든 문자를 소문자로 만듭니다. 이제 <code>line</code> 및 <code>query</code>를 소문자로 변환 했으므로 쿼리의 경우와 상관없이 일치하는 항목을 찾을 수 있습니다.</p>
+<p>이 구현이 테스트를 통과하는지 봅시다:</p>
+<pre><code class="language-console">$ cargo test
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.33s
+     Running unittests src/lib.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
+
+running 2 tests
+test tests::case_insensitive ... ok
+test tests::case_sensitive ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests minigrep
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+</code></pre>
+<p>좋아요! 그들은 통과했습니다. 이제 새로운 것을 부르자. <code>search_case_insensitive</code> 에서 기능 <code>run</code> 먼저, 다음과 같은 설정 옵션을 추가하겠습니다. <code>Config</code>
+대소문자를 구분하는 검색과 대소문자를 구분하지 않는 검색 사이를 전환하는 구조체입니다. 이 필드를 추가하면 이 필드를 아직 초기화하지 않았기 때문에 컴파일러 오류가 발생합니다.</p>
+<p>파일 이름: src/main.rs</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
+</span><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">use std::process;
+</span><span class="boring">
+</span><span class="boring">use minigrep::{search, search_case_insensitive};
+</span><span class="boring">
+</span><span class="boring">// --snip--
+</span><span class="boring">
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let args: Vec&lt;String&gt; = env::args().collect();
+</span><span class="boring">
+</span><span class="boring">    let config = Config::build(&amp;args).unwrap_or_else(|err| {
+</span><span class="boring">        println!("Problem parsing arguments: {err}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    if let Err(e) = run(config) {
+</span><span class="boring">        println!("Application error: {e}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct Config {
+    pub query: String,
+    pub file_path: String,
+    pub ignore_case: bool,
+}
+<span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    let results = if config.ignore_case {
+</span><span class="boring">        search_case_insensitive(&amp;config.query, &amp;contents)
+</span><span class="boring">    } else {
+</span><span class="boring">        search(&amp;config.query, &amp;contents)
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    for line in results {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}</span></code></pre>
+<p>저희가 추가한 <code>ignore_case</code> 불리언을 가진 필드입니다. 다음으로, 우리는 <code>run</code>
+확인하는 기능 <code>ignore_case</code> 필드의 값과 그 값을 사용하여 호출할지 여부를 결정합니다. <code>search</code> 기능 또는 <code>search_case_insensitive</code>
+Listing 12-22와 같이, 함수는 아직 컴파일되지 않습니다.</p>
+<figure class="listing" id="listing-12-22">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">use std::env;
+</span><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">use std::process;
+</span><span class="boring">
+</span>use minigrep::{search, search_case_insensitive};
+
+// --snip--
+
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let args: Vec&lt;String&gt; = env::args().collect();
+</span><span class="boring">
+</span><span class="boring">    let config = Config::build(&amp;args).unwrap_or_else(|err| {
+</span><span class="boring">        println!("Problem parsing arguments: {err}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    if let Err(e) = run(config) {
+</span><span class="boring">        println!("Application error: {e}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">    pub ignore_case: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Config {
+</span><span class="boring">    fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+</span><span class="boring">        if args.len() &lt; 3 {
+</span><span class="boring">            return Err("not enough arguments");
+</span><span class="boring">        }
+</span><span class="boring">
+</span><span class="boring">        let query = args[1].clone();
+</span><span class="boring">        let file_path = args[2].clone();
+</span><span class="boring">
+</span><span class="boring">        Ok(Config { query, file_path })
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let contents = fs::read_to_string(config.file_path)?;
+
+    let results = if config.ignore_case {
+        search_case_insensitive(&amp;config.query, &amp;contents)
+    } else {
+        search(&amp;config.query, &amp;contents)
+    };
+
+    for line in results {
+        println!("{line}");
+    }
+
+    Ok(())
+}</code></pre>
+<figcaption><a href="#listing-12-22">목록 12-22</a>: <code>search</code> 또는 <code>search_case_insensitive</code>를 <code>config.ignore_case</code>의 값을 기준으로 호출</figcaption>
+</figure>
+<p>마지막으로, 환경 변수를 확인해야 합니다. 환경 변수를 다루는 함수는 다음과 같습니다. <code>env</code> module은 표준 라이브러리에 포함되어 있으며, 이 라이브러리는 이미 맨 위에 있습니다. <em>한국어 (ko)</em>. 우리는 사용할 것입니다
+<code>var</code> 에서 기능 <code>env</code> module : 이름이 지정된 환경변수에 어떤 값이 설정되었는지 확인한다. <code>IGNORE_CASE</code>Listing 12-23에 나와 있는 내용입니다.</p>
+<figure class="listing" id="listing-12-23">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore noplayground"><span class="boring">use std::env;
+</span><span class="boring">use std::error::Error;
+</span><span class="boring">use std::fs;
+</span><span class="boring">use std::process;
+</span><span class="boring">
+</span><span class="boring">use minigrep::{search, search_case_insensitive};
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let args: Vec&lt;String&gt; = env::args().collect();
+</span><span class="boring">
+</span><span class="boring">    let config = Config::build(&amp;args).unwrap_or_else(|err| {
+</span><span class="boring">        println!("Problem parsing arguments: {err}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    });
+</span><span class="boring">
+</span><span class="boring">    if let Err(e) = run(config) {
+</span><span class="boring">        println!("Application error: {e}");
+</span><span class="boring">        process::exit(1);
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Config {
+</span><span class="boring">    pub query: String,
+</span><span class="boring">    pub file_path: String,
+</span><span class="boring">    pub ignore_case: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Config {
+    fn build(args: &amp;[String]) -&gt; Result&lt;Config, &amp;'static str&gt; {
+        if args.len() &lt; 3 {
+            return Err("not enough arguments");
+        }
+
+        let query = args[1].clone();
+        let file_path = args[2].clone();
+
+        let ignore_case = env::var("IGNORE_CASE").is_ok();
+
+        Ok(Config {
+            query,
+            file_path,
+            ignore_case,
+        })
+    }
+}
+<span class="boring">
+</span><span class="boring">fn run(config: Config) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+</span><span class="boring">    let contents = fs::read_to_string(config.file_path)?;
+</span><span class="boring">
+</span><span class="boring">    let results = if config.ignore_case {
+</span><span class="boring">        search_case_insensitive(&amp;config.query, &amp;contents)
+</span><span class="boring">    } else {
+</span><span class="boring">        search(&amp;config.query, &amp;contents)
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    for line in results {
+</span><span class="boring">        println!("{line}");
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    Ok(())
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-12-23">목록 12-23</a>: <code>IGNORE_CASE</code>라는 환경 변수에서 값 확인</figcaption>
+</figure>
+<p>여기, 우리는 새로운 변수를 만듭니다. <code>ignore_case</code>. 값을 설정하기 위해,
+<code>env::var</code> 함수의 이름을 전달합니다.Pass the name of the <code>IGNORE_CASE</code> 환경 변수. <code>env::var</code> 함수는 a를 반환합니다. <code>Result</code> 그것이 성공이 되리라. <code>Ok</code> variant 환경변수가 어떤 값으로 설정되어 있다면, 환경변수의 값을 포함하는 variant입니다. <code>Err</code> 환경 변수가 설정되지 않은 경우 variant.</p>
+<p>우리는 그것을 사용합니다. <code>is_ok</code> 상기 방법은 The method <code>Result</code> 환경 변수가 설정되었는지 확인하기 위해, 프로그램은 대소문자를 구분하지 않는 검색을 수행해야 합니다. <code>IGNORE_CASE</code> 환경 변수는 어떤 것으로도 설정되지 않습니다. <code>is_ok</code> 돌아올 것이다. <code>false</code> 그리고 프로그램은 대소문자를 구분하는 검색을 수행할 것입니다. <em>값</em> 환경변수의, 단지 그것이 설정되었든 설정되지 않았든, 그래서 우리는 체크하고 있습니다. <code>is_ok</code> 를 사용하는 것보다 <code>unwrap</code>, <code>expect</code>또는 우리가 본 다른 방법들. <code>Result</code>.</p>
+<p><code>ignore_case</code> 변수의 값을 <code>Config</code> 인스턴스에 전달하여 <code>run</code> 함수가 해당 값을 읽고 <code>search_case_insensitive</code> 또는 <code>search</code>를 호출할지 여부를 결정할 수 있도록 합니다.</p>
+<p>먼저, 환경 변수 세트 없이 쿼리를 사용하여 프로그램을 실행하겠습니다. <code>to</code>단어를 포함하는 모든 줄과 일치해야 합니다. <em>오시는 길</em> 모든 소문자에서 :</p>
+<pre><code class="language-console">$ cargo run -- to poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep to poem.txt`
+Are you nobody, too?
+How dreary to be somebody!
+</code></pre>
+<p>이제 <code>IGNORE_CASE</code>가 <code>1</code>로 설정되었지만 동일한 쿼리 <code>to</code>로 프로그램을 실행합시다.</p>
+<pre><code class="language-console">$ IGNORE_CASE=1 cargo run -- to poem.txt
+</code></pre>
+<p>PowerShell을 사용하는 경우 환경 변수를 설정하고 프로그램을 별도의 명령으로 실행해야 합니다.</p>
+<pre><code class="language-console">PS&gt; $Env:IGNORE_CASE=1; cargo run -- to poem.txt
+</code></pre>
+<p>이렇게하면 <code>IGNORE_CASE</code>가 쉘 세션의 나머지 부분에 대해 유지됩니다. <code>Remove-Item</code> cmdlet으로 설정 해제 할 수 있습니다.</p>
+<pre><code class="language-console">PS&gt; Remove-Item Env:IGNORE_CASE
+</code></pre>
+<p>대문자를 포함할 수 있는 줄이 있어야 합니다.</p>
+<!-- manual-regeneration
+cd listings/ch12-an-io-project/listing-12-23
+IGNORE_CASE=1 cargo run -- to poem.txt
+can't extract because of the environment variable
+-->
+<pre><code class="language-console">Are you nobody, too?
+How dreary to be somebody!
+To tell your name the livelong day
+To an admiring bog!
+</code></pre>
+<p><code>minigrep</code> 프로그램은 이제 환경 변수에 의해 제어되는 대소문자를 구분하지 않는 검색을 할 수 있습니다. 이제 명령 줄 인수 또는 환경 변수를 사용하여 옵션 세트를 관리하는 방법을 알고 있습니다.</p>
+<p>일부 프로그램은 같은 설정에 대해 인수와 환경 변수를 허용합니다. 이러한 경우, 프로그램은 하나 또는 다른 하나가 우선한다고 결정합니다. 스스로 다른 운동을 하려면 명령줄 인수 또는 환경 변수를 통해 대소문자 민감도를 제어해 보십시오. 프로그램이 대소문자를 구분하기 위해 한 세트와 대소문자를 무시하기 위해 한 세트로 실행될 경우 명령줄 인수 또는 환경 변수가 우선 순위가 매겨질지 여부를 결정하십시오.</p>
+<p><code>std::env</code> 모듈에는 환경 변수를 처리하기 위한 더 많은 유용한 기능이 포함되어 있습니다: 사용 가능한 항목을 확인하려면 설명서를 확인하십시오.</p>
+</main>
+<nav aria-label="Page navigation" class="nav-wrapper">
+<!-- Mobile navigation buttons -->
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="mobile-nav-chapters previous" href="ch12-04-testing-the-librarys-functionality.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="mobile-nav-chapters next" href="ch12-06-writing-to-stderr-instead-of-stdout.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+<div style="clear: both"></div>
+</nav>
+</div>
+</div>
+<nav aria-label="Page navigation" class="nav-wide-wrapper">
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="nav-chapters previous" href="ch12-04-testing-the-librarys-functionality.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="nav-chapters next" href="ch12-06-writing-to-stderr-instead-of-stdout.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+</nav>
+</div>
+<template id="fa-eye"><span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"></path></svg></span></template>
+<template id="fa-eye-slash"><span class="fa-svg"><svg viewbox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"></path></svg></span></template>
+<template id="fa-copy"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"></path></svg></span></template>
+<template id="fa-play"><span class="fa-svg"><svg viewbox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path></svg></span></template>
+<template id="fa-clock-rotate-left"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"></path></svg></span></template>
+<script>
+            window.playground_copyable = true;
+        </script>
+<script src="elasticlunr-ef4e11c1.min.js"></script>
+<script src="mark-09e88c2c.min.js"></script>
+<script src="searcher-09f2665d.js"></script>
+<script src="clipboard-1626706a.min.js"></script>
+<script src="highlight-abc7f01d.js"></script>
+<script src="book-609e4cb8.js"></script>
+<!-- Custom JS scripts -->
+<script src="ferris-2317480c.js"></script>
+</div>
+<script defer="" src="rust-code-lab.js"></script></body>
+</html>

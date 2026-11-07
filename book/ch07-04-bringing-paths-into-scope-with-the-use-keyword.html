@@ -1,0 +1,510 @@
+<!DOCTYPE HTML>
+
+<html class="light sidebar-visible" dir="ltr" lang="ko">
+<head>
+<!-- Book generated using mdBook -->
+<meta charset="utf-8"/>
+<title>Bringing Paths Into Scope with the use Keyword - The Rust Programming Language</title>
+<!-- Custom HTML head -->
+<meta content="" name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<link href="favicon-de23e50b.svg" rel="icon"/>
+<link href="favicon-8114d1fc.png" rel="shortcut icon"/>
+<link href="css/variables-8adf115d.css" rel="stylesheet"/>
+<link href="css/general-e96d0476.css" rel="stylesheet"/>
+<link href="css/chrome-d279d366.css" rel="stylesheet"/>
+<link href="css/print-9e4910d8.css" media="print" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="fonts/fonts-9644e21d.css" rel="stylesheet"/>
+<!-- Highlight.js Stylesheets -->
+<link href="highlight-493f70e1.css" id="mdbook-highlight-css" rel="stylesheet"/>
+<link href="tomorrow-night-4c0ae647.css" id="mdbook-tomorrow-night-css" rel="stylesheet"/>
+<link href="ayu-highlight-3fdfc3ac.css" id="mdbook-ayu-highlight-css" rel="stylesheet"/>
+<!-- Custom theme stylesheets -->
+<link href="ferris-d33b75bf.css" rel="stylesheet"/>
+<link href="theme/2018-edition-4e126c62.css" rel="stylesheet"/>
+<link href="theme/semantic-notes-9b5766c0.css" rel="stylesheet"/>
+<link href="theme/listing-cab26221.css" rel="stylesheet"/>
+<!-- Provide site root and default themes to javascript -->
+<script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cc309c2.js";
+        </script>
+<!-- Start loading toc.js asap -->
+<script src="toc-0e4ce700.js"></script>
+<link href="rust-code-lab.css" rel="stylesheet"/><link href="notion-theme.css" rel="stylesheet"/></head>
+<body>
+<div id="mdbook-help-container">
+<div id="mdbook-help-popup">
+<h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+<div>
+<p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+<p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+<p>Press <kbd>?</kbd> to show this help</p>
+<p>Press <kbd>Esc</kbd> to hide this help</p>
+</div>
+</div>
+</div>
+<div id="mdbook-body-container">
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+<input class="hidden" id="mdbook-sidebar-toggle-anchor" type="checkbox"/>
+<!-- Hide / unhide sidebar before it is displayed -->
+<script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+<nav aria-label="Table of contents" class="sidebar" id="mdbook-sidebar">
+<!-- populated by js -->
+<mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+<noscript>
+<iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+</noscript>
+<div class="sidebar-resize-handle" id="mdbook-sidebar-resize-handle">
+<div class="sidebar-resize-indicator"></div>
+</div>
+</nav>
+<div class="page-wrapper" id="mdbook-page-wrapper">
+<div class="page">
+<div id="mdbook-menu-bar-hover-placeholder"></div>
+<div class="menu-bar sticky" id="mdbook-menu-bar">
+<div class="left-buttons">
+<label aria-controls="mdbook-sidebar" aria-label="Toggle Table of Contents" class="icon-button" for="mdbook-sidebar-toggle-anchor" id="mdbook-sidebar-toggle" title="Toggle Table of Contents">
+<span class="fa-svg"><svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"></path></svg></span>
+</label>
+<button aria-controls="mdbook-theme-list" aria-expanded="false" aria-haspopup="true" aria-label="Change theme" class="icon-button" id="mdbook-theme-toggle" title="Change theme" type="button">
+<span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"></path></svg></span>
+</button>
+<ul aria-label="Themes" class="theme-popup" id="mdbook-theme-list" role="menu">
+<li role="none"><button class="theme" id="mdbook-theme-default_theme" role="menuitem">Auto</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-light" role="menuitem">Light</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-rust" role="menuitem">Rust</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-coal" role="menuitem">Coal</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-navy" role="menuitem">Navy</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-ayu" role="menuitem">Ayu</button></li>
+</ul>
+<button aria-controls="mdbook-searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-label="Toggle Searchbar" class="icon-button" id="mdbook-search-toggle" title="Search (`/`)" type="button">
+<span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"></path></svg></span>
+</button>
+</div>
+<h1 class="menu-title">The Rust Programming Language</h1>
+<div class="right-buttons">
+<a aria-label="Print this book" href="print.html" title="Print this book">
+<span class="fa-svg" id="print-button"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"></path></svg></span>
+</a>
+<a aria-label="Git repository" href="https://github.com/rust-lang/book" title="Git repository">
+<span class="fa-svg"><svg viewbox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></span>
+</a>
+</div>
+</div>
+<div class="hidden" id="mdbook-search-wrapper">
+<form class="searchbar-outer" id="mdbook-searchbar-outer">
+<div class="search-wrapper">
+<input aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." type="search"/>
+<div class="spinner-wrapper">
+<span class="fa-svg" id="fa-spin"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"></path></svg></span>
+</div>
+</div>
+</form>
+<div class="searchresults-outer hidden" id="mdbook-searchresults-outer">
+<div class="searchresults-header" id="mdbook-searchresults-header"></div>
+<ul id="mdbook-searchresults">
+</ul>
+</div>
+</div>
+<!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+<script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+<div class="content" id="mdbook-content">
+<main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
+<h2 id="bringing-paths-into-scope-with-the-use-keyword"><a class="header" href="#bringing-paths-into-scope-with-the-use-keyword">Paths 를 Scope 로 가져옴 <code>use</code> 키워드</a></h2>
+<p>함수를 호출하기 위한 경로를 작성하는 것은 불편하고 반복적일 수 있습니다. Listing 7-7에서, <code>add_to_waitlist</code> 기능, 우리가 부르고 싶을 때마다 <code>add_to_waitlist</code>
+우리는 specify 해야 했다. <code>front_of_house</code> 그리고 <code>hosting</code> 또한. 다행스럽게도, 이 프로세스를 단순화하는 방법이 있습니다. <code>use</code>
+키워드를 한 번 사용하고 범위의 다른 모든 곳에서 더 짧은 이름을 사용하십시오.</p>
+<p>Listing 7-11에서 <code>crate::front_of_house::hosting</code> 모듈을 <code>eat_at_restaurant</code> 함수의 범위로 가져와서 <code>hosting::add_to_waitlist</code>에서 <code>add_to_waitlist</code> 함수를 호출하기 위해 <code>eat_at_restaurant</code>만 지정하면 됩니다.</p>
+<figure class="listing" id="listing-7-11">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground test_harness">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+use crate::front_of_house::hosting;
+
+pub fn eat_at_restaurant() {
+    hosting::add_to_waitlist();
+}</code></pre>
+<figcaption><a href="#listing-7-11">목록 7-11</a>: <code>use</code>를 가진 범위로 단위 가져오기</figcaption>
+</figure>
+<p><code>use</code>와 스코프의 경로를 추가하는 것은 파일 시스템에 심볼릭 링크를 만드는 것과 비슷합니다. 크레이트 루트에 <code>use crate::front_of_house::hosting</code>를 추가함으로써 <code>hosting</code>는 이제 크레이트 루트에 <code>hosting</code> 모듈이 정의 된 것처럼 해당 범위의 유효한 이름입니다. <code>use</code>와 함께 범위로 가져온 경로도 개인 정보 보호 정책을 확인합니다.</p>
+<p>그 참고 <code>use</code> 특정 범위에 대한 바로 가기를 만듭니다.
+<code>use</code> occurs. Listing 7-12는 다음과 같이 움직입니다. <code>eat_at_restaurant</code> 새로운 자식 모듈에 대한 함수 <code>customer</code>상기 다른 범위는 The different scope is <code>use</code>
+함수 본문이 컴파일되지 않습니다.The function body will not compile.</p>
+<figure class="listing" id="listing-7-12">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground test_harness does_not_compile ignore">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+use crate::front_of_house::hosting;
+
+mod customer {
+    pub fn eat_at_restaurant() {
+        hosting::add_to_waitlist();
+    }
+}</code></pre>
+<figcaption><a href="#listing-7-12">등록 7-12</a>: <code>use</code> 문은 해당 범위에만 적용됩니다.</figcaption>
+</figure>
+<p>컴파일러 오류는 바로 가기가 <code>customer</code> 모듈에 더 이상 적용되지 않음을 보여줍니다.</p>
+<pre><code class="language-console">$ cargo build
+   Compiling restaurant v0.1.0 (file:///projects/restaurant)
+error[E0433]: cannot find module or crate `hosting` in this scope
+  --&gt; src/lib.rs:11:9
+   |
+11 |         hosting::add_to_waitlist();
+   |         ^^^^^^^ use of unresolved module or unlinked crate `hosting`
+   |
+   = help: if you wanted to use a crate named `hosting`, use `cargo add hosting` to add it to your `Cargo.toml`
+help: consider importing this module through its public re-export
+   |
+10 +     use crate::hosting;
+   |
+
+warning: unused import: `crate::front_of_house::hosting`
+ --&gt; src/lib.rs:7:5
+  |
+7 | use crate::front_of_house::hosting;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+For more information about this error, try `rustc --explain E0433`.
+warning: `restaurant` (lib) generated 1 warning
+error: could not compile `restaurant` (lib) due to 1 previous error; 1 warning emitted
+</code></pre>
+<p>또한 경고가 있음을 알 수 있습니다. <code>use</code> 더 이상 범위에 사용되지 않습니다! 이 문제를 해결하려면 <code>use</code> 내부 The <code>customer</code> module 너무, 또는 부모 모듈의 바로 가기를 참조 <code>super::hosting</code> #아이 안에
+<code>customer</code> 모듈.</p>
+<h3 id="creating-idiomatic-use-paths"><a class="header" href="#creating-idiomatic-use-paths">바보 같은 짓 만들기 <code>use</code> 경로</a></h3>
+<p>Listing 7-11에서, 여러분은 왜 우리가 명시했는지 궁금했을 것입니다. <code>use crate::front_of_house::hosting</code> 그리고 나서 전화 <code>hosting::add_to_waitlist</code> 에서
+<code>eat_at_restaurant</code>를 명시하는 대신, Instead to specify the <code>use</code> 오시는 길 All the Way <code>add_to_waitlist</code> 함수는 Listing 7-13에서와 같은 결과를 얻을 수 있습니다.</p>
+<figure class="listing" id="listing-7-13">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground test_harness">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+use crate::front_of_house::hosting::add_to_waitlist;
+
+pub fn eat_at_restaurant() {
+    add_to_waitlist();
+}</code></pre>
+<figcaption><a href="#listing-7-13">목록 7-13</a>태그 보관물: Bringing the <code>add_to_waitlist</code> 범위로 기능을 가진 <code>use</code>그것은 unidiomatic하다.</figcaption>
+</figure>
+<p>Listing 7-11과 Listing 7-13 모두 동일한 작업을 수행하지만, Listing 7-11은 함수를 범위로 가져 오는 관용적 방법입니다. <code>use</code>. 기능의 부모 단위를 범위로 가져오기를 가진 <code>use</code> 즉, 함수를 호출할 때 부모 모듈을 지정해야 합니다. 함수를 호출할 때 부모 모듈을 지정하면 전체 경로의 반복을 최소화하면서 함수가 로컬로 정의되지 않음을 분명히 알 수 있습니다. Listing 7-13의 코드는 어디에 있는지 명확하지 않습니다. <code>add_to_waitlist</code> 정의된다.</p>
+<p>반면에 <code>use</code>를 사용하여 structs, enums 및 기타 항목을 가져올 때 전체 경로를 지정하는 것은 관용적입니다. Listing 7-14는 표준 라이브러리의 <code>HashMap</code> struct를 바이너리 크레이트의 범위로 가져 오는 관용적 방법을 보여줍니다.</p>
+<figure class="listing" id="listing-7-14">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">use std::collections::HashMap;
+
+fn main() {
+    let mut map = HashMap::new();
+    map.insert(1, 2);
+}</code></pre>
+<figcaption><a href="#listing-7-14">목록 7-14</a>: <code>HashMap</code>를 관용적인 방식으로 범위로 가져오기</figcaption>
+</figure>
+<p>이 관용구 뒤에는 강력한 이유가 없습니다: 그것은 단지 컨벤션이 등장하고, 사람들은 이런 식으로 러스트 코드를 읽고 쓰는 것에 익숙해졌습니다.</p>
+<p>이 관용구의 예외는 같은 이름을 가진 두 개의 항목을 <code>use</code> 문 범위로 가져오는 경우입니다. 러스트는 이를 허용하지 않기 때문입니다. Listing 7-15는 두 개의 <code>Result</code> 유형을 같은 이름을 가지지만 다른 부모 모듈이 있는 범위로 가져오는 방법과 이들을 참조하는 방법을 보여줍니다.</p>
+<figure class="listing" id="listing-7-15">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground">use std::fmt;
+use std::io;
+
+fn function1() -&gt; fmt::Result {
+    // --snip--
+<span class="boring">    Ok(())
+</span>}
+
+fn function2() -&gt; io::Result&lt;()&gt; {
+    // --snip--
+<span class="boring">    Ok(())
+</span>}</code></pre>
+<figcaption><a href="#listing-7-15">목록 7-15</a>: 같은 이름을 가진 두 가지 유형을 같은 범위에 가져오려면 부모 모듈을 사용해야 합니다.</figcaption>
+</figure>
+<p>보시다시피, 부모 모듈을 사용하면 두 개의 <code>Result</code> 타입을 구분할 수 있습니다. 대신 <code>use std::fmt::Result</code>와 <code>use std::io::Result</code>를 지정한다면, 같은 범위에 두 개의 <code>Result</code> 타입을 가질 것이고, 러스트는 <code>Result</code>를 사용할 때 어떤 것을 의미하는지 알지 못할 것입니다.</p>
+<h3 id="providing-new-names-with-the-as-keyword"><a class="header" href="#providing-new-names-with-the-as-keyword">새로운 이름들을 추가하여 <code>as</code> 키워드</a></h3>
+<p>같은 이름의 두 가지 유형을 동일한 범위로 가져 오는 문제에 대한 또 다른 해결책이 있습니다. <code>use</code>: 경로 뒤에, 우리는 지정할 수 있습니다 <code>as</code> 새로운 지역 이름, 또는 <em>별칭</em>Listing 7-16은 Listing 7-15의 코드를 작성하는 또 다른 방법을 보여줍니다. <code>Result</code> 타입 사용 <code>as</code>.</p>
+<figure class="listing" id="listing-7-16">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground">use std::fmt::Result;
+use std::io::Result as IoResult;
+
+fn function1() -&gt; Result {
+    // --snip--
+<span class="boring">    Ok(())
+</span>}
+
+fn function2() -&gt; IoResult&lt;()&gt; {
+    // --snip--
+<span class="boring">    Ok(())
+</span>}</code></pre>
+<figcaption><a href="#listing-7-16">목록 7-16</a>: <code>as</code> 키워드를 사용하여 범위로 가져올 때 유형 이름 바꾸기</figcaption>
+</figure>
+<p>두 번째 <code>use</code> 성명, 우리는 새 이름을 선택 <code>IoResult</code> 이름 *
+<code>std::io::Result</code> 타입과 충돌하지 않는 타입 <code>Result</code> 보낸 사람 <code>std::fmt</code>
+Listing 7-15 및 Listing 7-16은 관용적인 것으로 간주되므로 선택은 귀하에게 달려 있습니다!</p>
+<h3 id="re-exporting-names-with-pub-use"><a class="header" href="#re-exporting-names-with-pub-use">다른 이름으로 다시 내보내기 <code>pub use</code></a></h3>
+<p><code>use</code> 키워드로 이름을 가져올 때 이름은 가져온 범위에 대해 비공개입니다. 해당 범위 외부의 코드를 해당 범위에 정의 된 것처럼 해당 이름을 참조 할 수 있도록 <code>pub</code>와 <code>use</code>를 결합 할 수 있습니다. 이 기술은 항목을 범위로 가져오고 다른 항목을 사용할 수 있도록하기 때문에 다시 내보내기라고합니다.</p>
+<p>Listing 7-17은 루트 모듈에서 <code>use</code>가 <code>pub use</code>로 변경된 Listing 7-11의 코드를 보여줍니다.</p>
+<figure class="listing" id="listing-7-17">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground test_harness">mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+pub use crate::front_of_house::hosting;
+
+pub fn eat_at_restaurant() {
+    hosting::add_to_waitlist();
+}</code></pre>
+<figcaption><a href="#listing-7-17">목록 7-17</a>: <code>pub use</code>를 가진 새로운 범위에서 사용할 것이다 어떤 부호든지를 위해 유효한 이름을 만들기</figcaption>
+</figure>
+<p>이 변경 전에, 외부 코드는 다음과 같이 호출해야 합니다. <code>add_to_waitlist</code>
+path를 사용하는 함수
+<code>restaurant::front_of_house::hosting::add_to_waitlist()</code>또한, 필요한 것은 <code>front_of_house</code> 다음과 같이 표시할 모듈 <code>pub</code>. 지금이 <code>pub use</code> 다시 export 된 <code>hosting</code> 루트 모듈에서 모듈, 외부 코드는 경로를 사용할 수 있습니다 <code>restaurant::hosting::add_to_waitlist()</code> 대신.</p>
+<p>재수출은 코드의 내부 구조가 프로그래머가 코드에 대해 생각하는 것과 다를 때 유용합니다. 예를 들어,이 레스토랑 은유에서 레스토랑을 운영하는 사람들은 "집 앞"과 "집 뒤"에 대해 생각합니다. 그러나 레스토랑을 방문하는 고객은 아마도 그 용어로 레스토랑의 부분에 대해 생각하지 않을 것입니다. <code>pub use</code>, 우리는 하나의 구조로 코드를 작성할 수 있지만 다른 구조를 노출 할 수 있습니다. 이렇게하면 라이브러리에서 작업하는 프로그래머와 라이브러리를 호출하는 프로그래머를 위해 라이브러리가 잘 조직됩니다. 우리는 다른 예를 살펴 보겠습니다. <code>pub use</code>
+그리고 그것은 당신의 크레이트의 문서에 영향을 미치는 방법 <a href="ch14-02-publishing-to-crates-io.html#exporting-a-convenient-public-api">“편리한 공용 API 내보내기”</a> 무시  챕터 14.</p>
+<h3 id="using-external-packages"><a class="header" href="#using-external-packages">외부 패키지 사용</a></h3>
+<p>2 장에서는 임의의 숫자를 얻기 위해 <code>rand</code>라는 외부 패키지를 사용하는 추측 게임 프로젝트를 프로그래밍했습니다. 우리 프로젝트에서 <code>rand</code>를 사용하려면 Cargo.toml에이 줄을 추가했습니다.</p>
+<!-- When updating the version of `rand` used, also update the version of
+`rand` used in these files so they all match:
+
+* ch01-01-installation.md
+* ch02-00-guessing-game-tutorial.md
+* ch14-03-cargo-workspaces.md
+-->
+<figure class="listing">
+<span class="file-name">Filename: Cargo.toml</span>
+<pre><code class="language-toml">rand = "0.10.1"
+</code></pre>
+</figure>
+<p><code>rand</code>를 Cargo.toml에 종속성으로 추가하면 Cargo는 <code>rand</code> 패키지 및 <a href="https://crates.io/">크레이트.io</a>의 종속성을 다운로드하고 <code>rand</code>를 프로젝트에 사용할 수 있습니다.</p>
+<p>그래서, Bring <code>rand</code> 우리의 패키지의 범위에 정의, 우리는 추가
+<code>use</code> 크레이트의 이름으로 시작하는 선, <code>rand</code>, 그리고 우리가 범위로 가지고 가고 싶었던 품목을 목록으로 만들었습니다. 그것을 안으로 되새기십시오 <a href="ch02-00-guessing-game-tutorial.html#generating-a-random-number">“무작위 숫자 를 만들어 내는 일”</a> 무시  제 2 장에서, 우리는에 항목을 가져
+<code>rand::prelude</code> module을 호출하고, <code>rand::rng</code> 기능:</p>
+<pre><code class="language-rust ignore"><span class="boring">use std::io;
+</span><span class="boring">
+</span>use rand::prelude::*;
+
+fn main() {
+<span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span>    let secret_number = rand::rng().random_range(1..=100);
+<span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">    println!("You guessed: {guess}");
+</span>}</code></pre>
+<p>러스트 커뮤니티의 회원들은 <a href="https://crates.io/">크레이트.io</a>에서 많은 패키지를 사용할 수 있도록 했으며, 패키지에 패키지를 가져오는 것은 동일한 단계를 포함합니다: 패키지의 Cargo.toml 파일에 패키지를 나열하고 <code>use</code>를 사용하여 상자의 항목을 범위로 가져옵니다.</p>
+<p>상기 기준은 The standard <code>std</code> 라이브러리는 또한 패키지 외부의 크레이트입니다. 표준 라이브러리는 러스트 언어와 함께 제공되므로 변경할 필요가 없습니다. <em>카고.toml</em> 포함하다 <code>std</code>. 그러나 우리는 그것을 참조 할 필요가 <code>use</code> 우리의 패키지의 범위에 거기에서 항목을 가지고. 예를 들면, <code>HashMap</code> 우리는이 라인을 사용합니다 :</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::HashMap;
+<span class="boring">}</span></code></pre>
+<p>이것은 표준 라이브러리 크레이트의 이름인 <code>std</code>로 시작하는 절대 경로입니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="using-nested-paths-to-clean-up-large-use-lists"></a></p>
+<h3 id="using-nested-paths-to-clean-up-use-lists"><a class="header" href="#using-nested-paths-to-clean-up-use-lists">정리하기 위해 중첩된 경로 사용 <code>use</code> 목록</a></h3>
+<p>동일한 크레이트나 모듈에 정의된 여러 항목을 사용하는 경우, 각 항목을 자체 줄에 나열하는 것은 파일에서 많은 세로 공간을 차지할 수 있습니다. 예를 들어, 이 두 가지 <code>use</code> Listing 2-4의 guessing game에서 가지고 있던 문장 <code>std</code> 범위 내:</p>
+<figure class="listing">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore">// --snip--
+use std::cmp::Ordering;
+use std::io;
+// --snip--
+<span class="boring">
+</span><span class="boring">use rand::prelude::*;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::rng().random_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">    println!("You guessed: {guess}");
+</span><span class="boring">
+</span><span class="boring">    match guess.cmp(&amp;secret_number) {
+</span><span class="boring">        Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">        Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">        Ordering::Equal =&gt; println!("You win!"),
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+</figure>
+<p>대신, 같은 항목을 한 줄에 범위로 가져오기 위해 중첩된 경로를 사용할 수 있습니다. Listing 7-18에서 볼 수 있듯이, 경로의 공통 부분을 지정하고, 두 개의 콜론을 누른 다음, 서로 다른 경로의 부분 목록을 중심으로 중괄호를 지정합니다.</p>
+<figure class="listing" id="listing-7-18">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore"><span class="boring">use rand::prelude::*;
+</span>// --snip--
+use std::{cmp::Ordering, io};
+// --snip--
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::rng().random_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">    let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">    io::stdin()
+</span><span class="boring">        .read_line(&amp;mut guess)
+</span><span class="boring">        .expect("Failed to read line");
+</span><span class="boring">
+</span><span class="boring">    let guess: u32 = guess.trim().parse().expect("Please type a number!");
+</span><span class="boring">
+</span><span class="boring">    println!("You guessed: {guess}");
+</span><span class="boring">
+</span><span class="boring">    match guess.cmp(&amp;secret_number) {
+</span><span class="boring">        Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">        Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">        Ordering::Equal =&gt; println!("You win!"),
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-7-18">목록 7-18</a>: 같은 접두사를 가진 여러 항목을 범위로 가져오기 위한 중첩된 경로 지정</figcaption>
+</figure>
+<p>더 큰 프로그램에서는 중첩 된 경로를 사용하여 동일한 상자 또는 모듈에서 많은 항목을 범위로 가져 오면 필요한 별도의 <code>use</code> 문 수를 줄일 수 있습니다!</p>
+<p>경로의 모든 수준에서 중첩된 경로를 사용할 수 있습니다. 이는 서브패스를 공유하는 두 개의 <code>use</code> 문을 결합할 때 유용합니다. 예를 들어, Listing 7-19는 두 개의 <code>use</code> 문을 보여줍니다. 하나는 <code>std::io</code>를 범위로 가져오고 하나는 <code>std::io::Write</code>를 범위로 가져옵니다.</p>
+<figure class="listing" id="listing-7-19">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground">use std::io;
+use std::io::Write;</code></pre>
+<figcaption><a href="#listing-7-19">목록 7-19</a>: 한 쪽이 다른 쪽의 하위 경로인 두 개의 <code>use</code> 문</figcaption>
+</figure>
+<p>이 두 경로의 일반적인 부분은 <code>std::io</code>이며, 이것이 완전한 첫 번째 경로입니다. 이 두 경로를 하나의 <code>use</code> 문으로 병합하려면 Listing 7-20과 같이 중첩된 경로에서 <code>self</code>를 사용할 수 있습니다.</p>
+<figure class="listing" id="listing-7-20">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground">use std::io::{self, Write};</code></pre>
+<figcaption><a href="#listing-7-20">목록 7-20</a>: Listing 7-19의 경로를 하나의 <code>use</code> 문으로 결합</figcaption>
+</figure>
+<p>이 선은 범위로 <code>std::io</code>와 <code>std::io::Write</code>를 가져옵니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="the-glob-operator"></a></p>
+<h3 id="importing-items-with-the-glob-operator"><a class="header" href="#importing-items-with-the-glob-operator">Glob 연산자로 항목 가져오기</a></h3>
+<p>경로에 정의된 모든 공용 항목을 범위로 가져오려면 <code>*</code> glob 연산자 다음에 해당 경로를 지정할 수 있습니다.</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::*;
+<span class="boring">}</span></code></pre>
+<p>이 <code>use</code> 문은 <code>std::collections</code>에 정의 된 모든 공개 항목을 현재 범위에 가져옵니다. glob 연산자를 사용할 때는주의하십시오! Glob은 범위에 어떤 이름이 있는지, 프로그램에서 사용 된 이름이 정의 된 위치를 말하기 어렵게 만들 수 있습니다. 또한 종속성이 정의를 변경하면 가져온 내용이 변경되므로 종속성이 동일한 정의를 추가하면 종속성을 업그레이드 할 때 컴파일러 오류가 발생할 수 있습니다.</p>
+<p>glob 연산자는 <code>tests</code> 모듈에 모든 것을 테스트 할 때 종종 사용됩니다. 11 장의 <a href="ch11-01-writing-tests.html#how-to-write-tests">“테스트 작성 방법”</a>에서 이야기 할 것입니다. glob 연산자는 때때로 전주 패턴의 일부로 사용됩니다. <a href="../std/prelude/index.html#other-preludes">표준 라이브러리 문서</a> 해당 패턴에 대한 자세한 내용은.</p>
+</main>
+<nav aria-label="Page navigation" class="nav-wrapper">
+<!-- Mobile navigation buttons -->
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="mobile-nav-chapters previous" href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="mobile-nav-chapters next" href="ch07-05-separating-modules-into-different-files.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+<div style="clear: both"></div>
+</nav>
+</div>
+</div>
+<nav aria-label="Page navigation" class="nav-wide-wrapper">
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="nav-chapters previous" href="ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="nav-chapters next" href="ch07-05-separating-modules-into-different-files.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+</nav>
+</div>
+<template id="fa-eye"><span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"></path></svg></span></template>
+<template id="fa-eye-slash"><span class="fa-svg"><svg viewbox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"></path></svg></span></template>
+<template id="fa-copy"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"></path></svg></span></template>
+<template id="fa-play"><span class="fa-svg"><svg viewbox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path></svg></span></template>
+<template id="fa-clock-rotate-left"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"></path></svg></span></template>
+<script>
+            window.playground_copyable = true;
+        </script>
+<script src="elasticlunr-ef4e11c1.min.js"></script>
+<script src="mark-09e88c2c.min.js"></script>
+<script src="searcher-09f2665d.js"></script>
+<script src="clipboard-1626706a.min.js"></script>
+<script src="highlight-abc7f01d.js"></script>
+<script src="book-609e4cb8.js"></script>
+<!-- Custom JS scripts -->
+<script src="ferris-2317480c.js"></script>
+</div>
+<script defer="" src="rust-code-lab.js"></script></body>
+</html>

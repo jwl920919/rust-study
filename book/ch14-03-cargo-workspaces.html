@@ -1,0 +1,459 @@
+<!DOCTYPE HTML>
+
+<html class="light sidebar-visible" dir="ltr" lang="ko">
+<head>
+<!-- Book generated using mdBook -->
+<meta charset="utf-8"/>
+<title>Cargo Workspaces - The Rust Programming Language</title>
+<!-- Custom HTML head -->
+<meta content="" name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<link href="favicon-de23e50b.svg" rel="icon"/>
+<link href="favicon-8114d1fc.png" rel="shortcut icon"/>
+<link href="css/variables-8adf115d.css" rel="stylesheet"/>
+<link href="css/general-e96d0476.css" rel="stylesheet"/>
+<link href="css/chrome-d279d366.css" rel="stylesheet"/>
+<link href="css/print-9e4910d8.css" media="print" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="fonts/fonts-9644e21d.css" rel="stylesheet"/>
+<!-- Highlight.js Stylesheets -->
+<link href="highlight-493f70e1.css" id="mdbook-highlight-css" rel="stylesheet"/>
+<link href="tomorrow-night-4c0ae647.css" id="mdbook-tomorrow-night-css" rel="stylesheet"/>
+<link href="ayu-highlight-3fdfc3ac.css" id="mdbook-ayu-highlight-css" rel="stylesheet"/>
+<!-- Custom theme stylesheets -->
+<link href="ferris-d33b75bf.css" rel="stylesheet"/>
+<link href="theme/2018-edition-4e126c62.css" rel="stylesheet"/>
+<link href="theme/semantic-notes-9b5766c0.css" rel="stylesheet"/>
+<link href="theme/listing-cab26221.css" rel="stylesheet"/>
+<!-- Provide site root and default themes to javascript -->
+<script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cc309c2.js";
+        </script>
+<!-- Start loading toc.js asap -->
+<script src="toc-0e4ce700.js"></script>
+<link href="rust-code-lab.css" rel="stylesheet"/><link href="notion-theme.css" rel="stylesheet"/></head>
+<body>
+<div id="mdbook-help-container">
+<div id="mdbook-help-popup">
+<h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+<div>
+<p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+<p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+<p>Press <kbd>?</kbd> to show this help</p>
+<p>Press <kbd>Esc</kbd> to hide this help</p>
+</div>
+</div>
+</div>
+<div id="mdbook-body-container">
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+<input class="hidden" id="mdbook-sidebar-toggle-anchor" type="checkbox"/>
+<!-- Hide / unhide sidebar before it is displayed -->
+<script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+<nav aria-label="Table of contents" class="sidebar" id="mdbook-sidebar">
+<!-- populated by js -->
+<mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+<noscript>
+<iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+</noscript>
+<div class="sidebar-resize-handle" id="mdbook-sidebar-resize-handle">
+<div class="sidebar-resize-indicator"></div>
+</div>
+</nav>
+<div class="page-wrapper" id="mdbook-page-wrapper">
+<div class="page">
+<div id="mdbook-menu-bar-hover-placeholder"></div>
+<div class="menu-bar sticky" id="mdbook-menu-bar">
+<div class="left-buttons">
+<label aria-controls="mdbook-sidebar" aria-label="Toggle Table of Contents" class="icon-button" for="mdbook-sidebar-toggle-anchor" id="mdbook-sidebar-toggle" title="Toggle Table of Contents">
+<span class="fa-svg"><svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"></path></svg></span>
+</label>
+<button aria-controls="mdbook-theme-list" aria-expanded="false" aria-haspopup="true" aria-label="Change theme" class="icon-button" id="mdbook-theme-toggle" title="Change theme" type="button">
+<span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"></path></svg></span>
+</button>
+<ul aria-label="Themes" class="theme-popup" id="mdbook-theme-list" role="menu">
+<li role="none"><button class="theme" id="mdbook-theme-default_theme" role="menuitem">Auto</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-light" role="menuitem">Light</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-rust" role="menuitem">Rust</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-coal" role="menuitem">Coal</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-navy" role="menuitem">Navy</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-ayu" role="menuitem">Ayu</button></li>
+</ul>
+<button aria-controls="mdbook-searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-label="Toggle Searchbar" class="icon-button" id="mdbook-search-toggle" title="Search (`/`)" type="button">
+<span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"></path></svg></span>
+</button>
+</div>
+<h1 class="menu-title">The Rust Programming Language</h1>
+<div class="right-buttons">
+<a aria-label="Print this book" href="print.html" title="Print this book">
+<span class="fa-svg" id="print-button"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"></path></svg></span>
+</a>
+<a aria-label="Git repository" href="https://github.com/rust-lang/book" title="Git repository">
+<span class="fa-svg"><svg viewbox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></span>
+</a>
+</div>
+</div>
+<div class="hidden" id="mdbook-search-wrapper">
+<form class="searchbar-outer" id="mdbook-searchbar-outer">
+<div class="search-wrapper">
+<input aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." type="search"/>
+<div class="spinner-wrapper">
+<span class="fa-svg" id="fa-spin"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"></path></svg></span>
+</div>
+</div>
+</form>
+<div class="searchresults-outer hidden" id="mdbook-searchresults-outer">
+<div class="searchresults-header" id="mdbook-searchresults-header"></div>
+<ul id="mdbook-searchresults">
+</ul>
+</div>
+</div>
+<!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+<script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+<div class="content" id="mdbook-content">
+<main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
+<h2 id="cargo-workspaces"><a class="header" href="#cargo-workspaces">화물 작업 영역</a></h2>
+<p>12장에서는 바이너리 크레이트와 라이브러리 크레이트를 포함한 패키지를 만들었습니다. 프로젝트가 개발됨에 따라 라이브러리 크레이트가 계속 커질 수 있으며 패키지를 여러 라이브러리 크레이트로 더 분할하고 싶을 수도 있습니다. Cargo는 동시에 개발되는 여러 관련 패키지를 관리하는 데 도움이 되는 작업 공간이라는 기능을 제공합니다.</p>
+<h3 id="creating-a-workspace"><a class="header" href="#creating-a-workspace">작업 공간 만들기</a></h3>
+<p>A <em>작업 영역</em> 같은 것을 공유하는 패키지의 집합입니다. <em>화물.잠금</em> 그리고 출력 디렉토리. 작업 공간을 사용하여 프로젝트를 만들어 봅시다. 작업 공간의 구조에 집중할 수 있도록 사소한 코드를 사용할 것입니다. 작업 공간을 구성하는 데는 여러 가지 방법이 있으므로 하나의 일반적인 방법을 보여 드리겠습니다. 바이너리와 두 개의 라이브러리를 포함하는 작업 공간을 갖게 될 것입니다. 주요 기능을 제공하는 바이너리는 두 개의 라이브러리에 따라 다릅니다. 하나의 라이브러리는 <code>add_one</code> 도서관 및 다른 도서관 <code>add_two</code> 함수. 이 세 개의 크레이트는 동일한 작업 공간의 일부가 될 것입니다. 우리는 작업 공간을위한 새로운 디렉토리를 만드는 것으로 시작할 것입니다.</p>
+<pre><code class="language-console">$ mkdir add
+$ cd add
+</code></pre>
+<p>다음으로, In the <em>추가</em> 디렉토리, 우리는 <em>카고.toml</em> 전체 작업 공간을 구성합니다 파일. 이 파일은이 없습니다 <code>[package]</code> 섹션. 대신 a로 시작합니다. <code>[workspace]</code> 작업 공간에 멤버를 추가할 수 있는 섹션입니다. 또한 작업 공간에서 Cargo의 가장 훌륭한 최신 버전의 Resolver 알고리즘을 사용할 수 있는 지점을 만듭니다.
+<code>resolver</code> 가치 <code>"3"</code>:</p>
+<p>파일명: Cargo.toml</p>
+<pre><code class="language-toml">[workspace]
+resolver = "3"
+</code></pre>
+<p>다음으로, 우리는 <code>adder</code> 실행하여 이진 크레이트 <code>cargo new</code> 내부 The
+<em>추가</em> 디렉터리:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/output-only-01-adder-crate/add
+remove `members = ["adder"]` from Cargo.toml
+rm -rf adder
+cargo new adder
+copy output below
+-->
+<pre><code class="language-console">$ cargo new adder
+     Created binary (application) `adder` package
+      Adding `adder` as member of workspace at `file:///projects/add`
+</code></pre>
+<p>실행 중 <code>cargo new</code> 또한 작업 공간 내부에는 새로 만든 패키지가 자동으로 추가됩니다. <code>members</code> 에 있는 열쇠 <code>[workspace]</code> 작업 공간에서의 정의
+<em>카고.toml</em>, 이렇게:</p>
+<pre><code class="language-toml">[workspace]
+resolver = "3"
+members = ["adder"]
+</code></pre>
+<p>이 시점에서 <code>cargo build</code>를 실행하여 작업 공간을 빌드할 수 있습니다. add 디렉토리의 파일은 다음과 같아야 합니다.</p>
+<pre><code class="language-text">├── Cargo.lock
+├── Cargo.toml
+├── adder
+│   ├── Cargo.toml
+│   └── src
+│       └── main.rs
+└── target
+</code></pre>
+<p>작업 공간에는 컴파일 된 아티팩트가 배치 될 최상위 레벨의 하나의 대상 디렉토리가 있습니다. <code>adder</code> 패키지에는 자체 대상 디렉토리가 없습니다. adder 디렉토리 내부에서 <code>cargo build</code>를 실행하더라도 컴파일 된 아티팩트는 add/adder/target이 아닌 add/target으로 끝납니다. 각 크레이트에 각 크레이트의 작업 영역이 있어야하기 때문에 대상 디렉토리를 재구성합니다.</p>
+<h3 id="creating-the-second-package-in-the-workspace"><a class="header" href="#creating-the-second-package-in-the-workspace">작업 공간에서 두 번째 패키지 만들기Create the second package in the workspace</a></h3>
+<p>다음으로 작업 공간에 다른 멤버 패키지를 만들고 <code>add_one</code>라고 부르겠습니다. <code>add_one</code>라는 이름의 새 라이브러리 크레이트를 생성합니다.</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/output-only-02-add-one/add
+remove `"add_one"` from `members` list in Cargo.toml
+rm -rf add_one
+cargo new add_one --lib
+copy output below
+-->
+<pre><code class="language-console">$ cargo new add_one --lib
+     Created library `add_one` package
+      Adding `add_one` as member of workspace at `file:///projects/add`
+</code></pre>
+<p>이제 최상위 Cargo.toml에는 add_one 경로가 <code>members</code> 목록에 포함됩니다.</p>
+<p>파일명: Cargo.toml</p>
+<pre><code class="language-toml">[workspace]
+resolver = "3"
+members = ["adder", "add_one"]
+</code></pre>
+<p>이제 add 디렉토리에 다음과 같은 디렉토리와 파일이 있어야 합니다:</p>
+<pre><code class="language-text">├── Cargo.lock
+├── Cargo.toml
+├── add_one
+│   ├── Cargo.toml
+│   └── src
+│       └── lib.rs
+├── adder
+│   ├── Cargo.toml
+│   └── src
+│       └── main.rs
+└── target
+</code></pre>
+<p>add_one/src/lib.rs 파일에 <code>add_one</code> 함수를 추가해 보겠습니다.</p>
+<p>파일 이름: add_one/src/lib.rs</p>
+<pre><code class="language-rust noplayground">pub fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}</code></pre>
+<p>이제 우리는 가질 수 있습니다. <code>adder</code> 우리의 이진과 패키지는에 따라 달라집니다 <code>add_one</code>
+라이브러리가 있는 패키지입니다. 먼저 경로 의존성을 추가해야 합니다.
+<code>add_one</code> 오시는 길 <em>가산기/Cargo.toml</em>.</p>
+<p>파일 이름: adder/Cargo.toml</p>
+<pre><code class="language-toml">[dependencies]
+add_one = { path = "../add_one" }
+</code></pre>
+<p>Cargo는 작업 공간의 크레이트가 서로 의존한다고 가정하지 않으므로 종속 관계에 대해 명시적이어야 합니다.</p>
+<p>다음 다음 글: Use the <code>add_one</code> 함수 (From) <code>add_one</code> 크레이트)에서
+<code>adder</code> 크레이트. 열기 <em>애드너/src/main.rs</em> 파일 및 변경 <code>main</code>
+전화 걸기 Function to Call <code>add_one</code> Listing 14-7과 같은 기능입니다.</p>
+<figure class="listing" id="listing-14-7">
+<span class="file-name">Filename: adder/src/main.rs</span>
+<pre><code class="language-rust ignore">fn main() {
+    let num = 10;
+    println!("Hello, world! {num} plus one is {}!", add_one::add_one(num));
+}</code></pre>
+<figcaption><a href="#listing-14-7">목록 14-7</a>: <code>add_one</code> 상자에서 <code>adder</code> 라이브러리 상자 사용</figcaption>
+</figure>
+<p>최상위 추가 디렉토리에서 <code>cargo build</code>를 실행하여 작업 공간을 구축합시다!</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/listing-14-07/add
+cargo build
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+<pre><code class="language-console">$ cargo build
+   Compiling add_one v0.1.0 (file:///projects/add/add_one)
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.22s
+</code></pre>
+<p>add 디렉토리에서 바이너리 크레이트를 실행하기 위해, 작업 공간에서 <code>-p</code> 인수와 <code>cargo run</code>를 사용하여 실행할 패키지를 지정할 수 있습니다:</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/listing-14-07/add
+cargo run -p adder
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+<pre><code class="language-console">$ cargo run -p adder
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running `target/debug/adder`
+Hello, world! 10 plus one is 11!
+</code></pre>
+<p>이것은 <code>add_one</code> 크레이트에 의존하는 adder/src/main.rs에서 코드를 실행한다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="depending-on-an-external-package-in-a-workspace"></a></p>
+<h3 id="depending-on-an-external-package"><a class="header" href="#depending-on-an-external-package">외부 패키지에 따라 다름</a></h3>
+<p>작업 공간은 하나만 가지고 있음을 주목하십시오. <em>화물.잠금</em> a 를 갖는 것보다는, 상위 레벨에서의 파일 <em>화물.잠금</em> 각 크레이트의 디렉토리에. 이것은 모든 크레이트가 모든 의존성의 동일한 버전을 사용하고 있음을 보장한다. <code>rand</code>
+패키지는 The <em>가산기/Cargo.toml</em> 그리고 <em>add_one/Cargo.toml(하나 추가)</em> 파일, 화물은 1개의 버전에 그 둘 다의 결심할 것이다 <code>rand</code> 그리고 그 중 하나에 기록
+<em>화물.잠금</em>. 작업 공간의 모든 크레이트를 동일한 종속성을 사용하여 만들면 크레이트가 항상 서로 호환된다는 것을 의미합니다.
+<code>rand</code> 크레이트에 의하여 <code>[dependencies]</code> 에 있는 단면도 <em>add_one/Cargo.toml(하나 추가)</em> 우리가 사용할 수 있도록 파일 <code>rand</code> 에 있는 크레이트 <code>add_one</code> 크레이트:</p>
+<!-- When updating the version of `rand` used, also update the version of
+`rand` used in these files so they all match:
+
+* ch01-01-installation.md
+* ch02-00-guessing-game-tutorial.md
+* ch07-04-bringing-paths-into-scope-with-the-use-keyword.md
+-->
+<p>파일 이름: add_one/Cargo.toml</p>
+<pre><code class="language-toml">[dependencies]
+rand = "0.10.1"
+</code></pre>
+<p>이제 add_one/src/lib.rs 파일에 <code>use rand;</code>를 추가 할 수 있으며 추가 디렉토리에서 <code>cargo build</code>를 실행하여 전체 작업 공간을 빌드하면 <code>rand</code> 크레이트가 가져 와서 컴파일됩니다. 우리가 가져온 <code>rand</code>를 언급하지 않기 때문에 하나의 경고를 받게됩니다.</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/no-listing-03-workspace-with-external-dependency/add
+cargo build
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+<pre><code class="language-console">$ cargo build
+    Updating crates.io index
+  Downloaded rand v0.10.1
+   --snip--
+   Compiling rand v0.10.1
+   Compiling add_one v0.1.0 (file:///projects/add/add_one)
+warning: unused import: `rand`
+ --&gt; add_one/src/lib.rs:1:5
+  |
+1 | use rand;
+  |     ^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `add_one` (lib) generated 1 warning (run `cargo fix --lib -p add_one` to apply 1 suggestion)
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.95s
+</code></pre>
+<p>최상위 레벨 <em>화물.잠금</em> 이제 의존성에 대한 정보가 있습니다.
+<code>add_one</code> 온 <code>rand</code>. 그러나, 비록 <code>rand</code> 작업 공간의 어딘가에 사용되며, 추가하지 않는 한 작업 공간의 다른 크레이트에서 사용할 수 없습니다.
+<code>rand</code> 그들의 <em>카고.toml</em> 파일도 마찬가지입니다. 예를 들어, <code>use rand;</code>
+에 대하여 <em>애드너/src/main.rs</em> 파일명 The <code>adder</code> 패키지, 우리는 오류를 얻을 것이다 :</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/output-only-03-use-rand/add
+cargo build
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+<pre><code class="language-console">$ cargo build
+  --snip--
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+error[E0432]: unresolved import `rand`
+ --&gt; adder/src/main.rs:2:5
+  |
+2 | use rand;
+  |     ^^^^ no external crate `rand`
+</code></pre>
+<p>이 문제를 해결하려면 Edit <em>카고.toml</em> 파일명 The <code>adder</code> 패키지 및 그 표시 <code>rand</code> 이에 대한 의존성 또한 중요합니다. <code>adder</code> 패키지 추가 <code>rand</code> 에 대한 종속성의 목록에 <code>adder</code> 에서 <em>화물.잠금</em>, 그러나 추가 사본 없음 <code>rand</code> 화물은 작업 공간의 모든 패키지에 있는 모든 상자가 <code>rand</code> 패키지는 호환되는 버전을 지정하는 한 동일한 버전을 사용합니다. <code>rand</code>, 저희에게 공간을 절약하고 작업 공간에 있는 크레이트가 서로 양립할 것이라는 점을 보증.</p>
+<p>작업 공간의 크레이트가 동일한 종속성의 호환되지 않는 버전을 지정하면 Cargo는 각 버전을 해결하지만 가능한 한 적은 버전을 해결하려고 시도합니다.</p>
+<h3 id="adding-a-test-to-a-workspace"><a class="header" href="#adding-a-test-to-a-workspace">Workspace에 테스트 추가</a></h3>
+<p>또 다른 향상을 위해, 의 테스트를 추가하자 <code>add_one::add_one</code> 기능 내부 <code>add_one</code> 크레이트:</p>
+<p>파일 이름: add_one/src/lib.rs</p>
+<pre><code class="language-rust noplayground">pub fn add_one(x: i32) -&gt; i32 {
+    x + 1
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        assert_eq!(3, add_one(2));
+    }
+}</code></pre>
+<p>이제 최상위 add 디렉토리에서 <code>cargo test</code>를 실행하십시오. 이와 같이 구성된 작업 공간에서 <code>cargo test</code>를 실행하면 작업 영역의 모든 크레이트에 대한 테스트를 실행합니다.</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
+cargo test
+copy output below; the output updating script doesn't handle subdirectories in
+paths properly
+-->
+<pre><code class="language-console">$ cargo test
+   Compiling add_one v0.1.0 (file:///projects/add/add_one)
+   Compiling adder v0.1.0 (file:///projects/add/adder)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.20s
+     Running unittests src/lib.rs (target/debug/deps/add_one-93c49ee75dc46543)
+
+running 1 test
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/adder-3a47283c568d2b6a)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests add_one
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+</code></pre>
+<p>출력의 첫 번째 섹션은 <code>it_works</code> 크레이트에서 <code>add_one</code> 테스트가 통과했음을 보여줍니다. 다음 섹션은 <code>adder</code> 크레이트에서 제로 테스트가 발견되었고 마지막 섹션은 <code>add_one</code> 크레이트에서 제로 문서화 테스트가 발견되었음을 보여줍니다.</p>
+<p>또한 <code>-p</code> 플래그를 사용하고 테스트하려는 크레이트의 이름을 지정하여 최상위 디렉토리에서 작업 공간의 특정 크레이트에 대한 테스트를 실행할 수 있습니다.</p>
+<!-- manual-regeneration
+cd listings/ch14-more-about-cargo/no-listing-04-workspace-with-tests/add
+cargo test -p add_one
+copy output below; the output updating script doesn't handle subdirectories in paths properly
+-->
+<pre><code class="language-console">$ cargo test -p add_one
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/add_one-93c49ee75dc46543)
+
+running 1 test
+test tests::it_works ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests add_one
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+</code></pre>
+<p>이 출력은 <code>cargo test</code>가 <code>add_one</code> 크레이트에 대한 테스트만 실행하고 <code>adder</code> 크레이트 테스트를 실행하지 않았음을 보여줍니다.</p>
+<p>작업 공간에 있는 크레이트를 <a href="https://crates.io/">크레이트.io</a>에 게시하는 경우 작업 공간에 있는 각 크레이트를 별도로 게시해야 합니다. <code>cargo test</code>와 마찬가지로 <code>-p</code> 플래그를 사용하여 게시하려는 크레이트의 이름을 지정하여 작업 공간에 특정 크레이트를 게시할 수 있습니다.</p>
+<p>추가 연습을 위해 <code>add_two</code> 상자와 비슷한 방식으로이 작업 공간에 <code>add_one</code> 상자를 추가하십시오!</p>
+<p>프로젝트가 성장함에 따라 작업 공간 사용을 고려하십시오. 하나의 큰 코드 블록보다 작고 이해하기 쉬운 구성 요소로 작업 할 수 있습니다. 또한 작업 공간에 상자를 보관하면 크레이트간에 쉽게 조정 할 수 있습니다.</p>
+</main>
+<nav aria-label="Page navigation" class="nav-wrapper">
+<!-- Mobile navigation buttons -->
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="mobile-nav-chapters previous" href="ch14-02-publishing-to-crates-io.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="mobile-nav-chapters next" href="ch14-04-installing-binaries.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+<div style="clear: both"></div>
+</nav>
+</div>
+</div>
+<nav aria-label="Page navigation" class="nav-wide-wrapper">
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="nav-chapters previous" href="ch14-02-publishing-to-crates-io.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="nav-chapters next" href="ch14-04-installing-binaries.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+</nav>
+</div>
+<template id="fa-eye"><span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"></path></svg></span></template>
+<template id="fa-eye-slash"><span class="fa-svg"><svg viewbox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"></path></svg></span></template>
+<template id="fa-copy"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"></path></svg></span></template>
+<template id="fa-play"><span class="fa-svg"><svg viewbox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path></svg></span></template>
+<template id="fa-clock-rotate-left"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"></path></svg></span></template>
+<script>
+            window.playground_copyable = true;
+        </script>
+<script src="elasticlunr-ef4e11c1.min.js"></script>
+<script src="mark-09e88c2c.min.js"></script>
+<script src="searcher-09f2665d.js"></script>
+<script src="clipboard-1626706a.min.js"></script>
+<script src="highlight-abc7f01d.js"></script>
+<script src="book-609e4cb8.js"></script>
+<!-- Custom JS scripts -->
+<script src="ferris-2317480c.js"></script>
+</div>
+<script defer="" src="rust-code-lab.js"></script></body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE HTML>
+
+<html class="light sidebar-visible" dir="ltr" lang="ko">
+<head>
+<!-- Book generated using mdBook -->
+<meta charset="utf-8"/>
+<title>G - How Rust is Made and “Nightly Rust” - The Rust Programming Language</title>
+<!-- Custom HTML head -->
+<meta content="" name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<link href="favicon-de23e50b.svg" rel="icon"/>
+<link href="favicon-8114d1fc.png" rel="shortcut icon"/>
+<link href="css/variables-8adf115d.css" rel="stylesheet"/>
+<link href="css/general-e96d0476.css" rel="stylesheet"/>
+<link href="css/chrome-d279d366.css" rel="stylesheet"/>
+<link href="css/print-9e4910d8.css" media="print" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="fonts/fonts-9644e21d.css" rel="stylesheet"/>
+<!-- Highlight.js Stylesheets -->
+<link href="highlight-493f70e1.css" id="mdbook-highlight-css" rel="stylesheet"/>
+<link href="tomorrow-night-4c0ae647.css" id="mdbook-tomorrow-night-css" rel="stylesheet"/>
+<link href="ayu-highlight-3fdfc3ac.css" id="mdbook-ayu-highlight-css" rel="stylesheet"/>
+<!-- Custom theme stylesheets -->
+<link href="ferris-d33b75bf.css" rel="stylesheet"/>
+<link href="theme/2018-edition-4e126c62.css" rel="stylesheet"/>
+<link href="theme/semantic-notes-9b5766c0.css" rel="stylesheet"/>
+<link href="theme/listing-cab26221.css" rel="stylesheet"/>
+<!-- Provide site root and default themes to javascript -->
+<script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cc309c2.js";
+        </script>
+<!-- Start loading toc.js asap -->
+<script src="toc-0e4ce700.js"></script>
+<link href="rust-code-lab.css" rel="stylesheet"/><link href="notion-theme.css" rel="stylesheet"/></head>
+<body>
+<div id="mdbook-help-container">
+<div id="mdbook-help-popup">
+<h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+<div>
+<p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+<p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+<p>Press <kbd>?</kbd> to show this help</p>
+<p>Press <kbd>Esc</kbd> to hide this help</p>
+</div>
+</div>
+</div>
+<div id="mdbook-body-container">
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+<input class="hidden" id="mdbook-sidebar-toggle-anchor" type="checkbox"/>
+<!-- Hide / unhide sidebar before it is displayed -->
+<script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+<nav aria-label="Table of contents" class="sidebar" id="mdbook-sidebar">
+<!-- populated by js -->
+<mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+<noscript>
+<iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+</noscript>
+<div class="sidebar-resize-handle" id="mdbook-sidebar-resize-handle">
+<div class="sidebar-resize-indicator"></div>
+</div>
+</nav>
+<div class="page-wrapper" id="mdbook-page-wrapper">
+<div class="page">
+<div id="mdbook-menu-bar-hover-placeholder"></div>
+<div class="menu-bar sticky" id="mdbook-menu-bar">
+<div class="left-buttons">
+<label aria-controls="mdbook-sidebar" aria-label="Toggle Table of Contents" class="icon-button" for="mdbook-sidebar-toggle-anchor" id="mdbook-sidebar-toggle" title="Toggle Table of Contents">
+<span class="fa-svg"><svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"></path></svg></span>
+</label>
+<button aria-controls="mdbook-theme-list" aria-expanded="false" aria-haspopup="true" aria-label="Change theme" class="icon-button" id="mdbook-theme-toggle" title="Change theme" type="button">
+<span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"></path></svg></span>
+</button>
+<ul aria-label="Themes" class="theme-popup" id="mdbook-theme-list" role="menu">
+<li role="none"><button class="theme" id="mdbook-theme-default_theme" role="menuitem">Auto</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-light" role="menuitem">Light</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-rust" role="menuitem">Rust</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-coal" role="menuitem">Coal</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-navy" role="menuitem">Navy</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-ayu" role="menuitem">Ayu</button></li>
+</ul>
+<button aria-controls="mdbook-searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-label="Toggle Searchbar" class="icon-button" id="mdbook-search-toggle" title="Search (`/`)" type="button">
+<span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"></path></svg></span>
+</button>
+</div>
+<h1 class="menu-title">The Rust Programming Language</h1>
+<div class="right-buttons">
+<a aria-label="Print this book" href="print.html" title="Print this book">
+<span class="fa-svg" id="print-button"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"></path></svg></span>
+</a>
+<a aria-label="Git repository" href="https://github.com/rust-lang/book" title="Git repository">
+<span class="fa-svg"><svg viewbox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></span>
+</a>
+</div>
+</div>
+<div class="hidden" id="mdbook-search-wrapper">
+<form class="searchbar-outer" id="mdbook-searchbar-outer">
+<div class="search-wrapper">
+<input aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." type="search"/>
+<div class="spinner-wrapper">
+<span class="fa-svg" id="fa-spin"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"></path></svg></span>
+</div>
+</div>
+</form>
+<div class="searchresults-outer hidden" id="mdbook-searchresults-outer">
+<div class="searchresults-header" id="mdbook-searchresults-header"></div>
+<ul id="mdbook-searchresults">
+</ul>
+</div>
+</div>
+<!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+<script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+<div class="content" id="mdbook-content">
+<main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
+<h2 id="appendix-g---how-rust-is-made-and-nightly-rust"><a class="header" href="#appendix-g---how-rust-is-made-and-nightly-rust">부록 G - 녹이 만들어지는 방식과 “밤의 녹”</a></h2>
+<p>이 부록은 러스트가 어떻게 만들어지고 러스트 개발자로서 여러분에게 어떤 영향을 미치는지에 관한 것입니다.</p>
+<h3 id="stability-without-stagnation"><a class="header" href="#stability-without-stagnation">Stagnation 없는 안정성</a></h3>
+<p>러스트는 코드의 안정성에 대해 많은 관심을 가지고 있습니다. 러스트는 여러분이 구축할 수 있는 견고한 기반이 되기를 원하며, 만약 상황이 끊임없이 변화한다면 그것은 불가능할 것입니다. 동시에, 새로운 기능을 실험할 수 없다면, 더 이상 변경할 수 없을 때까지 중요한 결함을 찾을 수 없을 것입니다.</p>
+<p>이 문제에 대한 우리의 해결책은 우리가 "정체성없는 안정성"이라고 부르는 것이며, 우리의 지침 원칙은 다음과 같습니다. 안정적인 러스트의 새 버전으로 업그레이드하는 것을 두려워해서는 안됩니다. 각 업그레이드는 고통이 없어야하지만 새로운 기능, 버그 감소 및 빠른 컴파일 시간을 제공해야합니다.</p>
+<h3 id="choo-choo-release-channels-and-riding-the-trains"><a class="header" href="#choo-choo-release-channels-and-riding-the-trains">추, 추! 채널을 해제하고 기차를 타고</a></h3>
+<p>러스트 개발은 열차 일정에 따라 진행됩니다. 즉, 모든 개발은 러스트 저장소의 주요 지점에서 수행됩니다. 릴리스는 Cisco IOS 및 기타 소프트웨어 프로젝트에서 사용 된 소프트웨어 릴리스 기차 모델을 따릅니다. 러스트에는 세 가지 릴리스 채널이 있습니다.</p>
+<ul>
+<li>나이틀리</li>
+<li>베타</li>
+<li>안정되어 있는</li>
+</ul>
+<p>대부분의 러스트 개발자들은 주로 안정적인 채널을 사용하지만, 실험적인 새로운 기능을 시도하려는 사람들은 야간이나 베타 버전을 사용할 수 있습니다.</p>
+<p>러스트 팀이 러스트 1.5의 출시를 위해 노력하고 있다고 가정해 봅시다. 이 릴리스는 2015년 12월에 이루어졌지만, 저희에게 현실적인 버전 번호를 제공할 것입니다. 새로운 기능이 러스트에 추가되었습니다. 메인 브랜치에 새로운 커밋이 생성됩니다. 매일 밤, 새로운 야간 버전의 러스트가 생성됩니다. 매일은 출시일이며, 이러한 릴리스는 릴리스 인프라에 의해 자동으로 생성됩니다.</p>
+<pre><code class="language-text">nightly: * - - * - - *
+</code></pre>
+<p>6주마다 새로운 릴리즈를 준비할 시간입니다! 러스트 저장소의 <code>beta</code> 브랜치는 야간에 사용되는 메인 브랜치에서 분기합니다. 이제 두 가지 릴리즈가 있습니다:</p>
+<pre><code class="language-text">nightly: * - - * - - *
+                     |
+beta:                *
+</code></pre>
+<p>대부분의 러스트 사용자는 베타 릴리스를 적극적으로 사용하지 않지만 러스트가 가능한 회귀를 발견 할 수 있도록 CI 시스템에서 베타 테스트를 수행합니다. 그 동안 매일 밤 야간 릴리스가 있습니다.</p>
+<pre><code class="language-text">nightly: * - - * - - * - - * - - *
+                     |
+beta:                *
+</code></pre>
+<p>회귀가 발견되었다고 가정 해 봅시다. 회귀가 안정적인 릴리스에 들기 전에 베타 릴리스를 테스트 할 시간이있었습니다! 수정 사항이 메인 브랜치에 적용되어 야간이 고정되고 수정 사항이 <code>beta</code> 브랜치로 백 포트되고 베타의 새로운 릴리스가 생성됩니다.</p>
+<pre><code class="language-text">nightly: * - - * - - * - - * - - * - - *
+                     |
+beta:                * - - - - - - - - *
+</code></pre>
+<p>첫 번째 베타 버전이 만들어진 지 6 주 만에 안정적인 출시가 시작되었습니다! <code>stable</code> 분기는 <code>beta</code> 분기에서 생산됩니다.</p>
+<pre><code class="language-text">nightly: * - - * - - * - - * - - * - - * - * - *
+                     |
+beta:                * - - - - - - - - *
+                                       |
+stable:                                *
+</code></pre>
+<p>Hooray! 러스트 1.5가 완료되었습니다! 그러나 우리는 한 가지를 잊어 버렸습니다. 6 주가 지났기 때문에 다음 버전의 러스트 1.6도 필요합니다. <code>stable</code>가 <code>beta</code>에서 분기 한 후 <code>beta</code>의 다음 버전은 <code>nightly</code>에서 다시 분기합니다.</p>
+<pre><code class="language-text">nightly: * - - * - - * - - * - - * - - * - * - *
+                     |                         |
+beta:                * - - - - - - - - *       *
+                                       |
+stable:                                *
+</code></pre>
+<p>이것은 6 주마다 릴리스가 "역을 떠나기"때문에 "기차 모델"이라고하지만 안정적인 릴리스로 도착하기 전에 베타 채널을 통해 여행을해야합니다.</p>
+<p>러스트는 매 6주마다 시계를 출시합니다. 러스트의 출시일을 알고 있다면, 6주 후에 다음 출시일을 알 수 있습니다. 6주마다 출시 예정의 좋은 측면은 다음 열차가 곧 출시된다는 것입니다. 특정 출시를 놓치는 경우, 걱정할 필요가 없습니다. 또 다른 것은 짧은 시간 내에 발생하고 있습니다! 이것은 마감 시한이 가까워질 때 미개척된 기능을 몰래 사용할 수 있는 압력을 줄이는 데 도움이 됩니다.</p>
+<p>이 프로세스 덕분에 러스트의 다음 빌드를 항상 확인하고 쉽게 업그레이드 할 수 있습니다. 베타 릴리스가 예상대로 작동하지 않으면 팀에보고하여 다음 안정적인 릴리스가 발생하기 전에 수정할 수 있습니다! 베타 릴리스의 파손은 비교적 드물지 만 <code>rustc</code>는 여전히 소프트웨어이며 버그가 존재합니다.</p>
+<h3 id="maintenance-time"><a class="header" href="#maintenance-time">유지 보수 시간</a></h3>
+<p>러스트 프로젝트는 가장 최근의 안정 버전을 지원합니다. 새로운 안정 버전이 출시되면 이전 버전은 EOL(수명 종료)에 도달합니다. 즉, 각 버전은 6주 동안 지원됩니다.</p>
+<h3 id="unstable-features"><a class="header" href="#unstable-features">불안정한 기능</a></h3>
+<p>이 릴리스 모델에는 불안정한 기능이 하나 더 있습니다. 러스트는 “기능 플래그”라는 기술을 사용하여 주어진 릴리스에서 활성화된 기능을 결정합니다. 새로운 기능이 활성화된 경우, 메인 브랜치에, 따라서 밤마다, 그러나 기능 플래그 뒤에 있습니다. 사용자로서 진행중인 작업을 시도하기를 원한다면, 할 수 있지만, 러스트의 적절한 코드를 사용하기 위해 야간에 플래그를 사용해야 합니다.</p>
+<p>러스트의 베타 버전이나 안정적인 릴리스를 사용한다면, 기능 플래그를 사용할 수 없습니다. 이것은 우리가 새로운 기능을 영원히 안정적으로 선언하기 전에 실용적인 사용을 가능하게하는 열쇠입니다. 출혈 가장자리를 선택하려는 사람들은 그렇게 할 수 있으며, 견고한 경험을 원하는 사람들은 안정을 유지할 수 있으며 코드가 깨지지 않는다는 것을 알 수 있습니다. 정체없는 안정성.</p>
+<p>이 책은 진행중인 기능이 계속 변화함에 따라 안정적인 기능에 대한 정보 만 포함하고 있으며,이 책이 작성된 시점과 안정적인 빌드에서 활성화 될 때 확실히 다를 것입니다. 온라인에서 야간 전용 기능에 대한 문서를 찾을 수 있습니다.</p>
+<h3 id="rustup-and-the-role-of-rust-nightly"><a class="header" href="#rustup-and-the-role-of-rust-nightly">러스트up과 러스트 Nightly의 역할 소개</a></h3>
+<p>러스트up을 사용하면 글로벌 또는 프로젝트별로 다양한 러스트 릴리스 채널을 쉽게 변경할 수 있습니다. 기본적으로 안정적인 러스트가 설치됩니다. 야간 설치는 다음과 같습니다.</p>
+<pre><code class="language-console">$ rustup toolchain install nightly
+</code></pre>
+<p><code>rustup</code>와 함께 설치한 모든 툴체인(러스트 및 관련 구성 요소의 출시)을 볼 수 있습니다. 다음은 작성자의 Windows 컴퓨터 중 하나에 대한 예입니다.</p>
+<pre><code class="language-powershell">&gt; rustup toolchain list
+stable-x86_64-pc-windows-msvc (default)
+beta-x86_64-pc-windows-msvc
+nightly-x86_64-pc-windows-msvc
+</code></pre>
+<p>보시다시피, 안정적인 툴체인은 기본값입니다. 대부분의 러스트 사용자는 대부분의 시간을 안정적으로 사용합니다. 대부분의 시간을 안정적으로 사용하고 싶지만, 특정 프로젝트에서는 야간에 사용해야 합니다. 최첨단 기능에 관심이 있기 때문입니다. 이를 위해 해당 프로젝트의 디렉토리에서 <code>rustup override</code>를 사용하여 야간 툴체인을 <code>rustup</code>가 디렉토리에 있을 때 사용해야 하는 것으로 설정할 수 있습니다.</p>
+<pre><code class="language-console">$ cd ~/projects/needs-nightly
+$ rustup override set nightly
+</code></pre>
+<p>이제 <code>rustc</code> 또는 <code>cargo</code>를 ~/projects/needs-nightly 내부에 호출 할 때마다 <code>rustup</code>는 안정적인 러스트를 기본으로 사용하지 않고 야간 러스트를 사용하고 있는지 확인합니다. 이것은 많은 러스트 프로젝트가있을 때 유용합니다!</p>
+<h3 id="the-rfc-process-and-teams"><a class="header" href="#the-rfc-process-and-teams">RFC 프로세스 및 팀은</a></h3>
+<p>러스트의 개발 모델은 RFC(Request For Comments) 프로세스를 따릅니다. 러스트를 개선하고 싶다면 RFC라고 불리는 제안을 작성할 수 있습니다.</p>
+<p>러스트를 개선하기 위해 누구나 RFC를 작성할 수 있으며, 제안은 러스트 팀에 의해 검토되고 논의됩니다. 러스트 팀은 많은 주제 하위 팀으로 구성됩니다. <a href="https://www.rust-lang.org/governance">러스트 웹사이트</a> 팀의 전체 목록이 있으며, 여기에는 언어 디자인, 컴파일러 구현, 인프라, 문서 등 프로젝트의 각 영역에 대한 팀이 포함됩니다. 적절한 팀은 제안과 의견을 읽고 자신의 의견을 쓰고 결국 합의 기능을 거부합니다.</p>
+<p>만약 이 기능이 허용된다면, 러스트 저장소에서 이슈가 열리고, 누군가가 이를 구현할 수 있습니다. 이 기능을 아주 잘 구현한 사람은 처음에 이 기능을 제안한 사람이 아닐 수도 있습니다! 구현이 준비되면 <a href="#unstable-features">“불안정 한 특징”</a> 섹션에서 논의한 바와 같이, 기능 게이트 뒤에 있는 메인 브랜치에 착륙합니다.</p>
+<p>얼마 후, 야간 릴리스를 사용하는 러스트 개발자들은 새로운 기능을 사용해 볼 수 있게 되었습니다. 팀원들은 이 기능을 토론하고, 어떻게 야간에 동작하는지, 그리고 안정적인 러스트로 만들어야 하는지에 대해 결정할 것입니다. 결정이 앞으로 나아가는 것이라면, 기능 게이트가 제거되고, 그 기능은 이제 안정적인 것으로 간주됩니다! 이 기능은 기차를 타고 새로운 안정적인 러스트 릴리스에 들어갑니다.</p>
+</main>
+<nav aria-label="Page navigation" class="nav-wrapper">
+<!-- Mobile navigation buttons -->
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="mobile-nav-chapters previous" href="appendix-06-translation.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<div style="clear: both"></div>
+</nav>
+</div>
+</div>
+<nav aria-label="Page navigation" class="nav-wide-wrapper">
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="nav-chapters previous" href="appendix-06-translation.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+</nav>
+</div>
+<template id="fa-eye"><span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"></path></svg></span></template>
+<template id="fa-eye-slash"><span class="fa-svg"><svg viewbox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"></path></svg></span></template>
+<template id="fa-copy"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"></path></svg></span></template>
+<template id="fa-play"><span class="fa-svg"><svg viewbox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path></svg></span></template>
+<template id="fa-clock-rotate-left"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"></path></svg></span></template>
+<script>
+            window.playground_copyable = true;
+        </script>
+<script src="elasticlunr-ef4e11c1.min.js"></script>
+<script src="mark-09e88c2c.min.js"></script>
+<script src="searcher-09f2665d.js"></script>
+<script src="clipboard-1626706a.min.js"></script>
+<script src="highlight-abc7f01d.js"></script>
+<script src="book-609e4cb8.js"></script>
+<!-- Custom JS scripts -->
+<script src="ferris-2317480c.js"></script>
+</div>
+<script defer="" src="rust-code-lab.js"></script></body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE HTML>
+
+<html class="light sidebar-visible" dir="ltr" lang="ko">
+<head>
+<!-- Book generated using mdBook -->
+<meta charset="utf-8"/>
+<title>Advanced Types - The Rust Programming Language</title>
+<!-- Custom HTML head -->
+<meta content="" name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<link href="favicon-de23e50b.svg" rel="icon"/>
+<link href="favicon-8114d1fc.png" rel="shortcut icon"/>
+<link href="css/variables-8adf115d.css" rel="stylesheet"/>
+<link href="css/general-e96d0476.css" rel="stylesheet"/>
+<link href="css/chrome-d279d366.css" rel="stylesheet"/>
+<link href="css/print-9e4910d8.css" media="print" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="fonts/fonts-9644e21d.css" rel="stylesheet"/>
+<!-- Highlight.js Stylesheets -->
+<link href="highlight-493f70e1.css" id="mdbook-highlight-css" rel="stylesheet"/>
+<link href="tomorrow-night-4c0ae647.css" id="mdbook-tomorrow-night-css" rel="stylesheet"/>
+<link href="ayu-highlight-3fdfc3ac.css" id="mdbook-ayu-highlight-css" rel="stylesheet"/>
+<!-- Custom theme stylesheets -->
+<link href="ferris-d33b75bf.css" rel="stylesheet"/>
+<link href="theme/2018-edition-4e126c62.css" rel="stylesheet"/>
+<link href="theme/semantic-notes-9b5766c0.css" rel="stylesheet"/>
+<link href="theme/listing-cab26221.css" rel="stylesheet"/>
+<!-- Provide site root and default themes to javascript -->
+<script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cc309c2.js";
+        </script>
+<!-- Start loading toc.js asap -->
+<script src="toc-0e4ce700.js"></script>
+<link href="rust-code-lab.css" rel="stylesheet"/><link href="notion-theme.css" rel="stylesheet"/></head>
+<body>
+<div id="mdbook-help-container">
+<div id="mdbook-help-popup">
+<h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+<div>
+<p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+<p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+<p>Press <kbd>?</kbd> to show this help</p>
+<p>Press <kbd>Esc</kbd> to hide this help</p>
+</div>
+</div>
+</div>
+<div id="mdbook-body-container">
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+<input class="hidden" id="mdbook-sidebar-toggle-anchor" type="checkbox"/>
+<!-- Hide / unhide sidebar before it is displayed -->
+<script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+<nav aria-label="Table of contents" class="sidebar" id="mdbook-sidebar">
+<!-- populated by js -->
+<mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+<noscript>
+<iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+</noscript>
+<div class="sidebar-resize-handle" id="mdbook-sidebar-resize-handle">
+<div class="sidebar-resize-indicator"></div>
+</div>
+</nav>
+<div class="page-wrapper" id="mdbook-page-wrapper">
+<div class="page">
+<div id="mdbook-menu-bar-hover-placeholder"></div>
+<div class="menu-bar sticky" id="mdbook-menu-bar">
+<div class="left-buttons">
+<label aria-controls="mdbook-sidebar" aria-label="Toggle Table of Contents" class="icon-button" for="mdbook-sidebar-toggle-anchor" id="mdbook-sidebar-toggle" title="Toggle Table of Contents">
+<span class="fa-svg"><svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"></path></svg></span>
+</label>
+<button aria-controls="mdbook-theme-list" aria-expanded="false" aria-haspopup="true" aria-label="Change theme" class="icon-button" id="mdbook-theme-toggle" title="Change theme" type="button">
+<span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"></path></svg></span>
+</button>
+<ul aria-label="Themes" class="theme-popup" id="mdbook-theme-list" role="menu">
+<li role="none"><button class="theme" id="mdbook-theme-default_theme" role="menuitem">Auto</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-light" role="menuitem">Light</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-rust" role="menuitem">Rust</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-coal" role="menuitem">Coal</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-navy" role="menuitem">Navy</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-ayu" role="menuitem">Ayu</button></li>
+</ul>
+<button aria-controls="mdbook-searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-label="Toggle Searchbar" class="icon-button" id="mdbook-search-toggle" title="Search (`/`)" type="button">
+<span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"></path></svg></span>
+</button>
+</div>
+<h1 class="menu-title">The Rust Programming Language</h1>
+<div class="right-buttons">
+<a aria-label="Print this book" href="print.html" title="Print this book">
+<span class="fa-svg" id="print-button"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"></path></svg></span>
+</a>
+<a aria-label="Git repository" href="https://github.com/rust-lang/book" title="Git repository">
+<span class="fa-svg"><svg viewbox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></span>
+</a>
+</div>
+</div>
+<div class="hidden" id="mdbook-search-wrapper">
+<form class="searchbar-outer" id="mdbook-searchbar-outer">
+<div class="search-wrapper">
+<input aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." type="search"/>
+<div class="spinner-wrapper">
+<span class="fa-svg" id="fa-spin"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"></path></svg></span>
+</div>
+</div>
+</form>
+<div class="searchresults-outer hidden" id="mdbook-searchresults-outer">
+<div class="searchresults-header" id="mdbook-searchresults-header"></div>
+<ul id="mdbook-searchresults">
+</ul>
+</div>
+</div>
+<!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+<script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+<div class="content" id="mdbook-content">
+<main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
+<h2 id="advanced-types"><a class="header" href="#advanced-types">고급 형식</a></h2>
+<p>러스트 타입 시스템에는 지금까지 언급했지만 아직 논의하지 않은 몇 가지 기능이 있습니다. 우리는 왜 타입으로서 유용한지에 대해 일반적으로 논의하기 시작할 것입니다. 그런 다음, 우리는 타입 별칭으로 넘어갈 것입니다. 새로운 타입과 비슷하지만 약간 다른 의미론을 가진 기능입니다. 또한 <code>!</code> 타입과 동적 크기 타입을 논의할 것입니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="using-the-newtype-pattern-for-type-safety-and-abstraction"></a></p>
+<h3 id="type-safety-and-abstraction-with-the-newtype-pattern"><a class="header" href="#type-safety-and-abstraction-with-the-newtype-pattern">유형 안전 및 Newtype 패턴으로 추상화</a></h3>
+<p>이 섹션은 이전 섹션을 읽었다고 가정합니다. <a href="ch20-02-advanced-traits.html#implementing-external-traits-with-the-newtype-pattern">“외부 특성 을 뉴타입 패턴 으로 구현 함”</a> 무시 . newtype 패턴은 우리가 지금까지 논의한 것 이상의 작업에도 유용합니다. statically enforcement를 포함하여 값은 결코 혼동되지 않으며 값의 단위를 나타냅니다. Listing 20-16에서 단위를 나타내기 위해 newtypes를 사용하는 예를 보았습니다. <code>Millimeters</code> 그리고 <code>Meters</code> 감싸이는 구조망 <code>u32</code> newtype의 값. 만약 우리가 타입의 파라미터를 가진 함수를 작성했다면 <code>Millimeters</code>, 우리는 실수로 타입 값을 가진 함수를 호출하려고 시도한 프로그램을 컴파일할 수 없을 것이다. <code>Meters</code> 또는 평야 <code>u32</code>.</p>
+<p>또한 newtype 패턴을 사용하여 유형의 일부 구현 세부 사항을 추상화 할 수 있습니다. newtype은 개인 내부 유형의 API와 다른 공개 API를 노출 할 수 있습니다.</p>
+<p>Newtype은 내부 구현을 숨길 수도 있습니다. 예를 들어,
+<code>People</code> a를 감싸는 유형 <code>HashMap&lt;i32, String&gt;</code> 이름에 연결된 사람의 ID를 저장합니다. 코드 사용 <code>People</code> 우리가 제공하는 공개 API와만 상호 작용할 것입니다. 예를 들어 다음과 같은 이름 문자열을 추가하는 방법 <code>People</code>
+컬렉션; 그 코드는 우리가 할당하는 것을 알 필요가 없습니다. <code>i32</code> 내부적으로 이름에 대한 ID. newtype 패턴은 구현 세부 사항을 숨기기 위해 캡슐화를 달성하는 가벼운 방법입니다. <a href="ch18-01-what-is-oo.html#encapsulation-that-hides-implementation-details">“구현 세부사항을 숨기는 캡슐화”</a> 무시 
+챕터 18.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="creating-type-synonyms-with-type-aliases"></a></p>
+<h3 id="type-synonyms-and-type-aliases"><a class="header" href="#type-synonyms-and-type-aliases">유형 동의어 및 유형 별명</a></h3>
+<p>러스트는 기존 타입에 다른 이름을 부여하기 위해 타입 별칭을 선언하는 기능을 제공합니다. 이를 위해 <code>type</code> 키워드를 사용합니다. 예를 들어, <code>Kilometers</code>에서 <code>i32</code>로 별칭을 만들 수 있습니다.</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    type Kilometers = i32;
+<span class="boring">
+</span><span class="boring">    let x: i32 = 5;
+</span><span class="boring">    let y: Kilometers = 5;
+</span><span class="boring">
+</span><span class="boring">    println!("x + y = {}", x + y);
+</span><span class="boring">}</span></code></pre>
+<p>이제 별칭은 <code>Kilometers</code> 또는 A <em>동의어</em> 에 대한 <code>i32</code>상기와 달리, Asin the <code>Millimeters</code>
+그리고 <code>Meters</code> Listing 20-16에서 우리가 만든 타입들, <code>Kilometers</code> 별도의 새로운 형식이 아닙니다. 형식이 있는 값 <code>Kilometers</code> 타입의 값과 동일하게 취급될 것입니다. <code>i32</code>:</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    type Kilometers = i32;
+
+    let x: i32 = 5;
+    let y: Kilometers = 5;
+
+    println!("x + y = {}", x + y);
+<span class="boring">}</span></code></pre>
+<p>왜냐하면 <code>Kilometers</code> 그리고 <code>i32</code> 같은 타입이고, 우리는 두 타입의 값을 추가할 수 있고, 전달할 수 있습니다. <code>Kilometers</code> 함수를 실행하는 함수To functions that take <code>i32</code>
+매개 변수. 그러나이 방법을 사용하면 앞에서 설명한 newtype 패턴에서 얻을 수있는 유형 확인 이점을 얻지 못합니다. 즉, 혼합하면 <code>Kilometers</code> 그리고 <code>i32</code> 어딘가에 값, 컴파일러는 우리에게 오류를 제공하지 않습니다.</p>
+<p>유형 동의어의 주된 사용 사례는 반복을 줄이는 것입니다. 예를 들어 다음과 같이 긴 유형이 있을 수 있습니다.</p>
+<pre><code class="language-rust ignore">Box&lt;dyn Fn() + Send + 'static&gt;</code></pre>
+<p>이 긴 타입의 함수 서명과 코드 전체에 타입 주석을 작성하는 것은 지겹고 오류가 발생하기 쉽습니다. Listing 20-25에서와 같이 코드가 가득한 프로젝트를 상상해보세요.</p>
+<figure class="listing" id="listing-20-25">
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    let f: Box&lt;dyn Fn() + Send + 'static&gt; = Box::new(|| println!("hi"));
+
+    fn takes_long_type(f: Box&lt;dyn Fn() + Send + 'static&gt;) {
+        // --snip--
+    }
+
+    fn returns_long_type() -&gt; Box&lt;dyn Fn() + Send + 'static&gt; {
+        // --snip--
+<span class="boring">        Box::new(|| ())
+</span>    }
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-20-25">목록 20-25</a>: 여러 곳에서 긴 형식 사용</figcaption>
+</figure>
+<p>타입 별칭은 반복을 줄임으로써 이 코드를 더 관리하기 쉽게 만듭니다. Listing 20-26에서, 우리는 verbose 타입에 대해 <code>Thunk</code>라는 별칭을 도입했고, 타입의 모든 용도를 더 짧은 별칭 <code>Thunk</code>로 대체할 수 있습니다.</p>
+<figure class="listing" id="listing-20-26">
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    type Thunk = Box&lt;dyn Fn() + Send + 'static&gt;;
+
+    let f: Thunk = Box::new(|| println!("hi"));
+
+    fn takes_long_type(f: Thunk) {
+        // --snip--
+    }
+
+    fn returns_long_type() -&gt; Thunk {
+        // --snip--
+<span class="boring">        Box::new(|| ())
+</span>    }
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-20-26">리스트 20-26</a> : 반복을 줄이기 위해 유형 별칭 <code>Thunk</code> 소개</figcaption>
+</figure>
+<p>이 코드는 읽기와 쓰기가 훨씬 쉽습니다! 타입 별칭에 대한 의미 있는 이름을 선택하면 인텐트를 전달하는 데에도 도움이 될 수 있습니다(thunk는 나중에 코드를 평가하기 위한 단어이므로 저장되는 클로저에 대한 적절한 이름입니다).</p>
+<p>타입 별칭은 또한 다음과 같이 일반적으로 사용된다. <code>Result&lt;T, E&gt;</code> 반복을 줄이기위한 유형. 고려 <code>std::io</code> 표준 라이브러리에 있는 모듈. I/O 연산은 종종 <code>Result&lt;T, E&gt;</code> 작업이 작동하지 않을 때 상황을 처리하기 위해. 이 라이브러리에는 <code>std::io::Error</code> 가능한 모든 I/O 에러를 나타내는 구조체입니다. <code>std::io</code> 돌아올 것이다.
+<code>Result&lt;T, E&gt;</code> 상기 단계는 Wherein the <code>E</code> 있습니다. <code>std::io::Error</code>이러한 기능들은 다음과 같습니다. <code>Write</code> 특성:</p>
+<pre><code class="language-rust noplayground">use std::fmt;
+use std::io::Error;
+
+pub trait Write {
+    fn write(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;usize, Error&gt;;
+    fn flush(&amp;mut self) -&gt; Result&lt;(), Error&gt;;
+
+    fn write_all(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;(), Error&gt;;
+    fn write_fmt(&amp;mut self, fmt: fmt::Arguments) -&gt; Result&lt;(), Error&gt;;
+}</code></pre>
+<p><code>Result&lt;..., Error&gt;</code>는 많이 반복됩니다. 따라서 <code>std::io</code>에는 다음과 같은 유형의 별칭 선언이 있습니다.</p>
+<pre><code class="language-rust noplayground"><span class="boring">use std::fmt;
+</span><span class="boring">
+</span>type Result&lt;T&gt; = std::result::Result&lt;T, std::io::Error&gt;;
+<span class="boring">
+</span><span class="boring">pub trait Write {
+</span><span class="boring">    fn write(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;usize&gt;;
+</span><span class="boring">    fn flush(&amp;mut self) -&gt; Result&lt;()&gt;;
+</span><span class="boring">
+</span><span class="boring">    fn write_all(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;()&gt;;
+</span><span class="boring">    fn write_fmt(&amp;mut self, fmt: fmt::Arguments) -&gt; Result&lt;()&gt;;
+</span><span class="boring">}</span></code></pre>
+<p>왜냐하면 이 선언은 <code>std::io</code> 단위, 우리는 자격이 된 별명을 사용해서 좋습니다 <code>std::io::Result&lt;T&gt;</code>즉, A <code>Result&lt;T, E&gt;</code> 와 함께 <code>E</code>
+충전 AS <code>std::io::Error</code>. 그 <code>Write</code> 트레잇 함수 서명은 다음과 같이 끝납니다:</p>
+<pre><code class="language-rust noplayground"><span class="boring">use std::fmt;
+</span><span class="boring">
+</span><span class="boring">type Result&lt;T&gt; = std::result::Result&lt;T, std::io::Error&gt;;
+</span><span class="boring">
+</span>pub trait Write {
+    fn write(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;usize&gt;;
+    fn flush(&amp;mut self) -&gt; Result&lt;()&gt;;
+
+    fn write_all(&amp;mut self, buf: &amp;[u8]) -&gt; Result&lt;()&gt;;
+    fn write_fmt(&amp;mut self, fmt: fmt::Arguments) -&gt; Result&lt;()&gt;;
+}</code></pre>
+<p>타입 별칭은 두 가지 방법으로 도움이됩니다. 코드를 쉽게 작성할 수 있으며 모든 <code>std::io</code>에 걸쳐 일관된 인터페이스를 제공합니다. 별칭이기 때문에 또 다른 <code>Result&lt;T, E&gt;</code>입니다. 즉, <code>Result&lt;T, E&gt;</code>에서 작동하는 모든 방법과 <code>?</code> 연산자와 같은 특수 구문을 사용할 수 있습니다.</p>
+<h3 id="the-never-type-that-never-returns"><a class="header" href="#the-never-type-that-never-returns">절대 돌아오지 않는 타입</a></h3>
+<p>러스트는 타입 이론에서 빈 타입으로 알려진 <code>!</code>라는 특별한 타입을 가지고 있습니다. 그 이유는 값이 없기 때문입니다. 우리는 함수가 반환되지 않을 때 반환 타입의 자리에 서 있기 때문에 그것을 절대 타입이라고 부르는 것을 선호합니다. 예는 다음과 같습니다:</p>
+<pre><code class="language-rust noplayground">fn bar() -&gt; ! {
+    // --snip--
+<span class="boring">    panic!();
+</span>}</code></pre>
+<p>이 코드는 "<code>bar</code>가 결코 반환되지 않음"으로 읽혀집니다. 반환되는 함수는 결코 diverging 함수라고 불리지 않습니다. <code>!</code> 유형의 값을 만들 수 없으므로 <code>bar</code>는 결코 반환 할 수 없습니다.</p>
+<p>그러나 여러분이 결코 값을 만들 수 없는 타입은 어떤 용도입니까? Listing 2-5에서 나온 코드, number-guessing 게임의 일부를 상기하십시오; 우리는 여기 Listing 20-27에서 그것의 일부를 재생산했습니다.</p>
+<figure class="listing" id="listing-20-27">
+<pre><code class="language-rust ignore"><span class="boring">use std::cmp::Ordering;
+</span><span class="boring">use std::io;
+</span><span class="boring">
+</span><span class="boring">use rand::prelude::*;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    println!("Guess the number!");
+</span><span class="boring">
+</span><span class="boring">    let secret_number = rand::rng().random_range(1..=100);
+</span><span class="boring">
+</span><span class="boring">    println!("The secret number is: {secret_number}");
+</span><span class="boring">
+</span><span class="boring">    loop {
+</span><span class="boring">        println!("Please input your guess.");
+</span><span class="boring">
+</span><span class="boring">        let mut guess = String::new();
+</span><span class="boring">
+</span><span class="boring">        // --snip--
+</span><span class="boring">
+</span><span class="boring">        io::stdin()
+</span><span class="boring">            .read_line(&amp;mut guess)
+</span><span class="boring">            .expect("Failed to read line");
+</span><span class="boring">
+</span>        let guess: u32 = match guess.trim().parse() {
+            Ok(num) =&gt; num,
+            Err(_) =&gt; continue,
+        };
+<span class="boring">
+</span><span class="boring">        println!("You guessed: {guess}");
+</span><span class="boring">
+</span><span class="boring">        // --snip--
+</span><span class="boring">
+</span><span class="boring">        match guess.cmp(&amp;secret_number) {
+</span><span class="boring">            Ordering::Less =&gt; println!("Too small!"),
+</span><span class="boring">            Ordering::Greater =&gt; println!("Too big!"),
+</span><span class="boring">            Ordering::Equal =&gt; {
+</span><span class="boring">                println!("You win!");
+</span><span class="boring">                break;
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-20-27">리스트 20-27</a>: <code>match</code>에서 끝나는 팔을 가진 <code>continue</code></figcaption>
+</figure>
+<p>당시이 코드의 세부 사항을 건너 뛰었습니다. 6 장의 <a href="ch06-02-match.html#the-match-control-flow-construct">“그 <code>match</code>
+제어 흐름 구축”</a> 섹션에서는 <code>match</code> 암이 모두 동일한 유형을 반환해야한다고 논의했습니다. 예를 들어 다음 코드는 작동하지 않습니다.</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span><span class="boring">    let guess = "3";
+</span>    let guess = match guess.trim().parse() {
+        Ok(_) =&gt; 5,
+        Err(_) =&gt; "hello",
+    };
+<span class="boring">}</span></code></pre>
+<p>이 코드의 <code>guess</code> 유형은 정수와 문자열이어야 하며, 러스트는 <code>guess</code>가 단 하나의 유형만 가질 것을 요구합니다. 그러면 <code>continue</code>는 무엇을 반환합니까? 어떻게 한 팔에서 <code>u32</code>를 반환하고 20-27 목록에서 <code>continue</code>로 끝나는 다른 팔을 가질 수 있었습니까?</p>
+<p>당신이 짐작할 수 있듯이, <code>continue</code> 있습니다 A <code>!</code> value. 즉, 러스트가 다음과 같은 타입을 계산할 때 <code>guess</code>, 그것은 두 일치하는 팔을 보면, 의 값을 가진 전자 <code>u32</code> 다음 다음 글: A <code>!</code> 가치. 왜냐하면 <code>!</code> 결코 값을 가질 수 없으며, 러스트는 타입이 <code>guess</code> 있습니다. <code>u32</code>.</p>
+<p>이 행동을 설명하는 공식적인 방법은 타입의 표현이다. <code>!</code> 다른 어떤 유형으로 강요될 수 있습니다. 우리는 이것을 끝내는 것이 허용됩니다 <code>match</code> 팔걸이 with
+<code>continue</code> 왜냐하면 <code>continue</code> 값을 반환하지 않습니다; 대신, 컨트롤을 루프의 맨 위로 다시 이동시킵니다. <code>Err</code> case, we never assign a value 값을 할당하지 않습니다.
+<code>guess</code>.</p>
+<p>절대 타입은 <code>panic!</code> 매크로에도 유용합니다. <code>unwrap</code> 값을 호출하여 이 정의로 값이나 패닉을 생성하는 <code>Option&lt;T&gt;</code> 함수를 호출합니다.</p>
+<pre><code class="language-rust ignore"><span class="boring">enum Option&lt;T&gt; {
+</span><span class="boring">    Some(T),
+</span><span class="boring">    None,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">use crate::Option::*;
+</span><span class="boring">
+</span>impl&lt;T&gt; Option&lt;T&gt; {
+    pub fn unwrap(self) -&gt; T {
+        match self {
+            Some(val) =&gt; val,
+            None =&gt; panic!("called `Option::unwrap()` on a `None` value"),
+        }
+    }
+}</code></pre>
+<p>이 코드에서는 다음과 같은 일이 발생합니다. <code>match</code> Listing 20-27: 러스트는 <code>val</code> 타입은 The type <code>T</code> 그리고 <code>panic!</code> 타입은 The type <code>!</code>즉, 전체 결과의 <code>match</code> 표현식은 <code>T</code>. 이 코드는 다음과 같이 동작합니다. <code>panic!</code>
+값을 생성하지 않습니다. 프로그램을 종료합니다. <code>None</code> case, we're not returning a value from 우리는 값을 반환하지 않을 것입니다 <code>unwrap</code>따라서 이 코드는 유효하다.</p>
+<p><code>!</code> 타입을 가지는 마지막 표현식은 루프이다:</p>
+<pre><code class="language-rust ignore"><span class="boring">fn main() {
+</span>    print!("forever ");
+
+    loop {
+        print!("and ever ");
+    }
+<span class="boring">}</span></code></pre>
+<p>여기서 루프는 결코 끝나지 않으므로 <code>!</code>는 표현식의 값입니다. 그러나 <code>break</code>를 포함하면 루프가 <code>break</code>에 도착했을 때 종료되기 때문에 이것은 사실이 아닙니다.</p>
+<h3 id="dynamically-sized-types-and-the-sized-trait"><a class="header" href="#dynamically-sized-types-and-the-sized-trait">동적으로 치수가 재진 유형 및 <code>Sized</code> 트레이트는</a></h3>
+<p>러스트는 특정 타입의 값에 대해 얼마나 많은 공간을 할당할 것인지와 같은 타입에 대한 특정 세부사항을 알아야 합니다. 이것은 처음에 타입 시스템의 한 코너를 약간 혼란스럽게 만듭니다: 동적 크기의 타입의 개념. 때때로 DSTs 또는 unsized 타입이라고도 불리는 이 타입들은 런타임에만 알 수 있는 값을 사용하여 코드를 작성하게 합니다.</p>
+<p>동적으로 크기가 큰 타입의 세부 사항을 파헤쳐 봅시다. <code>str</code>, 우리는 책을 통해 사용하고있는. 그건 맞아, 하지 <code>&amp;str</code>,하지만 <code>str</code> 그 자체로 DST입니다. 사용자가 입력 한 텍스트를 저장할 때와 같은 많은 경우 런타임까지 문자열의 길이를 알 수 없습니다. 즉, 변수 유형을 만들 수 없습니다. <code>str</code>또한, 우리는 형식에 대한 논쟁을 할 수 없습니다. <code>str</code>. 작동하지 않는 다음 코드를 고려하십시오.</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s1: str = "Hello there!";
+    let s2: str = "How's it going?";
+<span class="boring">}</span></code></pre>
+<p>러스트는 특정 타입의 값에 대해 얼마나 많은 메모리를 할당해야 하는지 알아야 하며, 모든 타입의 값들은 같은 양의 메모리를 사용해야 합니다. 만약 러스트가 이 코드를 작성하도록 허용한다면, 이 두 <code>str</code> 값은 같은 양의 공간을 차지해야 합니다. 그러나 <code>s1</code>는 12바이트의 저장 공간이 필요하고 <code>s2</code>는 15개의 크기를 필요로 합니다. 이것이 가능한 이유입니다.</p>
+<p>그래서, 우리는 무엇을해야합니까? 이 경우, 당신은 이미 답을 알고 있습니다 : 우리는 <code>s1</code> 그리고 <code>s2</code> 문자열 슬라이스 (<code>&amp;str</code>(대신에 <code>str</code>상기로부터 Recall from the
+<a href="ch04-03-slices.html#string-slices">“끈적끈적 한 조각”</a> 무시  제 4 장에 있는 단면도는 조각 자료 구조가 단지 조각의 시작 위치 그리고 길이만 저장한다는 것을. 따라서, <code>&amp;T</code> 상기 메모리 주소를 저장하는 단일 값이며, The single value stores the memory address of where the <code>T</code> 상기 스트링 조각은, A string slice is <em>두 개</em> 의 주소 The address of the
+<code>str</code> 그리고 그 길이. 이와 같이, 우리는 컴파일 시간에 문자열 슬라이스 값의 크기를 알 수 있습니다: 그것은 a의 두 배의 길이입니다. <code>usize</code>. 즉, 우리는 항상 문자열 슬라이스의 크기를 알고 있습니다. 문자열이 얼마나 오래 언급되던지 상관 없습니다. 일반적으로, 이것은 동적으로 크기가 지정된 타입이 러스트에서 사용되는 방법입니다: 그들은 동적 정보의 크기를 저장하는 여분의 메타데이터를 가지고 있습니다. 동적으로 크기가 지정된 타입의 골든 룰은 어떤 종류의 포인터 뒤에 항상 동적으로 크기가 지정된 타입의 값을 넣어야 한다는 것입니다.</p>
+<p>결합할 수 있습니다. <code>str</code> 모든 종류의 포인터 : 예를 들어, <code>Box&lt;str&gt;</code> 또는
+<code>Rc&lt;str&gt;</code>. 사실, 당신은 전에 이것을 보았지만 다른 동적으로 크기의 유형 : 특성. 모든 특성은 특성의 이름을 사용하여 참조 할 수있는 동적으로 크기의 유형입니다. 에서 <a href="ch18-02-trait-objects.html#using-trait-objects-to-abstract-over-shared-behavior">"공유 된 행동을 추상화하기 위해 Trait 객체 사용"</a>
+무시  제 18 장에서, 우리는 특성 객체로 특성을 사용하기 위해, 우리는 포인터 뒤에 그들을 넣어해야한다고 언급, 같은 <code>&amp;dyn Trait</code> 또는 <code>Box&lt;dyn Trait&gt;</code> (<code>Rc&lt;dyn Trait&gt;</code> 또한 일할 것입니다.)</p>
+<p>DST를 사용하기 위해, 러스트는 <code>Sized</code> 트레잇을 제공하여 타입의 사이즈가 컴파일 타임에 알려져 있는지 여부를 결정합니다. 이 트레잇은 컴파일 타임에 사이즈가 알려진 모든 것에 대해 자동으로 구현됩니다. 또한, 러스트는 <code>Sized</code>에 대한 바운드를 모든 제네릭 함수에 암시적으로 추가합니다. 즉, 다음과 같은 제네릭 함수 정의입니다:</p>
+<pre><code class="language-rust ignore">fn generic&lt;T&gt;(t: T) {
+    // --snip--
+}</code></pre>
+<p>실제로 우리가 이것을 쓴 것처럼 취급됩니다 :</p>
+<pre><code class="language-rust ignore">fn generic&lt;T: Sized&gt;(t: T) {
+    // --snip--
+}</code></pre>
+<p>기본적으로 일반 함수는 컴파일 시간에 알려진 크기를 가진 형식에서만 작동합니다. 그러나 다음 특수 구문을 사용하여 이 제한을 완화할 수 있습니다.</p>
+<pre><code class="language-rust ignore">fn generic&lt;T: ?Sized&gt;(t: &amp;T) {
+    // --snip--
+}</code></pre>
+<p><code>?Sized</code>에 바인딩된 특성은 “<code>T</code>가 <code>Sized</code>일 수도 있고 아닐 수도 있습니다.”를 의미하며, 이 표기법은 일반 형식이 컴파일 시간에 알려진 크기를 가져야 한다는 기본값을 무시합니다. 이 의미를 가진 <code>?Trait</code> 구문은 <code>Sized</code>에서만 사용할 수 있으며 다른 특성은 사용할 수 없습니다.</p>
+<p>또한 <code>t</code> 매개 변수의 유형을 <code>T</code>에서 <code>&amp;T</code>로 전환했습니다. 유형이 <code>Sized</code>가 아닐 수도 있으므로 일종의 포인터 뒤에서 사용해야합니다. 이 경우 참조를 선택했습니다.</p>
+<p>다음으로 우리는 기능과 폐쇄에 대해 이야기 할 것입니다!</p>
+</main>
+<nav aria-label="Page navigation" class="nav-wrapper">
+<!-- Mobile navigation buttons -->
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="mobile-nav-chapters previous" href="ch20-02-advanced-traits.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="mobile-nav-chapters next" href="ch20-04-advanced-functions-and-closures.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+<div style="clear: both"></div>
+</nav>
+</div>
+</div>
+<nav aria-label="Page navigation" class="nav-wide-wrapper">
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="nav-chapters previous" href="ch20-02-advanced-traits.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="nav-chapters next" href="ch20-04-advanced-functions-and-closures.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+</nav>
+</div>
+<template id="fa-eye"><span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"></path></svg></span></template>
+<template id="fa-eye-slash"><span class="fa-svg"><svg viewbox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"></path></svg></span></template>
+<template id="fa-copy"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"></path></svg></span></template>
+<template id="fa-play"><span class="fa-svg"><svg viewbox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path></svg></span></template>
+<template id="fa-clock-rotate-left"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"></path></svg></span></template>
+<script>
+            window.playground_copyable = true;
+        </script>
+<script src="elasticlunr-ef4e11c1.min.js"></script>
+<script src="mark-09e88c2c.min.js"></script>
+<script src="searcher-09f2665d.js"></script>
+<script src="clipboard-1626706a.min.js"></script>
+<script src="highlight-abc7f01d.js"></script>
+<script src="book-609e4cb8.js"></script>
+<!-- Custom JS scripts -->
+<script src="ferris-2317480c.js"></script>
+</div>
+<script defer="" src="rust-code-lab.js"></script></body>
+</html>

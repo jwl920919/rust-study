@@ -1,0 +1,429 @@
+<!DOCTYPE HTML>
+
+<html class="light sidebar-visible" dir="ltr" lang="ko">
+<head>
+<!-- Book generated using mdBook -->
+<meta charset="utf-8"/>
+<title>Transfer Data Between Threads with Message Passing - The Rust Programming Language</title>
+<!-- Custom HTML head -->
+<meta content="" name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<link href="favicon-de23e50b.svg" rel="icon"/>
+<link href="favicon-8114d1fc.png" rel="shortcut icon"/>
+<link href="css/variables-8adf115d.css" rel="stylesheet"/>
+<link href="css/general-e96d0476.css" rel="stylesheet"/>
+<link href="css/chrome-d279d366.css" rel="stylesheet"/>
+<link href="css/print-9e4910d8.css" media="print" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="fonts/fonts-9644e21d.css" rel="stylesheet"/>
+<!-- Highlight.js Stylesheets -->
+<link href="highlight-493f70e1.css" id="mdbook-highlight-css" rel="stylesheet"/>
+<link href="tomorrow-night-4c0ae647.css" id="mdbook-tomorrow-night-css" rel="stylesheet"/>
+<link href="ayu-highlight-3fdfc3ac.css" id="mdbook-ayu-highlight-css" rel="stylesheet"/>
+<!-- Custom theme stylesheets -->
+<link href="ferris-d33b75bf.css" rel="stylesheet"/>
+<link href="theme/2018-edition-4e126c62.css" rel="stylesheet"/>
+<link href="theme/semantic-notes-9b5766c0.css" rel="stylesheet"/>
+<link href="theme/listing-cab26221.css" rel="stylesheet"/>
+<!-- Provide site root and default themes to javascript -->
+<script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cc309c2.js";
+        </script>
+<!-- Start loading toc.js asap -->
+<script src="toc-0e4ce700.js"></script>
+<link href="rust-code-lab.css" rel="stylesheet"/><link href="notion-theme.css" rel="stylesheet"/></head>
+<body>
+<div id="mdbook-help-container">
+<div id="mdbook-help-popup">
+<h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+<div>
+<p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+<p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+<p>Press <kbd>?</kbd> to show this help</p>
+<p>Press <kbd>Esc</kbd> to hide this help</p>
+</div>
+</div>
+</div>
+<div id="mdbook-body-container">
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+<input class="hidden" id="mdbook-sidebar-toggle-anchor" type="checkbox"/>
+<!-- Hide / unhide sidebar before it is displayed -->
+<script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+<nav aria-label="Table of contents" class="sidebar" id="mdbook-sidebar">
+<!-- populated by js -->
+<mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+<noscript>
+<iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+</noscript>
+<div class="sidebar-resize-handle" id="mdbook-sidebar-resize-handle">
+<div class="sidebar-resize-indicator"></div>
+</div>
+</nav>
+<div class="page-wrapper" id="mdbook-page-wrapper">
+<div class="page">
+<div id="mdbook-menu-bar-hover-placeholder"></div>
+<div class="menu-bar sticky" id="mdbook-menu-bar">
+<div class="left-buttons">
+<label aria-controls="mdbook-sidebar" aria-label="Toggle Table of Contents" class="icon-button" for="mdbook-sidebar-toggle-anchor" id="mdbook-sidebar-toggle" title="Toggle Table of Contents">
+<span class="fa-svg"><svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"></path></svg></span>
+</label>
+<button aria-controls="mdbook-theme-list" aria-expanded="false" aria-haspopup="true" aria-label="Change theme" class="icon-button" id="mdbook-theme-toggle" title="Change theme" type="button">
+<span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"></path></svg></span>
+</button>
+<ul aria-label="Themes" class="theme-popup" id="mdbook-theme-list" role="menu">
+<li role="none"><button class="theme" id="mdbook-theme-default_theme" role="menuitem">Auto</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-light" role="menuitem">Light</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-rust" role="menuitem">Rust</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-coal" role="menuitem">Coal</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-navy" role="menuitem">Navy</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-ayu" role="menuitem">Ayu</button></li>
+</ul>
+<button aria-controls="mdbook-searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-label="Toggle Searchbar" class="icon-button" id="mdbook-search-toggle" title="Search (`/`)" type="button">
+<span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"></path></svg></span>
+</button>
+</div>
+<h1 class="menu-title">The Rust Programming Language</h1>
+<div class="right-buttons">
+<a aria-label="Print this book" href="print.html" title="Print this book">
+<span class="fa-svg" id="print-button"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"></path></svg></span>
+</a>
+<a aria-label="Git repository" href="https://github.com/rust-lang/book" title="Git repository">
+<span class="fa-svg"><svg viewbox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></span>
+</a>
+</div>
+</div>
+<div class="hidden" id="mdbook-search-wrapper">
+<form class="searchbar-outer" id="mdbook-searchbar-outer">
+<div class="search-wrapper">
+<input aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." type="search"/>
+<div class="spinner-wrapper">
+<span class="fa-svg" id="fa-spin"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"></path></svg></span>
+</div>
+</div>
+</form>
+<div class="searchresults-outer hidden" id="mdbook-searchresults-outer">
+<div class="searchresults-header" id="mdbook-searchresults-header"></div>
+<ul id="mdbook-searchresults">
+</ul>
+</div>
+</div>
+<!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+<script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+<div class="content" id="mdbook-content">
+<main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="using-message-passing-to-transfer-data-between-threads"></a></p>
+<h2 id="transfer-data-between-threads-with-message-passing"><a class="header" href="#transfer-data-between-threads-with-message-passing">메시지 전달을 통해 스레드 간에 데이터 전송</a></h2>
+<p>안전한 동시성을 보장하기위한 한 가지 인기있는 접근 방식은 데이터가있는 스레드 또는 액터가 서로 메시지를 전송하여 통신하는 메시지 전달입니다. <a href="https://golang.org/doc/effective_go.html#concurrency">Go 언어 문서를</a>의 슬로건에 대한 아이디어는 다음과 같습니다. "메모리를 공유하여 통신하지 마십시오. 대신 의사 소통을 통해 메모리를 공유하십시오."</p>
+<p>러스트의 표준 라이브러리는 메시지 전송 동시성을 달성하기 위해 채널의 구현을 제공합니다. 채널은 하나의 스레드에서 다른 스레드로 데이터를 전송하는 일반적인 프로그래밍 개념입니다.</p>
+<p>프로그래밍에서 채널은 물줄기 또는 강과 같은 방향성 채널과 같다고 상상할 수 있습니다. 고무 오리 같은 것을 강에 넣으면 수로의 끝까지 아래로 여행합니다.</p>
+<p>‘채널’에는 두 개 의 반쪽 즉 ‘트랜스미터’와 ‘리시버’가 있다. ‘트랜스미터’의 반쪽 은 ‘고무 오리’를 강 에 넣는 상류 위치 이며, ‘리시버’의 반쪽 은 ‘고무 오리’가 하류 로 끝나는 곳 이다. 당신 의 ‘코드’의 한 부분 은 당신 이 보내려는 자료 를 가지고 ‘트랜스미터’에 있는 방법 을 호출 하고, 또 다른 부분 은 도착 하는 메시지 의 수신 끝 을 검사 한다.</p>
+<p>여기서는 값을 생성하고 채널로 보낼 수 있는 하나의 스레드와 값을 수신하고 인쇄할 다른 스레드가 있는 프로그램으로 작업합니다. 채널을 사용하여 스레드 간에 간단한 값을 전송하여 기능을 설명합니다. 이 기술에 익숙해지면 채팅 시스템 또는 여러 스레드가 계산의 일부를 수행하고 집계된 스레드 결과를 보내는 시스템과 같이 서로 통신해야 하는 스레드에 채널을 사용할 수 있습니다.</p>
+<p>먼저, Listing 16-6에서, 우리는 채널을 만들 것이지만 그것으로는 아무 것도 하지 않을 것입니다. 이것은 아직 컴파일되지 않을 것입니다. 왜냐하면 러스트는 우리가 채널을 통해 보내고자 하는 값의 타입을 알 수 없기 때문입니다.</p>
+<figure class="listing" id="listing-16-6">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile">use std::sync::mpsc;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+}</code></pre>
+<figcaption><a href="#listing-16-6">리스트 16-6</a>: 채널을 만들고 <code>tx</code> 및 <code>rx</code>에 두 반쪽을 할당</figcaption>
+</figure>
+<p>우리는 <code>mpsc::channel</code> 함수를 사용하여 새로운 채널을 만듭니다. <code>mpsc</code>는 다중 생산자, 단일 소비자를 의미합니다. 간단히 말해서, 러스트의 표준 라이브러리가 채널을 구현하는 방식은 채널이 값을 생성하는 여러 송신 종료를 가질 수 있지만 이러한 값을 소비하는 수신 종료는 하나만 가질 수 있음을 의미합니다. 하나의 큰 강으로 함께 흐르는 여러 스트림을 상상해보십시오. 모든 스트림을 아래로 보내면 결국 하나의 프로듀서가 추가됩니다.</p>
+<p>이름 * <code>mpsc::channel</code> 함수는 튜플을 반환하며, 첫 번째 요소는 전송 끝, 두 번째 요소는 수신 끝, 수신자입니다. 약어 <code>tx</code> 그리고 <code>rx</code> 전통적으로 많은 분야에서 사용됩니다. <em>전송기</em> 그리고 <em>받는 사람</em>, 각각, 그래서 우리는 각 끝을 나타 내기 위해 변수의 이름을 지정합니다. 우리는 <code>let</code> 튜플을 destructures 패턴과 문; 우리는에서 패턴의 사용을 논의 할 것이다
+<code>let</code> 제 19 장에서 진술과 구조 조정. 지금은 알고 사용
+<code>let</code> 이런 식으로 진술은 튜플의 조각을 추출하는 편리한 방법입니다 <code>mpsc::channel</code>.</p>
+<p>Transmitting end를 스폰된 쓰레드로 옮기고 하나의 문자열을 보내서 스폰된 쓰레드가 메인 쓰레드와 통신하도록 합시다. Listing 16-7과 같이 말이죠. 이것은 마치 상류에 있는 강에 고무 오리를 넣거나 한 쓰레드에서 다른 쓰레드로 채팅 메시지를 보내는 것과 같습니다.</p>
+<figure class="listing" id="listing-16-7">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+}</code></pre>
+<figcaption><a href="#listing-16-7">리스트 16-7</a>: <code>tx</code>를 스폰된 스레드로 이동하고 <code>"hi"</code> 보내기</figcaption>
+</figure>
+<p>다시 말하지만, <code>thread::spawn</code>를 사용하여 새 스레드를 만든 다음 <code>move</code>를 사용하여 <code>tx</code>를 클로저로 이동하여 생성 된 스레드가 <code>tx</code>를 소유하도록합니다. 생성 된 스레드는 채널을 통해 메시지를 보낼 수 있도록 송신기를 소유해야합니다.</p>
+<p>송신기에는 전송하려는 값을 갖는 <code>send</code> 메소드가 있습니다. <code>send</code> 메소드는 <code>Result&lt;T, E&gt;</code> 유형을 반환하므로 수신기가 이미 삭제되어 값을 보낼 곳이 없으면 전송 작업이 오류를 반환합니다. 이 예에서는 오류가 발생하면 <code>unwrap</code>를 패닉으로 호출합니다. 그러나 오류가 발생하면 제대로 검토하십시오.</p>
+<p>Listing 16-8에서, 우리는 메인 스레드의 수신자로부터 값을 얻을 것입니다. 이것은 강 끝에 있는 물에서 고무 오리를 찾거나 채팅 메시지를 받는 것과 같습니다.</p>
+<figure class="listing" id="listing-16-8">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {received}");
+}</code></pre>
+<figcaption><a href="#listing-16-8">상장 16-8</a>: 기본 스레드에서 <code>"hi"</code> 값을 수신하고 인쇄</figcaption>
+</figure>
+<p>리시버에는 두 가지 유용한 방법이 있습니다. <code>recv</code> 그리고 <code>try_recv</code>. 우리는 사용하고 <code>recv</code>짧게 for <em>수신</em>, 메인 스레드의 실행을 차단하고 값이 채널 아래로 전송 될 때까지 기다립니다. 값이 전송되면, <code>recv</code> 를 반환한다. <code>Result&lt;T, E&gt;</code>. 전송기가 닫힐 때, <code>recv</code> 더 이상 값이 오지 않을 것이라는 신호를 보내기 위해 오류를 반환합니다.</p>
+<p>이름 * <code>try_recv</code> 메서드는 블록하지 않지만 대신 a를 반환합니다. <code>Result&lt;T, E&gt;</code>
+즉시: an <code>Ok</code> 메시지를 가지고 있는 값 중 하나가 사용 가능하고 <code>Err</code>
+이번에는 메시지가 없는 경우의 값입니다. <code>try_recv</code> 이 스레드가 메시지를 기다리는 동안 수행 할 다른 작업이있는 경우 유용합니다. <code>try_recv</code> 자주 사용할 수 있는 경우 메시지를 처리하고 다시 확인할 때까지 잠시 동안 다른 작업을 수행합니다.</p>
+<p>우리는이 예제에서 <code>recv</code>를 사용 하 여 간단 하 게; 우리는 메시지를 기다리는 것 이외의 메인 스레드에 대 한 다른 작업이 없습니다, 그래서 메인 스레드를 차단 하는 것이 적절 합니다.</p>
+<p>Listing 16-8에서 코드를 실행하면, 메인 스레드에서 출력된 값을 볼 수 있습니다:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">Got: hi
+</code></pre>
+<p>완벽해!</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="channels-and-ownership-transference"></a></p>
+<h3 id="transferring-ownership-through-channels"><a class="header" href="#transferring-ownership-through-channels">채널을 통한 소유권 이전</a></h3>
+<p>소유권 규칙은 안전하고 동시적인 코드를 작성하는 데 도움이 되기 때문에 메시지 전송에 중요한 역할을 합니다. 동시 프로그래밍에서 오류를 방지하는 것은 러스트 프로그램 전체에서 소유권에 대해 생각하는 이점입니다. 문제를 방지하기 위해 채널과 소유권이 함께 작동하는 방법을 보여주기 위해 실험을 해 보겠습니다. 채널 아래로 보내면 생성된 스레드에서 <code>val</code> 값을 사용하려고 할 것입니다. Listing 16-9에서 이 코드를 컴파일하는 것이 허용되는 이유를 확인해 보세요.</p>
+<figure class="listing" id="listing-16-9">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile">use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+        println!("val is {val}");
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {received}");
+}</code></pre>
+<figcaption><a href="#listing-16-9">목록 16-9</a>: 채널 아래로 보낸 후 <code>val</code> 사용 시도</figcaption>
+</figure>
+<p>여기, 우리는 인쇄하려고 <code>val</code> 우리가 그것을 통해 채널을 아래로 보낸 후 <code>tx.send</code>. 이것을 허용하는 것은 좋지 않은 생각입니다: 일단 값이 다른 스레드로 전송되면, 그 스레드는 그 값을 다시 사용하기 전에 수정하거나 삭제할 수 있습니다. 잠재적으로, 다른 스레드의 수정은 일치하지 않거나 존재하지 않는 데이터로 인해 오류나 예상치 못한 결과를 초래할 수 있습니다. 그러나, Listing 16-9에서 코드를 컴파일하려고 하면 러스트는 우리에게 오류를 줍니다:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling message-passing v0.1.0 (file:///projects/message-passing)
+error[E0382]: borrow of moved value: `val`
+  --&gt; src/main.rs:10:27
+   |
+ 8 |         let val = String::from("hi");
+   |             --- move occurs because `val` has type `String`, which does not implement the `Copy` trait
+ 9 |         tx.send(val).unwrap();
+   |                 --- value moved here
+10 |         println!("val is {val}");
+   |                           ^^^ value borrowed here after move
+
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `message-passing` (bin "message-passing") due to 1 previous error
+</code></pre>
+<p>동시성 실수로 인해 컴파일 타임 오류가 발생했습니다. <code>send</code> 함수는 매개 변수의 소유권을 취하고 값이 이동되면 수신기가 소유권을 갖습니다. 이렇게하면 전송 후 실수로 값을 다시 사용하지 못하게됩니다. 소유권 시스템은 모든 것이 괜찮은지 확인합니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="sending-multiple-values-and-seeing-the-receiver-waiting"></a></p>
+<h3 id="sending-multiple-values"><a class="header" href="#sending-multiple-values">다중 값 전송</a></h3>
+<p>Listing 16-8의 코드는 컴파일되고 실행되었지만, 두 개의 분리된 스레드가 채널을 통해 서로 이야기하고 있다는 것을 명확하게 보여주지는 못했습니다.</p>
+<p>Listing 16-10에서, 우리는 Listing 16-8의 코드가 동시에 실행되고 있음을 증명하는 몇 가지 수정을 했습니다: 스폰된 스레드는 이제 여러 개의 메시지를 보내고 각 메시지 사이에 잠시 멈춥니다.</p>
+<figure class="listing" id="listing-16-10">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust noplayground">use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    for received in rx {
+        println!("Got: {received}");
+    }
+}</code></pre>
+<figcaption><a href="#listing-16-10">리스트 16-10</a>: 여러 메시지를 전송하고 각 메시지 사이에 일시 중지</figcaption>
+</figure>
+<p>이번에는 생성 된 스레드에 기본 스레드로 보내고 싶은 문자열 벡터가 있습니다. 우리는 그것들을 반복하고, 개별적으로 보내고, <code>thread::sleep</code> 함수를 1 초의 <code>Duration</code> 값으로 호출하여 각각을 일시 중지합니다.</p>
+<p>메인 스레드에서는 더 이상 <code>recv</code> 함수를 명시 적으로 호출하지 않습니다. 대신 <code>rx</code>를 반복기로 처리합니다. 수신 된 각 값에 대해 인쇄하고 있습니다. 채널이 닫히면 반복이 끝납니다.</p>
+<p>Listing 16-10에서 코드를 실행할 때, 각 줄 사이에 1초의 일시정지가 있는 다음 출력을 볼 수 있습니다:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">Got: hi
+Got: from
+Got: the
+Got: thread
+</code></pre>
+<p>주 스레드에서 <code>for</code> 루프에서 일시 중지하거나 지연하는 코드가 없기 때문에 주 스레드가 생성 된 스레드에서 값을 받기를 기다리고 있음을 알 수 있습니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="creating-multiple-producers-by-cloning-the-transmitter"></a></p>
+<h3 id="creating-multiple-producers"><a class="header" href="#creating-multiple-producers">여러 제작자 만들기</a></h3>
+<p>앞서 우리가 언급한 <code>mpsc</code> 상기 약어는 The acronym <em>다수 생산자, 단 하나 소비자</em>. 하자 넣어 <code>mpsc</code> Listing 16-10의 코드를 사용하고 확장하여 모두 같은 수신기에 값을 보내는 여러 스레드를 만듭니다. Listing 16-11과 같이 송신기를 복제하면 됩니다.</p>
+<figure class="listing" id="listing-16-11">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">use std::sync::mpsc;
+</span><span class="boring">use std::thread;
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    // --snip--
+
+    let (tx, rx) = mpsc::channel();
+
+    let tx1 = tx.clone();
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx1.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("more"),
+            String::from("messages"),
+            String::from("for"),
+            String::from("you"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    for received in rx {
+        println!("Got: {received}");
+    }
+
+    // --snip--
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-16-11">목록 16-11</a>: 여러 생산자로부터 여러 메시지 보내기</figcaption>
+</figure>
+<p>이번에는 첫 번째 생성 된 스레드를 만들기 전에 송신기에서 <code>clone</code>를 호출합니다. 이렇게하면 첫 번째 생성 된 스레드로 전달할 수있는 새로운 송신기가 제공됩니다. 원래 송신기를 두 번째 생성 된 스레드로 전달합니다. 이렇게하면 두 개의 스레드가 제공되고 각각 하나의 수신기에 다른 메시지를 보냅니다.</p>
+<p>코드를 실행할 때, 출력은 다음과 같이 보일 것입니다:</p>
+<!-- Not extracting output because changes to this output aren't significant;
+the changes are likely to be due to the threads running differently rather than
+changes in the compiler -->
+<pre><code class="language-text">Got: hi
+Got: more
+Got: from
+Got: messages
+Got: for
+Got: the
+Got: thread
+Got: you
+</code></pre>
+<p>시스템에 따라 다른 순서로 값을 볼 수 있습니다. 이것이 동시성을 흥미롭게 만드는 이유입니다. <code>thread::sleep</code>를 실험하여 다른 스레드에서 다양한 값을 제공하면 각 실행은보다 비결정적이며 매번 다른 출력을 생성합니다.</p>
+<p>이제 채널이 어떻게 작동하는지 살펴 보았으므로 다른 동시성 방법을 살펴 보겠습니다.</p>
+</main>
+<nav aria-label="Page navigation" class="nav-wrapper">
+<!-- Mobile navigation buttons -->
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="mobile-nav-chapters previous" href="ch16-01-threads.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="mobile-nav-chapters next" href="ch16-03-shared-state.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+<div style="clear: both"></div>
+</nav>
+</div>
+</div>
+<nav aria-label="Page navigation" class="nav-wide-wrapper">
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="nav-chapters previous" href="ch16-01-threads.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="nav-chapters next" href="ch16-03-shared-state.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+</nav>
+</div>
+<template id="fa-eye"><span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"></path></svg></span></template>
+<template id="fa-eye-slash"><span class="fa-svg"><svg viewbox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"></path></svg></span></template>
+<template id="fa-copy"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"></path></svg></span></template>
+<template id="fa-play"><span class="fa-svg"><svg viewbox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path></svg></span></template>
+<template id="fa-clock-rotate-left"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"></path></svg></span></template>
+<script>
+            window.playground_copyable = true;
+        </script>
+<script src="elasticlunr-ef4e11c1.min.js"></script>
+<script src="mark-09e88c2c.min.js"></script>
+<script src="searcher-09f2665d.js"></script>
+<script src="clipboard-1626706a.min.js"></script>
+<script src="highlight-abc7f01d.js"></script>
+<script src="book-609e4cb8.js"></script>
+<!-- Custom JS scripts -->
+<script src="ferris-2317480c.js"></script>
+</div>
+<script defer="" src="rust-code-lab.js"></script></body>
+</html>

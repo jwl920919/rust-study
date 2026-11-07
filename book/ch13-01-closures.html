@@ -1,0 +1,620 @@
+<!DOCTYPE HTML>
+
+<html class="light sidebar-visible" dir="ltr" lang="ko">
+<head>
+<!-- Book generated using mdBook -->
+<meta charset="utf-8"/>
+<title>Closures - The Rust Programming Language</title>
+<!-- Custom HTML head -->
+<meta content="" name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<link href="favicon-de23e50b.svg" rel="icon"/>
+<link href="favicon-8114d1fc.png" rel="shortcut icon"/>
+<link href="css/variables-8adf115d.css" rel="stylesheet"/>
+<link href="css/general-e96d0476.css" rel="stylesheet"/>
+<link href="css/chrome-d279d366.css" rel="stylesheet"/>
+<link href="css/print-9e4910d8.css" media="print" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="fonts/fonts-9644e21d.css" rel="stylesheet"/>
+<!-- Highlight.js Stylesheets -->
+<link href="highlight-493f70e1.css" id="mdbook-highlight-css" rel="stylesheet"/>
+<link href="tomorrow-night-4c0ae647.css" id="mdbook-tomorrow-night-css" rel="stylesheet"/>
+<link href="ayu-highlight-3fdfc3ac.css" id="mdbook-ayu-highlight-css" rel="stylesheet"/>
+<!-- Custom theme stylesheets -->
+<link href="ferris-d33b75bf.css" rel="stylesheet"/>
+<link href="theme/2018-edition-4e126c62.css" rel="stylesheet"/>
+<link href="theme/semantic-notes-9b5766c0.css" rel="stylesheet"/>
+<link href="theme/listing-cab26221.css" rel="stylesheet"/>
+<!-- Provide site root and default themes to javascript -->
+<script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cc309c2.js";
+        </script>
+<!-- Start loading toc.js asap -->
+<script src="toc-0e4ce700.js"></script>
+<link href="rust-code-lab.css" rel="stylesheet"/><link href="notion-theme.css" rel="stylesheet"/></head>
+<body>
+<div id="mdbook-help-container">
+<div id="mdbook-help-popup">
+<h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+<div>
+<p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+<p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+<p>Press <kbd>?</kbd> to show this help</p>
+<p>Press <kbd>Esc</kbd> to hide this help</p>
+</div>
+</div>
+</div>
+<div id="mdbook-body-container">
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+<input class="hidden" id="mdbook-sidebar-toggle-anchor" type="checkbox"/>
+<!-- Hide / unhide sidebar before it is displayed -->
+<script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+<nav aria-label="Table of contents" class="sidebar" id="mdbook-sidebar">
+<!-- populated by js -->
+<mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+<noscript>
+<iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+</noscript>
+<div class="sidebar-resize-handle" id="mdbook-sidebar-resize-handle">
+<div class="sidebar-resize-indicator"></div>
+</div>
+</nav>
+<div class="page-wrapper" id="mdbook-page-wrapper">
+<div class="page">
+<div id="mdbook-menu-bar-hover-placeholder"></div>
+<div class="menu-bar sticky" id="mdbook-menu-bar">
+<div class="left-buttons">
+<label aria-controls="mdbook-sidebar" aria-label="Toggle Table of Contents" class="icon-button" for="mdbook-sidebar-toggle-anchor" id="mdbook-sidebar-toggle" title="Toggle Table of Contents">
+<span class="fa-svg"><svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"></path></svg></span>
+</label>
+<button aria-controls="mdbook-theme-list" aria-expanded="false" aria-haspopup="true" aria-label="Change theme" class="icon-button" id="mdbook-theme-toggle" title="Change theme" type="button">
+<span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"></path></svg></span>
+</button>
+<ul aria-label="Themes" class="theme-popup" id="mdbook-theme-list" role="menu">
+<li role="none"><button class="theme" id="mdbook-theme-default_theme" role="menuitem">Auto</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-light" role="menuitem">Light</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-rust" role="menuitem">Rust</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-coal" role="menuitem">Coal</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-navy" role="menuitem">Navy</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-ayu" role="menuitem">Ayu</button></li>
+</ul>
+<button aria-controls="mdbook-searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-label="Toggle Searchbar" class="icon-button" id="mdbook-search-toggle" title="Search (`/`)" type="button">
+<span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"></path></svg></span>
+</button>
+</div>
+<h1 class="menu-title">The Rust Programming Language</h1>
+<div class="right-buttons">
+<a aria-label="Print this book" href="print.html" title="Print this book">
+<span class="fa-svg" id="print-button"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"></path></svg></span>
+</a>
+<a aria-label="Git repository" href="https://github.com/rust-lang/book" title="Git repository">
+<span class="fa-svg"><svg viewbox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></span>
+</a>
+</div>
+</div>
+<div class="hidden" id="mdbook-search-wrapper">
+<form class="searchbar-outer" id="mdbook-searchbar-outer">
+<div class="search-wrapper">
+<input aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." type="search"/>
+<div class="spinner-wrapper">
+<span class="fa-svg" id="fa-spin"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"></path></svg></span>
+</div>
+</div>
+</form>
+<div class="searchresults-outer hidden" id="mdbook-searchresults-outer">
+<div class="searchresults-header" id="mdbook-searchresults-header"></div>
+<ul id="mdbook-searchresults">
+</ul>
+</div>
+</div>
+<!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+<script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+<div class="content" id="mdbook-content">
+<main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="closures-anonymous-functions-that-can-capture-their-environment"></a>
+<a id="closures-anonymous-functions-that-capture-their-environment"></a></p>
+<h2 id="closures"><a class="header" href="#closures">폐쇄</a></h2>
+<p>러스트의 클로저는 변수에 저장하거나 다른 함수에 인수로 전달할 수 있는 익명의 함수입니다. 클로저를 한 곳에서 만든 다음 다른 곳에서 호출하여 다른 컨텍스트에서 평가할 수 있습니다. 함수와 달리 클로저는 정의 된 범위에서 값을 캡처 할 수 있습니다. 이러한 클로저 기능이 코드 재사용 및 동작 사용자 정의를 허용하는 방법을 설명합니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="creating-an-abstraction-of-behavior-with-closures"></a>
+<a id="refactoring-using-functions"></a>
+<a id="refactoring-with-closures-to-store-code"></a>
+<a id="capturing-the-environment-with-closures"></a></p>
+<h3 id="capturing-the-environment"><a class="header" href="#capturing-the-environment">환경 을 포착 함</a></h3>
+<p>우리는 먼저 나중에 사용하기 위해 정의 된 환경에서 값을 캡처하기 위해 클로저를 사용할 수있는 방법을 검토 할 것입니다. 시나리오는 다음과 같습니다. 너무 자주, T 셔츠 회사는 프로모션으로 메일 링리스트의 누군가에게 독점적 인 한정판 셔츠를 제공합니다. 메일 링리스트의 사람들은 현재 자신의 프로필에 자신이 좋아하는 색상을 추가 할 수 있습니다. 무료 셔츠를 위해 선택한 사람이 자신이 좋아하는 색상 세트를 가지고 있다면, 그들은 그 색상의 셔츠를 얻습니다.</p>
+<p>이를 구현하는 방법에는 여러 가지가 있습니다. 이 예제에서는 enum을 사용할 것입니다. <code>ShirtColor</code> 그 변이가 있습니다 <code>Red</code> 그리고 <code>Blue</code> (단순함을 위해 사용할 수 있는 색상의 수를 제한). 우리는 <code>Inventory</code> 필드 이름을 가진 struct <code>shirts</code> 포함되는 A <code>Vec&lt;ShirtColor&gt;</code> 현재 재고가 있는 셔츠 색상을 나타냅니다. <code>giveaway</code> 에 정의됨 <code>Inventory</code> 무료 셔츠 우승자의 선택 사항인 셔츠 색상 선호도를 가져오고, 그 사람이 얻을 셔츠 색상을 반환합니다. 이 설정은 Listing 13-1에 나와 있습니다.</p>
+<figure class="listing" id="listing-13-1">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust noplayground">#[derive(Debug, PartialEq, Copy, Clone)]
+enum ShirtColor {
+    Red,
+    Blue,
+}
+
+struct Inventory {
+    shirts: Vec&lt;ShirtColor&gt;,
+}
+
+impl Inventory {
+    fn giveaway(&amp;self, user_preference: Option&lt;ShirtColor&gt;) -&gt; ShirtColor {
+        user_preference.unwrap_or_else(|| self.most_stocked())
+    }
+
+    fn most_stocked(&amp;self) -&gt; ShirtColor {
+        let mut num_red = 0;
+        let mut num_blue = 0;
+
+        for color in &amp;self.shirts {
+            match color {
+                ShirtColor::Red =&gt; num_red += 1,
+                ShirtColor::Blue =&gt; num_blue += 1,
+            }
+        }
+        if num_red &gt; num_blue {
+            ShirtColor::Red
+        } else {
+            ShirtColor::Blue
+        }
+    }
+}
+
+fn main() {
+    let store = Inventory {
+        shirts: vec![ShirtColor::Blue, ShirtColor::Red, ShirtColor::Blue],
+    };
+
+    let user_pref1 = Some(ShirtColor::Red);
+    let giveaway1 = store.giveaway(user_pref1);
+    println!(
+        "The user with preference {:?} gets {:?}",
+        user_pref1, giveaway1
+    );
+
+    let user_pref2 = None;
+    let giveaway2 = store.giveaway(user_pref2);
+    println!(
+        "The user with preference {:?} gets {:?}",
+        user_pref2, giveaway2
+    );
+}</code></pre>
+<figcaption><a href="#listing-13-1">목록 13-1</a>: 셔츠 회사 공짜 상황</figcaption>
+</figure>
+<p>이름 * <code>store</code> 에 정의됨 <code>main</code> 이 한정판 승진을 위해 배부할 것이다 2개의 파란 셔츠 및 1개의 빨간 셔츠가 남아 있습니다. 우리는 부릅니다 <code>giveaway</code> 빨간색 셔츠를 선호하는 사용자와 선호하지 않는 사용자를위한 방법입니다.</p>
+<p>다시 말하지만,이 코드는 여러 가지 방법으로 구현 될 수 있으며, 여기서 폐쇄에 초점을 맞추기 위해 우리는 이미 배운 개념을 고수했습니다. <code>giveaway</code> 클로저를 사용하는 방법. 에서 <code>giveaway</code> method, user preference를 타입의 파라미터로 얻는다. <code>Option&lt;ShirtColor&gt;</code> 전화하여
+<code>unwrap_or_else</code> 메서드 켜짐 <code>user_preference</code>. 그 <a href="../std/option/enum.Option.html#method.unwrap_or_else"><code>unwrap_or_else</code> 메서드 켜짐
+<code>Option&lt;T&gt;</code></a> 무시  표준 라이브러리에 의해 정의됩니다. 하나의 인자를 받습니다: 값을 반환하는 인자가 없는 클로저 <code>T</code>
+(동일한 타입이 상기 <code>Some</code> 모델명 The <code>Option&lt;T&gt;</code>이 경우 In this case
+<code>ShirtColor</code>). 만약 <code>Option&lt;T&gt;</code> 는 The <code>Some</code> 변형, <code>unwrap_or_else</code>
+에서 값을 반환합니다.Returns the value from in the. <code>Some</code>. 만약 <code>Option&lt;T&gt;</code> 는 The <code>None</code>
+변형, <code>unwrap_or_else</code> 클로저를 호출하고 클로저가 반환한 값을 반환합니다.</p>
+<p>클로저 표현식을 지정합니다. <code>|| self.most_stocked()</code> 상기 인수는 The argument to
+<code>unwrap_or_else</code>. 이것은 아무 매개변수도 자체 가지고 가지 않는 마감입니다 (폐쇄에는 모수가 있던 경우에, 2개의 수직 관 사이에서 나타날 것입니다). 마감의 몸은 부릅니다 <code>self.most_stocked()</code>. 우리는 여기서 클로저를 정의하고 있습니다. <code>unwrap_or_else</code> 결과가 필요한 경우 나중에 종료를 평가합니다.</p>
+<p>이 코드를 실행하면 다음이 인쇄됩니다.</p>
+<pre><code class="language-console">$ cargo run
+   Compiling shirt-company v0.1.0 (file:///projects/shirt-company)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s
+     Running `target/debug/shirt-company`
+The user with preference Some(Red) gets Red
+The user with preference None gets Blue
+</code></pre>
+<p>한 가지 흥미로운 점은 우리가 호출하는 폐쇄를 통과했다는 것입니다.
+<code>self.most_stocked()</code> 현재에 관하여 <code>Inventory</code> 예를 들어 표준 라이브러리는 라이브러리에 대해 아무것도 알 필요가 없었습니다. <code>Inventory</code> 또는 <code>ShirtColor</code> 우리가 정의한 유형, 또는 우리가 이 대본에서 사용하고 싶은 논리. 마감은에 불변 참고를 붙잡습니다 <code>self</code> <code>Inventory</code> instance 그리고 우리가 지정한 코드를 전달합니다. <code>unwrap_or_else</code> 방법. 기능은, 다른 한편으로는, 이런 식으로 그들의 환경을 붙잡을 수 없습니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="closure-type-inference-and-annotation"></a></p>
+<h3 id="inferring-and-annotating-closure-types"><a class="header" href="#inferring-and-annotating-closure-types">추론 및 주석 처리 폐쇄 유형</a></h3>
+<p>함수와 클로저 사이에는 더 많은 차이점이 있습니다. 클로저는 일반적으로 매개 변수의 유형이나 <code>fn</code> 함수와 같은 반환 값에 주석을 달 필요가 없습니다. 타입 주석은 사용자에게 노출 된 명시적 인터페이스의 일부이기 때문에 함수에 필요합니다. 이 인터페이스를 엄격하게 정의하는 것은 모든 사용자가 함수가 사용하고 반환하는 값의 유형에 동의하도록하는 데 중요합니다. 노출 라이브러리.</p>
+<p>Closure는 일반적으로 임의의 시나리오가 아닌 좁은 컨텍스트 내에서만 짧고 관련이 있습니다. 이러한 제한된 컨텍스트 내에서 컴파일러는 대부분의 변수 유형을 추론 할 수있는 방법과 유사하게 매개 변수의 유형과 반환 유형을 추론 할 수 있습니다 (컴파일러에 클로저 유형 주석이 필요한 경우는 거의 없습니다).</p>
+<p>변수와 마찬가지로, 꼭 필요한 것보다 더 많은 발음을 희생하여 명시성과 명확성을 높이려면 타입 주석을 추가할 수 있습니다. 클로저에 대한 타입에 주석을 붙이는 것은 Listing 13-2에 나와 있는 정의와 비슷할 것입니다. 이 예제에서, 우리는 클로저를 정의하고 그것을 변수에 저장하는 것이지, 우리가 Listing 13-1에서 했던 것처럼 클로저를 인수로 전달하는 것이 아닙니다.</p>
+<figure class="listing" id="listing-13-2">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">use std::thread;
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn generate_workout(intensity: u32, random_number: u32) {
+</span>    let expensive_closure = |num: u32| -&gt; u32 {
+        println!("calculating slowly...");
+        thread::sleep(Duration::from_secs(2));
+        num
+    };
+<span class="boring">
+</span><span class="boring">    if intensity &lt; 25 {
+</span><span class="boring">        println!("Today, do {} pushups!", expensive_closure(intensity));
+</span><span class="boring">        println!("Next, do {} situps!", expensive_closure(intensity));
+</span><span class="boring">    } else {
+</span><span class="boring">        if random_number == 3 {
+</span><span class="boring">            println!("Take a break today! Remember to stay hydrated!");
+</span><span class="boring">        } else {
+</span><span class="boring">            println!(
+</span><span class="boring">                "Today, run for {} minutes!",
+</span><span class="boring">                expensive_closure(intensity)
+</span><span class="boring">            );
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let simulated_user_specified_value = 10;
+</span><span class="boring">    let simulated_random_number = 7;
+</span><span class="boring">
+</span><span class="boring">    generate_workout(simulated_user_specified_value, simulated_random_number);
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-13-2">목록 13-2</a>: 클로저에 있는 매개변수 그리고 반환 가치 유형의 선택적인 유형 주석 추가</figcaption>
+</figure>
+<p>타입 주석이 추가되면 클로저의 문법은 함수의 문법과 더 유사해 보입니다. 여기에서는 비교를 위해 매개변수에 1을 더하는 함수와 동일한 동작을 갖는 클로저를 정의합니다. 관련 부분을 정렬하기 위해 몇 개의 공간을 추가했습니다. 이것은 파이프의 사용과 선택적 구문의 양을 제외하고 어떻게 클로저 문법이 함수 문법과 유사한지를 보여줍니다.</p>
+<pre><code class="language-rust ignore">fn  add_one_v1   (x: u32) -&gt; u32 { x + 1 }
+let add_one_v2 = |x: u32| -&gt; u32 { x + 1 };
+let add_one_v3 = |x|             { x + 1 };
+let add_one_v4 = |x|               x + 1  ;</code></pre>
+<p>첫 번째 줄은 함수 정의를 보여주고 두 번째 줄은 완전히 주석이 달린 클로저 정의를 보여줍니다. 세 번째 줄에서는 클로저 정의에서 유형 주석을 제거합니다. 네 번째 줄에서는 클로저 본문이 하나의 식만 가지고 있기 때문에 선택 사항인 브래킷을 제거합니다. 이들은 모두 호출될 때 동일한 동작을 생성하는 유효한 정의입니다.
+<code>add_one_v3</code> 그리고 <code>add_one_v4</code> 형식이 사용으로부터 유추되기 때문에, lines는 컴파일될 수 있도록 평가될 필요가 있다. 이것은 다음과 유사하다. <code>let v = Vec::new();</code> 어떤 타입의 타입 주석이나 값들이 그 안에 삽입될 필요가 있다. <code>Vec</code> 러스트가 타입을 추론할 수 있도록 하기 위해서.</p>
+<p>클로저 정의의 경우 컴파일러는 각 매개 변수와 반환 값에 대해 하나의 구체적인 유형을 추론합니다. 예를 들어, Listing 13-3은 매개 변수로받는 값을 반환하는 짧은 클로저의 정의를 보여줍니다. 이 예의 목적을 제외하고는이 클로저가 매우 유용하지 않습니다. 우리는 정의에 어떤 유형 주석도 추가하지 않았습니다. 유형 주석이 없기 때문에 여기에 수행 한 모든 유형으로 클로저를 호출 할 수 있습니다. <code>String</code> 처음으로. 우리가 전화하려고하면
+<code>example_closure</code> Integer를 사용하면 오류가 발생합니다.</p>
+<figure class="listing" id="listing-13-3">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let example_closure = |x| x;
+
+    let s = example_closure(String::from("hello"));
+    let n = example_closure(5);
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-13-3">목록 13-3</a>: 두 가지 다른 유형으로 유추된 유형의 클로저 호출 시도</figcaption>
+</figure>
+<p>컴파일러는 우리에게이 오류를 제공합니다 :</p>
+<pre><code class="language-console">$ cargo run
+   Compiling closure-example v0.1.0 (file:///projects/closure-example)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:5:29
+  |
+5 |     let n = example_closure(5);
+  |             --------------- ^ expected `String`, found integer
+  |             |
+  |             arguments to this function are incorrect
+  |
+note: expected because the closure was earlier called with an argument of type `String`
+ --&gt; src/main.rs:4:29
+  |
+4 |     let s = example_closure(String::from("hello"));
+  |             --------------- ^^^^^^^^^^^^^^^^^^^^^ expected because this argument is of type `String`
+  |             |
+  |             in this closure call
+note: closure parameter defined here
+ --&gt; src/main.rs:2:28
+  |
+2 |     let example_closure = |x| x;
+  |                            ^
+help: try using a conversion method
+  |
+5 |     let n = example_closure(5.to_string());
+  |                              ++++++++++++
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `closure-example` (bin "closure-example") due to 1 previous error
+</code></pre>
+<p>우리가 처음 전화했을 때 <code>example_closure</code> 와 함께 <code>String</code> 값, 컴파일러는 다음과 같은 형식을 유추합니다. <code>x</code> 상기 폐쇄하는 단계는, Wherein the closure is <code>String</code>. 그 유형은 그 때 마감으로 안으로 잠깁니다 <code>example_closure</code>, 다음에 같은 클로저를 가진 다른 타입을 사용하려고 할 때 타입 에러가 발생합니다.</p>
+<h3 id="capturing-references-or-moving-ownership"><a class="header" href="#capturing-references-or-moving-ownership">참조 또는 이동 소유권 캡처</a></h3>
+<p>Closure는 세 가지 방법으로 환경에서 값을 캡처할 수 있습니다. 세 가지 방법으로 직접 함수가 매개 변수를 취할 수 있습니다. 불변 빌림, 가변 빌림 및 소유권. 클로저는 함수의 본문이 캡처 된 값과 함께 수행하는 작업을 기반으로 사용할 항목을 결정합니다.</p>
+<p>Listing 13-4에서, 값을 출력하기 위해 불변의 참조가 필요하기 때문에 <code>list</code>라는 벡터에 대한 불변의 참조를 캡처하는 클로저를 정의합니다.</p>
+<figure class="listing" id="listing-13-4">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let list = vec![1, 2, 3];
+    println!("Before defining closure: {list:?}");
+
+    let only_borrows = || println!("From closure: {list:?}");
+
+    println!("Before calling closure: {list:?}");
+    only_borrows();
+    println!("After calling closure: {list:?}");
+}</code></pre>
+<figcaption><a href="#listing-13-4">목록 13-4</a>: 불변 참조를 캡처하는 클로저 정의 및 호출</figcaption>
+</figure>
+<p>이 예제에서는 변수가 클로저 정의에 바인딩될 수 있음을 보여 주며 나중에 변수 이름과 괄호를 사용하여 변수 이름이 함수 이름인 것처럼 클로저를 호출할 수 있습니다.</p>
+<p>우리는 동시에 <code>list</code>에 대한 여러 불변 참조를 가질 수 있기 때문에 <code>list</code>는 클로저 정의 전, 클로저 정의 후, 클로저가 호출되기 전, 클로저가 호출되기 전에 코드에서 여전히 액세스 할 수 있습니다. 이 코드는 컴파일, 실행 및 인쇄됩니다.</p>
+<pre><code class="language-console">$ cargo run
+   Compiling closure-example v0.1.0 (file:///projects/closure-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running `target/debug/closure-example`
+Before defining closure: [1, 2, 3]
+Before calling closure: [1, 2, 3]
+From closure: [1, 2, 3]
+After calling closure: [1, 2, 3]
+</code></pre>
+<p>다음으로, Listing 13-5에서 클로저 본문을 변경하여 <code>list</code> 벡터에 요소를 추가합니다. 클로저는 이제 가변 참조를 캡처합니다.</p>
+<figure class="listing" id="listing-13-5">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let mut list = vec![1, 2, 3];
+    println!("Before defining closure: {list:?}");
+
+    let mut borrows_mutably = || list.push(7);
+
+    borrows_mutably();
+    println!("After calling closure: {list:?}");
+}</code></pre>
+<figcaption><a href="#listing-13-5">목록 13-5</a>: 가변 참조를 캡처하는 클로저 정의 및 호출</figcaption>
+</figure>
+<p>이 코드는 컴파일, 실행 및 인쇄합니다.This code compiles, runs and prints:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling closure-example v0.1.0 (file:///projects/closure-example)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+     Running `target/debug/closure-example`
+Before defining closure: [1, 2, 3]
+After calling closure: [1, 2, 3, 7]
+</code></pre>
+<p>참고 : 더 이상 A가 없습니다. <code>println!</code> 상기 호출하는 단계는, Wherein the call of the <code>borrows_mutably</code> 클로저: 언제 <code>borrows_mutably</code> 정의되며, 다음과 같은 가변 참조를 캡처합니다. <code>list</code>. 우리는 클로저가 호출 된 후에 클로저를 다시 사용하지 않으므로 가변 빌림이 끝납니다. 클로저 정의와 클로저 호출 사이에, 가변 빌림이있을 때 다른 차용이 허용되지 않기 때문에 인쇄 할 불변의 차용은 허용되지 않습니다. a를 추가 해보십시오. <code>println!</code>
+당신이 얻을 어떤 오류 메시지를 볼 수!</p>
+<p>클로저의 본문이 소유권을 엄격하게 필요로 하지 않더라도 클로저가 환경에서 사용하는 값의 소유권을 갖도록 강제하려면 매개 변수 목록 앞에 <code>move</code> 키워드를 사용할 수 있습니다.</p>
+<p>이 기법은 새 스레드에 클로저를 전달하여 새 스레드가 소유하도록 데이터를 이동할 때 주로 유용합니다. 16장에서는 concurrency에 대해 이야기 할 때 왜 스레드를 자세히 사용하고 싶은지에 대해 논의 할 것입니다. 하지만 지금은 <code>move</code> 키워드가 필요한 클로저를 사용하여 새 스레드를 생성해 보도록 하겠습니다. Listing 13-6은 새 스레드에서 주 스레드를 인쇄하기 위해 수정된 Listing 13-4를 보여줍니다.</p>
+<figure class="listing" id="listing-13-6">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">use std::thread;
+
+fn main() {
+    let list = vec![1, 2, 3];
+    println!("Before defining closure: {list:?}");
+
+    thread::spawn(move || println!("From thread: {list:?}"))
+        .join()
+        .unwrap();
+}</code></pre>
+<figcaption><a href="#listing-13-6">목록 13-6</a>: <code>move</code>를 사용하여 스레드가 <code>list</code>의 소유권을 갖도록 클로저를 강제</figcaption>
+</figure>
+<p>새 스레드를 생성하여 스레드가 인수로 실행되도록 클로저를 제공합니다. 클로저 본문이 목록을 출력합니다. Listing 13-4에서 클로저가 캡처된 것만
+<code>list</code> 변경 불가능한 참조를 사용하는 이유는 액세스 권한이 가장 적기 때문입니다. <code>list</code> 그것을 인쇄할 필요가 있었습니다. 이 보기에서는, 마감 몸이 아직도 단지 불변 참고만 필요로 하더라도, 우리는 그것을 지정할 필요가 있습니다 <code>list</code> 상기 폐쇄하는 단계는, Wherein the closure, <code>move</code> 폐쇄 정의의 시작 부분에 키워드. 메인 스레드가 호출하기 전에 더 많은 작업을 수행 한 경우
+<code>join</code> 새 스레드에서 새 스레드가 나머지 메인 스레드가 완료되기 전에 완료되거나 기본 스레드가 먼저 완료 될 수 있습니다. 메인 스레드가 소유권을 유지하는 경우 <code>list</code> 하지만 새로운 스레드 및 드롭 전에 종료
+<code>list</code>, 스레드의 불변 참조가 유효하지 않습니다. 따라서 컴파일러는 <code>list</code> 참조가 유효하도록 새 스레드에 주어진 클로저로 이동합니다. 를 제거하십시오 <code>move</code> 키워드 또는 사용
+<code>list</code> 종료 후 메인 스레드에서 어떤 컴파일러 오류가 발생하는지 확인하기 위해 정의됩니다!</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="storing-closures-using-generic-parameters-and-the-fn-traits"></a>
+<a id="limitations-of-the-cacher-implementation"></a>
+<a id="moving-captured-values-out-of-the-closure-and-the-fn-traits"></a>
+<a id="moving-captured-values-out-of-closures-and-the-fn-traits"></a></p>
+<h3 id="moving-captured-values-out-of-closures"><a class="header" href="#moving-captured-values-out-of-closures">캡처된 값을 폐쇄 밖으로 이동</a></h3>
+<p>클로저가 클로저가 정의된 환경에서 값의 참조 또는 캡처된 소유권을 캡처하면(따라서 어떤 것이 클로저로 이동되는 경우), 클로저 본문의 코드는 클로저가 나중에 평가될 때 참조 또는 값에 어떤 일이 발생하는지 정의합니다(따라서 어떤 것이 클로저 밖으로 이동되는 경우).</p>
+<p>클로저 바디는 다음 중 하나를 수행할 수 있습니다: 캡처된 값을 클로저 밖으로 이동하거나, 캡처된 값을 변경하거나, 값을 이동하거나 변경하거나, 처음부터 환경에서 아무 것도 캡처하지 않습니다.</p>
+<p>클로저가 클로저 구현의 특성에 영향을 미치는 환경에서 값을 캡처하고 처리하는 방식, 그리고 특성은 함수와 구조체가 사용할 수 있는 클로저 종류를 지정할 수 있는 방법입니다. 클로저는 클로저의 바디가 값을 처리하는 방법에 따라 하나, 둘 또는 세 가지 <code>Fn</code> 특성을 자동으로 구현합니다.</p>
+<ul>
+<li><code>FnOnce</code>는 한 번 호출 할 수있는 클로저에 적용됩니다. 모든 클로저는 모든 클로저를 호출 할 수 있기 때문에 적어도이 특성을 구현합니다. 캡처 된 값을 본체에서 이동시키는 클로저는 <code>FnOnce</code> 만 구현하고 다른 <code>Fn</code> 특성은 한 번만 호출 할 수 있기 때문에 구현하지 않습니다.</li>
+<li><code>FnMut</code>는 캡처 된 값을 신체 밖으로 이동시키지 않지만 캡처 된 값을 변형시킬 수있는 클로저에 적용됩니다. 이러한 클로저는 두 번 이상 호출 할 수 있습니다.</li>
+<li><code>Fn</code>는 캡처된 값을 신체 밖으로 이동하지 않고 캡처된 값을 변경하지 않는 클로저와 환경에서 아무 것도 캡처하지 않는 클로저에 적용됩니다. 이러한 클로저들은 환경을 변경하지 않고 한 번 이상 호출할 수 있으며, 이는 클로저를 여러 번 동시에 호출하는 것과 같은 경우에 중요합니다.</li>
+</ul>
+<p>의 정의를 살펴 보자 <code>unwrap_or_else</code> 메서드 켜짐 <code>Option&lt;T&gt;</code> Listing 13-1에서 사용한 내용:</p>
+<pre><code class="language-rust ignore">impl&lt;T&gt; Option&lt;T&gt; {
+    pub fn unwrap_or_else&lt;F&gt;(self, f: F) -&gt; T
+    where
+        F: FnOnce() -&gt; T
+    {
+        match self {
+            Some(x) =&gt; x,
+            None =&gt; f(),
+        }
+    }
+}</code></pre>
+<p>상기하라 <code>T</code> 제네릭 형식은 제네릭 값의 형식을 나타냅니다.The generic type represents the type of the value in the 제네릭 형식.
+<code>Some</code> 모델명 : A <code>Option</code>. 그 유형 <code>T</code> 상기 복귀 타입은 The return type of the
+<code>unwrap_or_else</code> 함수: 호출하는 코드 <code>unwrap_or_else</code> 에
+<code>Option&lt;String&gt;</code>예를 들어, will get a <code>String</code>.</p>
+<p>다음으로 <code>unwrap_or_else</code> 함수에는 추가 일반 유형 매개 변수 <code>F</code>가 있습니다. <code>F</code> 유형은 <code>f</code>라는 매개 변수 유형으로 <code>unwrap_or_else</code>를 호출 할 때 우리가 제공하는 폐쇄입니다.</p>
+<p>제네릭 형식에 지정된 트레잇 <code>F</code> 있습니다. <code>FnOnce() -&gt; T</code>즉, <code>F</code> 한 번 호출 될 수 있어야하며, 인수를받지 않고 반환해야합니다. <code>T</code>. 사용 <code>FnOnce</code> 상기 제한하는 단계는, Wherein the constraint,
+<code>unwrap_or_else</code> 전화하지 않음 <code>f</code> 더 많은 것 보다는. 의 몸에서
+<code>unwrap_or_else</code>우리는 볼 수 있습니다 경우 <code>Option</code> 있습니다. <code>Some</code>, <code>f</code> 호출되지 않습니다. if the <code>Option</code> 있습니다. <code>None</code>, <code>f</code> 한 번 호출됩니다. 모든 클로저가 구현되기 때문에 <code>FnOnce</code>, <code>unwrap_or_else</code> 클로저의 모든 3개의 종류를 받아들이고 일 수 있다 것과 같이 가동 가능합니다.</p>
+<section aria-role="note" class="note">
+<p>참고 : 우리가 원하는 것이 환경에서 값을 캡처 할 필요가 없다면, 우리는 함수 중 하나를 구현하는 무언가가 필요한 클로저가 아닌 함수 이름을 사용할 수 있습니다. <code>Fn</code> 특성. 예를 들어,
+<code>Option&lt;Vec&lt;T&gt;&gt;</code> 가치, 우리는 호출 할 수 있습니다 <code>unwrap_or_else(Vec::new)</code> 값이 비어있는 경우 새 벡터를 가져옵니다 <code>None</code>. 컴파일러는 자동으로 다음 중 하나를 구현합니다. <code>Fn</code> 특성은 함수 정의에 적용됩니다.</p>
+</section>
+<p>이제 표준 라이브러리 방법을 살펴 보겠습니다. <code>sort_by_key</code>슬라이스에 정의되어 있습니다. <code>unwrap_or_else</code> 그리고 왜 <code>sort_by_key</code> 사용
+<code>FnMut</code> 대신 <code>FnOnce</code> 클로저는 고려중인 슬라이스에서 현재 아이템에 대한 참조의 형태로 하나의 인자를 받고, 타입의 값을 리턴합니다. <code>K</code> 이 함수는 각 항목의 특정 속성에 따라 슬라이스를 정렬할 때 유용합니다. Listing 13-7에는 다음 목록이 있습니다. <code>Rectangle</code> Instance, 그리고 우리가 사용하는 <code>sort_by_key</code>
+그들에게 명령하여 그들의 <code>width</code> 낮은 곳에서 높은 곳으로</p>
+<figure class="listing" id="listing-13-7">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let mut list = [
+        Rectangle { width: 10, height: 1 },
+        Rectangle { width: 3, height: 5 },
+        Rectangle { width: 7, height: 12 },
+    ];
+
+    list.sort_by_key(|r| r.width);
+    println!("{list:#?}");
+}</code></pre>
+<figcaption><a href="#listing-13-7">목록 13-7</a>: <code>sort_by_key</code>를 사용하여 너비별로 사각형 주문</figcaption>
+</figure>
+<p>이 코드는 인쇄합니다:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.41s
+     Running `target/debug/rectangles`
+[
+    Rectangle {
+        width: 3,
+        height: 5,
+    },
+    Rectangle {
+        width: 7,
+        height: 12,
+    },
+    Rectangle {
+        width: 10,
+        height: 1,
+    },
+]
+</code></pre>
+<p><code>sort_by_key</code>가 <code>FnMut</code> 클로저를 사용하도록 정의 된 이유는 슬라이스의 각 항목에 대해 한 번씩 클로저를 여러 번 호출하기 때문입니다. 클로저 <code>|r| r.width</code>는 환경에서 아무 것도 캡처, 변경 또는 이동하지 않으므로 특성 바인딩 요구 사항을 충족시킵니다.</p>
+<p>대조적으로, Listing 13-8은 단지 다음을 구현하는 클로저의 예를 보여줍니다. <code>FnOnce</code> 트레잇, 그것은 환경 밖으로 값을 이동하기 때문에. 컴파일러는 우리가 함께이 폐쇄를 사용할 수 없습니다 <code>sort_by_key</code>.</p>
+<figure class="listing" id="listing-13-8">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let mut list = [
+        Rectangle { width: 10, height: 1 },
+        Rectangle { width: 3, height: 5 },
+        Rectangle { width: 7, height: 12 },
+    ];
+
+    let mut sort_operations = vec![];
+    let value = String::from("closure called");
+
+    list.sort_by_key(|r| {
+        sort_operations.push(value);
+        r.width
+    });
+    println!("{list:#?}");
+}</code></pre>
+<figcaption><a href="#listing-13-8">목록 13-8</a>: <code>FnOnce</code>를 사용한 <code>sort_by_key</code> 클로저 사용 시도</figcaption>
+</figure>
+<p>이것은 몇 번을 세려고 시도하기 위해 고안되고 복잡한 방법입니다 (그것은 작동하지 않습니다). <code>sort_by_key</code> 정렬할 때 닫기 호출하기 <code>list</code>. 이 코드는이 계산을 수행하려고 시도합니다. <code>value</code>—a <code>String</code> 폐쇄의 환경에서 - 안으로 <code>sort_operations</code> vector. 폐쇄 캡처 <code>value</code> 그리고 moves <code>value</code> 소유권을 이전하여 폐쇄에서 <code>value</code> 에 대하여 <code>sort_operations</code> 벡터. 이 클로저를 한 번 호출할 수 있습니다. 두 번 호출하려고 하면 작동하지 않기 때문입니다. <code>value</code> 더 이상 환경에 노출되지 않도록 해야 한다. <code>sort_operations</code> 다시! 그러므로, 이 폐쇄는 단지 구현한다 <code>FnOnce</code>. 이 코드를 컴파일하려고 하면 다음과 같은 오류가 발생합니다. <code>value</code> 클로저가 구현되어야 하기 때문에 클로저 밖으로 이동할 수 없습니다. <code>FnMut</code>:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling rectangles v0.1.0 (file:///projects/rectangles)
+error[E0507]: cannot move out of `value`, a captured variable in an `FnMut` closure
+  --&gt; src/main.rs:18:30
+   |
+15 |     let value = String::from("closure called");
+   |         -----   ------------------------------ move occurs because `value` has type `String`, which does not implement the `Copy` trait
+   |         |
+   |         captured outer variable
+16 |
+17 |     list.sort_by_key(|r| {
+   |                      --- captured by this `FnMut` closure
+18 |         sort_operations.push(value);
+   |                              ^^^^^ `value` is moved here
+   |
+help: `Fn` and `FnMut` closures require captured values to be able to be consumed multiple times, but `FnOnce` closures may consume them only once
+  --&gt; /rustc/2d8144b7880597b6e6d3dfd63a9a9efae3f533d3/library/alloc/src/slice.rs:249:11
+help: consider cloning the value if the performance cost is acceptable
+   |
+18 |         sort_operations.push(value.clone());
+   |                                   ++++++++
+
+For more information about this error, try `rustc --explain E0507`.
+error: could not compile `rectangles` (bin "rectangles") due to 1 previous error
+</code></pre>
+<p>오차는 움직이는 클로저 바디의 라인을 가리킵니다. <code>value</code> out of the environment. 이 문제를 해결하려면 클로저 본문을 환경 밖으로 이동시키지 않도록 변경해야합니다. 환경에 카운터를 유지하고 클로저 본문에 값을 증가시키는 것은 클로저가 호출되는 횟수를 계산하는보다 간단한 방법입니다. Listing 13-9의 클로저는 다음과 같이 작동합니다. <code>sort_by_key</code> 왜냐하면 그것은 단지 변수에 대한 참조를 캡처하기 때문입니다.
+<code>num_sort_operations</code> 한 번 이상 호출할 수 있습니다.It can be called more than one.</p>
+<figure class="listing" id="listing-13-9">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let mut list = [
+        Rectangle { width: 10, height: 1 },
+        Rectangle { width: 3, height: 5 },
+        Rectangle { width: 7, height: 12 },
+    ];
+
+    let mut num_sort_operations = 0;
+    list.sort_by_key(|r| {
+        num_sort_operations += 1;
+        r.width
+    });
+    println!("{list:#?}, sorted in {num_sort_operations} operations");
+}</code></pre>
+<figcaption><a href="#listing-13-9">목록 13-9</a>: <code>FnMut</code> 클로저를 <code>sort_by_key</code>와 함께 사용하는 것이 허용됩니다.</figcaption>
+</figure>
+<p><code>Fn</code> 특성은 클로저를 사용하는 함수 또는 유형을 정의하거나 사용할 때 중요합니다. 다음 섹션에서는 반복자에 대해 논의할 것입니다. 많은 반복자 메서드는 클로저 인수를 사용하므로 계속하면 이러한 클로저 세부 사항을 염두에 두십시오!</p>
+</main>
+<nav aria-label="Page navigation" class="nav-wrapper">
+<!-- Mobile navigation buttons -->
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="mobile-nav-chapters previous" href="ch13-00-functional-features.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="mobile-nav-chapters next" href="ch13-02-iterators.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+<div style="clear: both"></div>
+</nav>
+</div>
+</div>
+<nav aria-label="Page navigation" class="nav-wide-wrapper">
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="nav-chapters previous" href="ch13-00-functional-features.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="nav-chapters next" href="ch13-02-iterators.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+</nav>
+</div>
+<template id="fa-eye"><span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"></path></svg></span></template>
+<template id="fa-eye-slash"><span class="fa-svg"><svg viewbox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"></path></svg></span></template>
+<template id="fa-copy"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"></path></svg></span></template>
+<template id="fa-play"><span class="fa-svg"><svg viewbox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path></svg></span></template>
+<template id="fa-clock-rotate-left"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"></path></svg></span></template>
+<script>
+            window.playground_copyable = true;
+        </script>
+<script src="elasticlunr-ef4e11c1.min.js"></script>
+<script src="mark-09e88c2c.min.js"></script>
+<script src="searcher-09f2665d.js"></script>
+<script src="clipboard-1626706a.min.js"></script>
+<script src="highlight-abc7f01d.js"></script>
+<script src="book-609e4cb8.js"></script>
+<!-- Custom JS scripts -->
+<script src="ferris-2317480c.js"></script>
+</div>
+<script defer="" src="rust-code-lab.js"></script></body>
+</html>

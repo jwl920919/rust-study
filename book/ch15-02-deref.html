@@ -1,0 +1,468 @@
+<!DOCTYPE HTML>
+
+<html class="light sidebar-visible" dir="ltr" lang="ko">
+<head>
+<!-- Book generated using mdBook -->
+<meta charset="utf-8"/>
+<title>Treating Smart Pointers Like Regular References - The Rust Programming Language</title>
+<!-- Custom HTML head -->
+<meta content="" name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<link href="favicon-de23e50b.svg" rel="icon"/>
+<link href="favicon-8114d1fc.png" rel="shortcut icon"/>
+<link href="css/variables-8adf115d.css" rel="stylesheet"/>
+<link href="css/general-e96d0476.css" rel="stylesheet"/>
+<link href="css/chrome-d279d366.css" rel="stylesheet"/>
+<link href="css/print-9e4910d8.css" media="print" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="fonts/fonts-9644e21d.css" rel="stylesheet"/>
+<!-- Highlight.js Stylesheets -->
+<link href="highlight-493f70e1.css" id="mdbook-highlight-css" rel="stylesheet"/>
+<link href="tomorrow-night-4c0ae647.css" id="mdbook-tomorrow-night-css" rel="stylesheet"/>
+<link href="ayu-highlight-3fdfc3ac.css" id="mdbook-ayu-highlight-css" rel="stylesheet"/>
+<!-- Custom theme stylesheets -->
+<link href="ferris-d33b75bf.css" rel="stylesheet"/>
+<link href="theme/2018-edition-4e126c62.css" rel="stylesheet"/>
+<link href="theme/semantic-notes-9b5766c0.css" rel="stylesheet"/>
+<link href="theme/listing-cab26221.css" rel="stylesheet"/>
+<!-- Provide site root and default themes to javascript -->
+<script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cc309c2.js";
+        </script>
+<!-- Start loading toc.js asap -->
+<script src="toc-0e4ce700.js"></script>
+<link href="rust-code-lab.css" rel="stylesheet"/><link href="notion-theme.css" rel="stylesheet"/></head>
+<body>
+<div id="mdbook-help-container">
+<div id="mdbook-help-popup">
+<h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+<div>
+<p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+<p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+<p>Press <kbd>?</kbd> to show this help</p>
+<p>Press <kbd>Esc</kbd> to hide this help</p>
+</div>
+</div>
+</div>
+<div id="mdbook-body-container">
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+<input class="hidden" id="mdbook-sidebar-toggle-anchor" type="checkbox"/>
+<!-- Hide / unhide sidebar before it is displayed -->
+<script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+<nav aria-label="Table of contents" class="sidebar" id="mdbook-sidebar">
+<!-- populated by js -->
+<mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+<noscript>
+<iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+</noscript>
+<div class="sidebar-resize-handle" id="mdbook-sidebar-resize-handle">
+<div class="sidebar-resize-indicator"></div>
+</div>
+</nav>
+<div class="page-wrapper" id="mdbook-page-wrapper">
+<div class="page">
+<div id="mdbook-menu-bar-hover-placeholder"></div>
+<div class="menu-bar sticky" id="mdbook-menu-bar">
+<div class="left-buttons">
+<label aria-controls="mdbook-sidebar" aria-label="Toggle Table of Contents" class="icon-button" for="mdbook-sidebar-toggle-anchor" id="mdbook-sidebar-toggle" title="Toggle Table of Contents">
+<span class="fa-svg"><svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"></path></svg></span>
+</label>
+<button aria-controls="mdbook-theme-list" aria-expanded="false" aria-haspopup="true" aria-label="Change theme" class="icon-button" id="mdbook-theme-toggle" title="Change theme" type="button">
+<span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"></path></svg></span>
+</button>
+<ul aria-label="Themes" class="theme-popup" id="mdbook-theme-list" role="menu">
+<li role="none"><button class="theme" id="mdbook-theme-default_theme" role="menuitem">Auto</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-light" role="menuitem">Light</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-rust" role="menuitem">Rust</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-coal" role="menuitem">Coal</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-navy" role="menuitem">Navy</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-ayu" role="menuitem">Ayu</button></li>
+</ul>
+<button aria-controls="mdbook-searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-label="Toggle Searchbar" class="icon-button" id="mdbook-search-toggle" title="Search (`/`)" type="button">
+<span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"></path></svg></span>
+</button>
+</div>
+<h1 class="menu-title">The Rust Programming Language</h1>
+<div class="right-buttons">
+<a aria-label="Print this book" href="print.html" title="Print this book">
+<span class="fa-svg" id="print-button"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"></path></svg></span>
+</a>
+<a aria-label="Git repository" href="https://github.com/rust-lang/book" title="Git repository">
+<span class="fa-svg"><svg viewbox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></span>
+</a>
+</div>
+</div>
+<div class="hidden" id="mdbook-search-wrapper">
+<form class="searchbar-outer" id="mdbook-searchbar-outer">
+<div class="search-wrapper">
+<input aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." type="search"/>
+<div class="spinner-wrapper">
+<span class="fa-svg" id="fa-spin"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"></path></svg></span>
+</div>
+</div>
+</form>
+<div class="searchresults-outer hidden" id="mdbook-searchresults-outer">
+<div class="searchresults-header" id="mdbook-searchresults-header"></div>
+<ul id="mdbook-searchresults">
+</ul>
+</div>
+</div>
+<!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+<script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+<div class="content" id="mdbook-content">
+<main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="treating-smart-pointers-like-regular-references-with-the-deref-trait"></a>
+<a id="treating-smart-pointers-like-regular-references-with-deref"></a></p>
+<h2 id="treating-smart-pointers-like-regular-references"><a class="header" href="#treating-smart-pointers-like-regular-references">스마트 포인터를 정규 참조처럼 취급하기</a></h2>
+<p><code>Deref</code> 특성을 구현하면 역참조 연산자 <code>*</code>의 동작을 사용자 정의할 수 있습니다(곱셈 또는 글로브 연산자와 혼동하지 마십시오). <code>Deref</code>를 구현하여 스마트 포인터를 일반 참조로 처리할 수 있으므로 참조에서 작동하는 코드를 작성하고 스마트 포인터로도 해당 코드를 사용할 수 있습니다.</p>
+<p>먼저 역참조 연산자가 일반 참조와 어떻게 작동하는지 살펴 보겠습니다. 그런 다음 <code>Box&lt;T&gt;</code>와 같은 사용자 정의 유형을 정의하고 역참조 연산자가 새로 정의 된 유형의 참조처럼 작동하지 않는 이유를 살펴 보겠습니다. <code>Deref</code> 트레잇을 구현하면 스마트 포인터가 참조와 유사한 방식으로 작동 할 수 있습니다. 그런 다음 러스트에서 참조를 참조하거나 참조를 참조 할 수 있습니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="following-the-pointer-to-the-value-with-the-dereference-operator"></a>
+<a id="following-the-pointer-to-the-value"></a></p>
+<h3 id="following-the-reference-to-the-value"><a class="header" href="#following-the-reference-to-the-value">값에 대한 참조 reference to the value</a></h3>
+<p>정규 참조는 포인터의 한 유형이며, 포인터를 생각하는 한 가지 방법은 다른 곳에 저장된 값에 대한 화살표와 같습니다. Listing 15-6에서, 우리는 <code>i32</code> 값에 대한 참조를 생성하고 그 값에 대한 참조를 따르기 위해 역참조 연산자를 사용합니다.</p>
+<figure class="listing" id="listing-15-6">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let x = 5;
+    let y = &amp;x;
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}</code></pre>
+<figcaption><a href="#listing-15-6">상장 15-6</a>: 역참조 연산자를 사용하여 <code>i32</code> 값 참조를 따릅니다.</figcaption>
+</figure>
+<p>변수 <code>x</code> 유지하다 a <code>i32</code> 값 <code>5</code>. 우리는 설정 <code>y</code> 에 대한 참조입니다.A reference to
+<code>x</code>. 우리는 그것을 주장해서 좋습니다 <code>x</code> 그것은 평등하다. <code>5</code>. 그러나, 우리가 값에 대한 주장을하려는 경우 <code>y</code>, 우리는 사용해야합니다. <code>*y</code> to follow the reference to the value it’s pointing to (따라서 그것이 가리키는 값에 대한 참조를 따르도록) <em>역참조</em>컴파일러가 실제 값을 비교할 수 있도록 ). 일단 우리가 역참조 <code>y</code>정수 값에 접근할 수 있습니다. <code>y</code> 우리가 비교할 수 있다는 것을 지적하고 있습니다. <code>5</code>.</p>
+<p>대신 <code>assert_eq!(5, y);</code>를 작성하려고하면 다음과 같은 컴파일 오류가 발생합니다.</p>
+<pre><code class="language-console">$ cargo run
+   Compiling deref-example v0.1.0 (file:///projects/deref-example)
+error[E0277]: can't compare `{integer}` with `&amp;{integer}`
+ --&gt; src/main.rs:6:5
+  |
+6 |     assert_eq!(5, y);
+  |     ^^^^^^^^^^^^^^^^ no implementation for `{integer} == &amp;{integer}`
+  |
+  = help: the trait `PartialEq&lt;&amp;{integer}&gt;` is not implemented for `{integer}`
+  = help: the following other types implement trait `PartialEq&lt;Rhs&gt;`:
+            f128
+            f16
+            f32
+            f64
+            i128
+            i16
+            i32
+            i64
+          and 8 others
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `deref-example` (bin "deref-example") due to 1 previous error
+</code></pre>
+<p>숫자와 참조를 숫자와 비교하는 것은 형식이 다르기 때문에 허용되지 않습니다. 역참조 연산자를 사용하여 가리키고 있는 값에 대한 참조를 따라야 합니다.</p>
+<h3 id="using-boxt-like-a-reference"><a class="header" href="#using-boxt-like-a-reference">사용 <code>Box&lt;T&gt;</code> 참고 문헌처럼</a></h3>
+<p>Listing 15-6의 코드를 다시 작성하여 참조 대신 <code>Box&lt;T&gt;</code>를 사용할 수 있습니다; Listing 15-6의 참조에 사용된 역참조 연산자와 같은 방식으로 Listing 15-7 함수의 <code>Box&lt;T&gt;</code>에 사용된 역참조 연산자입니다.</p>
+<figure class="listing" id="listing-15-7">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let x = 5;
+    let y = Box::new(x);
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}</code></pre>
+<figcaption><a href="#listing-15-7">등록 15-7</a>: <code>Box&lt;i32&gt;</code>에서 역참조 연산자 사용하기</figcaption>
+</figure>
+<p>Listing 15-7과 Listing 15-6의 가장 큰 차이점은 여기에 우리가 설정했다는 것입니다.
+<code>y</code> 복사된 값을 가리키는 상자의 인스턴스가 되기 위해 <code>x</code> 상기 값을 나타내는 단계는, Wherein the value for the <code>x</code>. 마지막 어설션에서, 우리는 역참조 연산자를 사용하여 우리가 할 때와 같은 방식으로 상자의 포인터를 따라갈 수 있습니다. <code>y</code> 다음, 우리는 특별한 것에 대해 탐구 할 것입니다. <code>Box&lt;T&gt;</code>
+이를 통해 우리는 우리 자신의 상자 유형을 정의함으로써 역참조 연산자를 사용할 수 있습니다.</p>
+<h3 id="defining-our-own-smart-pointer"><a class="header" href="#defining-our-own-smart-pointer">우리 자신의 스마트 포인터 정의</a></h3>
+<p>표준 라이브러리에서 제공하는 <code>Box&lt;T&gt;</code> 유형과 유사한 래퍼 유형을 구축하여 스마트 포인터 유형이 기본적으로 참조와 다르게 동작하는 방법을 경험해 보겠습니다. 그런 다음 역참조 연산자를 사용하는 기능을 추가하는 방법을 살펴보겠습니다.</p>
+<section aria-role="note" class="note">
+<p>참고 : 우리가 구축하려고하는 <code>MyBox&lt;T&gt;</code> 유형과 실제 <code>Box&lt;T&gt;</code> 사이에는 큰 차이가 있습니다. 우리의 버전은 데이터를 힙에 저장하지 않습니다. 이 예제는 <code>Deref</code>에 초점을 맞추고 있으므로 데이터가 실제로 저장된 위치는 포인터와 같은 동작보다 덜 중요합니다.</p>
+</section>
+<p><code>Box&lt;T&gt;</code> 타입은 궁극적으로 하나의 요소를 가진 튜플 구조체로 정의되므로, Listing 15-8은 <code>MyBox&lt;T&gt;</code> 타입을 같은 방식으로 정의합니다. 또한 <code>new</code> 함수를 <code>new</code>에 정의된 <code>Box&lt;T&gt;</code> 함수와 일치하도록 정의할 것입니다.</p>
+<figure class="listing" id="listing-15-8">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">struct MyBox&lt;T&gt;(T);
+
+impl&lt;T&gt; MyBox&lt;T&gt; {
+    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+        MyBox(x)
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
+<figcaption><a href="#listing-15-8">상장 15-8</a>: <code>MyBox&lt;T&gt;</code> 유형 정의</figcaption>
+</figure>
+<p>이름있는 구조체를 정의합니다. <code>MyBox</code> 제네릭 매개 변수를 선언합니다. <code>T</code> 왜냐하면 우리는 우리의 타입이 어떤 타입의 값이라도 가지기를 원하기 때문입니다. <code>MyBox</code> type은 type의 한 요소를 가진 튜플 구조체입니다. <code>T</code>. 그 <code>MyBox::new</code> 기능은 유형의 1개의 모수를 가지고 갑니다 <code>T</code> 반환값 a <code>MyBox</code> 전달된 값을 가지는 인스턴스입니다.</p>
+<p>를 추가해 보자. <code>main</code> Listing 15-7에서 Listing 15-8의 함수를 사용하여 변경합니다. <code>MyBox&lt;T&gt;</code> 우리가 정의한 타입 대신에 <code>Box&lt;T&gt;</code>Listing 15-9의 코드는 컴파일되지 않습니다, 왜냐하면 러스트는 역참조하는 방법을 모르기 때문입니다 <code>MyBox</code>.</p>
+<figure class="listing" id="listing-15-9">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let x = 5;
+    let y = MyBox::new(x);
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}</code></pre>
+<figcaption><a href="#listing-15-9">상장 15-9</a>: 사용하려는 시도 <code>MyBox&lt;T&gt;</code> 같은 방법으로 우리는 참조를 사용 하 고 <code>Box&lt;T&gt;</code></figcaption>
+</figure>
+<p>다음은 결과 컴파일 오류입니다.</p>
+<pre><code class="language-console">$ cargo run
+   Compiling deref-example v0.1.0 (file:///projects/deref-example)
+error[E0614]: type `MyBox&lt;{integer}&gt;` cannot be dereferenced
+  --&gt; src/main.rs:14:19
+   |
+14 |     assert_eq!(5, *y);
+   |                   ^^ can't be dereferenced
+
+For more information about this error, try `rustc --explain E0614`.
+error: could not compile `deref-example` (bin "deref-example") due to 1 previous error
+</code></pre>
+<p>우리의 <code>MyBox&lt;T&gt;</code> 유형은 우리가 우리의 유형에 그 능력을 구현하지 않았기 때문에 역참조 될 수 없습니다. <code>*</code> 연산자로 역참조를 가능하게하기 위해 <code>Deref</code> 트레잇을 구현합니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="treating-a-type-like-a-reference-by-implementing-the-deref-trait"></a></p>
+<h3 id="implementing-the-deref-trait"><a class="header" href="#implementing-the-deref-trait">상기 구현 The implementing <code>Deref</code> 트레이트는</a></h3>
+<p>에서 논의된 바와 같이 <a href="ch10-02-traits.html#implementing-a-trait-on-a-type">“유형 에 따라 특성 을 적용 함”</a> 무시  10장에서는 트레잇을 구현하기 위해 트레잇의 필수 메소드에 대한 구현을 제공해야 합니다. <code>Deref</code> 표준 라이브러리에서 제공하는 트레잇은 우리가 하나의 메소드를 구현하도록 요구합니다. <code>deref</code> 그 빌린 <code>self</code> 그리고 내부 데이터에 대한 참조를 반환합니다. Listing 15-10은 <code>Deref</code> 의 정의에 추가하려면 <code>MyBox&lt;T&gt;</code>.</p>
+<figure class="listing" id="listing-15-10">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">use std::ops::Deref;
+
+impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
+    type Target = T;
+
+    fn deref(&amp;self) -&gt; &amp;Self::Target {
+        &amp;self.0
+    }
+}
+<span class="boring">
+</span><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let x = 5;
+</span><span class="boring">    let y = MyBox::new(x);
+</span><span class="boring">
+</span><span class="boring">    assert_eq!(5, x);
+</span><span class="boring">    assert_eq!(5, *y);
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-15-10">목록 15-10</a>: <code>Deref</code>에서 <code>MyBox&lt;T&gt;</code> 구현하기</figcaption>
+</figure>
+<p><code>type Target = T;</code> 구문은 사용할 <code>Deref</code> 특성에 대한 관련 유형을 정의합니다. 관련 유형은 일반 매개 변수를 선언하는 약간 다른 방법이지만 지금은 걱정할 필요가 없습니다. 20 장에서 더 자세히 다룰 것입니다.</p>
+<p>우리는 그리스도의 몸을 채웁니다 <code>deref</code> 모델명 with <code>&amp;self.0</code> 그래서 <code>deref</code>
+우리가 접근하고자 하는 값에 대한 참조를 반환한다. <code>*</code> 상기로부터 Recall from <a href="ch05-01-defining-structs.html#creating-different-types-with-tuple-structs">“다양 한 종류 의 튜플 구조체 를 만들어 내는 일”</a>
+무시  chapter 5 그것은 <code>.0</code> 튜플 구조체의 첫 번째 값에 액세스합니다. <code>main</code> Listing 15-9에서 호출하는 함수 <code>*</code> 에 관하여 <code>MyBox&lt;T&gt;</code> 이제 값이 컴파일되고 assertion이 통과됩니다!</p>
+<p><code>Deref</code> 특성이 없으면 컴파일러는 <code>&amp;</code> 참조만 역참조할 수 있습니다. <code>deref</code> 메서드는 컴파일러에게 <code>Deref</code>를 구현하는 모든 유형의 값을 가져와 역참조 방법을 알고 있는 참조를 얻기 위해 <code>deref</code> 메서드를 호출할 수 있는 기능을 제공합니다.</p>
+<p>Listing 15-9에서 <code>*y</code>를 입력했을 때, 러스트는 실제로 이 코드를 실행했습니다:</p>
+<pre><code class="language-rust ignore">*(y.deref())</code></pre>
+<p>러스트는 <code>*</code> 연산자를 <code>deref</code> 메소드에 대한 호출과 일반 역참조로 대체하여 <code>deref</code> 메소드를 호출할 필요가 있는지 여부를 생각할 필요가 없도록 합니다. 이 러스트 기능을 사용하면 일반 참조가 있는지 또는 <code>Deref</code>를 구현하는 유형이 있는지와 동일하게 기능을 하는 코드를 작성할 수 있습니다.</p>
+<p>상기 이유는 The reason the <code>deref</code> 메서드는 값에 대한 참조를 반환하고 괄호 바깥의 일반 역참조를 반환합니다. <code>*(y.deref())</code> 여전히 필요하며 소유권 시스템과 관련이 있습니다. <code>deref</code> method는 값에 대한 참조 대신 직접 값을 반환하며, 그 값은 밖으로 이동됩니다.
+<code>self</code>. 우리는 내부 가치의 소유권을 원하지 않습니다. <code>MyBox&lt;T&gt;</code> 이 경우 또는 대부분의 경우 역참조 연산자를 사용합니다.</p>
+<p>유의할 점 <code>*</code> 상기 호출은 상기 호출로 대체되는 Replacement with a call to the <code>deref</code> 상기 호출하는 단계는, Wherein a call to the <code>*</code> 연산자는 한 번만, 우리가 사용할 때마다 <code>*</code> 우리의 코드에서. 의 대체 때문에 <code>*</code> 연산자는 무한히 반복되지 않습니다, 우리는 유형의 데이터로 끝납니다. <code>i32</code>상기 대응하는 단계는, Wherein the matching the <code>5</code> 에서 <code>assert_eq!</code> 목록 15-9.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="implicit-deref-coercions-with-functions-and-methods"></a>
+<a id="using-deref-coercions-in-functions-and-methods"></a></p>
+<h3 id="using-deref-coercion-in-functions-and-methods"><a class="header" href="#using-deref-coercion-in-functions-and-methods">함수와 방법에서 Deref Coercion 사용하기</a></h3>
+<p><em>Deref 강제</em> 를 구현하는 형식에 대한 참조를 변환합니다.Converts a reference to a type that implements the <code>Deref</code>
+트레잇을 다른 타입에 대한 참조로 변환할 수 있습니다. 예를 들어, deref coercion은
+<code>&amp;String</code> 오시는 길 <code>&amp;str</code> 왜냐하면 <code>String</code> 를 구현한다. <code>Deref</code> 반환할 값입니다.The value to return <code>&amp;str</code>. Deref coercion은 함수와 메소드에 대한 인수에 대해 러스트가 수행하는 편의이며, <code>Deref</code>
+트레잇. 함수나 메소드 정의에서 파라미터 타입과 일치하지 않는 함수나 메소드에 인수로서 특정 타입의 값에 대한 참조를 전달할 때 자동으로 발생합니다. <code>deref</code>
+메소드는 우리가 제공한 타입을 파라미터가 필요로 하는 타입으로 변환합니다.</p>
+<p>Deref coercion이 러스트에 추가되어 프로그래머가 함수와 메서드 호출을 작성할 때 <code>&amp;</code> 및 <code>*</code>를 사용하여 많은 명시적 참조 및 역참조를 추가할 필요가 없습니다. 또한, deref coercion 기능을 통해 참조 또는 스마트 포인터에 대해 더 많은 코드를 작성할 수 있습니다.</p>
+<p>deref coercion이 동작하는 것을 보려면, Listing 15-8에서 정의한 <code>MyBox&lt;T&gt;</code> 타입과 Listing 15-10에서 추가된 <code>Deref</code>의 구현을 사용합시다. Listing 15-11은 문자열 슬라이스 파라미터를 가진 함수의 정의를 보여줍니다.</p>
+<figure class="listing" id="listing-15-11">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024">fn hello(name: &amp;str) {
+    println!("Hello, {name}!");
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
+<figcaption><a href="#listing-15-11">상장 15-11</a> : <code>hello</code> 유형의 <code>name</code> 매개 변수가있는 <code>&amp;str</code> 기능</figcaption>
+</figure>
+<p>우리는 전화 할 수 있습니다 <code>hello</code> 함수는 인수로서 문자열 슬라이스를 가지고 있습니다.
+<code>hello("Rust");</code>예를 들어, Deref coercion은 호출을 가능하게 한다. <code>hello</code>
+타입의 값에 대한 참조와 함께 <code>MyBox&lt;String&gt;</code>Listing 15-12에 나와 있는 것과 같습니다.</p>
+<figure class="listing" id="listing-15-12">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">use std::ops::Deref;
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
+</span><span class="boring">    type Target = T;
+</span><span class="boring">
+</span><span class="boring">    fn deref(&amp;self) -&gt; &amp;T {
+</span><span class="boring">        &amp;self.0
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn hello(name: &amp;str) {
+</span><span class="boring">    println!("Hello, {name}!");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let m = MyBox::new(String::from("Rust"));
+    hello(&amp;m);
+}</code></pre>
+<figcaption><a href="#listing-15-12">상장 15-12</a>: 전화 <code>hello</code> 에 대한 참조와 함께 <code>MyBox&lt;String&gt;</code> deref 강제 때문에 작동하는 가치,</figcaption>
+</figure>
+<p>여기 우리가 부르는 거 야 <code>hello</code> 인자를 가진 함수 <code>&amp;m</code>상기 참조하는 단계는, Wherein a reference, <code>MyBox&lt;String&gt;</code> 값. 우리가 구현했기 때문에 <code>Deref</code> 트레잇 켜짐 <code>MyBox&lt;T&gt;</code> Listing 15-10에서, 러스트는 바뀔 수 있습니다 <code>&amp;MyBox&lt;String&gt;</code> 다음으로 <code>&amp;String</code>
+전화 걸기 <code>deref</code>표준 라이브러리는 다음과 같은 구현을 제공합니다. <code>Deref</code>
+온 <code>String</code> 이 함수는 문자열 슬라이스를 반환하고, 이것은 API 문서에 있습니다. <code>Deref</code>. 러스트 호출 <code>deref</code> 다시 돌리다 turn the <code>&amp;String</code> 다음으로 <code>&amp;str</code>상기 대응하는 단계는, Wherein the matching the <code>hello</code> 함수의 정의.</p>
+<p>만약 러스트가 deref coercion을 구현하지 않았다면, 우리는 Listing 15-12의 코드 대신 Listing 15-13의 코드를 작성해야 할 것입니다. <code>hello</code> 타입의 값으로 <code>&amp;MyBox&lt;String&gt;</code>.</p>
+<figure class="listing" id="listing-15-13">
+<span class="file-name">Filename: src/main.rs</span>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">use std::ops::Deref;
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
+</span><span class="boring">    type Target = T;
+</span><span class="boring">
+</span><span class="boring">    fn deref(&amp;self) -&gt; &amp;T {
+</span><span class="boring">        &amp;self.0
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct MyBox&lt;T&gt;(T);
+</span><span class="boring">
+</span><span class="boring">impl&lt;T&gt; MyBox&lt;T&gt; {
+</span><span class="boring">    fn new(x: T) -&gt; MyBox&lt;T&gt; {
+</span><span class="boring">        MyBox(x)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn hello(name: &amp;str) {
+</span><span class="boring">    println!("Hello, {name}!");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let m = MyBox::new(String::from("Rust"));
+    hello(&amp;(*m)[..]);
+}</code></pre>
+<figcaption><a href="#listing-15-13">상장 15-13</a>: 러스트에 강제성이 없다면 우리가 작성해야 할 코드</figcaption>
+</figure>
+<p>이름 * <code>(*m)</code> 상기 역참조하는 The dereference <code>MyBox&lt;String&gt;</code> 으로 A <code>String</code>. 다음, the <code>&amp;</code> 그리고
+<code>[..]</code> 의 문자열 조각을 가져 가라. <code>String</code> 이는 전체 문자열과 동일하며 다음과 같은 서명과 같습니다. <code>hello</code>. def가 없는 이 코드는 읽기, 쓰기, 이해하기가 더 어렵습니다. Deref는 러스트가 우리를 위해 이러한 변환을 자동으로 처리할 수 있게 해줍니다.</p>
+<p><code>Deref</code> 트레잇이 관련된 타입에 대해 정의되면, 러스트는 타입을 분석하고 <code>Deref::deref</code>를 매개 변수의 타입에 맞는 레퍼런스를 얻기 위해 필요한 만큼 사용할 것입니다. <code>Deref::deref</code>가 삽입되어야 하는 횟수는 컴파일 시간에 해결되므로, 역지연을 이용하기 위한 런타임 페널티는 없습니다!</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="how-deref-coercion-interacts-with-mutability"></a></p>
+<h3 id="handling-deref-coercion-with-mutable-references"><a class="header" href="#handling-deref-coercion-with-mutable-references">가변 참조를 이용한 강제력 처리</a></h3>
+<p><code>Deref</code> 트레잇을 사용하여 불변 참조에서 <code>*</code> 연산자를 재정의하는 것과 마찬가지로 <code>DerefMut</code> 트레잇을 사용하여 가변 참조에서 <code>*</code> 연산자를 재정의할 수 있습니다.</p>
+<p>러스트는 세 가지 경우에 타입과 트레잇 구현을 찾을 때 강제성을 감소시킵니다:</p>
+<ol>
+<li><code>&amp;T</code>에서 <code>&amp;U</code>에 <code>T: Deref&lt;Target=U&gt;</code> 때</li>
+<li><code>&amp;mut T</code>에서 <code>&amp;mut U</code>에 <code>T: DerefMut&lt;Target=U&gt;</code> 때</li>
+<li><code>&amp;mut T</code>에서 <code>&amp;U</code>에 <code>T: Deref&lt;Target=U&gt;</code> 때</li>
+</ol>
+<p>첫 번째 두 경우는 두 번째 경우는 가변성을 구현한다는 점을 제외하고는 동일합니다. 첫 번째 경우는 <code>&amp;T</code>와 <code>T</code>가 <code>Deref</code>를 일부 유형 <code>U</code>에 구현하면 <code>&amp;U</code>를 투명하게 얻을 수 있습니다. 두 번째 경우는 동일한 역참조 강제가 발생할 수 있음을 나타냅니다.</p>
+<p>세 번째 경우는 더 까다롭습니다: 러스트는 불변의 참조를 강제할 것입니다. 그러나 그 반대는 불가능합니다: 불변 참조는 가변 참조를 강제할 수 없습니다. 차입 규칙 때문에, 가변 참조는 그 데이터에 대한 유일한 참조여야 합니다(그렇지 않으면 프로그램이 컴파일되지 않습니다). 불변 참조를 불변의 참조로 변환하는 것은 불변의 참조로 간주될 수 없습니다.</p>
+</main>
+<nav aria-label="Page navigation" class="nav-wrapper">
+<!-- Mobile navigation buttons -->
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="mobile-nav-chapters previous" href="ch15-01-box.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="mobile-nav-chapters next" href="ch15-03-drop.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+<div style="clear: both"></div>
+</nav>
+</div>
+</div>
+<nav aria-label="Page navigation" class="nav-wide-wrapper">
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="nav-chapters previous" href="ch15-01-box.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="nav-chapters next" href="ch15-03-drop.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+</nav>
+</div>
+<template id="fa-eye"><span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"></path></svg></span></template>
+<template id="fa-eye-slash"><span class="fa-svg"><svg viewbox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"></path></svg></span></template>
+<template id="fa-copy"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"></path></svg></span></template>
+<template id="fa-play"><span class="fa-svg"><svg viewbox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path></svg></span></template>
+<template id="fa-clock-rotate-left"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"></path></svg></span></template>
+<script>
+            window.playground_copyable = true;
+        </script>
+<script src="elasticlunr-ef4e11c1.min.js"></script>
+<script src="mark-09e88c2c.min.js"></script>
+<script src="searcher-09f2665d.js"></script>
+<script src="clipboard-1626706a.min.js"></script>
+<script src="highlight-abc7f01d.js"></script>
+<script src="book-609e4cb8.js"></script>
+<!-- Custom JS scripts -->
+<script src="ferris-2317480c.js"></script>
+</div>
+<script defer="" src="rust-code-lab.js"></script></body>
+</html>

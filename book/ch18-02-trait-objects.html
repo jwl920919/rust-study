@@ -1,0 +1,441 @@
+<!DOCTYPE HTML>
+
+<html class="light sidebar-visible" dir="ltr" lang="ko">
+<head>
+<!-- Book generated using mdBook -->
+<meta charset="utf-8"/>
+<title>Using Trait Objects to Abstract over Shared Behavior - The Rust Programming Language</title>
+<!-- Custom HTML head -->
+<meta content="" name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<link href="favicon-de23e50b.svg" rel="icon"/>
+<link href="favicon-8114d1fc.png" rel="shortcut icon"/>
+<link href="css/variables-8adf115d.css" rel="stylesheet"/>
+<link href="css/general-e96d0476.css" rel="stylesheet"/>
+<link href="css/chrome-d279d366.css" rel="stylesheet"/>
+<link href="css/print-9e4910d8.css" media="print" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="fonts/fonts-9644e21d.css" rel="stylesheet"/>
+<!-- Highlight.js Stylesheets -->
+<link href="highlight-493f70e1.css" id="mdbook-highlight-css" rel="stylesheet"/>
+<link href="tomorrow-night-4c0ae647.css" id="mdbook-tomorrow-night-css" rel="stylesheet"/>
+<link href="ayu-highlight-3fdfc3ac.css" id="mdbook-ayu-highlight-css" rel="stylesheet"/>
+<!-- Custom theme stylesheets -->
+<link href="ferris-d33b75bf.css" rel="stylesheet"/>
+<link href="theme/2018-edition-4e126c62.css" rel="stylesheet"/>
+<link href="theme/semantic-notes-9b5766c0.css" rel="stylesheet"/>
+<link href="theme/listing-cab26221.css" rel="stylesheet"/>
+<!-- Provide site root and default themes to javascript -->
+<script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cc309c2.js";
+        </script>
+<!-- Start loading toc.js asap -->
+<script src="toc-0e4ce700.js"></script>
+<link href="rust-code-lab.css" rel="stylesheet"/><link href="notion-theme.css" rel="stylesheet"/></head>
+<body>
+<div id="mdbook-help-container">
+<div id="mdbook-help-popup">
+<h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+<div>
+<p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+<p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+<p>Press <kbd>?</kbd> to show this help</p>
+<p>Press <kbd>Esc</kbd> to hide this help</p>
+</div>
+</div>
+</div>
+<div id="mdbook-body-container">
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+<input class="hidden" id="mdbook-sidebar-toggle-anchor" type="checkbox"/>
+<!-- Hide / unhide sidebar before it is displayed -->
+<script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+<nav aria-label="Table of contents" class="sidebar" id="mdbook-sidebar">
+<!-- populated by js -->
+<mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+<noscript>
+<iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+</noscript>
+<div class="sidebar-resize-handle" id="mdbook-sidebar-resize-handle">
+<div class="sidebar-resize-indicator"></div>
+</div>
+</nav>
+<div class="page-wrapper" id="mdbook-page-wrapper">
+<div class="page">
+<div id="mdbook-menu-bar-hover-placeholder"></div>
+<div class="menu-bar sticky" id="mdbook-menu-bar">
+<div class="left-buttons">
+<label aria-controls="mdbook-sidebar" aria-label="Toggle Table of Contents" class="icon-button" for="mdbook-sidebar-toggle-anchor" id="mdbook-sidebar-toggle" title="Toggle Table of Contents">
+<span class="fa-svg"><svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"></path></svg></span>
+</label>
+<button aria-controls="mdbook-theme-list" aria-expanded="false" aria-haspopup="true" aria-label="Change theme" class="icon-button" id="mdbook-theme-toggle" title="Change theme" type="button">
+<span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"></path></svg></span>
+</button>
+<ul aria-label="Themes" class="theme-popup" id="mdbook-theme-list" role="menu">
+<li role="none"><button class="theme" id="mdbook-theme-default_theme" role="menuitem">Auto</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-light" role="menuitem">Light</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-rust" role="menuitem">Rust</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-coal" role="menuitem">Coal</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-navy" role="menuitem">Navy</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-ayu" role="menuitem">Ayu</button></li>
+</ul>
+<button aria-controls="mdbook-searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-label="Toggle Searchbar" class="icon-button" id="mdbook-search-toggle" title="Search (`/`)" type="button">
+<span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"></path></svg></span>
+</button>
+</div>
+<h1 class="menu-title">The Rust Programming Language</h1>
+<div class="right-buttons">
+<a aria-label="Print this book" href="print.html" title="Print this book">
+<span class="fa-svg" id="print-button"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"></path></svg></span>
+</a>
+<a aria-label="Git repository" href="https://github.com/rust-lang/book" title="Git repository">
+<span class="fa-svg"><svg viewbox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></span>
+</a>
+</div>
+</div>
+<div class="hidden" id="mdbook-search-wrapper">
+<form class="searchbar-outer" id="mdbook-searchbar-outer">
+<div class="search-wrapper">
+<input aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." type="search"/>
+<div class="spinner-wrapper">
+<span class="fa-svg" id="fa-spin"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"></path></svg></span>
+</div>
+</div>
+</form>
+<div class="searchresults-outer hidden" id="mdbook-searchresults-outer">
+<div class="searchresults-header" id="mdbook-searchresults-header"></div>
+<ul id="mdbook-searchresults">
+</ul>
+</div>
+</div>
+<!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+<script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+<div class="content" id="mdbook-content">
+<main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="using-trait-objects-that-allow-for-values-of-different-types"></a></p>
+<h2 id="using-trait-objects-to-abstract-over-shared-behavior"><a class="header" href="#using-trait-objects-to-abstract-over-shared-behavior">Trait Objects를 사용하여 공유된 행동을 추상화하기</a></h2>
+<p>제 8장에서 우리는 벡터의 한 가지 제한은 단지 한 가지 유형의 요소를 저장할 수 있다는 것을 언급했습니다. 우리는 Listing 8-9에서 정수, float 및 텍스트를 저장하는 변형을 가진 <code>SpreadsheetCell</code> 열거형을 정의한 해결 방법을 만들었습니다. 이것은 우리가 각 셀에 다른 유형의 데이터를 저장할 수 있고 여전히 셀 행을 나타내는 벡터를 가질 수 있음을 의미합니다. 이것은 우리의 교환 가능한 항목이 고정 된 코드 세트일 때 완벽하게 좋은 해결책입니다.</p>
+<p>그러나 때로는 라이브러리 사용자가 특정 상황에서 유효한 형식 집합을 확장 할 수 있기를 원합니다. 우리가 어떻게이를 달성 할 수 있는지 보여주기 위해, 우리는 항목 목록을 통해 반복하는 예제 그래픽 사용자 인터페이스 (GUI) 도구를 만들 것입니다. <code>draw</code> GUI 도구의 일반적인 기술인 화면에 그리는 방법. 우리는 라이브러리 크레이트라는 것을 만들 것입니다.
+<code>gui</code> 그것은 GUI 라이브러리의 구조를 포함합니다. 이 크레이트에는 사람들이 사용할 몇 가지 유형이 포함될 수 있습니다. <code>Button</code> 또는 <code>TextField</code>. 또한,
+<code>gui</code> 사용자는 그려질 수 있는 그들의 자신의 유형을 창조하고 싶을 것이다: 예를 들면, 1명의 프로그래머는 <code>Image</code>그리고 또 다른 하나는
+<code>SelectBox</code>.</p>
+<p>라이브러리를 작성할 때 다른 프로그래머가 만들고 싶어하는 모든 유형을 알고 정의 할 수 없습니다. 그러나 우리는 그것을 알고 있습니다. <code>gui</code> 다른 유형의 많은 값을 추적해야하며 a를 호출해야합니다. <code>draw</code> 각각 다른 타입의 값에 대한 메소드입니다. 우리가 호출 할 때 어떤 일이 일어날 지 정확히 알 필요가 없습니다. <code>draw</code> 이 메서드는 호출할 수 있는 메서드를 갖습니다.This method will be available for this method to call.</p>
+<p>상속된 언어에서 이것을 하기 위해서, 우리는 이름을 가진 클래스를 정의할 수 있다.
+<code>Component</code> 라는 이름의 method가 있습니다. <code>draw</code> 그것에. 다른 종류와 같은
+<code>Button</code>, <code>Image</code>, 그리고 <code>SelectBox</code>에서 상속될 것이다. <code>Component</code> 그리하여 유산을 <code>draw</code> 방법. 그들은 각각을 재정의할 수 있었습니다 <code>draw</code> 메서드는 사용자 지정 동작을 정의하지만 프레임워크는 모든 유형을 마치 다음과 같이 처리할 수 있습니다. <code>Component</code> 인스턴스 및 호출Instance and call <code>draw</code> 러스트는 상속을 가지고 있지 않기 때문에, <code>gui</code> 라이브러리는 사용자가 라이브러리와 호환되는 새로운 유형을 만들 수 있도록합니다.</p>
+<h3 id="defining-a-trait-for-common-behavior"><a class="header" href="#defining-a-trait-for-common-behavior">공통 행동에 대한 특성 정의</a></h3>
+<p>우리가 원하는 행동을 실행하기 위해 <code>gui</code> to have, we'll define a 트레잇 네임드 <code>Draw</code> 라는 이름의 한 가지 방법이 있을 것이다. <code>draw</code>. 그런 다음 트레잇 객체를 갖는 벡터를 정의할 수 있습니다. A <em>트레잇 객체</em> 지정된 트레잇을 구현한 타입의 인스턴스와 런타임에 그 타입에 대한 트레잇 메서드를 조회하는 데 사용되는 테이블을 모두 가리킵니다. 참조 또는 a와 같은 일종의 포인터를 지정하여 트레잇 객체를 만듭니다. <code>Box&lt;T&gt;</code> 스마트 포인터, The Smart Point
+<code>dyn</code> keyword, and then specifying the relevant 트레잇. (트레잇 객체가 포인터를 사용해야 하는 이유에 대해 이야기하겠습니다. <a href="ch20-03-advanced-types.html#dynamically-sized-types-and-the-sized-trait">"동적 크기의 유형 및
+<code>Sized</code> “특성”</a> 무시  20장에서는 일반적인 타입 또는 구체적인 타입 대신 트레잇 오브젝트를 사용할 수 있습니다. 트레잇 오브젝트를 사용하는 곳마다, 러스트의 타입 시스템은 컴파일 시에 그 컨텍스트에서 사용되는 모든 값이 트레잇 오브젝트의 트레잇을 구현할 수 있도록 합니다. 따라서, 컴파일 타임에 가능한 모든 타입을 알 필요가 없습니다.</p>
+<p>러스트에서 우리는 structs와 enums를 다른 언어의 객체와 구별하기 위해 “objects”라고 부르는 것을 자제합니다. struct 또는 enum에서 struct 필드의 데이터와 <code>impl</code> 블록의 동작은 분리되어 있는 반면, 다른 언어에서는 하나의 개념으로 결합된 데이터와 동작은 종종 객체로 분류됩니다. Trait 객체는 다른 언어의 객체와 다릅니다.</p>
+<p>Listing 18-3은 <code>Draw</code>라는 하나의 메서드를 사용하여 <code>draw</code>라는 트레잇을 정의하는 방법을 보여줍니다.</p>
+<figure class="listing" id="listing-18-3">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground">pub trait Draw {
+    fn draw(&amp;self);
+}</code></pre>
+<figcaption><a href="#listing-18-3">목록 18-3</a>: <code>Draw</code> 특성의 정의</figcaption>
+</figure>
+<p>이 문법은 10장에서 어떻게 형질을 정의하는지에 대한 논의에서 친숙해 보입니다. 다음은 새로운 문법입니다: Listing 18-4는 struct named를 정의합니다
+<code>Screen</code> vector named 라는 벡터 <code>components</code>. 이 벡터는 타입이다.
+<code>Box&lt;dyn Draw&gt;</code>, 이것은 트레잇 객체입니다; 이것은 a 안에 있는 모든 타입에 대한 스탠드-인입니다.
+<code>Box</code> 상기 구현하는 단계는 It implements the <code>Draw</code> 특성.</p>
+<figure class="listing" id="listing-18-4">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Draw {
+</span><span class="boring">    fn draw(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct Screen {
+    pub components: Vec&lt;Box&lt;dyn Draw&gt;&gt;,
+}</code></pre>
+<figcaption><a href="#listing-18-4">목록 18-4</a>: <code>Screen</code> 필드가 <code>components</code> 트레잇을 구현하는 트레잇 오브젝트의 벡터를 들고 있는 <code>Draw</code> 구조체의 정의</figcaption>
+</figure>
+<p><code>Screen</code> 구조체에서, 우리는 <code>run</code>라는 메소드를 정의할 것입니다. <code>draw</code> 메소드를 각각의 <code>components</code>에서 호출할 것입니다.</p>
+<figure class="listing" id="listing-18-5">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Draw {
+</span><span class="boring">    fn draw(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Screen {
+</span><span class="boring">    pub components: Vec&lt;Box&lt;dyn Draw&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Screen {
+    pub fn run(&amp;self) {
+        for component in self.components.iter() {
+            component.draw();
+        }
+    }
+}</code></pre>
+<figcaption><a href="#listing-18-5">목록 18-5</a>: A <code>run</code> 메서드 켜짐 <code>Screen</code> 상기 호출하는 단계는 It calls the <code>draw</code> 각 성분에 방법</figcaption>
+</figure>
+<p>이것은 트레잇 바운드를 가진 제네릭 타입 파라미터를 사용하는 구조체 정의와는 다르게 작동합니다. 제네릭 타입 파라미터는 한번에 하나의 구체적인 타입으로 대체될 수 있는 반면, 트레잇 객체는 런타임에 트레잇 객체에 대해 여러 개의 구체적인 타입을 채울 수 있도록 합니다. 예를 들어, Listing 18-6에서처럼 제네릭 타입과 트레잇 바운드를 사용하여 <code>Screen</code> 구조체를 정의할 수 있습니다.</p>
+<figure class="listing" id="listing-18-6">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Draw {
+</span><span class="boring">    fn draw(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct Screen&lt;T: Draw&gt; {
+    pub components: Vec&lt;T&gt;,
+}
+
+impl&lt;T&gt; Screen&lt;T&gt;
+where
+    T: Draw,
+{
+    pub fn run(&amp;self) {
+        for component in self.components.iter() {
+            component.draw();
+        }
+    }
+}</code></pre>
+<figcaption><a href="#listing-18-6">목록 18-6</a>: 제네릭과 트레잇 바운드를 사용하는 <code>Screen</code> 구조체와 <code>run</code> 방법의 대체 구현</figcaption>
+</figure>
+<p>이것은 우리를 A <code>Screen</code> 모든 유형의 구성 요소 목록이 있는 인스턴스 <code>Button</code> 또는 모든 종류의 <code>TextField</code>. 만약 동질적인 컬렉션만 있다면, 제네릭과 트레잇 바운스를 사용하는 것이 바람직합니다. 왜냐하면 구체적인 타입들을 사용하기 위해 컴파일 타임에 정의가 Monomorphized 될 것이기 때문입니다.</p>
+<p>반면에, 트레잇 객체를 사용하는 메서드에서는, <code>Screen</code> 예를 들어, can hold a <code>Vec&lt;T&gt;</code> 포함되는 A <code>Box&lt;Button&gt;</code> 또한 A
+<code>Box&lt;TextField&gt;</code>. 이것이 어떻게 작동하는지 살펴보고 런타임 성능 영향에 대해 이야기하겠습니다.</p>
+<h3 id="implementing-the-trait"><a class="header" href="#implementing-the-trait">Trait 구현하기</a></h3>
+<p>이제 다음을 구현하는 몇 가지 유형을 추가합니다.Now we'll add some types that implement the <code>Draw</code> 특성. 우리는 제공할 것입니다
+<code>Button</code> 유형. 다시, 실제로 GUI 도서관을 실행하는 것은 이 책의 범위 저쪽에 입니다, 그래서 <code>draw</code> method는 body에 어떤 유용한 구현도 하지 않습니다. 구현이 어떻게 보일지 상상하기 위해, <code>Button</code> struct는 필드들을 가질 수 있다. <code>width</code>, <code>height</code>, 그리고 <code>label</code>'Listing 18-7'에 해당되는 글 1건</p>
+<figure class="listing" id="listing-18-7">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Draw {
+</span><span class="boring">    fn draw(&amp;self);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct Screen {
+</span><span class="boring">    pub components: Vec&lt;Box&lt;dyn Draw&gt;&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Screen {
+</span><span class="boring">    pub fn run(&amp;self) {
+</span><span class="boring">        for component in self.components.iter() {
+</span><span class="boring">            component.draw();
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct Button {
+    pub width: u32,
+    pub height: u32,
+    pub label: String,
+}
+
+impl Draw for Button {
+    fn draw(&amp;self) {
+        // code to actually draw a button
+    }
+}</code></pre>
+<figcaption><a href="#listing-18-7">목록 18-7</a>: A <code>Button</code> 를 구현하는 struct <code>Draw</code> 특성</figcaption>
+</figure>
+<p>이름 * <code>width</code>, <code>height</code>, 그리고 <code>label</code> 필드 켜짐 <code>Button</code> 다른 구성 요소에서 필드와 다릅니다; 예를 들어, <code>TextField</code> type은 같은 필드와 a를 더할 수 있습니다. <code>placeholder</code> 필드. 우리가 화면에 그릴 각 유형은 구현합니다 <code>Draw</code> 특성이지만 다른 코드를 사용할 것입니다.
+<code>draw</code> 특정 유형을 그리는 방법을 정의하는 방법 <code>Button</code> 여기에있다 (실제 GUI 코드없이, 언급 한 바와 같이). <code>Button</code> 예를 들어 다음과 같은 유형이 있을 수 있습니다. <code>impl</code> 사용자가 버튼을 클릭 할 때 발생하는 것과 관련된 메소드를 포함하는 블록. 이러한 종류의 메소드는 다음과 같은 유형에는 적용되지 않습니다. <code>TextField</code>.</p>
+<p>만약 우리 도서관을 이용하는 누군가가 <code>SelectBox</code> 가진 struct
+<code>width</code>, <code>height</code>, 그리고 <code>options</code> fields, 를 사용할 수 있습니다. <code>Draw</code> 에 대한 특성 <code>SelectBox</code> Listing 18-8에 나와 있는 것과 같이 type도 마찬가지로 입력합니다.</p>
+<figure class="listing" id="listing-18-8">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore">use gui::Draw;
+
+struct SelectBox {
+    width: u32,
+    height: u32,
+    options: Vec&lt;String&gt;,
+}
+
+impl Draw for SelectBox {
+    fn draw(&amp;self) {
+        // code to actually draw a select box
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {}</span></code></pre>
+<figcaption><a href="#listing-18-8">목록 18-8</a>: <code>gui</code>를 사용하고 <code>Draw</code> 구조체에 <code>SelectBox</code> 트레잇을 구현하는 또 다른 크레이트</figcaption>
+</figure>
+<p>우리 도서관의 사용자는 이제 글을 쓸 수 있습니다. <code>main</code> 만드는 기능 A <code>Screen</code>
+예를 들어. <code>Screen</code> 예를 들어 다음과 같이 추가할 수 있습니다. <code>SelectBox</code> 그리고 A <code>Button</code>
+각각 a 에 넣어서 <code>Box&lt;T&gt;</code> 트레잇 객체가 되기 위해서 말이죠.
+<code>run</code> 상기 방법은 The method <code>Screen</code> 상기 호출하는 단계는, Wherein said calling <code>draw</code> Listing 18-9는 이 구현을 보여줍니다.</p>
+<figure class="listing" id="listing-18-9">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore"><span class="boring">use gui::Draw;
+</span><span class="boring">
+</span><span class="boring">struct SelectBox {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">    options: Vec&lt;String&gt;,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Draw for SelectBox {
+</span><span class="boring">    fn draw(&amp;self) {
+</span><span class="boring">        // code to actually draw a select box
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>use gui::{Button, Screen};
+
+fn main() {
+    let screen = Screen {
+        components: vec![
+            Box::new(SelectBox {
+                width: 75,
+                height: 10,
+                options: vec![
+                    String::from("Yes"),
+                    String::from("Maybe"),
+                    String::from("No"),
+                ],
+            }),
+            Box::new(Button {
+                width: 50,
+                height: 10,
+                label: String::from("OK"),
+            }),
+        ],
+    };
+
+    screen.run();
+}</code></pre>
+<figcaption><a href="#listing-18-9">목록 18-9</a>: 트레잇 객체를 사용하여 동일한 트레잇을 구현하는 여러 유형의 값을 저장합니다.</figcaption>
+</figure>
+<p>우리가 도서관을 쓸 때, 우리는 누군가가 도서관을 추가 할 수 있다는 것을 몰랐습니다.
+<code>SelectBox</code> 유형, 그러나 우리의 <code>Screen</code> 구현은 새로운 유형으로 작동하고 그릴 수 있었습니다. <code>SelectBox</code> 를 구현한다. <code>Draw</code> implemented : ~을 구현한다는 의미이다. <code>draw</code> 방법.</p>
+<p>이 개념 - 값의 구체적인 유형보다는 값에 응답하는 메시지에만 관심이있는 -은 다음과 같은 개념과 유사합니다. <em>오리 타이핑</em> in dynamic typed languages: 만약 오리처럼 걷고 오리처럼 돌진한다면, 오리가 되어야 한다! <code>run</code> 온 <code>Screen</code> 목록 18-5에서, <code>run</code> 각 구성 요소의 구체적인 유형이 무엇인지 알 필요가 없습니다. 구성 요소가 a의 인스턴스인지 여부를 확인하지 않습니다. <code>Button</code>
+또는 a <code>SelectBox</code>그것은 단지 그것을 호출 <code>draw</code> 구성 요소에 대한 메서드입니다. <code>Box&lt;dyn Draw&gt;</code> 상기 값들의 타입으로서 The type of the values in the <code>components</code>
+벡터, 우리는 정의했습니다 <code>Screen</code> 우리가 가치라고 부를 수 있는 가치를 <code>draw</code>
+방법 에.</p>
+<p>트레잇 객체와 러스트의 타입 시스템을 사용하여 오리 타이핑을 사용하는 코드와 유사한 코드를 작성하는 이점은 값이 런타임에 특정 메서드를 구현하는지 또는 값이 메소드를 구현하지 않지만 어쨌든 호출하는 경우 오류가 발생하는지 걱정할 필요가 없다는 것입니다. 값이 트레잇 객체가 필요로하는 트레잇을 구현하지 않으면 러스트는 코드를 컴파일하지 않습니다.</p>
+<p>예를 들어, Listing 18-10은 a를 만들려고 할 때 어떤 일이 일어나는지 보여줍니다. <code>Screen</code>
+으로 A <code>String</code> 부품으로서 말이다.</p>
+<figure class="listing" id="listing-18-10">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile">use gui::Screen;
+
+fn main() {
+    let screen = Screen {
+        components: vec![Box::new(String::from("Hi"))],
+    };
+
+    screen.run();
+}</code></pre>
+<figcaption><a href="#listing-18-10">목록 18-10</a>: 트레잇 객체의 트레잇을 구현하지 않는 타입을 사용하려고 시도함</figcaption>
+</figure>
+<p><code>String</code>가 <code>Draw</code> 특성을 구현하지 않기 때문에이 오류가 발생합니다.</p>
+<pre><code class="language-console">$ cargo run
+   Compiling gui v0.1.0 (file:///projects/gui)
+error[E0277]: the trait bound `String: Draw` is not satisfied
+  --&gt; src/main.rs:5:26
+   |
+ 5 |         components: vec![Box::new(String::from("Hi"))],
+   |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Draw` is not implemented for `String`
+   |
+help: the trait `Draw` is implemented for `Button`
+  --&gt; src/lib.rs:23:1
+   |
+23 | impl Draw for Button {
+   | ^^^^^^^^^^^^^^^^^^^^
+   = note: required for the cast from `Box&lt;String&gt;` to `Box&lt;dyn Draw&gt;`
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `gui` (bin "gui") due to 1 previous error
+</code></pre>
+<p>이 오류는 우리가 전달하지 않은 것을 <code>Screen</code>에 전달하거나 다른 유형을 전달하거나 <code>Draw</code>에 <code>String</code>를 구현하여 <code>Screen</code>가 <code>draw</code>를 호출 할 수 있음을 알려줍니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="trait-objects-perform-dynamic-dispatch"></a></p>
+<h3 id="performing-dynamic-dispatch"><a class="header" href="#performing-dynamic-dispatch">동적 디스패치</a></h3>
+<p>제 10 장에 <a href="ch10-01-syntax.html#performance-of-code-using-generics">“제네릭을 사용하는 코드의 성능”</a>에서 리콜 컴파일러에 의해 제네릭에 수행되는 monomorphization 프로세스에 대한 우리의 토론 : 컴파일러는 제네릭 유형 매개 변수 대신 사용하는 각 콘크리트 유형에 대한 함수 및 메서드의 비범 한 구현을 생성합니다. monomorphization에서 발생하는 코드는 정적 디스패치입니다. 컴파일러는 컴파일 타임에 어떤 메소드를 호출하는지 알고 있습니다. 이것은 컴파일러가 컴파일 할 수있는 동적 디스패치와 반대됩니다.</p>
+<p>우리가 트레잇 객체를 사용할 때, 러스트는 동적 디스패치(dynamic dispatch)를 사용해야 합니다. 컴파일러는 트레잇 객체를 사용하는 코드와 함께 사용될 수 있는 모든 타입들을 알지 못하므로, 어떤 타입에 어떤 메소드를 구현할지 모릅니다. 대신, 런타임에 러스트는 어떤 메소드를 호출할지 알기 위해 트레잇 객체 안의 포인터를 사용합니다. 이 룩업은 정적 디스패치에서 발생하지 않는 런타임 비용을 발생시킵니다. <em>Dyn 호환성</em>. 이러한 규칙은이 토론의 범위를 벗어 났지만 더 많은 것을 읽을 수 있습니다.
+<a href="https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility">참고 문헌에서</a> 무시 그러나, 우리는 Listing 18-5에서 작성한 코드에서 추가적인 유연성을 얻었고, Listing 18-9에서 지원할 수 있었습니다, 그래서 고려해야 할 절충안입니다.</p>
+</main>
+<nav aria-label="Page navigation" class="nav-wrapper">
+<!-- Mobile navigation buttons -->
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="mobile-nav-chapters previous" href="ch18-01-what-is-oo.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="mobile-nav-chapters next" href="ch18-03-oo-design-patterns.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+<div style="clear: both"></div>
+</nav>
+</div>
+</div>
+<nav aria-label="Page navigation" class="nav-wide-wrapper">
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="nav-chapters previous" href="ch18-01-what-is-oo.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="nav-chapters next" href="ch18-03-oo-design-patterns.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+</nav>
+</div>
+<template id="fa-eye"><span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"></path></svg></span></template>
+<template id="fa-eye-slash"><span class="fa-svg"><svg viewbox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"></path></svg></span></template>
+<template id="fa-copy"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"></path></svg></span></template>
+<template id="fa-play"><span class="fa-svg"><svg viewbox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path></svg></span></template>
+<template id="fa-clock-rotate-left"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"></path></svg></span></template>
+<script>
+            window.playground_copyable = true;
+        </script>
+<script src="elasticlunr-ef4e11c1.min.js"></script>
+<script src="mark-09e88c2c.min.js"></script>
+<script src="searcher-09f2665d.js"></script>
+<script src="clipboard-1626706a.min.js"></script>
+<script src="highlight-abc7f01d.js"></script>
+<script src="book-609e4cb8.js"></script>
+<!-- Custom JS scripts -->
+<script src="ferris-2317480c.js"></script>
+</div>
+<script defer="" src="rust-code-lab.js"></script></body>
+</html>

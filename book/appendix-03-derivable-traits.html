@@ -1,0 +1,265 @@
+<!DOCTYPE HTML>
+
+<html class="light sidebar-visible" dir="ltr" lang="ko">
+<head>
+<!-- Book generated using mdBook -->
+<meta charset="utf-8"/>
+<title>C - Derivable Traits - The Rust Programming Language</title>
+<!-- Custom HTML head -->
+<meta content="" name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<link href="favicon-de23e50b.svg" rel="icon"/>
+<link href="favicon-8114d1fc.png" rel="shortcut icon"/>
+<link href="css/variables-8adf115d.css" rel="stylesheet"/>
+<link href="css/general-e96d0476.css" rel="stylesheet"/>
+<link href="css/chrome-d279d366.css" rel="stylesheet"/>
+<link href="css/print-9e4910d8.css" media="print" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="fonts/fonts-9644e21d.css" rel="stylesheet"/>
+<!-- Highlight.js Stylesheets -->
+<link href="highlight-493f70e1.css" id="mdbook-highlight-css" rel="stylesheet"/>
+<link href="tomorrow-night-4c0ae647.css" id="mdbook-tomorrow-night-css" rel="stylesheet"/>
+<link href="ayu-highlight-3fdfc3ac.css" id="mdbook-ayu-highlight-css" rel="stylesheet"/>
+<!-- Custom theme stylesheets -->
+<link href="ferris-d33b75bf.css" rel="stylesheet"/>
+<link href="theme/2018-edition-4e126c62.css" rel="stylesheet"/>
+<link href="theme/semantic-notes-9b5766c0.css" rel="stylesheet"/>
+<link href="theme/listing-cab26221.css" rel="stylesheet"/>
+<!-- Provide site root and default themes to javascript -->
+<script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cc309c2.js";
+        </script>
+<!-- Start loading toc.js asap -->
+<script src="toc-0e4ce700.js"></script>
+<link href="rust-code-lab.css" rel="stylesheet"/><link href="notion-theme.css" rel="stylesheet"/></head>
+<body>
+<div id="mdbook-help-container">
+<div id="mdbook-help-popup">
+<h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+<div>
+<p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+<p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+<p>Press <kbd>?</kbd> to show this help</p>
+<p>Press <kbd>Esc</kbd> to hide this help</p>
+</div>
+</div>
+</div>
+<div id="mdbook-body-container">
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+<input class="hidden" id="mdbook-sidebar-toggle-anchor" type="checkbox"/>
+<!-- Hide / unhide sidebar before it is displayed -->
+<script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+<nav aria-label="Table of contents" class="sidebar" id="mdbook-sidebar">
+<!-- populated by js -->
+<mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+<noscript>
+<iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+</noscript>
+<div class="sidebar-resize-handle" id="mdbook-sidebar-resize-handle">
+<div class="sidebar-resize-indicator"></div>
+</div>
+</nav>
+<div class="page-wrapper" id="mdbook-page-wrapper">
+<div class="page">
+<div id="mdbook-menu-bar-hover-placeholder"></div>
+<div class="menu-bar sticky" id="mdbook-menu-bar">
+<div class="left-buttons">
+<label aria-controls="mdbook-sidebar" aria-label="Toggle Table of Contents" class="icon-button" for="mdbook-sidebar-toggle-anchor" id="mdbook-sidebar-toggle" title="Toggle Table of Contents">
+<span class="fa-svg"><svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"></path></svg></span>
+</label>
+<button aria-controls="mdbook-theme-list" aria-expanded="false" aria-haspopup="true" aria-label="Change theme" class="icon-button" id="mdbook-theme-toggle" title="Change theme" type="button">
+<span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"></path></svg></span>
+</button>
+<ul aria-label="Themes" class="theme-popup" id="mdbook-theme-list" role="menu">
+<li role="none"><button class="theme" id="mdbook-theme-default_theme" role="menuitem">Auto</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-light" role="menuitem">Light</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-rust" role="menuitem">Rust</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-coal" role="menuitem">Coal</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-navy" role="menuitem">Navy</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-ayu" role="menuitem">Ayu</button></li>
+</ul>
+<button aria-controls="mdbook-searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-label="Toggle Searchbar" class="icon-button" id="mdbook-search-toggle" title="Search (`/`)" type="button">
+<span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"></path></svg></span>
+</button>
+</div>
+<h1 class="menu-title">The Rust Programming Language</h1>
+<div class="right-buttons">
+<a aria-label="Print this book" href="print.html" title="Print this book">
+<span class="fa-svg" id="print-button"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"></path></svg></span>
+</a>
+<a aria-label="Git repository" href="https://github.com/rust-lang/book" title="Git repository">
+<span class="fa-svg"><svg viewbox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></span>
+</a>
+</div>
+</div>
+<div class="hidden" id="mdbook-search-wrapper">
+<form class="searchbar-outer" id="mdbook-searchbar-outer">
+<div class="search-wrapper">
+<input aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." type="search"/>
+<div class="spinner-wrapper">
+<span class="fa-svg" id="fa-spin"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"></path></svg></span>
+</div>
+</div>
+</form>
+<div class="searchresults-outer hidden" id="mdbook-searchresults-outer">
+<div class="searchresults-header" id="mdbook-searchresults-header"></div>
+<ul id="mdbook-searchresults">
+</ul>
+</div>
+</div>
+<!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+<script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+<div class="content" id="mdbook-content">
+<main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
+<h2 id="appendix-c-derivable-traits"><a class="header" href="#appendix-c-derivable-traits">부록 C: 파생 가능한 특성</a></h2>
+<p>이 책의 여러 곳에서 struct 또는 enum 정의에 적용할 수 있는 <code>derive</code> 특성에 대해 논의했습니다. <code>derive</code> 특성은 <code>derive</code> 구문에 주석을 달은 형식에 대한 자체 기본 구현으로 특성을 구현하는 코드를 생성합니다.</p>
+<p>이 부록에서는 <code>derive</code>와 함께 사용할 수 있는 표준 라이브러리의 모든 특성에 대한 참조를 제공합니다. 각 섹션은 다음을 다룹니다.</p>
+<ul>
+<li>이 특성을 유도하는 연산자 및 메서드를 사용하면</li>
+<li><code>derive</code>가 제공하는 특성의 구현은 무엇입니까?</li>
+<li>트레잇을 구현하는 것이 타입에 대한 의미</li>
+<li>당신이 허용되거나 허용되지 않는 조건은 특성을 구현합니다.</li>
+<li>특성이 필요한 작업의 예</li>
+</ul>
+<p><code>derive</code> 속성에서 제공하는 것과 다른 동작을 원한다면, <a href="../std/index.html">표준 라이브러리 문서</a>에서 각 트레잇을 참조하여 수동으로 구현하는 방법에 대해 자세히 알아보십시오.</p>
+<p>여기에 나열된 특성은 <code>derive</code>를 사용하여 형식에 구현할 수있는 표준 라이브러리에 의해 정의 된 유일한 특성입니다. 표준 라이브러리에 정의 된 다른 특성에는 합리적인 기본 동작이 없으므로 수행하려는 작업에 맞는 방식으로 구현해야합니다.</p>
+<p>파생될 수 없는 특성의 예는 다음과 같습니다. <code>Display</code>, 이는 최종 사용자를 위한 서식을 처리합니다. 항상 최종 사용자에게 유형을 표시하는 적절한 방법을 고려해야 합니다. 최종 사용자는 어떤 유형의 부분을 볼 수 있어야 합니까? 어떤 부분이 관련성이 있을까요? 어떤 형식의 데이터가 가장 관련성이 있을까요? 러스트 컴파일러는 이러한 통찰력을 가지고 있지 않으므로 적절한 기본 동작을 제공할 수 없습니다.</p>
+<p>이 부록에서 제공되는 파생 형질 목록은 포괄적이지 않습니다. 라이브러리는 자신의 형질을 위해 <code>derive</code>를 구현하여 <code>derive</code>를 진정으로 사용할 수있는 형질 목록을 만들 수 있습니다. <code>derive</code>를 구현하는 것은 20 장의 <a href="ch20-05-macros.html#custom-derive-macros">“관습 <code>derive</code>
+매크로”</a> 섹션에서 다루는 절차 매크로를 사용하는 것입니다.</p>
+<h3 id="debug-for-programmer-output"><a class="header" href="#debug-for-programmer-output"><code>Debug</code> 프로그래머 산출을 위해</a></h3>
+<p><code>Debug</code> 트레잇은 포맷 스트링에서 디버그 포맷팅을 가능하게 하며, <code>:?</code> 위치 지정자 내에 <code>{}</code>를 추가하여 나타냅니다.</p>
+<p><code>Debug</code> 특성을 사용하면 디버깅 목적으로 유형의 인스턴스를 인쇄 할 수 있으므로 유형을 사용하는 다른 프로그래머는 프로그램의 실행 중 특정 시점에서 인스턴스를 검사 할 수 있습니다.</p>
+<p>예를 들어 <code>Debug</code> 특성은 <code>assert_eq!</code> 매크로를 사용할 때 필요합니다. 이 매크로는 동등성 주장이 실패하면 인수로 주어진 인스턴스의 값을 인쇄하여 프로그래머가 왜 두 인스턴스가 동일하지 않은지 알 수 있도록 합니다.</p>
+<h3 id="partialeq-and-eq-for-equality-comparisons"><a class="header" href="#partialeq-and-eq-for-equality-comparisons"><code>PartialEq</code> 그리고 <code>Eq</code> 평등 비교를 위한</a></h3>
+<p><code>PartialEq</code> 트레잇을 사용하면 타입 인스턴스를 비교하여 동등성을 확인하고 <code>==</code> 및 <code>!=</code> 연산자를 사용할 수 있습니다.</p>
+<p><code>PartialEq</code>를 파생하면 <code>eq</code> 메서드를 구현합니다. <code>PartialEq</code>가 구조체에서 파생되는 경우, 모든 필드가 동일하고 모든 필드가 동일하지 않은 경우 인스턴스가 동일하지 않은 경우에만 두 인스턴스가 동일합니다. 열거형에서 파생되는 경우 각 변형은 자신과 동일하며 다른 변형과 동일하지 않습니다.</p>
+<p>예를 들어 <code>PartialEq</code> 특성은 <code>assert_eq!</code> 매크로를 사용하여 평등한 유형의 두 인스턴스를 비교할 수 있어야 합니다.</p>
+<p>이름 * <code>Eq</code> 트레잇에는 메서드가 없습니다. 그 목적은 주석이 달린 형식의 모든 값에 대해 값이 자신과 동일하다는 신호를 보내는 것입니다. <code>Eq</code> 트레잇은 또한 구현되는 타입에만 적용될 수 있다. <code>PartialEq</code>그러나 모든 사람들이 그것을 사용하는 것은 아닙니다. <code>PartialEq</code> 실행할 수 있음 <code>Eq</code>. 이것의 한 예는 부동 소수점 숫자 유형입니다. 부동 소수점 숫자의 구현은 숫자가 아닌 두 인스턴스 (<code>NaN</code>) 값은 서로 동일하지 않습니다.</p>
+<p><code>Eq</code>가 필요한 경우의 예는 <code>HashMap&lt;K, V&gt;</code>의 키에 대해 <code>HashMap&lt;K, V&gt;</code>가 두 키가 동일한지 여부를 알 수 있도록 하는 것입니다.</p>
+<h3 id="partialord-and-ord-for-ordering-comparisons"><a class="header" href="#partialord-and-ord-for-ordering-comparisons"><code>PartialOrd</code> 그리고 <code>Ord</code> 주문 비교를 위해</a></h3>
+<p>이름 * <code>PartialOrd</code> 트레잇을 사용하면 정렬 목적으로 유형의 인스턴스를 비교할 수 있습니다. <code>PartialOrd</code> 와 함께 사용될 수 있다. <code>&lt;</code>, <code>&gt;</code>,
+<code>&lt;=</code>, 그리고 <code>&gt;=</code> 연산자만 적용할 수 있습니다. <code>PartialOrd</code> 또한 구현되는 타입에 대한 트레잇 <code>PartialEq</code>.</p>
+<p>파생 <code>PartialOrd</code> 를 구현한다. <code>partial_cmp</code> 를 반환하는 메서드입니다.The method returns an
+<code>Option&lt;Ordering&gt;</code> 그것이 될 것이다. <code>None</code> 주어진 값이 순서를 생성하지 않을 때. 순서를 생성하지 않는 값의 예는 해당 유형의 대부분의 값을 비교할 수 있지만 <code>NaN</code> 부동 소수점 값입니다. 호출 <code>partial_cmp</code> 어떤 부동 소수점 번호와 <code>NaN</code>
+부동 소수점 값이 반환됩니다. <code>None</code>.</p>
+<p>구조체에서 파생된 경우 <code>PartialOrd</code>는 각 필드의 값을 구조체 정의에 나타나는 순서로 비교하여 두 인스턴스를 비교합니다. 열거형에서 파생된 경우 열거형 정의에서 이전에 선언된 열거형의 변형은 나중에 나열된 변형보다 적은 것으로 간주됩니다.</p>
+<p>이름 * <code>PartialOrd</code> 예를 들면, 예를 들면, For example, <code>gen_range</code> 상기 방법 From the <code>rand</code> 범위 표현식으로 지정된 범위에서 임의의 값을 생성하는 크레이트입니다.</p>
+<p>이름 * <code>Ord</code> 특성은 주석이 달린 유형의 어떤 2개의 가치든지를 위해, 유효한 순서가 존재할 것이라는 점을 당신이 아는 것을 허용합니다. <code>Ord</code> 트레잇은 The <code>cmp</code> 를 반환하는 메서드입니다.The method returns an <code>Ordering</code> 대신 an <code>Option&lt;Ordering&gt;</code> 유효한 순서는 항상 가능하기 때문에. 당신은 단지 적용 할 수 있습니다 <code>Ord</code> 또한 구현되는 타입에 대한 트레잇 <code>PartialOrd</code> 그리고 <code>Eq</code> (그리고 <code>Eq</code> 필수 <code>PartialEq</code>). 구조체와 enums에 파생될 때, <code>cmp</code> 상기 유도된 구현은 The derived implementation is <code>partial_cmp</code> 함께 하는 <code>PartialOrd</code>.</p>
+<p><code>Ord</code>가 필요한 경우의 예는 값의 정렬 순서에 따라 데이터를 저장하는 데이터 구조인 <code>BTreeSet&lt;T&gt;</code>에 값을 저장하는 경우입니다.</p>
+<h3 id="clone-and-copy-for-duplicating-values"><a class="header" href="#clone-and-copy-for-duplicating-values"><code>Clone</code> 그리고 <code>Copy</code> 값들을 중복시키기 위한</a></h3>
+<p><code>Clone</code> 특성을 사용하면 값의 깊은 복사본을 명시적으로 만들 수 있으며 복제 프로세스에는 임의의 코드 실행 및 힙 데이터 복사가 포함될 수 있습니다. <a href="ch04-01-what-is-ownership.html#variables-and-data-interacting-with-clone">"Clone과 상호 작용하는 변수 및 데이터"</a>에 대한 자세한 내용은 4장의 <code>Clone</code> 섹션을 참조하십시오.</p>
+<p>파생 <code>Clone</code> 를 구현한다. <code>clone</code> 메서드는 전체 형식에 대해 구현될 때 호출합니다. <code>clone</code> type의 각 부분에. 즉, type의 모든 필드 또는 값도 구현해야 합니다. <code>Clone</code> 파생하다: derived <code>Clone</code>.</p>
+<p>의 예는 언제 <code>Clone</code> 상기 호출하는 단계는, Wherein the calling the <code>to_vec</code> 슬라이스의 메소드입니다. 슬라이스는 포함된 타입 인스턴스를 소유하지 않지만, 벡터는 <code>to_vec</code> 자기만의 개성이 있어야 하고, 그래서 <code>to_vec</code> 통화
+<code>clone</code> 각 항목에. 따라서, 슬라이스에 저장된 유형을 구현해야 <code>Clone</code>.</p>
+<p><code>Copy</code> 트레잇을 사용하면 스택에 저장된 비트만 복사하여 값을 복제할 수 있습니다. 임의의 코드가 필요하지 않습니다. <a href="ch04-01-what-is-ownership.html#stack-only-data-copy">“스택 전용 데이터: 복사”</a>에 대한 자세한 내용은 4장의 <code>Copy</code> 섹션을 참조하십시오.</p>
+<p><code>Copy</code> 특성은 프로그래머가 이러한 메서드를 오버로드하고 임의의 코드가 실행되지 않는다는 가정을 위반하는 것을 방지하는 방법을 정의하지 않습니다. 그렇게하면 모든 프로그래머는 값을 복사하는 것이 매우 빠르다고 가정 할 수 있습니다.</p>
+<p>당신은 derived 수 있습니다 <code>Copy</code> 모든 부품을 사용하는 모든 유형의 <code>Copy</code>. 구현되는 유형 <code>Copy</code> 또한 실행해야 합니다. <code>Clone</code> 를 구현하는 타입 A Type that Implements
+<code>Copy</code> 의 사소한 구현을 가지고 <code>Clone</code> 다음과 같은 작업을 수행합니다.
+<code>Copy</code>.</p>
+<p><code>Copy</code> 트레잇은 거의 필요하지 않습니다; <code>Copy</code>를 구현하는 타입은 최적화가 가능하므로, <code>clone</code>를 호출할 필요가 없습니다.</p>
+<p><code>Copy</code>를 사용하면 <code>Clone</code>로도 수행 할 수 있지만 코드가 느려지거나 장소에서 <code>clone</code>를 사용해야합니다.</p>
+<h3 id="hash-for-mapping-a-value-to-a-value-of-fixed-size"><a class="header" href="#hash-for-mapping-a-value-to-a-value-of-fixed-size"><code>Hash</code> 고정 크기의 값에 값을 매핑하려면</a></h3>
+<p>이름 * <code>Hash</code> 트레잇을 사용하면 임의의 크기의 인스턴스를 받아 해시 함수를 사용하여 고정 크기의 값으로 매핑할 수 있습니다.
+<code>Hash</code> 를 구현한다. <code>hash</code> 방법. 파생된 구현의 <code>hash</code>
+메서드는 호출의 결과를 결합합니다. <code>hash</code> 모든 필드 또는 값도 구현해야 한다는 의미입니다.All means all fields or values must also implement. <code>Hash</code> 파생하다: derived <code>Hash</code>.</p>
+<p><code>Hash</code>가 필요한 경우의 예는 <code>HashMap&lt;K, V&gt;</code>에 키를 저장하여 데이터를 효율적으로 저장하는 것입니다.</p>
+<h3 id="default-for-default-values"><a class="header" href="#default-for-default-values"><code>Default</code> 기본값에 대해</a></h3>
+<p>이름 * <code>Default</code> 트레잇을 사용하면 형식에 대한 기본값을 만들 수 있습니다.
+<code>Default</code> 를 구현한다. <code>default</code> 함수의 파생된 구현
+<code>default</code> 상기 호출하는 단계는, Calling the <code>default</code> type의 각 부분에 대한 함수, 즉 type의 모든 필드 또는 값도 구현해야 함 <code>Default</code> 파생하다: derived <code>Default</code>.</p>
+<p><code>Default::default</code> 함수는 일반적으로 5장의 <a href="ch05-01-defining-structs.html#creating-instances-from-other-instances-with-struct-update-syntax">“Struct Update Syntax를 사용하여 다른 인스턴스에서 인스턴스 만들기”</a> 섹션에 설명된 구조체 업데이트 구문과 함께 사용됩니다. 구조체의 일부 필드를 사용자 정의한 다음 <code>..Default::default()</code>를 사용하여 나머지 필드에 대한 기본값을 설정하고 사용할 수 있습니다.</p>
+<p>이름 * <code>Default</code> 메서드를 사용할 때 특성이 필요합니다. <code>unwrap_or_default</code> 온
+<code>Option&lt;T&gt;</code> 예를 들어 다음과 같습니다. <code>Option&lt;T&gt;</code> 있습니다. <code>None</code>상기 방법은 The method
+<code>unwrap_or_default</code> 결과를 반환할 것입니다. <code>Default::default</code> 형식에 대 한
+<code>T</code> 에 저장됨 <code>Option&lt;T&gt;</code>.</p>
+</main>
+<nav aria-label="Page navigation" class="nav-wrapper">
+<!-- Mobile navigation buttons -->
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="mobile-nav-chapters previous" href="appendix-02-operators.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="mobile-nav-chapters next" href="appendix-04-useful-development-tools.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+<div style="clear: both"></div>
+</nav>
+</div>
+</div>
+<nav aria-label="Page navigation" class="nav-wide-wrapper">
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="nav-chapters previous" href="appendix-02-operators.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="nav-chapters next" href="appendix-04-useful-development-tools.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+</nav>
+</div>
+<template id="fa-eye"><span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"></path></svg></span></template>
+<template id="fa-eye-slash"><span class="fa-svg"><svg viewbox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"></path></svg></span></template>
+<template id="fa-copy"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"></path></svg></span></template>
+<template id="fa-play"><span class="fa-svg"><svg viewbox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path></svg></span></template>
+<template id="fa-clock-rotate-left"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"></path></svg></span></template>
+<script>
+            window.playground_copyable = true;
+        </script>
+<script src="elasticlunr-ef4e11c1.min.js"></script>
+<script src="mark-09e88c2c.min.js"></script>
+<script src="searcher-09f2665d.js"></script>
+<script src="clipboard-1626706a.min.js"></script>
+<script src="highlight-abc7f01d.js"></script>
+<script src="book-609e4cb8.js"></script>
+<!-- Custom JS scripts -->
+<script src="ferris-2317480c.js"></script>
+</div>
+<script defer="" src="rust-code-lab.js"></script></body>
+</html>

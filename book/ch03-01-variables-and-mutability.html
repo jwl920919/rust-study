@@ -1,0 +1,324 @@
+<!DOCTYPE HTML>
+
+<html class="light sidebar-visible" dir="ltr" lang="ko">
+<head>
+<!-- Book generated using mdBook -->
+<meta charset="utf-8"/>
+<title>Variables and Mutability - The Rust Programming Language</title>
+<!-- Custom HTML head -->
+<meta content="" name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<link href="favicon-de23e50b.svg" rel="icon"/>
+<link href="favicon-8114d1fc.png" rel="shortcut icon"/>
+<link href="css/variables-8adf115d.css" rel="stylesheet"/>
+<link href="css/general-e96d0476.css" rel="stylesheet"/>
+<link href="css/chrome-d279d366.css" rel="stylesheet"/>
+<link href="css/print-9e4910d8.css" media="print" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="fonts/fonts-9644e21d.css" rel="stylesheet"/>
+<!-- Highlight.js Stylesheets -->
+<link href="highlight-493f70e1.css" id="mdbook-highlight-css" rel="stylesheet"/>
+<link href="tomorrow-night-4c0ae647.css" id="mdbook-tomorrow-night-css" rel="stylesheet"/>
+<link href="ayu-highlight-3fdfc3ac.css" id="mdbook-ayu-highlight-css" rel="stylesheet"/>
+<!-- Custom theme stylesheets -->
+<link href="ferris-d33b75bf.css" rel="stylesheet"/>
+<link href="theme/2018-edition-4e126c62.css" rel="stylesheet"/>
+<link href="theme/semantic-notes-9b5766c0.css" rel="stylesheet"/>
+<link href="theme/listing-cab26221.css" rel="stylesheet"/>
+<!-- Provide site root and default themes to javascript -->
+<script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-3cc309c2.js";
+        </script>
+<!-- Start loading toc.js asap -->
+<script src="toc-0e4ce700.js"></script>
+<link href="rust-code-lab.css" rel="stylesheet"/><link href="notion-theme.css" rel="stylesheet"/></head>
+<body>
+<div id="mdbook-help-container">
+<div id="mdbook-help-popup">
+<h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+<div>
+<p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+<p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+<p>Press <kbd>?</kbd> to show this help</p>
+<p>Press <kbd>Esc</kbd> to hide this help</p>
+</div>
+</div>
+</div>
+<div id="mdbook-body-container">
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+<input class="hidden" id="mdbook-sidebar-toggle-anchor" type="checkbox"/>
+<!-- Hide / unhide sidebar before it is displayed -->
+<script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+<nav aria-label="Table of contents" class="sidebar" id="mdbook-sidebar">
+<!-- populated by js -->
+<mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+<noscript>
+<iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+</noscript>
+<div class="sidebar-resize-handle" id="mdbook-sidebar-resize-handle">
+<div class="sidebar-resize-indicator"></div>
+</div>
+</nav>
+<div class="page-wrapper" id="mdbook-page-wrapper">
+<div class="page">
+<div id="mdbook-menu-bar-hover-placeholder"></div>
+<div class="menu-bar sticky" id="mdbook-menu-bar">
+<div class="left-buttons">
+<label aria-controls="mdbook-sidebar" aria-label="Toggle Table of Contents" class="icon-button" for="mdbook-sidebar-toggle-anchor" id="mdbook-sidebar-toggle" title="Toggle Table of Contents">
+<span class="fa-svg"><svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"></path></svg></span>
+</label>
+<button aria-controls="mdbook-theme-list" aria-expanded="false" aria-haspopup="true" aria-label="Change theme" class="icon-button" id="mdbook-theme-toggle" title="Change theme" type="button">
+<span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"></path></svg></span>
+</button>
+<ul aria-label="Themes" class="theme-popup" id="mdbook-theme-list" role="menu">
+<li role="none"><button class="theme" id="mdbook-theme-default_theme" role="menuitem">Auto</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-light" role="menuitem">Light</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-rust" role="menuitem">Rust</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-coal" role="menuitem">Coal</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-navy" role="menuitem">Navy</button></li>
+<li role="none"><button class="theme" id="mdbook-theme-ayu" role="menuitem">Ayu</button></li>
+</ul>
+<button aria-controls="mdbook-searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-label="Toggle Searchbar" class="icon-button" id="mdbook-search-toggle" title="Search (`/`)" type="button">
+<span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"></path></svg></span>
+</button>
+</div>
+<h1 class="menu-title">The Rust Programming Language</h1>
+<div class="right-buttons">
+<a aria-label="Print this book" href="print.html" title="Print this book">
+<span class="fa-svg" id="print-button"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"></path></svg></span>
+</a>
+<a aria-label="Git repository" href="https://github.com/rust-lang/book" title="Git repository">
+<span class="fa-svg"><svg viewbox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg></span>
+</a>
+</div>
+</div>
+<div class="hidden" id="mdbook-search-wrapper">
+<form class="searchbar-outer" id="mdbook-searchbar-outer">
+<div class="search-wrapper">
+<input aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." type="search"/>
+<div class="spinner-wrapper">
+<span class="fa-svg" id="fa-spin"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"></path></svg></span>
+</div>
+</div>
+</form>
+<div class="searchresults-outer hidden" id="mdbook-searchresults-outer">
+<div class="searchresults-header" id="mdbook-searchresults-header"></div>
+<ul id="mdbook-searchresults">
+</ul>
+</div>
+</div>
+<!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+<script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+<div class="content" id="mdbook-content">
+<main><p class="translation-draft-notice" style="padding:.65rem 1rem;background:#fff7db;border-left:4px solid #c89527;color:#4b4127;font-size:.92rem">한국어 기계 번역 초안입니다. Rust 코드와 인라인 코드 예제는 공식 최신 원문 그대로 보존했습니다. 번역 용어와 세부 문장은 계속 검토합니다.</p>
+<h2 id="variables-and-mutability"><a class="header" href="#variables-and-mutability">변수 및 가변성</a></h2>
+<p><a href="ch02-00-guessing-game-tutorial.html#storing-values-with-variables">변수가 있는 값Storing Values with Variables</a> 섹션에서 언급했듯이, 기본적으로 변수는 불변입니다. 이것은 러스트가 제공하는 안전하고 쉬운 동시성을 이용하는 방식으로 코드를 작성하도록 하는 많은 넛지 중 하나입니다. 그러나, 당신은 여전히 변수를 변경할 수 있는 옵션이 있습니다. 어떻게 그리고 왜 러스트가 당신이 불변성을 선호하도록 격려하는지, 그리고 왜 때때로 당신이 옵트 아웃하기를 원하는지를 탐구해 봅시다.</p>
+<p>변수가 불변인 경우 값이 이름에 바인딩되면 해당 값을 변경할 수 없습니다. 이를 설명하기 위해 <code>cargo new variables</code>를 사용하여 프로젝트 디렉토리에 변수라는 새 프로젝트를 생성합니다.</p>
+<p>그런 다음 새 변수 디렉토리에서 src/main.rs를 열고 코드를 아직 컴파일되지 않은 다음 코드로 바꿉니다.</p>
+<p>파일 이름: src/main.rs</p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let x = 5;
+    println!("The value of x is: {x}");
+    x = 6;
+    println!("The value of x is: {x}");
+}</code></pre>
+<p><code>cargo run</code>를 사용하여 프로그램을 저장하고 실행하십시오. 이 출력과 같이 불변 오류에 관한 오류 메시지가 나타납니다.</p>
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+error[E0384]: cannot assign twice to immutable variable `x`
+ --&gt; src/main.rs:4:5
+  |
+2 |     let x = 5;
+  |         - first assignment to `x`
+3 |     println!("The value of x is: {x}");
+4 |     x = 6;
+  |     ^^^^^ cannot assign twice to immutable variable
+  |
+help: consider making this binding mutable
+  |
+2 |     let mut x = 5;
+  |         +++
+
+For more information about this error, try `rustc --explain E0384`.
+error: could not compile `variables` (bin "variables") due to 1 previous error
+</code></pre>
+<p>이 예제는 컴파일러가 프로그램에서 오류를 찾는 데 어떻게 도움이되는지 보여줍니다. 컴파일러 오류는 실망 스러울 수 있지만 실제로는 프로그램이 아직 원하는 것을 안전하게 수행하지 못하고 있음을 의미합니다. 그들은 당신이 좋은 프로그래머가 아니라는 것을 의미하지 않습니다! 숙련 된 러스트aceans는 여전히 컴파일러 오류를 얻습니다.</p>
+<p>오류 메시지를 받았습니다 <code>cannot assign twice to immutable variable `x`</code> 왜냐하면 당신은 불변의 값에 두 번째 값을 할당하려고했기 때문입니다. <code>x</code> 변수.</p>
+<p>변경 불가능으로 지정된 값을 변경하려고 할 때 컴파일 타임 오류를 발생시키는 것이 중요합니다. 이 상황은 버그로 이어질 수 있기 때문입니다. 우리 코드의 한 부분이 값이 변하지 않고 다른 부분이 그 값을 변경한다는 가정 하에 작동한다면, 코드의 첫 번째 부분은 원래 의도했던 대로 작동하지 않을 수 있습니다. 이런 종류의 버그의 원인은 특히 두 번째 코드의 변경 후에만 추적하기가 어려울 수 있습니다.</p>
+<p>그러나 가변성은 매우 유용하고 코드를 작성하는 것이 더 편리 할 수 있습니다. 변수는 기본적으로 변경할 수 없지만 <code>mut</code>에서했던 것처럼 변수 이름 앞에 <a href="ch02-00-guessing-game-tutorial.html#storing-values-with-variables">제 2 장</a>를 추가하여 변경할 수 있습니다. <code>mut</code>를 추가하면 코드의 다른 부분이이 변수의 값을 변경한다는 것을 나타내어 미래의 코드 독자에게 의도를 전달할 수 있습니다.</p>
+<p>예를 들어, src/main.rs 를 다음과 같이 변경해보자:</p>
+<p>파일 이름: src/main.rs</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let mut x = 5;
+    println!("The value of x is: {x}");
+    x = 6;
+    println!("The value of x is: {x}");
+}</code></pre>
+<p>우리가 프로그램을 지금 운영할 때, 우리는 이것을 얻는다:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s
+     Running `target/debug/variables`
+The value of x is: 5
+The value of x is: 6
+</code></pre>
+<p>에 바인딩된 값을 변경하려면To change the value bound to <code>x</code> 보낸 사람 <code>5</code> 오시는 길 <code>6</code> 언제 <code>mut</code> 궁극적으로 가변성을 사용할지 여부를 결정하는 것은 귀하에게 달려 있으며 특정 상황에서 가장 명확하다고 생각하는 것에 달려 있습니다.</p>
+<!-- Old headings. Do not remove or links may break. -->
+<p><a id="constants"></a></p>
+<h3 id="declaring-constants"><a class="header" href="#declaring-constants">상수 선언하기</a></h3>
+<p>불변 변수와 마찬가지로 상수는 이름에 바인딩된 값이며 변경할 수 없지만 상수와 변수 간에는 몇 가지 차이점이 있습니다.</p>
+<p>첫째, 사용할 수 없습니다. <code>mut</code> constants를 사용합니다. Constants는 기본적으로 불변일 뿐만 아니라 항상 불변입니다.
+<code>const</code> 키워드 대신 <code>let</code> keyword, 그리고 값의 타입 <em>필수</em>
+주석을 달겠습니다. 다음 섹션에서는 타입과 타입 주석을 다룰 것입니다.
+<a href="ch03-02-data-types.html#data-types">“데이터 유형”</a> 무시 , 그래서 지금 세부 사항에 대해 걱정하지 마십시오. 항상 유형에 주석을 추가해야한다는 것을 알고 있습니다.</p>
+<p>상수는 전역 범위를 포함하여 모든 범위에서 선언될 수 있으며, 이는 코드의 많은 부분이 알아야 하는 값에 유용합니다.</p>
+<p>마지막 차이점은 상수가 런타임에 계산될 수 있는 값의 결과가 아닌 상수 표현식으로만 설정될 수 있다는 것입니다.</p>
+<p>다음은 상수 선언의 예입니다.Here's an example of a constant declaration:</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;
+<span class="boring">}</span></code></pre>
+<p>상수의 이름은 다음과 같습니다. <code>THREE_HOURS_IN_SECONDS</code>, 그리고 그 값은 60 (분당 초 수)에 60 (시간당 분 수)을 3 (이 프로그램에서 계산하려는 시간 수)으로 곱한 결과로 설정됩니다. 상수에 대한 러스트의 명명 규칙은 단어 사이에 밑줄이있는 모든 대문자를 사용하는 것입니다. 컴파일러는 컴파일 시간에 제한된 작업 집합을 평가할 수 있으므로이 값을보다 쉽게 작성할 수 있으며이 값을보다 쉽게 확인할 수 있습니다. <a href="../reference/const_eval.html">지속적인 평가에 관한 러스트 Reference의 섹션</a> 상수를 선언할 때 사용할 수 있는 작업에 대한 자세한 정보.</p>
+<p>상수는 프로그램이 실행되는 전체 시간 동안 선언된 범위 내에서 유효합니다. 이 속성은 프로그램의 여러 부분이 알아야 할 응용 프로그램 도메인의 값에 유용한 상수를 만듭니다(예: 게임의 모든 플레이어가 얻을 수 있는 최대 포인트 수 또는 빛의 속도).</p>
+<p>프로그램 전체에서 사용되는 하드코딩된 값을 상수로 명명하는 것은 미래의 코드 관리자에게 해당 값의 의미를 전달하는 데 유용합니다. 또한 나중에 하드코딩된 값을 업데이트해야 하는 경우 변경해야 하는 코드에서 한 곳만 갖는 것도 도움이 됩니다.</p>
+<h3 id="shadowing"><a class="header" href="#shadowing">섀도잉</a></h3>
+<p>당신이 추측 게임 튜토리얼에서 본대로 <a href="ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number">제 2 장</a> 무시 , 이전 변수와 같은 이름의 새로운 변수를 선언할 수 있습니다. 러스트aceans는 첫 번째 변수가 <em>그림자</em> 두 번째 변수는 두 번째 변수가 변수의 이름을 사용할 때 컴파일러가 볼 수 있음을 의미합니다. 실제로 두 번째 변수는 첫 번째 변수를 덮어 쓰고 변수 이름이 쉐도우되거나 스코프가 끝날 때까지 변수 이름을 자체적으로 사용합니다. 우리는 같은 변수의 이름을 사용하고 같은 변수를 반복하여 변수를 그림자로 만들 수 있습니다. <code>let</code> 다음과 같이 키워드:</p>
+<p>파일 이름: src/main.rs</p>
+<pre class="playground"><code class="language-rust edition2024">fn main() {
+    let x = 5;
+
+    let x = x + 1;
+
+    {
+        let x = x * 2;
+        println!("The value of x in the inner scope is: {x}");
+    }
+
+    println!("The value of x is: {x}");
+}</code></pre>
+<p>이 프로그램은 먼저 바인딩합니다. <code>x</code> 값에 대한 To a value <code>5</code>. 그런 다음 새 변수를 만듭니다.
+<code>x</code> 반복하여 <code>let x =</code>, 원래 값을 복용하고 추가 <code>1</code> 상기 값은 The value of <code>x</code> 있습니다. <code>6</code>. 그런 다음, 중괄호로 만든 내부 범위 내에서 세 번째 <code>let</code> 그림자 Shadows <code>x</code> 새로운 변수를 만들고, 이전 값을 다음과 같이 곱합니다. <code>2</code> 기부하다 <code>x</code> a 값 <code>12</code>. 그 범위가 끝날 때, 안 shadowing는 끝납니다 <code>x</code> 존재로 되돌아가다 <code>6</code>. 이 프로그램을 실행하면 다음과 같이 출력됩니다.</p>
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target/debug/variables`
+The value of x in the inner scope is: 12
+The value of x is: 6
+</code></pre>
+<p>Shadowing은 변수를 <code>mut</code>로 표시하는 것과는 다릅니다. <code>let</code> 키워드를 사용하지 않고 실수로 이 변수에 재할당을 시도하면 컴파일 타임 오류가 발생합니다. <code>let</code>를 사용하면 값에 대한 몇 가지 변환을 수행 할 수 있지만 변환이 완료된 후에는 변수를 변경할 수 없습니다.</p>
+<p><code>mut</code>와 섀도잉의 또 다른 차이점은 <code>let</code> 키워드를 다시 사용할 때 새로운 변수를 효과적으로 만들기 때문에 값의 유형을 변경하고 동일한 이름을 재사용 할 수 있다는 것입니다. 예를 들어, 프로그램에서 사용자에게 스페이스 문자를 입력하여 텍스트 사이에 몇 개의 공백을 표시하도록 요청한 다음 해당 입력을 숫자로 저장하려고 한다고 가정해 보겠습니다.</p>
+<pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
+</span>    let spaces = "   ";
+    let spaces = spaces.len();
+<span class="boring">}</span></code></pre>
+<p>첫 번째 <code>spaces</code> 변수는 문자열 형식이고 두 번째 형식입니다. <code>spaces</code> 변수는 숫자 유형입니다. 따라서 Shadowing은 다음과 같은 다른 이름을 만들어 낼 필요가 없습니다. <code>spaces_str</code> 그리고 <code>spaces_num</code>대신, 우리는 더 간단한 것을 재사용 할 수 있습니다. <code>spaces</code> 이름. 그러나, 우리가 사용하려고하면 <code>mut</code> 이것을 위해, 여기에서 보이는 것처럼, 우리는 컴파일 타임 오류를 얻을 것이다:</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let mut spaces = "   ";
+    spaces = spaces.len();
+<span class="boring">}</span></code></pre>
+<p>이 오류는 변수의 타입을 변경하는 것이 허용되지 않는다고 말합니다:</p>
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:3:14
+  |
+2 |     let mut spaces = "   ";
+  |                      ----- expected due to this value
+3 |     spaces = spaces.len();
+  |              ^^^^^^^^^^^^ expected `&amp;str`, found `usize`
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `variables` (bin "variables") due to 1 previous error
+</code></pre>
+<p>이제 변수가 어떻게 작동하는지 살펴 보았으므로 더 많은 데이터 유형을 살펴 보겠습니다.</p>
+</main>
+<nav aria-label="Page navigation" class="nav-wrapper">
+<!-- Mobile navigation buttons -->
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="mobile-nav-chapters previous" href="ch03-00-common-programming-concepts.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="mobile-nav-chapters next" href="ch03-02-data-types.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+<div style="clear: both"></div>
+</nav>
+</div>
+</div>
+<nav aria-label="Page navigation" class="nav-wide-wrapper">
+<a aria-keyshortcuts="Left" aria-label="Previous chapter" class="nav-chapters previous" href="ch03-00-common-programming-concepts.html" rel="prev" title="Previous chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"></path></svg></span>
+</a>
+<a aria-keyshortcuts="Right" aria-label="Next chapter" class="nav-chapters next" href="ch03-02-data-types.html" rel="next prefetch" title="Next chapter">
+<span class="fa-svg"><svg viewbox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"></path></svg></span>
+</a>
+</nav>
+</div>
+<template id="fa-eye"><span class="fa-svg"><svg viewbox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"></path></svg></span></template>
+<template id="fa-eye-slash"><span class="fa-svg"><svg viewbox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"></path></svg></span></template>
+<template id="fa-copy"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"></path></svg></span></template>
+<template id="fa-play"><span class="fa-svg"><svg viewbox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"></path></svg></span></template>
+<template id="fa-clock-rotate-left"><span class="fa-svg"><svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"></path></svg></span></template>
+<script>
+            window.playground_copyable = true;
+        </script>
+<script src="elasticlunr-ef4e11c1.min.js"></script>
+<script src="mark-09e88c2c.min.js"></script>
+<script src="searcher-09f2665d.js"></script>
+<script src="clipboard-1626706a.min.js"></script>
+<script src="highlight-abc7f01d.js"></script>
+<script src="book-609e4cb8.js"></script>
+<!-- Custom JS scripts -->
+<script src="ferris-2317480c.js"></script>
+</div>
+<script defer="" src="rust-code-lab.js"></script></body>
+</html>
