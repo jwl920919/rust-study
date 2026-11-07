@@ -21506,14 +21506,130 @@ fn main() {
     }
 }</code></pre>
 <p><code>HashMap::entry</code>는 키를 조회한 뒤 없으면 넣는 작업을 한 번의 흐름으로 표현합니다. 반면 <code>BTreeMap</code>은 키 순서로 순회하므로 이 예제의 이름은 정렬되어 출력됩니다. 실행 결과는 각각 <code>rust 등장 횟수: 2</code>, <code>처리할 작업: 첫 번째 작업</code>, <code>가람: 87</code>, <code>보라: 92</code>입니다.</p>
+<h4 id="page-111-collections-workflow">작업 흐름으로 컬렉션 선택하기</h4>
+<p>문자열에서 단어별 횟수를 세고 결과를 출력하는 상황을 생각해 봅시다. 횟수 누적은 <code>HashMap</code>의 <code>entry</code>로, 키 순서가 필요한 출력은 <code>BTreeMap</code>으로 표현할 수 있습니다. 중복 여부만 확인하는 태그 목록에는 <code>HashSet</code>이 알맞고, 먼저 들어온 작업부터 꺼내는 대기열에는 <code>VecDeque</code>가 자연스럽습니다. 자료구조는 “Rust에서 가장 빠른 것”을 외워 고르는 게 아니라, 필요한 순서·검색·삽입 동작을 기준으로 정합니다.</p>
+<p>성능이 중요해지면 실제 데이터와 작업량으로 측정하세요. 예를 들어 키를 정렬할 필요가 없는데 출력 순서가 우연히 일정하다고 가정하면 안 됩니다. <code>HashMap</code>의 순회 순서는 보장되지 않으므로, 재현 가능한 출력이 필요하면 <code>BTreeMap</code>을 사용하거나 키를 별도로 정렬합니다.</p>
 <h3 id="page-111-newtype-pattern">뉴타입으로 값의 의미를 분명히 하기</h3>
 <p>서로 다른 의미를 같은 기본 타입으로 표현하면 인자를 뒤바꿔도 컴파일러가 알아채지 못할 수 있습니다. 튜플 구조체로 감싼 새 타입을 만들면 컴파일 시점에 구별할 수 있습니다. 예를 들어 사용자 ID와 주문 ID를 모두 <code>u64</code>로 저장하더라도 <code>UserId</code>와 <code>OrderId</code>를 따로 정의하면 둘을 실수로 바꾸어 전달하는 일을 막을 수 있습니다. Rust 책의 <a href="ch20-03-advanced-types.html#type-safety-and-abstraction-with-the-newtype-pattern">뉴타입 패턴 설명</a>과 <a href="https://rust-lang.github.io/api-guidelines/type-safety.html#newtypes-provide-static-distinctions">Rust API Guidelines</a>에서 더 살펴볼 수 있습니다.</p>
 <h3 id="page-111-builder-pattern">설정이 많은 값은 빌더로 만들기</h3>
 <p>필수 인자와 선택 설정이 많아 생성자 호출이 길어질 때는 빌더 패턴을 고려할 수 있습니다. 빌더의 설정 메서드가 빌더 자신을 돌려주면 메서드를 연결해 읽기 좋게 구성하고, 마지막 <code>build</code> 메서드에서 유효성 검사와 실제 값 생성을 맡길 수 있습니다. 설정이 몇 개뿐이라면 단순한 생성자나 구조체 리터럴이 더 명확합니다. 표준 라이브러리의 <code>Command</code> API를 비롯한 사례와 설계 지침은 <a href="https://rust-lang.github.io/api-guidelines/type-safety.html#builders-enable-construction-of-complex-values">빌더 권고</a>를 참고하세요.</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct ServerConfig {
+    host: String,
+    port: u16,
+    workers: usize,
+}
+
+#[derive(Default)]
+struct ServerConfigBuilder {
+    host: Option&lt;String&gt;,
+    port: Option&lt;u16&gt;,
+    workers: Option&lt;usize&gt;,
+}
+
+impl ServerConfigBuilder {
+    fn new() -&gt; Self {
+        Self::default()
+    }
+
+    fn host(mut self, host: impl Into&lt;String&gt;) -&gt; Self {
+        self.host = Some(host.into());
+        self
+    }
+
+    fn port(mut self, port: u16) -&gt; Self {
+        self.port = Some(port);
+        self
+    }
+
+    fn workers(mut self, workers: usize) -&gt; Self {
+        self.workers = Some(workers);
+        self
+    }
+
+    fn build(self) -&gt; Result&lt;ServerConfig, &amp;'static str&gt; {
+        let host = self.host.ok_or("host를 지정해야 합니다")?;
+        let port = self.port.unwrap_or(8080);
+        let workers = self.workers.unwrap_or(4);
+
+        if port == 0 || workers == 0 {
+            return Err("port와 workers는 0보다 커야 합니다");
+        }
+
+        Ok(ServerConfig { host, port, workers })
+    }
+}
+
+fn main() {
+    let result = ServerConfigBuilder::new()
+        .host("127.0.0.1")
+        .port(3000)
+        .workers(8)
+        .build();
+
+    match result {
+        Ok(config) =&gt; println!("{config:?}"),
+        Err(message) =&gt; println!("설정 오류: {message}"),
+    }
+}</code></pre>
+<p>이 빌더는 필수 설정인 <code>host</code>가 빠졌거나 잘못된 값이 들어오면 <code>Result</code>로 오류를 돌려줍니다. <code>port</code>와 <code>workers</code>는 값을 지정하지 않았을 때 기본값을 사용합니다. 실행 결과는 <code>ServerConfig { host: "127.0.0.1", port: 3000, workers: 8 }</code>입니다.</p>
 <h3 id="page-111-enums-for-states">상태는 가능한 경우 열거형으로 표현하기</h3>
 <p>상태에 따라 달라지는 데이터를 여러 <code>bool</code> 값으로 조합하면, 서로 모순되는 상태도 표현될 수 있습니다. 가능한 상태를 <code>enum</code>의 변형으로 나누고 각 상태에 필요한 데이터만 담으면 유효하지 않은 조합을 줄일 수 있습니다. 상태가 바뀌는 규칙을 메서드로 모아 두면 전이 과정을 따라가기도 쉽습니다. 이 방식은 Rust 책의 <a href="ch18-03-oo-design-patterns.html">객체 지향 상태 패턴</a>을 읽을 때도 비교해 볼 만합니다.</p>
+<h4 id="page-111-typestate-pattern">타입 상태로 허용되는 순서를 제한하기</h4>
+<p>상태 전이가 정해져 있고 잘못된 순서가 프로그래밍 오류라면, 각 상태를 별도 타입으로 나타내는 <em>타입 상태(typestate) 패턴</em>을 고려할 수 있습니다. 아래 주문은 초안에서 결제 완료를 거쳐 배송 상태로만 이동합니다. <code>DraftOrder</code>에는 <code>ship</code> 메서드가 없으므로 결제하지 않은 주문을 바로 배송하는 코드는 컴파일되지 않습니다.</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct OrderId(u64);
+
+#[derive(Debug)]
+struct OrderData {
+    id: OrderId,
+    item_count: usize,
+}
+
+#[derive(Debug)]
+struct DraftOrder(OrderData);
+
+#[derive(Debug)]
+struct PaidOrder(OrderData);
+
+#[derive(Debug)]
+struct ShippedOrder(OrderData);
+
+impl DraftOrder {
+    fn new(id: u64, item_count: usize) -&gt; Self {
+        Self(OrderData {
+            id: OrderId(id),
+            item_count,
+        })
+    }
+
+    fn pay(self) -&gt; PaidOrder {
+        PaidOrder(self.0)
+    }
+}
+
+impl PaidOrder {
+    fn ship(self) -&gt; ShippedOrder {
+        ShippedOrder(self.0)
+    }
+}
+
+fn main() {
+    let order = DraftOrder::new(42, 2).pay().ship();
+    println!("배송 완료: 주문 {}, 상품 {}개", (order.0.id).0, order.0.item_count);
+}</code></pre>
+<p>타입 상태는 잘못된 순서를 컴파일 시점에 막지만, 상태마다 타입과 변환 메서드가 늘어납니다. 상태가 데이터에 따라 동적으로 바뀌거나 상태 수가 많다면 단일 구조체와 <code>enum</code>을 쓰는 편이 더 간단할 수 있습니다. 타입 상태는 중요한 불변 조건을 API 차원에서 보장할 때 선택하세요.</p>
+<h3 id="page-111-practice-exercises">직접 적용해 보는 연습</h3>
+<ol>
+<li>컬렉션 예제에 <code>HashSet</code>을 추가하고, 같은 태그를 여러 번 넣어도 고유한 태그 수만 출력해 보세요.</li>
+<li>서버 설정 빌더에 TLS 사용 여부를 선택하는 설정을 추가하세요. 기본값을 정하고, 서로 함께 쓸 수 없는 설정 조합이 있다면 <code>build</code>에서 오류를 반환하게 해 보세요.</li>
+<li>주문 타입 상태 예제에 초안 주문 취소 동작을 추가하세요. 결제 완료 주문에는 취소 동작을 제공할지, 별도의 환불 상태와 타입으로 표현할지 생각해 보세요.</li>
+</ol>
+<p>이 연습은 <a href="https://github.com/rust-lang/rustlings">Rustlings</a>나 <a href="https://doc.rust-lang.org/rust-by-example/">Rust by Example</a>처럼 작은 문제를 직접 풀며 익히는 방식을 참고해 새로 작성했습니다. 각 연습에는 하나의 정답만 있는 것이 아니라, 요구사항을 만족하는 타입과 컬렉션을 선택하고 그 이유를 설명하는 과정이 중요합니다.</p>
 <p>이런 관용구는 규칙이 아니라 선택지입니다. 데이터의 크기와 접근 방식, 공개 API의 요구를 먼저 정하고, 필요한 만큼만 추상화를 도입하세요.</p>
-<p><a href="https://doc.rust-lang.org/std/collections/">Rust 표준 컬렉션 문서</a> · <a href="https://rust-lang.github.io/api-guidelines/type-safety.html">Rust API Guidelines: 타입 안전성과 빌더</a></p>
+<h3 id="page-111-further-learning">이어 학습하기</h3>
+<p><a href="https://google.github.io/comprehensive-rust/">Comprehensive Rust</a>는 기초를 익힌 뒤 동시성, 임베디드, Android·Chromium 연동 같은 주제로 확장하는 강의형 자료입니다. 한국어 번역도 제공됩니다. 강의실 수업을 염두에 둔 구성이라 독학에서는 설명과 연습을 보완해서 활용하세요. <a href="https://rust-unofficial.github.io/patterns/">Rust Design Patterns</a>는 Rust 특유의 관용구와 안티패턴을 더 깊게 찾아볼 수 있는 커뮤니티 자료입니다. 비동기 프로그래밍은 <a href="https://rust-lang.github.io/async-book/">Async Book</a>을 참고할 수 있지만, 현재 개편 중인 작업본이므로 빠진 내용이 있을 수 있습니다.</p>
+<p>이 페이지의 설명과 코드는 이 책을 위해 새로 작성했으며, 다른 교재의 문단을 복사하거나 직역하지 않았습니다. 외부 자료는 원 저작자와 라이선스를 확인할 수 있도록 링크로 안내합니다. <a href="https://doc.rust-lang.org/std/collections/">Rust 표준 컬렉션 문서</a> · <a href="https://rust-lang.github.io/api-guidelines/type-safety.html">Rust API Guidelines: 타입 안전성과 빌더</a></p>
 <h2 id="page-111-after-book-baseline">공식 책 기준 이후의 변경</h2>
 <p>공식 책의 기준 버전은 Rust 1.97.0 이상입니다. 현재 안정판 1.99 계열에는 FFI 경계에서 C ABI 가변 인자 함수를 정의하는 기능과, 메타데이터가 없는 원시 포인터에서 동적 크기 타입의 크기·정렬을 조회하는 저수준 API 등이 추가되었습니다. 이런 기능은 주로 FFI나 unsafe 저수준 코드에서 필요하므로 초급 학습 흐름에는 넣지 않고, 버전 변화 안내로만 기록합니다. 자세한 변경점은 각 <a href="https://blog.rust-lang.org/releases/">공식 릴리스 노트</a>에서 확인할 수 있습니다.</p>
 <h2 id="page-111-stable-versus-experimental">안정 기능과 실험 기능 구분하기</h2>

@@ -30,7 +30,7 @@ Rust 설치와 Cargo 사용법부터 소유권, 타입, 오류 처리, 동시성
 
 ## 부록 H. 최신 Rust와 실전 보충
 
-비동기 클로저와 `AsyncFn` 계열 트레이트, 표준 컬렉션 선택법, 뉴타입·빌더·열거형 상태 표현을 실행 가능한 예제와 공식 설계 자료 링크로 보충했습니다. 2026년 11월 현재 안정판 변경점도 간단히 안내하며, 실험 단계 기능과 안정 기능을 구분합니다. 자세한 내용은 [부록 H. 최신 Rust와 실전 보충](https://jwl920919.github.io/rust-study/book/modern-rust.html)를 참고하세요.
+비동기 클로저와 `AsyncFn` 계열 트레이트, 표준 컬렉션의 실제 사용 흐름, 뉴타입·빌더·타입 상태 설계를 실행 가능한 예제와 연습 문제로 보충했습니다. Rustlings, Rust by Example, Comprehensive Rust, Rust Design Patterns 등 추가 자료도 목적과 주의점에 따라 안내합니다. 자세한 내용은 [부록 H. 최신 Rust와 실전 보충](https://jwl920919.github.io/rust-study/book/modern-rust.html)를 참고하세요.
 
 ## 열기
 
