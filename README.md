@@ -2,7 +2,7 @@
 
 최신 공식판 **The Rust Programming Language**를 바탕으로 만든 한국어 HTML 학습 자료입니다.
 
-**[한국어 책 바로 읽기](https://jwl920919.github.io/rust-study/)** · [책 목차](https://jwl920919.github.io/rust-study/book/SUMMARY.html) · **[최신 Rust 보충 노트](https://jwl920919.github.io/rust-study/book/modern-rust.html)** · [출처와 라이선스](ATTRIBUTION.md)
+**[한국어 책 바로 읽기](https://jwl920919.github.io/rust-study/)** · [책 목차](https://jwl920919.github.io/rust-study/book/SUMMARY.html) · **[부록 H. 최신 Rust와 실전 보충](https://jwl920919.github.io/rust-study/book/modern-rust.html)** · [출처와 라이선스](ATTRIBUTION.md)
 
 ## 이 책에서 다루는 내용
 
@@ -15,7 +15,7 @@ Rust 설치와 Cargo 사용법부터 소유권, 타입, 오류 처리, 동시성
 - **15–17장 — 메모리와 동시성:** 스마트 포인터, 스레드와 공유 상태, async/await와 Future·Stream
 - **18–20장 — 고급 언어 기능:** 객체 지향 설계, 패턴, unsafe Rust, 매크로와 기타 고급 기능
 - **21장 — 최종 프로젝트:** 멀티스레드 웹 서버
-- **부록 A–G:** 키워드, 연산자, 파생 트레이트, 개발 도구, 에디션, 번역본, Nightly Rust
+- **부록 A–H:** 키워드, 연산자, 파생 트레이트, 개발 도구, 에디션, 번역본, Nightly Rust, 최신 Rust와 실전 보충
 
 ## 페이지에서 Rust 코드 실험하기
 
@@ -28,9 +28,9 @@ Rust 설치와 Cargo 사용법부터 소유권, 타입, 오류 처리, 동시성
 
 실행은 브라우저 안의 로컬 컴파일러가 아니라 공식 [Rust Playground](https://play.rust-lang.org/)에서 처리됩니다. **실행을 누르면 작성한 코드와 선택한 에디션이 인터넷을 통해 Playground로 전송됩니다.** 공식 Playground 링크를 누르면 코드가 URL에도 포함됩니다. 비밀번호, 토큰 등 공개하면 안 되는 값은 코드에 넣지 마세요. 실행에는 인터넷 연결이 필요합니다.
 
-## 최신 Rust 보충 노트
+## 부록 H. 최신 Rust와 실전 보충
 
-비동기 클로저와 `AsyncFn` 계열 트레이트, 표준 컬렉션 선택법, 뉴타입·빌더·열거형 상태 표현을 실행 가능한 예제와 공식 설계 자료 링크로 보충했습니다. 2026년 11월 현재 안정판 변경점도 간단히 안내하며, 실험 단계 기능과 안정 기능을 구분합니다. 자세한 내용은 [최신 Rust 보충 노트](https://jwl920919.github.io/rust-study/book/modern-rust.html)를 참고하세요.
+비동기 클로저와 `AsyncFn` 계열 트레이트, 표준 컬렉션 선택법, 뉴타입·빌더·열거형 상태 표현을 실행 가능한 예제와 공식 설계 자료 링크로 보충했습니다. 2026년 11월 현재 안정판 변경점도 간단히 안내하며, 실험 단계 기능과 안정 기능을 구분합니다. 자세한 내용은 [부록 H. 최신 Rust와 실전 보충](https://jwl920919.github.io/rust-study/book/modern-rust.html)를 참고하세요.
 
 ## 열기
 
@@ -40,7 +40,7 @@ Rust 설치와 Cargo 사용법부터 소유권, 타입, 오류 처리, 동시성
 ## 기준과 번역 상태
 
 - 기준 원문: Rust 1.97.0 이상, Rust 2024 Edition
-- 구성: 21개 장과 부록 A–G 전체, mdBook 기반 HTML
+- 구성: 21개 장과 부록 A–H 전체, mdBook 기반 HTML
 - 한국어 문장은 기계 번역 초안이며 전문 번역가의 검수와 교정을 거치지 않았습니다. 기술 용어와 문장에 오역 또는 어색한 표현이 있을 수 있습니다.
 - 책 본문의 Rust 코드와 명령어는 원문을 보존했습니다. 보충 노트의 예제는 별도로 작성했습니다.
 - 최신 Rust 보충 노트는 2026년 11월 7일 기준이며, 이후 변경은 공식 릴리스 노트에서 확인하세요.
