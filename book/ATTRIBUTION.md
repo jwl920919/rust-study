@@ -15,6 +15,13 @@
 - CTranslate2 변환본: Live Translator / Unbakedcookie 모델 패키지. 가중치는 변경하지 않았습니다.
 - 모델 라이선스: CC-BY-4.0. 모델 패키지에 포함된 `LICENCE.txt` 참조.
 
+## 글꼴
+
+- Open Sans v17 — Copyright 2010 Steve Matteson; digitized data copyright 2010–2011 Google Corporation. Apache-2.0. 라이선스 전문은 [`fonts/OPEN-SANS-LICENSE.txt`](fonts/OPEN-SANS-LICENSE.txt)에 포함되어 있습니다.
+- Source Code Pro v11 — Copyright 2010, 2012 Adobe Systems Incorporated. SIL Open Font License 1.1로 배포되며 `Source`는 Reserved Font Name입니다. 라이선스 전문과 고지는 [`fonts/SOURCE-CODE-PRO-LICENSE.txt`](fonts/SOURCE-CODE-PRO-LICENSE.txt)에 포함되어 있습니다.
+
+글꼴 파일은 mdBook의 기본 제공 파일이며 별도로 수정하지 않았습니다. 글꼴 파일 자체는 이 책의 MIT 라이선스와 별개로 각자의 라이선스를 따릅니다.
+
 ## 상태
 
 이 자료는 자동 번역 초안이며 전문 번역가의 검수·교정을 거치지 않았습니다. 오역 또는 어색한 표현이 있을 수 있습니다.
