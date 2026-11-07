@@ -15743,6 +15743,48 @@ async fn append_ready_value(values: &amp;mut Vec&lt;String&gt;) {
 }
 </code></pre>
 <p>여기서 비동기 클로저가 반환하는 Future는 <code>values</code>의 가변 빌림을 사용합니다. 그래서 이 Future가 완료되기 전에는 같은 값을 다른 곳에서 동시에 가변 빌릴 수 없습니다. 이는 기존 소유권·빌림 규칙과 동일합니다.</p>
+<h2 id="page-85-practical-rust">실전 Rust: 컬렉션과 설계 관용구</h2>
+<p>공식 책에서 <code>Vec</code>, <code>String</code>, <code>HashMap</code>의 기초를 배웠다면, 이제 문제에 맞는 자료구조를 고르고 타입으로 잘못된 사용을 막는 방법을 살펴볼 수 있습니다. 아래 내용은 특정 프레임워크나 유행을 소개하는 목록이 아니라, 표준 라이브러리와 Rust API 설계 지침에서 이어지는 실용적인 관용구입니다.</p>
+<h3 id="page-85-choosing-collections">문제에 맞는 컬렉션 고르기</h3>
+<ul>
+<li><code>Vec&lt;T&gt;</code>: 순서를 유지하며 값을 모으고, 끝에 추가하거나 인덱스로 접근할 때 기본으로 고려합니다. 스택으로도 쓸 수 있습니다.</li>
+<li><code>VecDeque&lt;T&gt;</code>: 앞과 뒤 양쪽에서 넣고 빼는 큐가 필요할 때 사용합니다.</li>
+<li><code>HashMap&lt;K, V&gt;</code>: 키로 값을 빠르게 찾거나 빈도·캐시를 관리할 때 적합합니다. 순회 순서는 정렬되어 있지 않습니다.</li>
+<li><code>BTreeMap&lt;K, V&gt;</code>: 키 순서대로 순회하거나 정렬된 범위 검색이 필요할 때 사용합니다.</li>
+<li><code>HashSet&lt;T&gt;</code>와 <code>BTreeSet&lt;T&gt;</code>: 값의 존재 여부만 기억할 때 씁니다. 정렬이 필요하면 <code>BTreeSet</code>을 선택합니다.</li>
+<li><code>BinaryHeap&lt;T&gt;</code>: 우선순위가 가장 높은 항목부터 꺼내야 할 때 유용합니다.</li>
+</ul>
+<p>처음부터 복잡한 구조를 고를 필요는 없습니다. 표준 라이브러리 문서도 대부분의 범용 상황에서는 <code>Vec</code>이나 <code>HashMap</code>으로 시작하고, 실제 요구가 생길 때 다른 컬렉션을 선택하도록 안내합니다. 이중 연결 리스트인 <code>LinkedList</code>는 특정 연산 특성이 꼭 필요할 때 고려하는 편이 좋습니다. 더 자세한 선택 기준은 <a href="https://doc.rust-lang.org/std/collections/">표준 컬렉션 문서</a>를 참고하세요.</p>
+<pre class="playground"><code class="language-rust">use std::collections::{BTreeMap, HashMap, VecDeque};
+
+fn main() {
+    let mut counts = HashMap::new();
+    for word in ["rust", "ownership", "rust"] {
+        *counts.entry(word).or_insert(0) += 1;
+    }
+    println!("rust 등장 횟수: {}", counts.get("rust").copied().unwrap_or(0));
+
+    let mut queue = VecDeque::new();
+    queue.push_back("첫 번째 작업");
+    queue.push_back("두 번째 작업");
+    println!("처리할 작업: {}", queue.pop_front().unwrap_or("없음"));
+
+    let mut scores = BTreeMap::new();
+    scores.insert("보라", 92);
+    scores.insert("가람", 87);
+    for (name, score) in &amp;scores {
+        println!("{name}: {score}");
+    }
+}</code></pre>
+<p><code>HashMap::entry</code>는 키를 조회한 뒤 없으면 넣는 작업을 한 번의 흐름으로 표현합니다. 반면 <code>BTreeMap</code>은 키 순서로 순회하므로 이 예제의 이름은 정렬되어 출력됩니다. 실행 결과는 각각 <code>rust 등장 횟수: 2</code>, <code>처리할 작업: 첫 번째 작업</code>, <code>가람: 87</code>, <code>보라: 92</code>입니다.</p>
+<h3 id="page-85-newtype-pattern">뉴타입으로 값의 의미를 분명히 하기</h3>
+<p>서로 다른 의미를 같은 기본 타입으로 표현하면 인자를 뒤바꿔도 컴파일러가 알아채지 못할 수 있습니다. 튜플 구조체로 감싼 새 타입을 만들면 컴파일 시점에 구별할 수 있습니다. 예를 들어 사용자 ID와 주문 ID를 모두 <code>u64</code>로 저장하더라도 <code>UserId</code>와 <code>OrderId</code>를 따로 정의하면 둘을 실수로 바꾸어 전달하는 일을 막을 수 있습니다. Rust 책의 <a href="ch20-03-advanced-types.html#type-safety-and-abstraction-with-the-newtype-pattern">뉴타입 패턴 설명</a>과 <a href="https://rust-lang.github.io/api-guidelines/type-safety.html#newtypes-provide-static-distinctions">Rust API Guidelines</a>에서 더 살펴볼 수 있습니다.</p>
+<h3 id="page-85-builder-pattern">설정이 많은 값은 빌더로 만들기</h3>
+<p>필수 인자와 선택 설정이 많아 생성자 호출이 길어질 때는 빌더 패턴을 고려할 수 있습니다. 빌더의 설정 메서드가 빌더 자신을 돌려주면 메서드를 연결해 읽기 좋게 구성하고, 마지막 <code>build</code> 메서드에서 유효성 검사와 실제 값 생성을 맡길 수 있습니다. 설정이 몇 개뿐이라면 단순한 생성자나 구조체 리터럴이 더 명확합니다. 표준 라이브러리의 <code>Command</code> API를 비롯한 사례와 설계 지침은 <a href="https://rust-lang.github.io/api-guidelines/type-safety.html#builders-enable-construction-of-complex-values">빌더 권고</a>를 참고하세요.</p>
+<h3 id="page-85-enums-for-states">상태는 가능한 경우 열거형으로 표현하기</h3>
+<p>상태에 따라 달라지는 데이터를 여러 <code>bool</code> 값으로 조합하면, 서로 모순되는 상태도 표현될 수 있습니다. 가능한 상태를 <code>enum</code>의 변형으로 나누고 각 상태에 필요한 데이터만 담으면 유효하지 않은 조합을 줄일 수 있습니다. 상태가 바뀌는 규칙을 메서드로 모아 두면 전이 과정을 따라가기도 쉽습니다. 이 방식은 Rust 책의 <a href="ch18-03-oo-design-patterns.html">객체 지향 상태 패턴</a>을 읽을 때도 비교해 볼 만합니다.</p>
+<p>이런 관용구는 규칙이 아니라 선택지입니다. 데이터의 크기와 접근 방식, 공개 API의 요구를 먼저 정하고, 필요한 만큼만 추상화를 도입하세요.</p>
+<p><a href="https://doc.rust-lang.org/std/collections/">Rust 표준 컬렉션 문서</a> · <a href="https://rust-lang.github.io/api-guidelines/type-safety.html">Rust API Guidelines: 타입 안전성과 빌더</a></p>
 <h2 id="page-85-after-book-baseline">공식 책 기준 이후의 변경</h2>
 <p>공식 책의 기준 버전은 Rust 1.97.0 이상입니다. 현재 안정판 1.99 계열에는 FFI 경계에서 C ABI 가변 인자 함수를 정의하는 기능과, 메타데이터가 없는 원시 포인터에서 동적 크기 타입의 크기·정렬을 조회하는 저수준 API 등이 추가되었습니다. 이런 기능은 주로 FFI나 unsafe 저수준 코드에서 필요하므로 초급 학습 흐름에는 넣지 않고, 버전 변화 안내로만 기록합니다. 자세한 변경점은 각 <a href="https://blog.rust-lang.org/releases/">공식 릴리스 노트</a>에서 확인할 수 있습니다.</p>
 <h2 id="page-85-stable-versus-experimental">안정 기능과 실험 기능 구분하기</h2>
