@@ -504,7 +504,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 <p>여기서 새로운 변수인 <code>ignore_case</code>을(를) 생성합니다. 값을 설정하기 위해 <code>env::var</code> 함수를 호출하고, <code>IGNORE_CASE</code> 환경 변수의 이름을 인수로 전달합니다. <code>env::var</code> 함수는 <code>Result</code>를 반환합니다. 환경 변수가 어떤 값으로든 설정되어 있다면, 해당 환경 변수의 값을 포함하는 성공적인 <code>Ok</code> 변형을 반환합니다. 환경 변수가 설정되지 않은 경우에는 <code>Err</code> 변형을 반환합니다.</p>
 <p><code>is_ok</code>의 <code>Result</code> 메서드를 사용하여 환경 변수가 설정되었는지 확인합니다. 환경 변수가 설정되어 있으면 프로그램은 대소문자를 구분하지 않는 검색을 수행해야 합니다. <code>IGNORE_CASE</code> 환경 변수가 아무 값으로도 설정되지 않았다면, <code>is_ok</code>은 <code>false</code>를 반환하고 프로그램은 대소문자를 구분하는 검색을 수행합니다. <em>값</em> 자체보다는 환경 변수가 설정되었는지 여부만 중요하므로, <code>is_ok</code>을 확인하는 방식을 사용합니다. <code>unwrap</code>, <code>expect</code> 또는 <code>Result</code>에서 확인한 다른 메서드를 사용하는 것보다 이 방식이 적합합니다.</p>
 <p><code>ignore_case</code> 변수의 값을 <code>Config</code> 인스턴스에 전달하면, <code>run</code> 함수가 해당 값을 읽어 <code>search_case_insensitive</code> 또는 <code>search</code> 중 어느 것을 호출할지 결정할 수 있습니다. 이는 12-22 목록에서 구현한 내용과 같습니다.</p>
-<p>먼저, 환경 변수를 설정하지 않은 상태에서 쿼리를 <code>to</code>로 지정하여 프로그램을 실행해 보겠습니다. 이 쿼리는 'to'라는 단어가 포함된 모든 줄과 일치해야 합니다. <em>오시는 길</em> 모든 소문자에서 :</p>
+<p>먼저 환경 변수를 설정하지 않고 쿼리를 <code>to</code>로 지정해 프로그램을 실행해 보겠습니다. 이 쿼리는 소문자 <code>to</code>가 포함된 모든 줄과 일치해야 합니다:</p>
 <pre><code class="language-console">$ cargo run -- to poem.txt
    Compiling minigrep v0.1.0 (file:///projects/minigrep)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s

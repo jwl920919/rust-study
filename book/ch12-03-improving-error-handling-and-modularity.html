@@ -364,9 +364,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 </span><span class="boring">}</span></code></pre>
 <figcaption><a href="#listing-12-8">Listing 12-8</a>: 인수의 수를 확인하는 코드</figcaption>
 </figure>
-<p>이 코드는 다음과 같습니다. <a href="ch09-03-to-panic-or-not-to-panic.html#creating-custom-types-for-validation">오시는 길 <code>Guess::new</code> Listing 9-13에서 작성한 함수</a> 무시 #우리가 부르는 곳 <code>panic!</code> 때
-<code>value</code> 인수는 유효한 값의 범위를 벗어났습니다. 여기서 값의 범위를 확인하는 대신 길이가 <code>args</code> 적어도
-<code>3</code> 나머지 함수는 이 조건이 충족되었다는 가정 하에 작동할 수 있습니다. <code>args</code> 3개 미만 품목이 있습니다, 이 조건은 일 것입니다 <code>true</code>그리고 우리는 그것을 부르는 <code>panic!</code> 매크로는 프로그램을 즉시 종료합니다.</p>
+<p>이 코드는 9장 13번 예제에서 작성한 <a href="ch09-03-to-panic-or-not-to-panic.html#creating-custom-types-for-validation"><code>Guess::new</code> 함수</a>와 비슷합니다. 그 함수에서는 <code>value</code> 인자가 유효한 범위를 벗어나면 <code>panic!</code>을 호출했습니다. 여기서는 값의 범위를 직접 검사하는 대신 <code>args</code>의 길이가 3 이상인지 확인합니다. 조건이 참이면 나머지 함수는 이 전제를 바탕으로 실행할 수 있습니다. <code>args</code>에 항목이 3개 미만이면 조건은 거짓이 되고, <code>panic!</code> 매크로를 호출해 프로그램을 즉시 종료합니다.</p>
 <p><code>new</code> 함수에 이러한 몇 줄의 코드를 추가했으니, 이제 인수를 하나도 전달하지 않고 프로그램을 다시 실행하여 오류가 어떻게 보이는지 살펴 보겠습니다.</p>
 <pre><code class="language-console">$ cargo run
    Compiling minigrep v0.1.0 (file:///projects/minigrep)

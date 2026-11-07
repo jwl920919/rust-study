@@ -591,8 +591,7 @@ fn main() {
 }</code></pre>
 <figcaption><a href="#listing-15-24">Listing 15-24</a>: <code>Rc&lt;RefCell&lt;i32&gt;&gt;</code>를 사용하여 변경 가능한 <code>List</code> 생성</figcaption>
 </figure>
-<p>우리는 하나의 인스턴스인 값을 만듭니다. <code>Rc&lt;RefCell&lt;i32&gt;&gt;</code> 그리고 그것을 변수에 저장합니다. <code>value</code> 나중에 바로 접근할 수 있도록 합니다. <code>List</code> 에서 <code>a</code> 으로 A <code>Cons</code> 보유하는 variant <code>value</code>. 우리는 복제해야
-<code>value</code> 그래서 둘 다 <code>a</code> 그리고 <code>value</code> 내면의 소유권을 소유하라 <code>5</code> 소유권을 이전하는 대신 <code>value</code> 오시는 길 <code>a</code> 또는 HAVE <code>a</code> 대출 FROM <code>value</code>.</p>
+<p>나중에 직접 접근할 수 있도록 <code>Rc&lt;RefCell&lt;i32&gt;&gt;</code> 타입의 값을 만들고 <code>value</code> 변수에 저장합니다. 그런 다음 <code>a</code>에 <code>Cons</code> 변형을 넣고 그 안에 <code>value</code>를 담습니다. <code>a</code>와 <code>value</code>가 모두 안쪽의 값 <code>5</code>를 소유하도록 <code>value</code>를 복제해야 합니다. 이렇게 하면 <code>value</code>에서 <code>a</code>로 소유권을 옮기거나, <code>a</code>가 <code>value</code>를 빌리지 않아도 됩니다.</p>
 <p><code>a</code> 목록을 <code>Rc&lt;T&gt;</code>로 감싸면, <code>b</code> 및 <code>c</code> 목록을 만들 때 둘 다 <code>a</code>를 참조할 수 있습니다. 이는 15-18 목록에서 수행한 내용과 동일합니다.</p>
 <p>리스트를 만든 후, <code>a</code>, <code>b</code>, 그리고 <code>c</code>우리는 10을 그 값에 추가하고 싶습니다. <code>value</code>. 우리는 호출하여이 작업을 수행 <code>borrow_mut</code> 온 <code>value</code>이는 우리가 논의한 자동 역참조 기능을 사용합니다. <a href="ch05-03-method-syntax.html#wheres-the---operator">Where's the ~는 어디에 있는가 <code>-&gt;</code>
 운영자?"</a> 무시  'dereference'에 해당되는 글 5건 <code>Rc&lt;T&gt;</code> 내부로 <code>RefCell&lt;T&gt;</code> 가치. <code>borrow_mut</code> 메서드는 a를 반환합니다.

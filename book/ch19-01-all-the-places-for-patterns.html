@@ -205,9 +205,7 @@
 <span class="boring">}</span></code></pre>
 <figcaption><a href="#listing-19-1">Listing 19-1</a>: 패턴을 사용하여 튜플을 구조 분해하고 한 번에 세 개의 변수를 생성하기</figcaption>
 </figure>
-<p>여기서는 튜플을 패턴과 일치시킵니다. 러스트는 값을 비교합니다. <code>(1, 2, 3)</code>
-상기 패턴은 The pattern <code>(x, y, z)</code> 그리고 그 값이 패턴과 일치한다는 것을 알 수 있습니다. 즉, 두 요소의 개수가 같다는 것을 알 수 있습니다. <code>1</code> 오시는 길
-<code>x</code>, <code>2</code> 오시는 길 <code>y</code>, 그리고 <code>3</code> 오시는 길 <code>z</code>이 튜플 패턴은 세 개의 개별 변수 패턴을 중첩하는 것으로 생각할 수 있습니다.</p>
+<p>여기서는 튜플을 패턴과 대조합니다. Rust는 값 <code>(1, 2, 3)</code>과 패턴 <code>(x, y, z)</code>를 비교해 일치한다고 판단합니다. 두 튜플의 원소 개수가 같기 때문입니다. 이때 <code>1</code>은 <code>x</code>에, <code>2</code>는 <code>y</code>에, <code>3</code>은 <code>z</code>에 바인딩됩니다. 이 튜플 패턴은 개별 변수 패턴 세 개를 중첩한 것으로 볼 수 있습니다.</p>
 <p>패턴의 요소 수가 튜플의 요소 수와 일치하지 않으면 전체 타입이 일치하지 않아 컴파일러 오류가 발생합니다. 예를 들어, Listing 19-2는 세 개의 요소를 가진 튜플을 두 개의 변수로 구조 분해하려는 시도를 보여주지만, 이는 작동하지 않습니다.</p>
 <figure class="listing" id="listing-19-2">
 <pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {

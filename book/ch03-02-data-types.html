@@ -289,9 +289,7 @@ error: could not compile `no_type_annotations` (bin "no_type_annotations") due t
     let z: char = 'ℤ'; // with explicit type annotation
     let heart_eyed_cat = '😻';
 }</code></pre>
-<p>우리가 지정하는 것에 주의하세요 <code>char</code> 단일 따옴표를 가진 리터럴, 문자열 리터럴이 아닌, 이중 따옴표를 사용하는. 러스트 <code>char</code> type은 크기가 4 바이트이고 유니코드 스칼라 값을 나타냅니다. 즉, ASCII보다 훨씬 더 많은 것을 나타낼 수 있습니다. 악센트 문자; 중국어, 일본어 및 한국어 문자; 이모티콘; 그리고 제로 너비 공백은 모두 유효합니다. <code>char</code> 러스트의 값. 유니코드 스칼라 값의 범위 <code>U+0000</code> 오시는 길 <code>U+D7FF</code> 그리고 <code>U+E000</code> 오시는 길
-<code>U+10FFFF</code> 포함. 그러나 "문자"는 실제로 유니 코드의 개념이 아니므로 "문자"가 무엇인지에 대한 인간의 직감이 a와 일치하지 않을 수 있습니다.
-<code>char</code> 러스트에 있습니다. 이 주제에 대해 자세히 논의 할 것입니다. <a href="ch08-02-strings.html#storing-utf-8-encoded-text-with-strings">"UTF-8 인코딩 된 텍스트를 문자열로 저장"</a> 무시  챕터 8.</p>
+<p><code>char</code> 리터럴은 문자열 리터럴과 달리 작은따옴표로 표기합니다. 문자열 리터럴에는 큰따옴표를 사용합니다. Rust의 <code>char</code> 타입은 4바이트 크기이며 유니코드 스칼라 값을 나타내므로 ASCII보다 훨씬 다양한 값을 표현할 수 있습니다. 악센트가 있는 문자, 중국어·일본어·한국어 문자, 이모지, 너비가 0인 공백도 유효한 <code>char</code> 값입니다. 유니코드 스칼라 값의 범위는 <code>U+0000</code>부터 <code>U+D7FF</code>까지, 그리고 <code>U+E000</code>부터 <code>U+10FFFF</code>까지입니다. 다만 유니코드에는 인간이 생각하는 ‘문자’라는 개념이 정확히 대응하지 않으므로, 사람이 생각하는 한 글자와 Rust의 <code>char</code>가 항상 같지는 않습니다. 이 주제는 8장의 <a href="ch08-02-strings.html#storing-utf-8-encoded-text-with-strings">문자열에 UTF-8 인코딩 텍스트 저장하기</a>에서 자세히 다룹니다.</p>
 <h3 id="compound-types"><a class="header" href="#compound-types">복합 타입</a></h3>
 <p>복합 타입은 여러 값을 하나의 타입으로 묶을 수 있습니다. Rust에는 튜플과 배열이라는 두 가지 기본 복합 타입이 있습니다.</p>
 <h4 id="the-tuple-type"><a class="header" href="#the-tuple-type">튜플 타입</a></h4>

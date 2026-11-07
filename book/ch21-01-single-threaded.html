@@ -234,9 +234,7 @@ fn handle_connection(mut stream: TcpStream) {
 }</code></pre>
 <figcaption><a href="#listing-21-2">Listing 21-2</a>: <code>TcpStream</code>에서 읽고 데이터 출력하기</figcaption>
 </figure>
-<p>오시는 길 <code>std::io::BufReader</code> 그리고 <code>std::io::prelude</code> 스트림에서 읽고 쓸 수 있는 형질과 타입에 접근할 수 있는 범위로. <code>for</code>
-루프 인 더 <code>main</code> 함수는, 우리가 연결했다는 메세지를 출력하는 대신에, 우리는 이제 새로운 것을 호출합니다. <code>handle_connection</code> 기능 및 통행
-<code>stream</code> 그것을 위해.</p>
+<p>스트림에서 읽고 쓰는 데 필요한 트레이트와 타입을 사용하도록 <code>std::io::BufReader</code>와 <code>std::io::prelude</code>를 스코프에 가져옵니다. <code>main</code> 함수의 <code>for</code> 루프에서는 연결이 생성됐다는 메시지를 출력하는 대신, 새로 만든 <code>handle_connection</code> 함수를 호출하고 스트림을 전달합니다.</p>
 <p><code>handle_connection</code> 함수에서, <code>BufReader</code>에 대한 참조를 감싸는 새로운 <code>stream</code> 인스턴스를 생성합니다. <code>BufReader</code>는 <code>std::io::Read</code> 트레이트 메서드에 대한 호출을 관리함으로써 버퍼링을 제공합니다.</p>
 <p>브라우저가 서버로 보내는 요청의 줄을 수집하기 위해 <code>http_request</code>라는 변수를 생성합니다. <code>Vec&lt;_&gt;</code> 타입 주석을 추가하여 이 줄들을 벡터에 수집하고자 함을 나타냅니다.</p>
 <p><code>BufReader</code>은 <code>std::io::BufRead</code> 트레이트를 구현하며, 이 트레이트는 <code>lines</code> 메서드를 제공합니다. <code>lines</code> 메서드는 줄바꿈 바이트를 발견할 때마다 데이터 스트림을 분할하여 <code>Result&lt;String, std::io::Error&gt;</code> 타입의 반복자를 반환합니다. 각 <code>String</code> 값을 얻기 위해 <code>map</code>을 적용하고 <code>unwrap</code>을 호출하여 각 <code>Result</code>을 처리합니다. 데이터가 유효한 UTF-8이 아니거나 스트림에서 읽는 과정에서 문제가 발생하면 <code>Result</code>에 오류가 포함될 수 있습니다. 다시 한번 강조하지만, 프로덕션 프로그램에서는 이러한 오류를 더 세심하게 처리해야 하지만, 여기서는 단순성을 위해 오류 발생 시 프로그램을 중단하도록 선택했습니다.</p>

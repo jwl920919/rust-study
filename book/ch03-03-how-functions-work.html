@@ -175,8 +175,7 @@ fn another_function() {
     println!("Another function.");
 }</code></pre>
 <p>Rust에서 함수를 정의하려면 <code>fn</code> 뒤에 함수 이름과 괄호를 입력합니다. 중괄호는 함수 본문이 시작되고 끝나는 위치를 컴파일러에게 알려줍니다.</p>
-<p>우리가 정의한 함수를 호출할 수 있습니다. 이름 뒤에 괄호를 입력하면 됩니다. 왜냐하면 <code>another_function</code> 프로그램 내에서 정의되며, 내부에서 호출될 수 있습니다. <code>main</code> 함수. 우리가 정의한 것을 주목하라. <code>another_function</code>
-<em>이후</em> 오시는 길 <code>main</code> 소스 코드에서 함수를 정의할 수도 있습니다. 러스트는 여러분이 함수를 정의할 때 상관하지 않습니다. 단지 함수는 호출자가 볼 수 있는 범위의 어딘가에 정의되어 있을 뿐입니다.</p>
+<p>정의한 함수는 이름 뒤에 괄호를 붙여 호출할 수 있습니다. 프로그램 안에 정의된 <code>another_function</code>은 <code>main</code> 함수 안에서도 호출할 수 있습니다. 예제에서는 <code>another_function</code>을 소스 코드에서 <code>main</code> 함수 뒤에 정의했지만, 앞에 정의해도 됩니다. Rust는 함수 정의의 순서에 구애받지 않습니다. 함수가 호출자에게 보이는 범위 안에 정의되어 있기만 하면 됩니다.</p>
 <p>함수를 더 자세히 살펴보기 위해 functions라는 이름의 새로운 바이너리 프로젝트를 시작해 봅시다. <code>another_function</code> 예제를 src/main.rs에 넣고 실행하십시오. 다음 출력을 볼 수 있습니다.</p>
 <pre><code class="language-console">$ cargo run
    Compiling functions v0.1.0 (file:///projects/functions)

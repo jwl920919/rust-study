@@ -589,8 +589,7 @@ error: could not compile `patterns` (bin "patterns") due to 1 previous error
 </figure>
 <p>이 코드는 이제 인쇄됩니다. <code>Default case, x = Some(5)</code>. 두 번째 매치 암의 패턴은 새로운 변수를 도입하지 않습니다. <code>y</code> 그것은 외부를 그늘지게 할 것입니다. <code>y</code>즉, 우리는 외부를 사용할 수 있습니다. <code>y</code> 일치 가드에서. 패턴을 다음과 같이 지정하는 대신 <code>Some(y)</code>[중고] 그 외의 것을 탐하다 <code>y</code>, 우리는 지정
 <code>Some(n)</code>. 이것은 새로운 변수를 만듭니다. <code>n</code> 그것은 아무것도 없는 것이 아니기 때문에 아무것도 없는 것이다. <code>n</code> 변수는 외부에 <code>match</code>.</p>
-<p>#경기 경비대 <code>if n == y</code> 패턴이 아니므로 새로운 변수를 도입하지 않습니다. 이 <code>y</code> <em>있습니다.</em> 외부 <code>y</code> 새로운 것 보다는 <code>y</code> 그림자를 드리우고, 우리는 외부와 같은 값을 가진 값을 찾을 수 있습니다. <code>y</code> 비교를 통해
-<code>n</code> 오시는 길 <code>y</code>.</p>
+<p><code>if n == y</code>라는 매치 가드는 패턴이 아니므로 새 변수를 도입하지 않습니다. 여기서 <code>y</code>는 바깥 범위에 있는 변수입니다. 새로운 <code>y</code>를 만들어 기존 변수를 가리는 것이 아닙니다. 따라서 <code>n</code>과 바깥 범위의 <code>y</code>를 비교해 같은 값을 찾습니다.</p>
 <p>match 가드에서 or 연산자 <em>또는</em> <code>|</code>을 사용하여 여러 패턴을 지정할 수도 있습니다. 이 경우 match 가드 조건은 모든 패턴에 적용됩니다. Listing 19-28은 <code>|</code> 매치 가드와 함께 사용할 때의 우선 순위를 보여줍니다. 이 예제의 중요한 부분은 <code>if y</code> 매치 가드 적용 대상 <code>4</code>, <code>5</code>, <em>그리고</em> <code>6</code>라는 점입니다. <code>if y</code> 적용 대상 <code>6</code>처럼 보일 수 있지만, 실제로는 그렇지 않습니다.</p>
 <figure class="listing" id="listing-19-28">
 <pre class="playground"><code class="language-rust edition2024"><span class="boring">fn main() {
