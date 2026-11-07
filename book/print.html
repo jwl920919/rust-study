@@ -21667,9 +21667,16 @@ cargo test --workspace</code></pre>
 cargo fmt --all -- --check
 cargo clippy --workspace --all-targets
 cargo test --workspace
-cargo doc --workspace --no-deps</code></pre>
+cargo test --doc --workspace
+cargo doc --workspace --no-deps
+cargo package --list
+cargo publish --dry-run</code></pre>
 <p><code>cargo fmt</code>와 <code>cargo clippy</code>는 해당 도구 컴포넌트가 설치되어 있어야 합니다. Clippy 경고를 오류로 처리하는 정책은 팀이 합의한 뒤 <code>-- -D warnings</code>를 추가해 적용할 수 있습니다. 모든 경고를 무조건 숨기기보다 경고가 지적하는 의도와 예외 근거를 확인하세요.</p>
 <p>CI에서는 같은 명령을 자동 실행하고, 재현 가능한 의존성 해석이 필요하면 <code>--locked</code>를 사용해 잠금 파일이 바뀌지 않는지 확인할 수 있습니다. 프로젝트에 적용할 정확한 명령은 타깃, 워크스페이스 구성, 선택 기능에 맞춰 정하세요.</p>
+<h2 id="page-112-docs-and-publishing">문서와 배포 전 점검</h2>
+<p>라이브러리의 <code>///</code> 문서 주석에는 무엇을 하는 API인지, 필요한 입력과 오류 조건, 복사해 실행해 볼 예제를 담습니다. 예제를 문서 테스트(doc test)로 작성하면 <code>cargo test --doc</code>에서 예제 코드가 실제로 컴파일되고 실행되는지도 확인할 수 있습니다.</p>
+<p>crates.io에 배포하려면 공개할 파일, 버전, 설명, 저장소 주소, 라이선스를 <code>Cargo.toml</code>과 README에서 확인하세요. <code>cargo package --list</code>로 패키지에 들어갈 파일을 살피고, <code>cargo publish --dry-run</code>으로 업로드 전에 패키징 검사를 수행할 수 있습니다. <code>cargo publish</code>는 레지스트리에 패키지를 업로드하므로 이름·버전·공개 파일을 마지막으로 검토한 뒤 실행하세요.</p>
+<p><a href="https://doc.rust-lang.org/rustdoc/how-to-write-documentation.html">rustdoc: 문서 작성 방법</a> · <a href="https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html">rustdoc: 문서 테스트</a> · <a href="https://doc.rust-lang.org/cargo/commands/cargo-publish.html">Cargo Book: 패키지 게시</a></p>
 <p><a href="https://doc.rust-lang.org/cargo/reference/workspaces.html">Cargo Book: 워크스페이스</a> · <a href="https://doc.rust-lang.org/cargo/commands/cargo-check.html">Cargo Book: cargo check</a></p><h1 id="page-113-appendix-j-cli"><a class="header" href="#page-113-appendix-j-cli">부록 J. 명령행 애플리케이션 만들기</a></h1>
 <p>명령행 프로그램(CLI)은 파일, 표준 입력, 인자를 받아 처리하고 결과를 표준 출력이나 파일로 내보냅니다. 작은 CLI는 Rust의 타입·오류 처리·테스트를 한데 연습하기 좋은 프로젝트입니다. 이 부록에서는 패턴을 찾아 파일에서 해당 줄을 출력하는 간단한 도구의 구조를 살펴봅니다.</p>
 <h2 id="page-113-cli-input-as-data">입력 인자를 구조체로 모델링하기</h2>
@@ -21749,7 +21756,68 @@ async fn main() {
 <p>동기 뮤텍스 가드를 잡은 채 오래 대기하는 <code>.await</code>를 수행하면 다른 태스크의 진행을 막거나 교착 상태를 만들 수 있습니다. 가능한 경우 잠금 구간을 짧게 유지하고 가드를 놓은 다음 대기하세요. 잠금이 대기 상태를 가로질러 꼭 유지되어야 한다면 async 런타임의 비동기 뮤텍스가 맞는지 따져 보되, 비동기 뮤텍스도 비용과 경합이 있으므로 기본 선택으로 두지는 않습니다.</p>
 <h2 id="page-114-async-learning-route">더 깊이 배우기</h2>
 <p>비동기 프로그래밍은 기본 문법, 실행기와 런타임, 입출력, 태스크 조합, 취소 안전성 순으로 학습하면 연결이 쉽습니다. <a href="https://rust-lang.github.io/async-book/">Async Book</a>에는 이 주제의 상세 설명과 실행기 실습이 있습니다. 다만 현재 개편이 진행 중인 작업본이라고 안내되어 있으므로 빈 부분이 있을 수 있습니다. 런타임별 API와 버전 변화는 선택한 런타임의 공식 문서를 함께 확인하세요.</p>
-<p><a href="https://rust-lang.github.io/async-book/01_getting_started/02_why_async.html">Async Book: 왜 비동기인가</a> · <a href="https://rust-lang.github.io/async-book/02_execution/04_executor.html">Async Book: 실행기 만들기</a> · <a href="https://rust-lang.github.io/async-book/part-guide/more-async-await.html">Async Book: 블로킹과 취소</a></p></main>
+<p><a href="https://rust-lang.github.io/async-book/01_getting_started/02_why_async.html">Async Book: 왜 비동기인가</a> · <a href="https://rust-lang.github.io/async-book/02_execution/04_executor.html">Async Book: 실행기 만들기</a> · <a href="https://rust-lang.github.io/async-book/part-guide/more-async-await.html">Async Book: 블로킹과 취소</a></p><h1 id="page-115-appendix-l-serde"><a class="header" href="#page-115-appendix-l-serde">부록 L. Serde로 JSON 데이터 다루기</a></h1>
+<p>Rust 표준 라이브러리만으로는 JSON이나 TOML 같은 형식을 구조체로 바꾸지 않습니다. 생태계에서 널리 쓰이는 Serde는 Rust 타입과 데이터 형식 사이의 변환을 위한 공통 트레이트를 제공하고, <code>serde_json</code>은 그 트레이트를 JSON에 적용하는 별도 크레이트입니다. 설정 파일·API 응답·저장 데이터처럼 프로그램 경계에서 외부 데이터를 주고받을 때 자주 만나는 조합입니다.</p>
+<h2 id="page-115-serde-dependencies">Cargo 의존성 추가하기</h2>
+<p>Serde의 derive 기능은 구조체와 열거형에서 <code>Serialize</code>, <code>Deserialize</code> 구현을 만들어 줍니다. JSON 변환 기능은 <code>serde_json</code> 크레이트가 제공합니다. 둘은 별도 의존성이며, 데이터 형식이 JSON이 아니라면 그 형식에 맞는 Serde 지원 크레이트를 선택해야 합니다.</p>
+<pre><code class="language-toml">[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"</code></pre>
+<h2 id="page-115-typed-json">JSON을 Rust 타입으로 읽고 쓰기</h2>
+<p>아래 예제는 Rust의 <code>listen_address</code> 필드를 JSON의 <code>listenAddress</code>와 연결하고, 설정에 작업자 수가 없으면 기본값을 사용합니다. 파싱 결과는 <code>Result</code>이므로 JSON 문법이나 자료형이 틀린 입력을 오류로 처리합니다.</p>
+<pre><code class="language-rust">use serde::{Deserialize, Serialize};
+use std::error::Error;
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct ServiceConfig {
+    listen_address: String,
+    port: u16,
+    #[serde(default = "default_workers")]
+    workers: usize,
+}
+
+fn default_workers() -&gt; usize {
+    4
+}
+
+impl ServiceConfig {
+    fn validate(&amp;self) -&gt; Result&lt;(), std::io::Error&gt; {
+        if self.port == 0 || self.workers == 0 {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "port와 workers는 0보다 커야 합니다",
+            ));
+        }
+        Ok(())
+    }
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let input = r#"{
+        "listenAddress": "127.0.0.1",
+        "port": 8080
+    }"#;
+
+    let config: ServiceConfig = serde_json::from_str(input)?;
+    config.validate()?;
+
+    let output = serde_json::to_string_pretty(&amp;config)?;
+    println!("{output}");
+    Ok(())
+}</code></pre>
+<p>Serde가 확인하는 것은 입력을 지정한 Rust 구조로 변환할 수 있는지입니다. 예를 들어 <code>port</code>가 정수이고 필수 필드가 있는지는 확인하지만, 포트가 0보다 커야 한다는 애플리케이션 규칙은 대신 검증하지 않습니다. 따라서 파싱과 도메인 검증을 분리하고, 외부 입력은 타입 변환에 성공한 뒤에도 필요한 불변 조건을 검사하세요.</p>
+<h2 id="page-115-serde-evolution">필드 이름과 형식 변경 다루기</h2>
+<ul>
+<li><code>#[serde(rename_all = "camelCase")]</code>는 Rust의 스네이크 케이스 필드와 camelCase JSON 필드를 대응시킵니다.</li>
+<li><code>#[serde(default)]</code> 또는 함수형 기본값은 새 필드가 없는 이전 설정 파일을 읽을 때 유용합니다. 기본값은 데이터 의미에 맞게 신중히 선택해야 합니다.</li>
+<li><code>#[serde(deny_unknown_fields)]</code>는 모르는 필드가 입력되면 오류를 냅니다. 확장 필드를 무시하고 호환성을 유지하려는 형식에서는 오히려 문제를 일으킬 수 있습니다.</li>
+<li>동적이거나 구조를 미리 모르는 JSON은 <code>serde_json::Value</code>로 다룰 수 있지만, 구조를 알고 있는 데이터는 구체적인 타입으로 역직렬화하면 필드 이름과 자료형을 컴파일러가 확인하는 데 도움이 됩니다.</li>
+</ul>
+<p>저장 형식이 바뀔 가능성이 있다면 기본값, 별칭, 버전 필드를 어떻게 사용할지 정하고 이전 데이터 샘플로 호환성을 확인하세요. `Serialize`와 `Deserialize` derive만 추가했다고 데이터베이스 마이그레이션이나 입력 검증이 자동으로 해결되는 것은 아닙니다.</p>
+<h2 id="page-115-serde-tests">변환과 오류를 테스트하기</h2>
+<p>직렬화한 값을 다시 읽는 왕복 테스트는 형식 변환이 기대와 맞는지 확인하는 간단한 출발점입니다. 여기에 필수 필드가 빠진 입력, 잘못된 숫자 타입, 기본값을 적용해야 하는 오래된 설정, 도메인 규칙을 어긴 값도 별도로 확인하세요. 외부 서비스가 보내는 JSON은 문자열 키 하나가 우연히 맞는지만 보지 말고, Rust 구조체 전체와 검증 규칙을 테스트하는 편이 좋습니다.</p>
+<p><a href="https://serde.rs/derive.html">Serde: derive</a> · <a href="https://serde.rs/attributes.html">Serde: 속성</a> · <a href="https://docs.rs/serde_json/latest/serde_json/">serde_json 문서</a></p></main>
 <nav aria-label="Page navigation" class="nav-wrapper">
 <!-- Mobile navigation buttons -->
 <div style="clear: both"></div>
