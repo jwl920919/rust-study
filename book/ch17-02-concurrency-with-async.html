@@ -258,7 +258,7 @@ hi number 9 from the first task!
 </code></pre>
 <p>지금까지 살펴본 바와 같이, async와 스레드는 서로 다른 문법을 사용하지만 비슷한 결과를 제공합니다. join 핸들에 join을 호출하는 대신 await를 사용하고, sleep 호출도 await로 처리하는 방식입니다. <code>await</code> <code>join</code> <code>sleep</code></p>
 <p>더 큰 차이점은 이 작업을 수행하기 위해 별도의 운영체제 스레드를 생성할 필요가 없다는 점입니다. 사실, 여기서 태스크를 생성할 필요도 없습니다. async 블록은 익명 future로 컴파일되므로, 각 루프를 async 블록에 넣고 런타임이 <code>trpl::join</code> 함수를 사용하여 둘 다 완료될 때까지 실행하도록 할 수 있습니다.</p>
-<p>다음에서 <a href="ch16-01-threads.html#waiting-for-all-threads-to-finish">“모든 실 이 끝나기 를 기다리면서”</a> 무시 
+<p>다음에서 <a href="ch16-01-threads.html#waiting-for-all-threads-to-finish">“모든 스레드가 끝날 때까지 기다리기”</a>
 제 16 장에서, 우리는 방법을 사용하는 방법을 보여 주었다 <code>join</code> 상기 방법은 The method
 <code>JoinHandle</code> 당신이 부를 때 반환되는 유형 <code>std::thread::spawn</code>. 그 <code>trpl::join</code>
 함수는 비슷하지만, 미래를 위한 함수입니다. 두 개의 미래를 주면, 그것은 하나의 새로운 미래를 만들어냅니다. 그 미래를 출력하는 튜플은 한 번 전달한 각 미래의 출력을 포함합니다. <em>둘 다</em> complete. 따라서 Listing 17-8에서 우리는

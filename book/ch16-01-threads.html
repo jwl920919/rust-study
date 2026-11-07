@@ -386,7 +386,7 @@ fn main() {
 }</code></pre>
 <figcaption><a href="#listing-16-5">Listing 16-5</a>: <code>move</code> 키워드를 사용하여 클로저가 사용하는 값의 소유권을 갖도록 강제하기</figcaption>
 </figure>
-<p>우리는 Listing 16-4에서 주 스레드가 호출된 코드를 고치기 위해 같은 것을 시도할 수도 있습니다. <code>drop</code> 사용 A <code>move</code> 클로저. 그러나, 이 수정은 Listing 16-4가 하려고 하는 것이 다른 이유로 허용되지 않기 때문에 작동하지 않습니다. 만약 우리가 추가한다면 <code>move</code> 상기 폐쇄하는 단계는, Wherein the closure, <code>v</code> 폐쇄의 환경으로, 우리는 더 이상 호출 할 수 없습니다 <code>drop</code> 메인 스레드에서. 우리는 대신이 컴파일러 오류를 얻을 것:</p>
+<p>메인 스레드에서 <code>move</code> 클로저를 사용해 <code>drop</code>을 호출하는 Listing 16-4의 코드를 고치려 할 수도 있습니다. 하지만 이 방법은 다른 이유로 허용되지 않습니다. 클로저에 <code>move</code>를 추가하면 <code>v</code>가 클로저 환경으로 이동하므로, 메인 스레드에서 더는 <code>v</code>에 <code>drop</code>을 호출할 수 없습니다. 대신 다음과 같은 컴파일러 오류가 발생합니다:</p>
 <pre><code class="language-console">$ cargo run
    Compiling threads v0.1.0 (file:///projects/threads)
 error[E0382]: use of moved value: `v`

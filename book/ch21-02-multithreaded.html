@@ -439,10 +439,7 @@ For more information about this error, try `rustc --explain E0599`.
 error: could not compile `hello` (bin "hello") due to 1 previous error
 </code></pre>
 <p>이제 <code>execute</code>에 <code>ThreadPool</code> 메서드가 없기 때문에 오류가 발생합니다. <a href="#creating-a-finite-number-of-threads">“유한한 수의 스레드 만들기”</a> 섹션에서 스레드 풀에 <code>thread::spawn</code>와 유사한 인터페이스를 제공하기로 결정했습니다. 또한, <code>execute</code> 함수를 구현하여 전달받은 클로저를 풀 내의 유휴 스레드 중 하나에 전달해 실행하도록 하겠습니다.</p>
-<p>우리는 정의 할 것이다 <code>execute</code> 메서드 켜짐 <code>ThreadPool</code> 파라미터로서 클로저를 취합니다. 상기로부터 상기 <a href="ch13-01-closures.html#moving-captured-values-out-of-closures">“포획 된 가치관 을 폐쇄 에서 벗어나게 함”</a> 무시  13 장에서 우리는 세 가지 다른 특성을 가진 매개 변수로 클로저를 취할 수 있습니다. <code>Fn</code>, <code>FnMut</code>, 그리고
-<code>FnOnce</code>. 여기서 어떤 종류의 클로저를 사용할지 결정해야 합니다. 우리는 표준 라이브러리와 비슷한 일을 하게 될 것이라는 것을 알고 있습니다. <code>thread::spawn</code>
-따라서, 우리는 서명의 경계를 볼 수 있습니다 <code>thread::spawn</code>
-매개 변수에 있습니다. 이 문서는 우리에게 다음을 보여줍니다 :</p>
+<p><code>ThreadPool</code>의 <code>execute</code> 메서드가 클로저를 매개변수로 받도록 정의하겠습니다. 13장의 <a href="ch13-01-closures.html#moving-captured-values-out-of-closures">“클로저에서 캡처한 값 이동하기” 절</a>에서 보았듯이, 클로저를 매개변수로 받을 때는 <code>Fn</code>, <code>FnMut</code>, <code>FnOnce</code> 세 트레이트 중 하나를 지정할 수 있습니다. 여기서는 어떤 종류의 클로저가 필요한지 정해야 합니다. 표준 라이브러리의 <code>thread::spawn</code>과 비슷하게 구현할 것이므로, 해당 함수 시그니처의 트레이트 바운드를 살펴보겠습니다:</p>
 <pre><code class="language-rust ignore">pub fn spawn&lt;F, T&gt;(f: F) -&gt; JoinHandle&lt;T&gt;
     where
         F: FnOnce() -&gt; T,
@@ -934,8 +931,7 @@ impl ThreadPool {
 </span><span class="boring">}</span></code></pre>
 <figcaption><a href="#listing-21-19">목록 21-19</a>: 각 클로저를 포함하는 <code>Job</code>에 대한 <code>Box</code> 유형 별칭을 생성한 후, 작업을 채널을 통해 전송합니다.</figcaption>
 </figure>
-<p>새로운 것을 만든 후 <code>Job</code> 우리가 들어가는 폐쇄를 사용하여 인스턴스 <code>execute</code>, 우리는 채널의 전송 끝을 그 작업을 보내. 우리는 호출하고있어 <code>unwrap</code> 온
-<code>send</code> 전송이 실패하는 경우. 예를 들어 모든 스레드가 실행되는 것을 중지하면 수신 종료가 새 메시지 수신을 중단 한 경우 발생할 수 있습니다. 현재 스레드가 실행되는 것을 멈출 수 없습니다. 우리의 스레드는 풀이 존재하는 한 계속 실행됩니다. 우리가 사용하는 이유 <code>unwrap</code> 우리는 실패 사례가 발생하지 않는다는 것을 알고 있지만 컴파일러는 그것을 알지 못합니다.</p>
+<p><code>execute</code>에서 받은 클로저를 사용해 새 <code>Job</code> 인스턴스를 만든 뒤, 채널의 송신 끝으로 작업을 보냅니다. 전송이 실패할 경우를 대비해 <code>send</code>의 결과에 <code>unwrap</code>을 호출합니다. 예를 들어 모든 스레드의 실행을 중단하면 수신 끝에서 새 메시지를 받지 않게 되어 전송이 실패할 수 있습니다. 현재는 스레드 실행을 중단할 방법이 없으며, 스레드 풀의 수명이 유지되는 동안 스레드는 계속 실행됩니다. 실패하지 않을 것이라고 우리는 알지만 컴파일러는 알지 못하므로 <code>unwrap</code>을 사용합니다.</p>
 <p>그러나 아직 완전히 끝난 것은 아닙니다! <code>Worker</code>에서 <code>thread::spawn</code>에 전달되는 클로저는 여전히 채널의 수신 단만 참조하고 있습니다. 대신, 클로저가 무한 루프를 돌며 채널의 수신 단에서 작업을 요청하고, 작업을 받으면 실행하도록 해야 합니다. <code>Worker::new</code>에 나열 21-20에 표시된 변경 사항을 적용해 보겠습니다.</p>
 <figure class="listing" id="listing-21-20">
 <span class="file-name">Filename: src/lib.rs</span>
@@ -1009,8 +1005,7 @@ impl Worker {
 }</code></pre>
 <figcaption><a href="#listing-21-20">리스팅 21-20</a>: <code>Worker</code> 인스턴스의 스레드에서 작업을 수신하고 실행하기</figcaption>
 </figure>
-<p>여기, 우리가 먼저 전화 <code>lock</code> 에 관하여 <code>receiver</code> 뮤텍스를 획득하기 위해, 우리는 <code>unwrap</code> 어떤 과실든지에 공황에. 자물쇠를 취득하는 것은 mutex가 a에 있는 경우에 실패할지도 모릅니다 <em>독약</em> 잠금을 해제하는 대신 잠금을 누른 상태에서 다른 스레드가 당황하면 발생할 수 있습니다. 이 상황에서는 호출
-<code>unwrap</code> 이 스레드 패닉을하는 것은 취할 수있는 올바른 조치입니다. 이 변경 주시기 바랍니다 <code>unwrap</code> 에 의해 <code>expect</code> 당신에게 의미있는 오류 메시지.</p>
+<p>먼저 수신기에서 <code>lock</code>을 호출해 뮤텍스를 획득한 다음, 오류가 있으면 <code>unwrap</code>을 호출해 패닉을 일으킵니다. 뮤텍스를 잠근 상태에서 다른 스레드가 패닉을 일으켜 잠금을 해제하지 못하면 뮤텍스가 손상된(poisoned) 상태가 되어 잠금 획득이 실패할 수 있습니다. 이 경우 <code>unwrap</code>을 호출해 현재 스레드도 패닉하게 하는 것이 올바른 선택입니다. 원한다면 <code>unwrap</code>을 의미 있는 오류 메시지를 제공하는 <code>expect</code>로 바꿔도 됩니다.</p>
 <p>뮤텍스에 대한 잠금을 획득하면 <code>recv</code>를 호출하여 채널에서 <code>Job</code>를 수신합니다. 마지막에 <code>unwrap</code>를 사용하여 여기서 발생할 수 있는 오류를 무시합니다. 이는 수신자가 종료되면 <code>send</code> 메서드가 <code>Err</code>를 반환하는 것과 유사하게, 전송자를 가진 스레드가 종료된 경우 발생할 수 있는 오류를 처리하는 것입니다.</p>
 <p><code>recv</code> 호출은 블로킹되므로 아직 작업이 없으면 현재 스레드는 작업이 사용 가능해질 때까지 대기합니다. <code>Mutex&lt;T&gt;</code>는 한 번에 하나의 <code>Worker</code> 스레드만 작업을 요청하도록 보장합니다.</p>
 <p>이제 스레드 풀이 작동하는 상태가 되었습니다! <code>cargo run</code>를 실행하고 몇 가지 요청을 보내 보세요:</p>

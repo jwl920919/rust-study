@@ -839,7 +839,7 @@ cargo build -->
 <p>Cargo는 여러분이나 다른 사람이 코드를 빌드할 때마다 동일한 아티팩트를 다시 만들 수 있도록 보장하는 메커니즘을 제공합니다. Cargo는 여러분이 달리 지시할 때까지 지정한 종속성의 버전만 사용합니다. 예를 들어, 다음 주에 <code>rand</code> 크레이트의 0.10.2 버전이 출시된다고 가정해 보겠습니다. 이 버전에는 중요한 버그 수정이 포함되어 있지만, 여러분의 코드를 깨뜨릴 수 있는 회귀 문제도 포함되어 있습니다. 이러한 문제를 방지하기 위해 Rust는 <em>cargo build</em>를 처음 실행할 때 <code>cargo build</code> 파일을 생성합니다. 따라서 이제 <em>guessing_game</em> 디렉토리에 이 파일이 존재합니다.</p>
 <p>프로젝트를 처음 빌드할 때, Cargo는 기준에 맞는 종속성 버전들을 모두 파악한 다음 Cargo.lock 파일에 기록합니다. 이후 프로젝트를 빌드할 때, Cargo는 Cargo.lock 파일이 존재하는 것을 확인하고 버전 파악 작업을 다시 수행하는 대신 해당 파일에 지정된 버전을 사용합니다. 이를 통해 자동으로 재현 가능한 빌드를 할 수 있습니다. 즉, Cargo.lock 파일 덕분에 명시적으로 업그레이드할 때까지 프로젝트는 0.10.1 버전을 유지합니다. 재현 가능한 빌드에 중요한 역할을 하는 Cargo.lock 파일은 프로젝트의 나머지 코드와 함께 소스 제어에 커밋하는 것이 일반적입니다.</p>
 <h4 id="page-7-updating-a-crate-to-get-a-new-version"><a class="header" href="#page-7-updating-a-crate-to-get-a-new-version">크레이트를 업데이트하여 새 버전 가져오기</a></h4>
-<p>할 때 <em>지원하다</em> 상자를 업데이트하려면, 카고는 명령을 제공합니다 <code>update</code>[중고] 무시하라 <em>화물.잠금</em> 파일과 당신의 명세를 안으로 적합한 모든 최신 버전을 파악하십시오 <em>카고.toml</em>. Cargo는 그 버전을 다음과 같이 작성합니다. <em>화물.잠금</em> 파일. 그렇지 않으면 기본적으로 Cargo는 0.10.1보다 크고 0.11.0보다 작은 버전만 찾습니다. <code>rand</code> 크레이트는 당신이 달린 경우에 2개의 새로운 버전 0.10.2 및 0.999.0를, 당신 볼 것입니다 뒤에 오는 것 풀어 놓았습니다 <code>cargo update</code>:</p>
+<p>크레이트를 업데이트하고 싶다면 Cargo의 <code>update</code> 명령을 사용할 수 있습니다. 이 명령은 <code>Cargo.lock</code>을 무시하고 <code>Cargo.toml</code>의 요구 조건에 맞는 최신 버전을 찾은 뒤, 해당 버전을 <code>Cargo.lock</code>에 기록합니다. 기본적으로 Cargo는 지정한 버전 요구 조건에 맞는 범위 안에서만 업데이트합니다. 예를 들어 <code>rand</code> 크레이트에 새 버전 <code>0.10.2</code>와 <code>0.999.0</code>이 올라왔다면, <code>cargo update</code>를 실행한 결과는 다음과 같습니다:</p>
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial/listing-02-02/
 cargo update
@@ -8412,9 +8412,7 @@ mod tests {
 }</code></pre>
 <figcaption><a href="#page-45-listing-11-9">Listing 11-9</a>: 지정된 부분 문자열을 포함하는 패닉 메시지로 <code>panic!</code>를 테스트</figcaption>
 </figure>
-<p>이 테스트는 우리가 입력하는 값이 <code>should_panic</code> 에이펙스
-<code>expected</code> 매개 변수는 다음과 같은 메시지의 하위 문자열입니다. <code>Guess::new</code>
-기능 공황을 가진. 우리는 이 경우에는 일 우리가 예상하는 전체 공황 메시지를 지정할 수 있었습니다, <code>Guess value must be less than or equal to 100, got 200</code>. 지정하는 것은 얼마나 많은 패닉 메시지가 고유하거나 동적이며 테스트가 얼마나 정확하기를 원하는지에 달려 있습니다. 이 경우, 패닉 메시지의 하위 문자열은 테스트 함수의 코드가 실행되도록 하기에 충분합니다. <code>else if value &gt; 100</code> 사례.</p>
+<p>이 테스트가 통과하는 이유는 <code>#[should_panic]</code> 속성의 <code>expected</code> 매개변수에 지정한 값이 <code>Guess::new</code> 함수의 패닉 메시지에 포함된 부분 문자열이기 때문입니다. 예상하는 패닉 메시지 전체를 지정할 수도 있습니다. 이 예제에서는 <code>Guess value must be less than or equal to 100, got 200</code>이 전체 메시지입니다. 어느 정도까지 지정할지는 패닉 메시지에서 고유하거나 동적인 부분이 얼마나 되는지, 테스트를 얼마나 엄밀하게 만들고 싶은지에 따라 다릅니다. 여기서는 <code>else if value &gt; 100</code> 분기를 테스트하는 데 부분 문자열만으로 충분합니다.</p>
 <p><code>should_panic</code> 메시지가 포함된 <code>expected</code> 테스트가 실패하면 <code>if value &lt; 1</code> 및 <code>else if value &gt; 100</code> 블록의 본문을 바꿔서 버그를 코드에 다시 도입해 보겠습니다.</p>
 <pre><code class="language-rust ignore not_desired_behavior"><span class="boring">pub struct Guess {
 </span><span class="boring">    value: i32,
@@ -10513,8 +10511,7 @@ fn main() {
 The user with preference Some(Red) gets Red
 The user with preference None gets Blue
 </code></pre>
-<p>한 가지 흥미로운 점은 우리가 호출하는 폐쇄를 통과했다는 것입니다.
-<code>self.most_stocked()</code> 현재에 관하여 <code>Inventory</code> 예를 들어 표준 라이브러리는 라이브러리에 대해 아무것도 알 필요가 없었습니다. <code>Inventory</code> 또는 <code>ShirtColor</code> 우리가 정의한 유형, 또는 우리가 이 대본에서 사용하고 싶은 논리. 마감은에 불변 참고를 붙잡습니다 <code>self</code> <code>Inventory</code> instance 그리고 우리가 지정한 코드를 전달합니다. <code>unwrap_or_else</code> 방법. 기능은, 다른 한편으로는, 이런 식으로 그들의 환경을 붙잡을 수 없습니다.</p>
+<p>한 가지 흥미로운 점은 현재 <code>Inventory</code> 인스턴스의 <code>self.most_stocked()</code>를 호출하는 클로저를 전달했다는 것입니다. 표준 라이브러리는 우리가 정의한 <code>Inventory</code>나 <code>ShirtColor</code> 타입, 또는 이 상황에서 사용하려는 로직을 알 필요가 없습니다. 클로저는 현재 <code>Inventory</code> 인스턴스인 <code>self</code>를 불변 참조로 캡처하고, <code>unwrap_or_else</code> 메서드에 전달한 코드와 함께 사용합니다. 반면 함수는 이런 식으로 환경을 캡처하지 못합니다.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="page-56-closure-type-inference-and-annotation"></a></p>
 <h3 id="page-56-inferring-and-annotating-closure-types"><a class="header" href="#page-56-inferring-and-annotating-closure-types">클로저 타입 추론 및 주석</a></h3>
@@ -10672,11 +10669,7 @@ fn main() {
 }</code></pre>
 <figcaption><a href="#page-56-listing-13-6">Listing 13-6</a>: <code>move</code>를 사용하여 스레드용 클로저가 <code>list</code>의 소유권을 갖도록 강제하기</figcaption>
 </figure>
-<p>새 스레드를 생성하여 스레드가 인수로 실행되도록 클로저를 제공합니다. 클로저 본문이 목록을 출력합니다. Listing 13-4에서 클로저가 캡처된 것만
-<code>list</code> 변경 불가능한 참조를 사용하는 이유는 액세스 권한이 가장 적기 때문입니다. <code>list</code> 그것을 인쇄할 필요가 있었습니다. 이 보기에서는, 마감 몸이 아직도 단지 불변 참고만 필요로 하더라도, 우리는 그것을 지정할 필요가 있습니다 <code>list</code> 상기 폐쇄하는 단계는, Wherein the closure, <code>move</code> 폐쇄 정의의 시작 부분에 키워드. 메인 스레드가 호출하기 전에 더 많은 작업을 수행 한 경우
-<code>join</code> 새 스레드에서 새 스레드가 나머지 메인 스레드가 완료되기 전에 완료되거나 기본 스레드가 먼저 완료 될 수 있습니다. 메인 스레드가 소유권을 유지하는 경우 <code>list</code> 하지만 새로운 스레드 및 드롭 전에 종료
-<code>list</code>, 스레드의 불변 참조가 유효하지 않습니다. 따라서 컴파일러는 <code>list</code> 참조가 유효하도록 새 스레드에 주어진 클로저로 이동합니다. 를 제거하십시오 <code>move</code> 키워드 또는 사용
-<code>list</code> 종료 후 메인 스레드에서 어떤 컴파일러 오류가 발생하는지 확인하기 위해 정의됩니다!</p>
+<p>새 스레드를 만들고 실행할 클로저를 인수로 전달합니다. 클로저 본문은 목록을 출력합니다. Listing 13-4에서는 목록을 출력하는 데 필요한 최소한의 접근 권한인 불변 참조로 <code>list</code>를 캡처했습니다. 이번 예제에서도 클로저 본문은 불변 참조만 필요하지만, <code>move</code> 키워드를 클로저 앞에 적어 <code>list</code>를 클로저 안으로 이동시켜야 합니다. 메인 스레드가 <code>join</code>을 호출하기 전에 다른 작업을 하면 새 스레드와 메인 스레드 중 어느 쪽이 먼저 끝날지 알 수 없습니다. 메인 스레드가 <code>list</code>의 소유권을 유지한 채 먼저 끝나면 목록이 해제되어 새 스레드의 참조가 무효가 될 수 있습니다. 그래서 컴파일러는 새 스레드에 전달하는 클로저 안으로 <code>list</code>를 이동하도록 요구합니다. <code>move</code>를 제거하거나 새 스레드가 끝난 뒤 메인 스레드에서 <code>list</code>를 사용해 컴파일 오류를 확인해 보세요.</p>
 <!-- Old headings. Do not remove or links may break. -->
 <p><a id="page-56-storing-closures-using-generic-parameters-and-the-fn-traits"></a>
 <a id="page-56-limitations-of-the-cacher-implementation"></a>
@@ -10779,7 +10772,7 @@ fn main() {
 }</code></pre>
 <figcaption><a href="#page-56-listing-13-8">Listing 13-8</a>: <code>FnOnce</code>과 함께 <code>sort_by_key</code> 클로저를 사용하려는 시도</figcaption>
 </figure>
-<p>이것은 몇 번을 세려고 시도하기 위해 고안되고 복잡한 방법입니다 (그것은 작동하지 않습니다). <code>sort_by_key</code> 정렬할 때 닫기 호출하기 <code>list</code>. 이 코드는이 계산을 수행하려고 시도합니다. <code>value</code>—a <code>String</code> 폐쇄의 환경에서 - 안으로 <code>sort_operations</code> vector. 폐쇄 캡처 <code>value</code> 그리고 moves <code>value</code> 소유권을 이전하여 폐쇄에서 <code>value</code> 에 대하여 <code>sort_operations</code> 벡터. 이 클로저를 한 번 호출할 수 있습니다. 두 번 호출하려고 하면 작동하지 않기 때문입니다. <code>value</code> 더 이상 환경에 노출되지 않도록 해야 한다. <code>sort_operations</code> 다시! 그러므로, 이 폐쇄는 단지 구현한다 <code>FnOnce</code>. 이 코드를 컴파일하려고 하면 다음과 같은 오류가 발생합니다. <code>value</code> 클로저가 구현되어야 하기 때문에 클로저 밖으로 이동할 수 없습니다. <code>FnMut</code>:</p>
+<p>이 방법은 작동하지 않으며, <code>sort_by_key</code>가 목록을 정렬할 때 클로저를 몇 번 호출하는지 세려는 억지스럽고 복잡한 시도입니다. 클로저 환경에 있는 <code>String</code> 값 <code>value</code>를 <code>sort_operations</code> 벡터에 넣어 횟수를 세려고 합니다. 클로저가 <code>value</code>를 캡처한 뒤 소유권을 벡터로 옮기므로, 이 클로저는 한 번만 호출할 수 있습니다. 두 번째로 호출하면 넘겨줄 <code>value</code>가 남아 있지 않아 작동하지 않습니다. 따라서 이 클로저는 <code>FnOnce</code>만 구현합니다. 이 코드를 컴파일하면 <code>sort_by_key</code>가 <code>FnMut</code>을 요구하므로 클로저 밖으로 <code>value</code>를 이동할 수 없다는 오류가 발생합니다:</p>
 <pre><code class="language-console">$ cargo run
    Compiling rectangles v0.1.0 (file:///projects/rectangles)
 error[E0507]: cannot move out of `value`, a captured variable in an `FnMut` closure
@@ -12024,7 +12017,7 @@ error[E0432]: unresolved import `rand`
 2 | use rand;
   |     ^^^^ no external crate `rand`
 </code></pre>
-<p>이 문제를 해결하려면 Edit <em>카고.toml</em> 파일명 The <code>adder</code> 패키지 및 그 표시 <code>rand</code> 이에 대한 의존성 또한 중요합니다. <code>adder</code> 패키지 추가 <code>rand</code> 에 대한 종속성의 목록에 <code>adder</code> 에서 <em>화물.잠금</em>, 그러나 추가 사본 없음 <code>rand</code> 화물은 작업 공간의 모든 패키지에 있는 모든 상자가 <code>rand</code> 패키지는 호환되는 버전을 지정하는 한 동일한 버전을 사용합니다. <code>rand</code>, 저희에게 공간을 절약하고 작업 공간에 있는 크레이트가 서로 양립할 것이라는 점을 보증.</p>
+<p>이 문제를 해결하려면 <code>adder</code> 패키지의 <code>Cargo.toml</code>을 수정해 <code>rand</code>도 의존성으로 지정합니다. <code>adder</code> 패키지를 빌드하면 <code>rand</code>가 <code>Cargo.lock</code>의 <code>adder</code> 의존성 목록에 추가되지만, <code>rand</code>를 다시 다운로드하지는 않습니다. Cargo는 워크스페이스의 각 패키지가 호환되는 버전을 지정하는 한, <code>rand</code>를 사용하는 모든 크레이트가 같은 버전을 사용하도록 합니다. 이렇게 하면 공간을 절약하고 워크스페이스의 패키지들이 서로 호환되도록 할 수 있습니다.</p>
 <p>작업 공간의 크레이트가 동일한 의존성의 호환되지 않는 버전을 지정하는 경우, Cargo는 각 버전을 해석하지만 가능한 한 적은 수의 버전으로 해석하려고 시도합니다.</p>
 <h3 id="page-63-adding-a-test-to-a-workspace"><a class="header" href="#page-63-adding-a-test-to-a-workspace">워크스페이스에 테스트 추가</a></h3>
 <p>또 다른 개선 사항으로, <code>add_one::add_one</code> 함수에 대한 테스트를 <code>add_one</code> 크레이트에 추가해 보겠습니다.</p>
@@ -13781,7 +13774,7 @@ fn main() {
 }</code></pre>
 <figcaption><a href="#page-74-listing-16-5">Listing 16-5</a>: <code>move</code> 키워드를 사용하여 클로저가 사용하는 값의 소유권을 갖도록 강제하기</figcaption>
 </figure>
-<p>우리는 Listing 16-4에서 주 스레드가 호출된 코드를 고치기 위해 같은 것을 시도할 수도 있습니다. <code>drop</code> 사용 A <code>move</code> 클로저. 그러나, 이 수정은 Listing 16-4가 하려고 하는 것이 다른 이유로 허용되지 않기 때문에 작동하지 않습니다. 만약 우리가 추가한다면 <code>move</code> 상기 폐쇄하는 단계는, Wherein the closure, <code>v</code> 폐쇄의 환경으로, 우리는 더 이상 호출 할 수 없습니다 <code>drop</code> 메인 스레드에서. 우리는 대신이 컴파일러 오류를 얻을 것:</p>
+<p>메인 스레드에서 <code>move</code> 클로저를 사용해 <code>drop</code>을 호출하는 Listing 16-4의 코드를 고치려 할 수도 있습니다. 하지만 이 방법은 다른 이유로 허용되지 않습니다. 클로저에 <code>move</code>를 추가하면 <code>v</code>가 클로저 환경으로 이동하므로, 메인 스레드에서 더는 <code>v</code>에 <code>drop</code>을 호출할 수 없습니다. 대신 다음과 같은 컴파일러 오류가 발생합니다:</p>
 <pre><code class="language-console">$ cargo run
    Compiling threads v0.1.0 (file:///projects/threads)
 error[E0382]: use of moved value: `v`
@@ -14658,7 +14651,7 @@ hi number 9 from the first task!
 </code></pre>
 <p>지금까지 살펴본 바와 같이, async와 스레드는 서로 다른 문법을 사용하지만 비슷한 결과를 제공합니다. join 핸들에 join을 호출하는 대신 await를 사용하고, sleep 호출도 await로 처리하는 방식입니다. <code>await</code> <code>join</code> <code>sleep</code></p>
 <p>더 큰 차이점은 이 작업을 수행하기 위해 별도의 운영체제 스레드를 생성할 필요가 없다는 점입니다. 사실, 여기서 태스크를 생성할 필요도 없습니다. async 블록은 익명 future로 컴파일되므로, 각 루프를 async 블록에 넣고 런타임이 <code>trpl::join</code> 함수를 사용하여 둘 다 완료될 때까지 실행하도록 할 수 있습니다.</p>
-<p>다음에서 <a href="ch16-01-threads.html#waiting-for-all-threads-to-finish">“모든 실 이 끝나기 를 기다리면서”</a> 무시
+<p>다음에서 <a href="ch16-01-threads.html#waiting-for-all-threads-to-finish">“모든 스레드가 끝날 때까지 기다리기”</a>
 제 16 장에서, 우리는 방법을 사용하는 방법을 보여 주었다 <code>join</code> 상기 방법은 The method
 <code>JoinHandle</code> 당신이 부를 때 반환되는 유형 <code>std::thread::spawn</code>. 그 <code>trpl::join</code>
 함수는 비슷하지만, 미래를 위한 함수입니다. 두 개의 미래를 주면, 그것은 하나의 새로운 미래를 만들어냅니다. 그 미래를 출력하는 튜플은 한 번 전달한 각 미래의 출력을 포함합니다. <em>둘 다</em> complete. 따라서 Listing 17-8에서 우리는
@@ -16427,8 +16420,7 @@ impl State for Published {
 </figure>
 <p>목표는 이 모든 규칙을 <code>State</code> 트레잇을 구현하는 구조체 안에 유지하는 것이므로, <code>content</code> 값의 <code>state</code> 메서드를 호출하고 포스트 인스턴스(즉, <code>self</code>)를 인수로 전달합니다. 그런 다음, <code>content</code> 값의 <code>state</code> 메서드 호출 결과로 반환된 값을 반환합니다.</p>
 <p><code>as_ref</code> 값의 소유권을 얻는 것이 아니라 그 안에 있는 값에 대한 참조를 원하기 때문에 <code>Option</code>에서 <code>Option</code> 메서드를 호출합니다. <code>state</code>은 <code>Option&lt;Box&lt;dyn State&gt;&gt;</code> 타입이므로, <code>as_ref</code>를 호출하면 <code>Option&lt;&amp;Box&lt;dyn State&gt;&gt;</code>이 반환됩니다. <code>as_ref</code>를 호출하지 않았다면, 함수 인수의 빌림된 <code>state</code>에서 <code>&amp;self</code>를 이동시킬 수 없기 때문에 오류가 발생합니다.</p>
-<p>하나님은 그를 부르신다. <code>unwrap</code> 우리가 알고 있는 방법은, 우리가 알고 있는 방법들을 알기 때문에 결코 당황하지 않을 것입니다. <code>Post</code> 그것을 보장하라 <code>state</code> 항상 포함 a <code>Some</code>
-이러한 메서드가 수행 될 때 값. 이것은 우리가 이야기 한 사례 중 하나입니다. <a href="ch09-03-to-panic-or-not-to-panic.html#cases-in-which-you-have-more-information-than-the-compiler">“컴파일러 보다 더 많은 정보 가 있을 때”</a> 무시  Chapter 9 우리가 알고 있는 것 <code>None</code> 비록 컴파일러가 그것을 이해할 수 없더라도, 가치는 결코 가능하지 않다.</p>
+<p>그런 다음 <code>unwrap</code>을 호출합니다. <code>Post</code>의 메서드가 실행을 마칠 때 <code>state</code>에 항상 <code>Some</code> 값이 들어 있도록 보장하므로, 여기서는 패닉이 발생하지 않는다고 확신할 수 있습니다. 컴파일러가 이해하지 못하더라도 <code>None</code> 값이 절대 나오지 않는다고 우리가 알고 있는 경우입니다. 9장의 <a href="ch09-03-to-panic-or-not-to-panic.html#cases-in-which-you-have-more-information-than-the-compiler">“컴파일러보다 더 많은 정보를 알고 있을 때” 절</a>에서 이런 상황을 살펴보았습니다.</p>
 <p>이 시점에서 <code>content</code>을(를) 호출하면, <code>&amp;Box&lt;dyn State&gt;</code>에 대한 deref 강제 변환이 <code>&amp;</code>와 <code>Box</code>에 적용되어, <code>content</code> 메서드가 궁극적으로 <code>State</code> 트레잇을 구현하는 타입에서 호출됩니다. 즉, <code>content</code>을(를) <code>State</code> 트레잇 정의에 추가해야 하며, Listing 18-18에서 보듯이 현재 어떤 상태를 가지고 있는지에 따라 어떤 내용을 반환할지에 대한 로직을 여기에 넣게 됩니다.</p>
 <figure class="listing" id="page-89-listing-18-18">
 <span class="file-name">Filename: src/lib.rs</span>
@@ -18925,8 +18917,7 @@ pub fn sql(input: TokenStream) -&gt; TokenStream {</code></pre>
 </ol>
 <img alt="Screenshot of a web browser visiting the address 127.0.0.1:8080 displaying a webpage with the text content “Hello! Hi from Rust”" class="center" src="img/trpl21-01.png" style="width: 50%;"/>
 <p>그림 21-1: 최종 공유 프로젝트</p>
-<p>시작하기 전에 두 가지 세부 사항을 언급해야 합니다. 첫째, 러스트를 사용하여 웹 서버를 구축하는 가장 좋은 방법은 아닙니다. 커뮤니티 회원은 다음에서 사용할 수 있는 여러 가지 프로덕션 지원 상자를 게시했습니다.
-<a href="https://crates.io/">크레이트.io</a> 우리가 만드는 것보다 더 완벽한 웹 서버와 스레드 풀 구현을 제공합니다. 그러나, 이 장에서 우리의 의도는 당신이 쉬운 경로를 택하지 않고 배우는 것을 돕는 것입니다. 러스트는 시스템 프로그래밍 언어이기 때문에, 우리는 우리가 작업하기를 원하는 추상화 수준을 선택할 수 있고 다른 언어에서 가능하거나 실용적인 것보다 더 낮은 수준으로 갈 수 있습니다.</p>
+<p>시작하기 전에 두 가지를 짚고 넘어가겠습니다. 첫째, 여기서 사용할 방식은 Rust로 웹 서버를 만드는 최선의 방법은 아닙니다. 커뮤니티에서는 우리가 만들 것보다 더 완전한 웹 서버와 스레드 풀 구현을 제공하는, 실제 서비스에 사용할 수 있는 크레이트를 <a href="https://crates.io/">crates.io</a>에 여러 개 공개했습니다. 하지만 이 장의 목표는 쉬운 길을 택하는 대신 직접 구현하면서 배우는 것입니다. Rust는 시스템 프로그래밍 언어이므로 필요한 추상화 수준을 선택하고, 다른 언어에서는 어렵거나 실용적이지 않은 낮은 수준까지 내려갈 수 있습니다.</p>
 <p>둘째, 여기서는 async와 await를 사용하지 않습니다. async 런타임 구축을 추가하지 않아도 스레드 풀 구축 자체는 충분히 큰 도전입니다! 그러나 이 장에서 다룰 일부 동일한 문제에 async와 await가 어떻게 적용될 수 있는지 언급하겠습니다. 궁극적으로 17장에서 언급했듯이, 많은 async 런타임은 작업을 관리하기 위해 스레드 풀을 사용합니다.</p>
 <p>따라서 나중에 사용할 수 있는 크레이트 뒤에 있는 일반적인 아이디어와 기술을 배울 수 있도록, 기본 HTTP 서버와 스레드 풀을 수동으로 작성하겠습니다.</p>
 
@@ -19598,10 +19589,7 @@ For more information about this error, try `rustc --explain E0599`.
 error: could not compile `hello` (bin "hello") due to 1 previous error
 </code></pre>
 <p>이제 <code>execute</code>에 <code>ThreadPool</code> 메서드가 없기 때문에 오류가 발생합니다. <a href="#page-102-creating-a-finite-number-of-threads">“유한한 수의 스레드 만들기”</a> 섹션에서 스레드 풀에 <code>thread::spawn</code>와 유사한 인터페이스를 제공하기로 결정했습니다. 또한, <code>execute</code> 함수를 구현하여 전달받은 클로저를 풀 내의 유휴 스레드 중 하나에 전달해 실행하도록 하겠습니다.</p>
-<p>우리는 정의 할 것이다 <code>execute</code> 메서드 켜짐 <code>ThreadPool</code> 파라미터로서 클로저를 취합니다. 상기로부터 상기 <a href="ch13-01-closures.html#moving-captured-values-out-of-closures">“포획 된 가치관 을 폐쇄 에서 벗어나게 함”</a> 무시  13 장에서 우리는 세 가지 다른 특성을 가진 매개 변수로 클로저를 취할 수 있습니다. <code>Fn</code>, <code>FnMut</code>, 그리고
-<code>FnOnce</code>. 여기서 어떤 종류의 클로저를 사용할지 결정해야 합니다. 우리는 표준 라이브러리와 비슷한 일을 하게 될 것이라는 것을 알고 있습니다. <code>thread::spawn</code>
-따라서, 우리는 서명의 경계를 볼 수 있습니다 <code>thread::spawn</code>
-매개 변수에 있습니다. 이 문서는 우리에게 다음을 보여줍니다 :</p>
+<p><code>ThreadPool</code>의 <code>execute</code> 메서드가 클로저를 매개변수로 받도록 정의하겠습니다. 13장의 <a href="ch13-01-closures.html#moving-captured-values-out-of-closures">“클로저에서 캡처한 값 이동하기” 절</a>에서 보았듯이, 클로저를 매개변수로 받을 때는 <code>Fn</code>, <code>FnMut</code>, <code>FnOnce</code> 세 트레이트 중 하나를 지정할 수 있습니다. 여기서는 어떤 종류의 클로저가 필요한지 정해야 합니다. 표준 라이브러리의 <code>thread::spawn</code>과 비슷하게 구현할 것이므로, 해당 함수 시그니처의 트레이트 바운드를 살펴보겠습니다:</p>
 <pre><code class="language-rust ignore">pub fn spawn&lt;F, T&gt;(f: F) -&gt; JoinHandle&lt;T&gt;
     where
         F: FnOnce() -&gt; T,
@@ -20093,8 +20081,7 @@ impl ThreadPool {
 </span><span class="boring">}</span></code></pre>
 <figcaption><a href="#page-102-listing-21-19">목록 21-19</a>: 각 클로저를 포함하는 <code>Job</code>에 대한 <code>Box</code> 유형 별칭을 생성한 후, 작업을 채널을 통해 전송합니다.</figcaption>
 </figure>
-<p>새로운 것을 만든 후 <code>Job</code> 우리가 들어가는 폐쇄를 사용하여 인스턴스 <code>execute</code>, 우리는 채널의 전송 끝을 그 작업을 보내. 우리는 호출하고있어 <code>unwrap</code> 온
-<code>send</code> 전송이 실패하는 경우. 예를 들어 모든 스레드가 실행되는 것을 중지하면 수신 종료가 새 메시지 수신을 중단 한 경우 발생할 수 있습니다. 현재 스레드가 실행되는 것을 멈출 수 없습니다. 우리의 스레드는 풀이 존재하는 한 계속 실행됩니다. 우리가 사용하는 이유 <code>unwrap</code> 우리는 실패 사례가 발생하지 않는다는 것을 알고 있지만 컴파일러는 그것을 알지 못합니다.</p>
+<p><code>execute</code>에서 받은 클로저를 사용해 새 <code>Job</code> 인스턴스를 만든 뒤, 채널의 송신 끝으로 작업을 보냅니다. 전송이 실패할 경우를 대비해 <code>send</code>의 결과에 <code>unwrap</code>을 호출합니다. 예를 들어 모든 스레드의 실행을 중단하면 수신 끝에서 새 메시지를 받지 않게 되어 전송이 실패할 수 있습니다. 현재는 스레드 실행을 중단할 방법이 없으며, 스레드 풀의 수명이 유지되는 동안 스레드는 계속 실행됩니다. 실패하지 않을 것이라고 우리는 알지만 컴파일러는 알지 못하므로 <code>unwrap</code>을 사용합니다.</p>
 <p>그러나 아직 완전히 끝난 것은 아닙니다! <code>Worker</code>에서 <code>thread::spawn</code>에 전달되는 클로저는 여전히 채널의 수신 단만 참조하고 있습니다. 대신, 클로저가 무한 루프를 돌며 채널의 수신 단에서 작업을 요청하고, 작업을 받으면 실행하도록 해야 합니다. <code>Worker::new</code>에 나열 21-20에 표시된 변경 사항을 적용해 보겠습니다.</p>
 <figure class="listing" id="page-102-listing-21-20">
 <span class="file-name">Filename: src/lib.rs</span>
@@ -20168,8 +20155,7 @@ impl Worker {
 }</code></pre>
 <figcaption><a href="#page-102-listing-21-20">리스팅 21-20</a>: <code>Worker</code> 인스턴스의 스레드에서 작업을 수신하고 실행하기</figcaption>
 </figure>
-<p>여기, 우리가 먼저 전화 <code>lock</code> 에 관하여 <code>receiver</code> 뮤텍스를 획득하기 위해, 우리는 <code>unwrap</code> 어떤 과실든지에 공황에. 자물쇠를 취득하는 것은 mutex가 a에 있는 경우에 실패할지도 모릅니다 <em>독약</em> 잠금을 해제하는 대신 잠금을 누른 상태에서 다른 스레드가 당황하면 발생할 수 있습니다. 이 상황에서는 호출
-<code>unwrap</code> 이 스레드 패닉을하는 것은 취할 수있는 올바른 조치입니다. 이 변경 주시기 바랍니다 <code>unwrap</code> 에 의해 <code>expect</code> 당신에게 의미있는 오류 메시지.</p>
+<p>먼저 수신기에서 <code>lock</code>을 호출해 뮤텍스를 획득한 다음, 오류가 있으면 <code>unwrap</code>을 호출해 패닉을 일으킵니다. 뮤텍스를 잠근 상태에서 다른 스레드가 패닉을 일으켜 잠금을 해제하지 못하면 뮤텍스가 손상된(poisoned) 상태가 되어 잠금 획득이 실패할 수 있습니다. 이 경우 <code>unwrap</code>을 호출해 현재 스레드도 패닉하게 하는 것이 올바른 선택입니다. 원한다면 <code>unwrap</code>을 의미 있는 오류 메시지를 제공하는 <code>expect</code>로 바꿔도 됩니다.</p>
 <p>뮤텍스에 대한 잠금을 획득하면 <code>recv</code>를 호출하여 채널에서 <code>Job</code>를 수신합니다. 마지막에 <code>unwrap</code>를 사용하여 여기서 발생할 수 있는 오류를 무시합니다. 이는 수신자가 종료되면 <code>send</code> 메서드가 <code>Err</code>를 반환하는 것과 유사하게, 전송자를 가진 스레드가 종료된 경우 발생할 수 있는 오류를 처리하는 것입니다.</p>
 <p><code>recv</code> 호출은 블로킹되므로 아직 작업이 없으면 현재 스레드는 작업이 사용 가능해질 때까지 대기합니다. <code>Mutex&lt;T&gt;</code>는 한 번에 하나의 <code>Worker</code> 스레드만 작업을 요청하도록 보장합니다.</p>
 <p>이제 스레드 풀이 작동하는 상태가 되었습니다! <code>cargo run</code>를 실행하고 몇 가지 요청을 보내 보세요:</p>
@@ -20919,7 +20905,7 @@ impl Worker {
 <p>다음 섹션에는 Rust 학습 과정에서 유용할 수 있는 참고 자료를 제공합니다.</p>
 
 <h2 id="page-105-appendix-a-keywords"><a class="header" href="#page-105-appendix-a-keywords">부록 A: 키워드</a></h2>
-<p>다음 목록에는 러스트 언어에 의해 현재 또는 미래의 사용을 위해 예약된 키워드가 포함되어 있습니다. 따라서 식별자로 사용할 수 없습니다(<a href="#page-105-raw-identifiers">"Raw Identifiers" (레이저 식별자)</a> 섹션에서 논의한 원시 식별자 제외). 식별자는 함수, 변수, 매개 변수, 구조체 필드, 모듈, 상자, 상수, 매크로, 정적 값, 속성, 유형, 특성 또는 수명 주기의 이름입니다.</p>
+<p>다음 목록은 Rust 언어에서 현재 사용하거나 앞으로 사용할 목적으로 예약한 키워드입니다. 따라서 식별자로 사용할 수 없습니다(<a href="#page-105-raw-identifiers">“원시 식별자” 절</a>에서 설명하는 원시 식별자는 예외입니다). 식별자는 함수, 변수, 매개변수, 구조체 필드, 모듈, 크레이트, 상수, 매크로, 정적 변수, 속성, 타입, 트레이트, 라이프타임의 이름입니다.</p>
 <h3 id="page-105-keywords-currently-in-use"><a class="header" href="#page-105-keywords-currently-in-use">현재 사용 중인 키워드</a></h3>
 <p>다음은 현재 사용 중인 키워드 목록이며, 각 키워드의 기능을 설명합니다.</p>
 <ul>

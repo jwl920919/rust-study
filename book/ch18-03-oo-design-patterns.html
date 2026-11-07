@@ -537,8 +537,7 @@ impl State for Published {
 </figure>
 <p>목표는 이 모든 규칙을 <code>State</code> 트레잇을 구현하는 구조체 안에 유지하는 것이므로, <code>content</code> 값의 <code>state</code> 메서드를 호출하고 포스트 인스턴스(즉, <code>self</code>)를 인수로 전달합니다. 그런 다음, <code>content</code> 값의 <code>state</code> 메서드 호출 결과로 반환된 값을 반환합니다.</p>
 <p><code>as_ref</code> 값의 소유권을 얻는 것이 아니라 그 안에 있는 값에 대한 참조를 원하기 때문에 <code>Option</code>에서 <code>Option</code> 메서드를 호출합니다. <code>state</code>은 <code>Option&lt;Box&lt;dyn State&gt;&gt;</code> 타입이므로, <code>as_ref</code>를 호출하면 <code>Option&lt;&amp;Box&lt;dyn State&gt;&gt;</code>이 반환됩니다. <code>as_ref</code>를 호출하지 않았다면, 함수 인수의 빌림된 <code>state</code>에서 <code>&amp;self</code>를 이동시킬 수 없기 때문에 오류가 발생합니다.</p>
-<p>하나님은 그를 부르신다. <code>unwrap</code> 우리가 알고 있는 방법은, 우리가 알고 있는 방법들을 알기 때문에 결코 당황하지 않을 것입니다. <code>Post</code> 그것을 보장하라 <code>state</code> 항상 포함 a <code>Some</code>
-이러한 메서드가 수행 될 때 값. 이것은 우리가 이야기 한 사례 중 하나입니다. <a href="ch09-03-to-panic-or-not-to-panic.html#cases-in-which-you-have-more-information-than-the-compiler">“컴파일러 보다 더 많은 정보 가 있을 때”</a> 무시  Chapter 9 우리가 알고 있는 것 <code>None</code> 비록 컴파일러가 그것을 이해할 수 없더라도, 가치는 결코 가능하지 않다.</p>
+<p>그런 다음 <code>unwrap</code>을 호출합니다. <code>Post</code>의 메서드가 실행을 마칠 때 <code>state</code>에 항상 <code>Some</code> 값이 들어 있도록 보장하므로, 여기서는 패닉이 발생하지 않는다고 확신할 수 있습니다. 컴파일러가 이해하지 못하더라도 <code>None</code> 값이 절대 나오지 않는다고 우리가 알고 있는 경우입니다. 9장의 <a href="ch09-03-to-panic-or-not-to-panic.html#cases-in-which-you-have-more-information-than-the-compiler">“컴파일러보다 더 많은 정보를 알고 있을 때” 절</a>에서 이런 상황을 살펴보았습니다.</p>
 <p>이 시점에서 <code>content</code>을(를) 호출하면, <code>&amp;Box&lt;dyn State&gt;</code>에 대한 deref 강제 변환이 <code>&amp;</code>와 <code>Box</code>에 적용되어, <code>content</code> 메서드가 궁극적으로 <code>State</code> 트레잇을 구현하는 타입에서 호출됩니다. 즉, <code>content</code>을(를) <code>State</code> 트레잇 정의에 추가해야 하며, Listing 18-18에서 보듯이 현재 어떤 상태를 가지고 있는지에 따라 어떤 내용을 반환할지에 대한 로직을 여기에 넣게 됩니다.</p>
 <figure class="listing" id="listing-18-18">
 <span class="file-name">Filename: src/lib.rs</span>

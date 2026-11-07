@@ -480,7 +480,7 @@ cargo build -->
 <p>Cargo는 여러분이나 다른 사람이 코드를 빌드할 때마다 동일한 아티팩트를 다시 만들 수 있도록 보장하는 메커니즘을 제공합니다. Cargo는 여러분이 달리 지시할 때까지 지정한 종속성의 버전만 사용합니다. 예를 들어, 다음 주에 <code>rand</code> 크레이트의 0.10.2 버전이 출시된다고 가정해 보겠습니다. 이 버전에는 중요한 버그 수정이 포함되어 있지만, 여러분의 코드를 깨뜨릴 수 있는 회귀 문제도 포함되어 있습니다. 이러한 문제를 방지하기 위해 Rust는 <em>cargo build</em>를 처음 실행할 때 <code>cargo build</code> 파일을 생성합니다. 따라서 이제 <em>guessing_game</em> 디렉토리에 이 파일이 존재합니다.</p>
 <p>프로젝트를 처음 빌드할 때, Cargo는 기준에 맞는 종속성 버전들을 모두 파악한 다음 Cargo.lock 파일에 기록합니다. 이후 프로젝트를 빌드할 때, Cargo는 Cargo.lock 파일이 존재하는 것을 확인하고 버전 파악 작업을 다시 수행하는 대신 해당 파일에 지정된 버전을 사용합니다. 이를 통해 자동으로 재현 가능한 빌드를 할 수 있습니다. 즉, Cargo.lock 파일 덕분에 명시적으로 업그레이드할 때까지 프로젝트는 0.10.1 버전을 유지합니다. 재현 가능한 빌드에 중요한 역할을 하는 Cargo.lock 파일은 프로젝트의 나머지 코드와 함께 소스 제어에 커밋하는 것이 일반적입니다.</p>
 <h4 id="updating-a-crate-to-get-a-new-version"><a class="header" href="#updating-a-crate-to-get-a-new-version">크레이트를 업데이트하여 새 버전 가져오기</a></h4>
-<p>할 때 <em>지원하다</em> 상자를 업데이트하려면, 카고는 명령을 제공합니다 <code>update</code>[중고] 무시하라 <em>화물.잠금</em> 파일과 당신의 명세를 안으로 적합한 모든 최신 버전을 파악하십시오 <em>카고.toml</em>. Cargo는 그 버전을 다음과 같이 작성합니다. <em>화물.잠금</em> 파일. 그렇지 않으면 기본적으로 Cargo는 0.10.1보다 크고 0.11.0보다 작은 버전만 찾습니다. <code>rand</code> 크레이트는 당신이 달린 경우에 2개의 새로운 버전 0.10.2 및 0.999.0를, 당신 볼 것입니다 뒤에 오는 것 풀어 놓았습니다 <code>cargo update</code>:</p>
+<p>크레이트를 업데이트하고 싶다면 Cargo의 <code>update</code> 명령을 사용할 수 있습니다. 이 명령은 <code>Cargo.lock</code>을 무시하고 <code>Cargo.toml</code>의 요구 조건에 맞는 최신 버전을 찾은 뒤, 해당 버전을 <code>Cargo.lock</code>에 기록합니다. 기본적으로 Cargo는 지정한 버전 요구 조건에 맞는 범위 안에서만 업데이트합니다. 예를 들어 <code>rand</code> 크레이트에 새 버전 <code>0.10.2</code>와 <code>0.999.0</code>이 올라왔다면, <code>cargo update</code>를 실행한 결과는 다음과 같습니다:</p>
 <!-- manual-regeneration
 cd listings/ch02-guessing-game-tutorial/listing-02-02/
 cargo update
